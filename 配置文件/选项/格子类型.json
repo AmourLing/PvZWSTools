@@ -1,0 +1,23 @@
+[
+    {
+        "Name": "草地",
+        "Value": "Grass"
+    },
+    {
+        "Name": "裸地",
+        "Value": "Dirt"
+    },
+    {
+        "Name": "水",
+        "Value": "Pool"
+    },
+    {
+        "Name": "高地",
+        "Value": "HighGround"
+    },
+    {
+        "Name": "Shallow",
+        "Value": "Shallow"
+    }
+
+]

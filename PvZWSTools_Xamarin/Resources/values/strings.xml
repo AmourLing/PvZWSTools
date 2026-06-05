@@ -1,0 +1,477 @@
+﻿<resources>
+    <string name="app_name">PvZWSTools</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">无用的按钮罢了</string>
+    <string name="ws_connected">ws已连接</string>
+    <string name="ws_disconnected">ws未连接</string>
+    <string name="app_name_Android">PvZWSTools for Android</string>
+    <string name="disclaimer">本工具完全免费</string>
+
+    <string name="url">ws://localhost:8080/Py</string>
+    <string name="connect">连接</string>
+
+    <string name="others_strings_1">自动收集</string>
+    <string name="others_strings_1_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_1_1_value">1</string>
+
+    <string name="others_strings_2">自动浇水</string>
+    <string name="others_strings_2_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_2_1_value">1</string>
+
+    <string name="others_strings_3">阳光增值</string>
+    <string name="others_strings_3_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_3_1_value">1</string>
+
+    <string name="others_strings_4">清除浓雾</string>
+    <string name="others_strings_4_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_4_1_value">1</string>
+
+    <string name="others_strings_5">罐子透视</string>
+    <string name="others_strings_5_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_5_1_value">1</string>
+
+    <string name="others_strings_6">取消冷却</string>
+    <string name="others_strings_6_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_6_1_value">1</string>
+
+    <string name="others_strings_7">取消阳光</string>
+    <string name="others_strings_7_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_7_1_value">1</string>
+
+    <string name="others_strings_8">后台运行</string>
+    <string name="others_strings_8_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="others_strings_8_1_value">1</string>
+
+    <string name="others_strings_9">智慧树高度</string>
+    <string name="others_strings_9_1_key">输入树的高度</string>
+    <string name="others_strings_9_1_value">1437</string>
+
+    <string name="level_strings_1">EnterNewLevel</string>
+
+    <string name="level_strings_2">直接过关</string>
+
+    <string name="level_strings_3">设置无尽旗数</string>
+    <string name="level_strings_3_1_key">无尽旗数</string>
+    <string name="level_strings_3_1_value">2333</string>
+
+    <string name="level_strings_4">混乱关卡</string>
+    <string name="level_strings_4_1_key">模式</string>
+    <string name="level_strings_4_1_value">0</string>
+    <string name="level_strings_4_2_key">关卡(仅冒险生效)</string>
+    <string name="level_strings_4_2_value">1</string>
+
+    <string name="resources_strings_1">设置伤害</string>
+    <string name="resources_strings_1_1_key">设置伤害的对象</string>
+    <string name="resources_strings_1_1_value">pea</string>
+    <string name="resources_strings_1_2_key">设置伤害数值</string>
+    <string name="resources_strings_1_2_value">20</string>
+
+    <string name="resources_strings_2">设置血量</string>
+    <string name="resources_strings_2_1_key">设置血量的对象</string>
+    <string name="resources_strings_2_1_value">normal</string>
+    <string name="resources_strings_2_2_key">设置血量数值</string>
+    <string name="resources_strings_2_2_value">300</string>
+
+    <string name="resources_strings_3">设置金钱</string>
+    <string name="resources_strings_3_1_key">金钱数</string>
+    <string name="resources_strings_3_1_value">2333</string>
+
+    <string name="resources_strings_4">设置金钱上限</string>
+    <string name="resources_strings_4_1_key">金钱数上限</string>
+    <string name="resources_strings_4_1_value">123456789</string>
+
+    <string name="resources_strings_5">设置阳光</string>
+    <string name="resources_strings_5_1_key">阳光</string>
+    <string name="resources_strings_5_1_value">8000</string>
+
+    <string name="resources_strings_6">设置阳光上限</string>
+    <string name="resources_strings_6_1_key">阳光上限</string>
+    <string name="resources_strings_6_1_value">99990</string>
+
+    <string name="resources_strings_7">设置时间</string>
+    <string name="resources_strings_7_1_key">设置时间的对象</string>
+    <string name="resources_strings_7_1_value">fog</string>
+    <string name="resources_strings_7_2_key">设置时间数值</string>
+    <string name="resources_strings_7_2_value">0</string>
+
+    <string name="resources_strings_8">设置价值</string>
+    <string name="resources_strings_8_1_key">设置价值的对象</string>
+    <string name="resources_strings_8_1_value">silver</string>
+    <string name="resources_strings_8_2_key">设置价值数值</string>
+    <string name="resources_strings_8_2_value">1</string>
+
+    <string name="plant_strings_1">大嘴花准备时间</string>
+    <string name="plant_strings_1_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_1_1_value">1</string>
+
+    <string name="plant_strings_2">玉米炮准备时间</string>
+    <string name="plant_strings_2_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_2_1_value">1</string>
+
+    <string name="plant_strings_3">磁力菇准备时间</string>
+    <string name="plant_strings_3_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_3_1_value">1</string>
+
+    <string name="plant_strings_4">其他植物准备时间</string>
+    <string name="plant_strings_4_1_key">{SEEDTYPE}</string>
+    <string name="plant_strings_4_1_value">0</string>
+
+    <string name="plant_strings_5">土豆雷准备时间</string>
+    <string name="plant_strings_5_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_5_1_value">1</string>
+
+    <string name="plant_strings_6">阳光菇准备时间</string>
+    <string name="plant_strings_6_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_6_1_value">1</string>
+
+    <string name="plant_strings_7">植物血量显示</string>
+    <string name="plant_strings_7_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_7_1_value">1</string>
+
+    <string name="plant_strings_8">植物无敌</string>
+    <string name="plant_strings_8_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_8_1_value">1</string>
+
+    <string name="plant_strings_9">核弹无坑</string>
+    <string name="plant_strings_9_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_9_1_value">1</string>
+
+    <string name="plant_strings_10">取消压扁</string>
+    <string name="plant_strings_10_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_10_1_value">1</string>
+
+    <string name="plant_strings_11">只投黄油</string>
+    <string name="plant_strings_11_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_11_1_value">1</string>
+
+    <string name="plant_strings_12">植物清醒</string>
+    <string name="plant_strings_12_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="plant_strings_12_1_value">1</string>
+
+    <string name="zombie_strings_1">僵尸血量显示</string>
+    <string name="zombie_strings_1_1_key">僵尸血量显示{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_1_1_value">1</string>
+
+    <string name="zombie_strings_2">僵尸掉落卡片</string>
+    <string name="zombie_strings_2_1_key">僵尸掉落卡片{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_2_1_value">1</string>
+
+    <string name="zombie_strings_3">僵尸无敌</string>
+    <string name="zombie_strings_3_1_key">僵尸无敌{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_3_1_value">1</string>
+
+    <string name="zombie_strings_4">丑椒不爆</string>
+    <string name="zombie_strings_4_1_key">丑椒不爆{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_4_1_value">1</string>
+
+    <string name="zombie_strings_5">冰车无痕</string>
+    <string name="zombie_strings_5_1_key">冰车无痕{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_5_1_value">1</string>
+
+    <string name="zombie_strings_6">小偷不偷</string>
+    <string name="zombie_strings_6_1_key">小偷不偷{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_6_1_value">1</string>
+
+    <string name="zombie_strings_7">一键黄油效果</string>
+    <string name="zombie_strings_7_1_key">黄油效果魅惑有效(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_7_1_value">0</string>
+    <string name="zombie_strings_7_2_key">黄油效果取消限制(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_7_2_value">0</string>
+
+    <string name="zombie_strings_8">一键冰封效果</string>
+    <string name="zombie_strings_8_1_key">冰封效果魅惑有效(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_8_1_value">0</string>
+    <string name="zombie_strings_8_2_key">冰封效果取消限制(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_8_2_value">0</string>
+
+    <string name="zombie_strings_9">一键魅惑效果</string>
+    <string name="zombie_strings_9_1_key">魅惑有效(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_9_1_value">0</string>
+    <string name="zombie_strings_9_2_key">魅惑效果取消限制(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_9_2_value">0</string>
+
+    <string name="zombie_strings_10">一键大蒜效果</string>
+    <string name="zombie_strings_10_1_key">大蒜效果魅惑有效(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_10_1_value">0</string>
+    <string name="zombie_strings_10_2_key">大蒜效果取消限制(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_10_2_value">0</string>
+
+    <string name="zombie_strings_11">停滞不前</string>
+    <string name="zombie_strings_11_1_key">停滞不前{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="zombie_strings_11_1_value">1</string>
+
+    <string name="spawning_strings_1">蹦极红眼处理</string>
+    <string name="spawning_strings_1_1_key">蹦极(输入0为关闭,1为开启)</string>
+    <string name="spawning_strings_1_1_value">1</string>
+    <string name="spawning_strings_1_2_key">红眼(输入0为关闭,1为开启)</string>
+    <string name="spawning_strings_1_2_value">1</string>
+
+    <string name="spawning_strings_2">修改出怪</string>
+    <string name="spawning_strings_2_1_key">路障(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_1_value">2</string>
+    <string name="spawning_strings_2_2_key">撑杆(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_2_value">2</string>
+    <string name="spawning_strings_2_3_key">铁桶(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_3_value">2</string>
+    <string name="spawning_strings_2_4_key">读报(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_4_value">2</string>
+    <string name="spawning_strings_2_5_key">铁门(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_5_value">2</string>
+    <string name="spawning_strings_2_6_key">橄榄(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_6_value">2</string>
+    <string name="spawning_strings_2_7_key">舞王(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_7_value">2</string>
+    <string name="spawning_strings_2_8_key">潜水(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_8_value">2</string>
+    <string name="spawning_strings_2_9_key">冰车(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_9_value">2</string>
+    <string name="spawning_strings_2_10_key">海豚(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_10_value">2</string>
+    <string name="spawning_strings_2_11_key">小丑(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_11_value">2</string>
+    <string name="spawning_strings_2_12_key">气球(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_12_value">2</string>
+    <string name="spawning_strings_2_13_key">矿工(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_13_value">2</string>
+    <string name="spawning_strings_2_14_key">跳跳(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_14_value">2</string>
+    <string name="spawning_strings_2_15_key">雪人(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_15_value">2</string>
+    <string name="spawning_strings_2_16_key">蹦极(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_16_value">2</string>
+    <string name="spawning_strings_2_17_key">扶梯(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_17_value">2</string>
+    <string name="spawning_strings_2_18_key">投篮(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_18_value">2</string>
+    <string name="spawning_strings_2_19_key">白眼(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_19_value">2</string>
+    <string name="spawning_strings_2_20_key">红眼(输入0为关闭,1为开启，2为默认)</string>
+    <string name="spawning_strings_2_20_value">2</string>
+
+    <string name="spawning_strings_3">极限出怪测试</string>
+
+    <string name="spawning_strings_4">最大密度</string>
+    <string name="spawning_strings_4_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="spawning_strings_4_1_value">1</string>
+
+    <string name="spawning_strings_5">暂停出怪</string>
+    <string name="spawning_strings_5_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="spawning_strings_5_1_value">1</string>
+
+    <string name="spawning_strings_6">波次出怪_数量</string>
+    <string name="spawning_strings_7">载入json</string>
+
+    <string name="spawning_strings_8">刷新血量</string>
+    <string name="spawning_strings_8_1_key">出怪血量最小比例</string>
+    <string name="spawning_strings_8_1_value">0.5</string>
+    <string name="spawning_strings_8_2_key">出怪血量最大比例</string>
+    <string name="spawning_strings_8_2_value">0.65</string>
+
+    <string name="board_strings_1">放置植物</string>
+    <string name="board_strings_1_1_key">植物行</string>
+    <string name="board_strings_1_1_value">1</string>
+    <string name="board_strings_1_2_key">植物列</string>
+    <string name="board_strings_1_2_value">1</string>
+    <string name="board_strings_1_3_key">植物种类</string>
+    <string name="board_strings_1_3_value">0</string>
+    <string name="board_strings_1_4_key">是否为模仿者</string>
+    <string name="board_strings_1_4_value">0</string>
+    <string name="board_strings_1_5_key">植物种植限制</string>
+    <string name="board_strings_1_5_value">0</string>
+
+    <string name="board_strings_2">放置僵尸</string>
+    <string name="board_strings_2_1_key">僵尸行</string>
+    <string name="board_strings_2_1_value">1</string>
+    <string name="board_strings_2_2_key">僵尸类型</string>
+    <string name="board_strings_2_2_value">0</string>
+    <string name="board_strings_2_3_key">允许列放置</string>
+    <string name="board_strings_2_3_value">0</string>
+    <string name="board_strings_2_4_key">僵尸列</string>
+    <string name="board_strings_2_4_value">1</string>
+    <string name="board_strings_2_5_key">是否被魅惑</string>
+    <string name="board_strings_2_5_value">0</string>
+
+    <string name="board_strings_3">放置物品</string>
+    <string name="board_strings_3_1_key">物品行</string>
+    <string name="board_strings_3_1_value">0</string>
+    <string name="board_strings_3_2_key">物品列</string>
+    <string name="board_strings_3_2_value">0</string>
+    <string name="board_strings_3_3_key">物品类型</string>
+    <string name="board_strings_3_3_value">0</string>
+
+    <string name="board_strings_4">放置道具</string>
+    <string name="board_strings_4_1_key">道具行</string>
+    <string name="board_strings_4_1_value">1</string>
+    <string name="board_strings_4_2_key">道具列</string>
+    <string name="board_strings_4_2_value">1</string>
+    <string name="board_strings_4_3_key">道具类型</string>
+    <string name="board_strings_4_3_value">0</string>
+    <string name="board_strings_4_4_key">花瓶(植物类型)</string>
+    <string name="board_strings_4_4_value">0</string>
+    <string name="board_strings_4_5_key">花瓶(僵尸类型)</string>
+    <string name="board_strings_4_5_value">0</string>
+    <string name="board_strings_4_6_key">花瓶类型</string>
+    <string name="board_strings_4_6_value">1</string>
+    <string name="board_strings_4_7_key">花瓶状态</string>
+    <string name="board_strings_4_7_value">3</string>
+
+    <string name="board_strings_5">清除植物</string>
+    <string name="board_strings_6">清除僵尸</string>
+    <string name="board_strings_7">清除物品</string>
+    <string name="board_strings_8">清除道具</string>
+
+    <string name="board_strings_9">小推车</string>
+    <string name="board_strings_9_1_key">触发(输入1选择,只输入一个1)</string>
+    <string name="board_strings_9_1_value">0</string>
+    <string name="board_strings_9_2_key">恢复</string>
+    <string name="board_strings_9_2_value">0</string>
+    <string name="board_strings_9_3_key">删除</string>
+    <string name="board_strings_9_3_value">0</string>
+
+    <string name="board_strings_10">一键搭梯</string>
+    <string name="board_strings_10_1_key">是否限定植物类型(1是0否)</string>
+    <string name="board_strings_10_1_value">1</string>
+
+    <string name="board_strings_11">EasyPlanting</string>
+
+    <string name="board_strings_12">自由种植</string>
+    <string name="board_strings_12_1_key">{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="board_strings_12_1_value">0</string>
+
+    <string name="board_strings_13">立即存档</string>
+
+    <string name="board_strings_14">禁止存档</string>
+    <string name="board_strings_14_1_key">{CHECK}</string>
+    <string name="board_strings_14_1_value">1</string>
+
+    <string name="challenge_strings_1">风暴</string>
+    <string name="challenge_strings_1_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_1_1_value">2</string>
+
+    <string name="challenge_strings_2">传送带</string>
+    <string name="challenge_strings_2_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_2_1_value">2</string>
+
+    <string name="challenge_strings_3">砸罐子</string>
+    <string name="challenge_strings_3_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_3_1_value">2</string>
+
+    <string name="challenge_strings_4">砸僵尸</string>
+    <string name="challenge_strings_4_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_4_1_value">2</string>
+
+    <string name="challenge_strings_5">IZombie</string>
+    <string name="challenge_strings_5_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_5_1_value">2</string>
+
+    <string name="challenge_strings_6">老虎机</string>
+    <string name="challenge_strings_6_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_6_1_value">2</string>
+
+    <string name="challenge_strings_7">松鼠</string>
+    <string name="challenge_strings_7_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_7_1_value">2</string>
+
+    <string name="challenge_strings_8">其他挑战</string>
+    <string name="challenge_strings_8_1_key">雨（2为默认，0为关，1为开）</string>
+    <string name="challenge_strings_8_1_value">2</string>
+    <string name="challenge_strings_8_2_key">迷阵（2为默认，0为关，1为开）</string>
+    <string name="challenge_strings_8_2_value">2</string>
+    <string name="challenge_strings_8_3_key">快跑（2为默认，0为关，1为开）</string>
+    <string name="challenge_strings_8_3_value">2</string>
+    <string name="challenge_strings_8_4_key">传送门（2为默认，0为关，1为开）</string>
+    <string name="challenge_strings_8_4_value">2</string>
+    <string name="challenge_strings_8_5_key">坚不可摧（2为默认，0为关，1为开）</string>
+    <string name="challenge_strings_8_5_value">2</string>
+
+    <string name="challenge_strings_9">排山倒海</string>
+    <string name="challenge_strings_9_1_key">2为默认，0为关，1为开</string>
+    <string name="challenge_strings_9_1_value">2</string>
+
+    <string name="setups_strings_1">设置卡槽</string>
+    <string name="setups_strings_1_1_key">第几个卡槽</string>
+    <string name="setups_strings_1_1_value">0</string>
+    <string name="setups_strings_1_2_key">要修改成什么类型</string>
+    <string name="setups_strings_1_2_value">0</string>
+    <string name="setups_strings_1_3_key">是否为模仿者</string>
+    <string name="setups_strings_1_3_value">0</string>
+    
+    <string name="setups_strings_2">设置场景</string>
+    <string name="setups_strings_2_1_key">设置的场景</string>
+    <string name="setups_strings_2_1_value">0</string>
+    
+    <string name="setups_strings_3">随机选卡</string>
+    
+    <string name="setups_strings_4">查看草坪</string>
+    
+    <string name="setups_strings_5">切换卡组</string>
+    <string name="setups_strings_5_1_key">需要启动的卡组名称</string>
+    <string name="setups_strings_5_1_value">default</string>
+    
+    <string name="setups_strings_6">存储卡组</string>
+    <string name="setups_strings_6_1_key">将当前卡组名称保存为</string>
+    <string name="setups_strings_6_1_value">DefaultCardName</string>
+    
+    <string name="setups_strings_7">一键布阵</string>
+    <string name="setups_strings_7_1_key">需要布置的阵型名称</string>
+    <string name="setups_strings_7_1_value">DefaultFormationName</string>
+    
+    <string name="setups_strings_8">存储阵型</string>
+    <string name="setups_strings_8_1_key">将当前阵型名称保存为</string>
+    <string name="setups_strings_8_1_value">DefaultFormationName</string>
+    <string name="setups_strings_8_2_key">是否存储植物</string>
+    <string name="setups_strings_8_2_value">1</string>
+    <string name="setups_strings_8_3_key">是否存储梯子</string>
+    <string name="setups_strings_8_3_value">1</string>
+    <string name="setups_strings_8_4_key">是否存储罐子</string>
+    <string name="setups_strings_8_4_value">0</string>
+    
+    <string name="setups_strings_9">设置道路状况</string>
+    <string name="setups_strings_9_1_key">第几行</string>
+    <string name="setups_strings_9_1_value">1</string>
+    <string name="setups_strings_9_2_key">类型</string>
+    <string name="setups_strings_9_2_value">0</string>
+    <string name="setups_strings_9_3_key">是否同步格子</string>
+    <string name="setups_strings_9_3_value">1</string>
+    
+    <string name="setups_strings_10">设置格子类型</string>
+    <string name="setups_strings_10_1_key">第几行</string>
+    <string name="setups_strings_10_1_value">1</string>
+    <string name="setups_strings_10_2_key">第几列</string>
+    <string name="setups_strings_10_2_value">1</string>
+    <string name="setups_strings_10_3_key">类型</string>
+    <string name="setups_strings_10_3_value">1</string>
+
+    <string name="fun_strings_1">随机罐子</string>
+    <string name="fun_strings_1_1_key">随机罐子{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="fun_strings_1_1_value">1</string>
+    
+    <string name="fun_strings_2">随机卡片</string>
+    <string name="fun_strings_2_1_key">随机卡片{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="fun_strings_2_1_value">1</string>
+    
+    <string name="fun_strings_3">随机卡槽</string>
+    <string name="fun_strings_3_1_key">随机卡槽{CHECK}(输入0为关闭,1为开启)</string>
+    <string name="fun_strings_3_1_value">1</string>
+
+    <string name="script_strings_1">快捷脚本</string>
+    <string name="script_strings_1_0_key">请输入脚本名称</string>
+    <string name="script_strings_1_0_value">example</string>
+    <string name="script_strings_1_1_key">参数{1}</string>
+    <string name="script_strings_1_1_value">0</string>
+    <string name="script_strings_1_2_key">参数{2}</string>
+    <string name="script_strings_1_2_value">0</string>
+    <string name="script_strings_1_3_key">参数{3}</string>
+    <string name="script_strings_1_3_value">0</string>
+    <string name="script_strings_1_4_key">参数{4}</string>
+    <string name="script_strings_1_4_value">0</string>
+    <string name="script_strings_1_5_key">参数{5}</string>
+    <string name="script_strings_1_5_value">0</string>
+    <string name="script_strings_1_6_key">参数{6}</string>
+    <string name="script_strings_1_6_value">0</string>
+    <string name="script_strings_1_7_key">参数{7}</string>
+    <string name="script_strings_1_7_value">0</string>
+    <string name="script_strings_1_8_key">参数{8}</string>
+    <string name="script_strings_1_8_value">0</string>
+</resources>

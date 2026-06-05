@@ -1,0 +1,162 @@
+[
+    {
+        "Name": "普通僵尸",
+        "Value": "Normal"
+    },
+    {
+        "Name": "旗子僵尸",
+        "Value": "Flag"
+    },
+    {
+        "Name": "路障僵尸",
+        "Value": "TrafficCone"
+    },
+    {
+        "Name": "撑杆僵尸",
+        "Value": "Polevaulter"
+    },
+    {
+        "Name": "铁桶僵尸",
+        "Value": "Pail"
+    },
+    {
+        "Name": "读报僵尸",
+        "Value": "Newspaper"
+    },
+    {
+        "Name": "铁网门僵尸",
+        "Value": "Door"
+    },
+    {
+        "Name": "橄榄球僵尸",
+        "Value": "Football"
+    },
+    {
+        "Name": "舞者僵尸",
+        "Value": "Dancer"
+    },
+    {
+        "Name": "伴舞僵尸",
+        "Value": "BackupDancer"
+    },
+    {
+        "Name": "救生圈僵尸",
+        "Value": "DuckyTube"
+    },
+    {
+        "Name": "潜水僵尸",
+        "Value": "Snorkel"
+    },
+    {
+        "Name": "雪橇车僵尸",
+        "Value": "Zamboni"
+    },
+    {
+        "Name": "雪橇车僵尸小队",
+        "Value": "Bobsled"
+    },
+    {
+        "Name": "海豚僵尸骑士",
+        "Value": "DolphinRider"
+    },
+    {
+        "Name": "小丑僵尸",
+        "Value": "JackInTheBox"
+    },
+    {
+        "Name": "气球僵尸",
+        "Value": "Balloon"
+    },
+    {
+        "Name": "矿工僵尸",
+        "Value": "Digger"
+    },
+    {
+        "Name": "蹦蹦僵尸",
+        "Value": "Pogo"
+    },
+    {
+        "Name": "雪人僵尸",
+        "Value": "Yeti"
+    },
+    {
+        "Name": "飞贼僵尸",
+        "Value": "Bungee"
+    },
+    {
+        "Name": "梯子僵尸",
+        "Value": "Ladder"
+    },
+    {
+        "Name": "投石车僵尸",
+        "Value": "Catapult"
+    },
+    {
+        "Name": "巨人僵尸",
+        "Value": "Gargantuar"
+    },
+    {
+        "Name": "小鬼僵尸",
+        "Value": "Imp"
+    },
+    {
+        "Name": "僵尸博士",
+        "Value": "Boss"
+    },
+    {
+        "Name": "豌豆射手僵尸",
+        "Value": "PeaHead"
+    },
+    {
+        "Name": "坚果僵尸",
+        "Value": "WallnutHead"
+    },
+    {
+        "Name": "火爆辣椒僵尸",
+        "Value": "JalapenoHead"
+    },
+    {
+        "Name": "机枪射手僵尸",
+        "Value": "GatlingHead"
+    },
+    {
+        "Name": "窝瓜僵尸",
+        "Value": "SquashHead"
+    },
+    {
+        "Name": "高坚果僵尸",
+        "Value": "TallnutHead"
+    },
+    {
+        "Name": "红眼巨人僵尸",
+        "Value": "RedeyeGargantuar"
+    },
+    {
+        "Name": "白眼机械巨人",
+        "Value": "RobotTitan"
+    },
+    {
+        "Name": "红眼机械巨人",
+        "Value": "RedeyeRobotTitan"
+    },
+    {
+        "Name": "武僧僵尸",
+        "Value": "Monk"
+    },
+    {
+        "Name": "黑橄榄球僵尸",
+        "Value": "FootballPremium"
+    },
+    {
+        "Name": "女忍者僵尸",
+        "Value": "Ninja"
+    },
+    {
+        "Name": "天尸",
+        "Value": "Talisman"
+    },
+    {
+        "Name": "螺旋桨僵尸",
+        "Value": "Propeller"
+    }
+]

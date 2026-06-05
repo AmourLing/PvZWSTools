@@ -1,0 +1,59 @@
+[
+    {
+        "Name": "墓石",
+        "Value": "Gravestone"
+    },
+    {
+        "Name": "弹坑",
+        "Value": "Crater"
+    },
+    {
+        "Name": "梯子",
+        "Value": "Ladder"
+    },
+    {
+        "Name": "传送门-圈",
+        "Value": "PortalCircle"
+    },
+    {
+        "Name": "传送门-方",
+        "Value": "PortalSquare"
+    },
+    {
+        "Name": "大脑(水族馆)",
+        "Value": "Brain"
+    },
+    {
+        "Name": "花瓶",
+        "Value": "ScaryPot"
+    },
+    {
+        "Name": "松鼠",
+        "Value": "Squirrel"
+    },
+    {
+        "Name": "ZenTool",
+        "Value": "ZenTool"
+    },
+    {
+        "Name": "Stinky",
+        "Value": "Stinky"
+    },
+    {
+        "Name": "Rake",
+        "Value": "Rake"
+    },
+    {
+        "Name": "大脑(僵尸公敌)",
+        "Value": "IzombieBrain"
+    },
+    {
+        "Name": "Talisman",
+        "Value": "Talisman"
+    },
+    {
+        "Name": "TalismanMove",
+        "Value": "TalismanMove"
+    }
+
+]
