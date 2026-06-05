@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TemplateGuid>{d0238942-4dcf-4d08-b23a-81159ca3b345}</TemplateGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PvZWSTools_Xamarin</RootNamespace>
+    <AssemblyName>PvZWSTools</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>True</Deterministic>
+    <AndroidApplication>True</AndroidApplication>
+    <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
+    <AndroidResgenClass>Resource</AndroidResgenClass>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
+    <SkipDeploy>false</SkipDeploy>
+    <DeployOnBuild>true</DeployOnBuild>
+    <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidManagedSymbols>true</AndroidManagedSymbols>
+    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppSettings.cs" />
+    <Compile Include="Fragment\娱乐\FunFragment.cs" />
+    <Compile Include="Fragment\植物\PlantFragment.cs" />
+    <Compile Include="Fragment\快捷脚本\ScriptFragment.cs" />
+    <Compile Include="Fragment\关卡\LevelFragment.cs" />
+    <Compile Include="Fragment\杂项\OthersFragment.cs" />
+    <Compile Include="Fragment\出怪\SpawningFragment.cs" />
+    <Compile Include="Fragment\阵型\SetupsFragment.cs" />
+    <Compile Include="Fragment\CreateInputDialog.cs" />
+    <Compile Include="Fragment\ConnetionFragment.cs" />
+    <Compile Include="Fragment\僵尸\ZombieFragment.cs" />
+    <Compile Include="Fragment\资源\ResourcesFragment.cs" />
+    <Compile Include="LogHelper.cs" />
+    <Compile Include="NameOption.cs" />
+    <Compile Include="ResourceManager.cs" />
+    <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="WebSocketClient.cs" />
+    <Compile Include="Fragment\战场\BoardFragment.cs" />
+    <Compile Include="Fragment\挑战\ChallengeFragment.cs" />
+    <Compile Include="MainActivity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_main.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\app_bar_main.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\content_main.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\values\colors.xml" />
+    <AndroidResource Include="Resources\values\dimens.xml" />
+    <AndroidResource Include="Resources\values\ic_launcher_background.xml" />
+    <AndroidResource Include="Resources\values\strings.xml" />
+    <AndroidResource Include="Resources\values\styles.xml" />
+    <AndroidResource Include="Resources\menu\activity_main_drawer.xml" />
+    <AndroidResource Include="Resources\menu\menu_main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="websocketsharp.core" Version="1.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.5.0" />
+    <PackageReference Include="Xamarin.AndroidX.DrawerLayout" Version="1.1.1.9" />
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.6.0" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\setups_fragment.xml" />
+    <AndroidResource Include="Resources\layout\board_fragment.xml" />
+    <AndroidResource Include="Resources\layout\challenge_fragment.xml" />
+    <AndroidResource Include="Resources\layout\connection_fragment.xml" />
+    <AndroidResource Include="Resources\layout\spawning_fragment.xml" />
+    <AndroidResource Include="Resources\layout\others_fragment.xml" />
+    <AndroidResource Include="Resources\layout\script_fragment.xml" />
+    <AndroidResource Include="Resources\drawable\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\plant_fragment.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\zombie_fragment.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\nav_header_main.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\fun_fragment.xml" />
+  </ItemGroup>
+  <Import Project="..\PvZWSTools_Shared\PvZWSTools_Shared.projitems" Label="Shared" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <Target Name="CreateResourcesZip" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <ConfigPath>$(SolutionDir)配置文件</ConfigPath>
+      <ResourcesZip>$(ProjectDir)Assets\need.zip</ResourcesZip>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(ConfigPath)')" Text="错误: 配置文件目录不存在: $(ConfigPath)" />
+    <Exec Condition="'$(OS)' == 'Windows_NT' And Exists('$(ConfigPath)')" Command="powershell -NoProfile -ExecutionPolicy Unrestricted -Command &quot;&amp; { $ErrorActionPreference = 'Stop'; if (Test-Path '$(ResourcesZip)') { Remove-Item '$(ResourcesZip)' -Force }; Compress-Archive -Path '$(ConfigPath)\*' -DestinationPath '$(ResourcesZip)' -CompressionLevel Optimal -Force }&quot;" IgnoreExitCode="false" />
+  </Target>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\need.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\level_fragment.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\resources_fragment.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+  </ItemGroup>
+</Project>

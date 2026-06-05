@@ -1,0 +1,59 @@
+[
+    {
+        "Name": "白天",
+        "Value": "Num1Day"
+    },
+    {
+        "Name": "黑夜",
+        "Value": "Num2Night"
+    },
+    {
+        "Name": "泳池",
+        "Value": "Num3Pool"
+    },
+    {
+        "Name": "浓雾",
+        "Value": "Num4Fog"
+    },
+    {
+        "Name": "屋顶",
+        "Value": "Num5Roof"
+    },
+    {
+        "Name": "月夜",
+        "Value": "Num6Boss"
+    },
+    {
+        "Name": "蘑菇园",
+        "Value": "MushroomGarden"
+    },
+    {
+        "Name": "主花园",
+        "Value": "Greenhouse"
+    },
+    {
+        "Name": "水族馆",
+        "Value": "Zombiquarium"
+    },
+    {
+        "Name": "智慧树",
+        "Value": "TreeOfWisdom"
+    },
+    {
+        "Name": "花园（夜）",
+        "Value": "GreenhouseNight"
+    },
+    {
+        "Name": "ShallowDay",
+        "Value": "ShallowDay"
+    },
+    {
+        "Name": "高地",
+        "Value": "HighGround"
+    },
+    {
+        "Name": "大泳池",
+        "Value": "BigPool"
+    }
+
+]

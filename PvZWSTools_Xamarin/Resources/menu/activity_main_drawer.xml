@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_others"
+            android:title="杂项" />
+        <item
+            android:id="@+id/nav_level"
+            android:title="关卡" />
+        <item
+            android:id="@+id/nav_resources"
+            android:title="资源" />
+        <item
+            android:id="@+id/nav_plant"
+            android:title="植物" />
+        <item
+            android:id="@+id/nav_zombie"
+            android:title="僵尸" />
+        <item
+            android:id="@+id/nav_spawning"
+            android:title="出怪" />
+        <item
+            android:id="@+id/nav_board"
+            android:title="战场" />
+        <item
+            android:id="@+id/nav_challenge"
+            android:title="挑战" />
+
+        <item
+            android:id="@+id/nav_setups"
+            android:title="阵型" />
+
+        <item
+            android:id="@+id/nav_fun"
+            android:title="娱乐" />
+        <item
+            android:id="@+id/nav_script"
+            android:title="快捷脚本" />
+        <item
+            android:id="@+id/nav_connect"
+            android:title="连接" />
+    </group>
+    <item android:title="更多功能">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:title="设置" />
+            <item
+                android:id="@+id/nav_updateversion"
+                android:title="获取新版本" />
+            <item
+                android:id="@+id/nav_versioninfo"
+                android:title="当前版本20260124" />
+        </menu>
+    </item>
+</menu>
