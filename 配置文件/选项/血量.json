@@ -1,0 +1,32 @@
+[
+    {
+        "Name": "普通植物",
+        "Value": "NormalPlant",
+        "Default": "300"
+    },
+    {
+        "Name": "坚果",
+        "Value": "Wallnut",
+        "Default": "4000"
+    },
+    {
+        "Name": "高坚果",
+        "Value": "Tallnut",
+        "Default": "8000"
+    },
+    {
+        "Name": "南瓜",
+        "Value": "Pumpkin",
+        "Default": "4000"
+    },
+    {
+        "Name": "大蒜",
+        "Value": "Garlic",
+        "Default": "400"
+    },
+    {
+        "Name": "地刺王",
+        "Value": "Spikerock",
+        "Default": "450"
+    }
+]

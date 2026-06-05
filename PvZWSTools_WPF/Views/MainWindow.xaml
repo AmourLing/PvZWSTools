@@ -1,0 +1,3490 @@
+﻿<Window
+    x:Class="PvZWSTools_WPF.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:PvZWSTools_WPF.Models"
+    xmlns:viewModels="clr-namespace:PvZWSTools_WPF.ViewModels"
+    Title="PvZWSTools_Windows"
+    Width="{Binding CurrentWidth, Mode=TwoWay}"
+    Height="600"
+    Icon="../Resources/icon.ico"
+    SizeChanged="Window_SizeChanged"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock
+                            Margin="5"
+                            FontSize="14"
+                            Text="{Binding}" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style TargetType="TabControl">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+
+    <Viewbox Stretch="Fill" StretchDirection="Both">
+        <Border Width="640" Height="400">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  WebSocket 地址栏  -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="wsAddrInput"
+                        Grid.Column="0"
+                        Height="25"
+                        FontSize="16"
+                        Text="{Binding WsAddress, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button
+                        Grid.Column="1"
+                        Width="50"
+                        Command="{Binding ConnectCommand}"
+                        Content="{Binding ConnectionButtonText}" />
+                </Grid>
+
+                <!--  主选项卡  -->
+                <Grid Grid.Row="1">
+                    <TabControl x:Name="MainTabControl">
+                        <!--  杂项  -->
+                        <TabItem Header="杂项">
+                            <Grid DataContext="{Binding Others}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="89" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="29" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="29" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="29" />
+                                    <ColumnDefinition Width="90" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  更新按钮状态  -->
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding UpdateButtonStatusCommand}"
+                                    Content="更新按钮状态" />
+
+                                <!--  智慧树高度  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Width="90"
+                                    Height="25"
+                                    FontSize="16"
+                                    Text="{Binding SetTreeHeight}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding SetTreeHeightCommand}"
+                                    Content="设置树的高度" />
+
+                                <!--  清除浓雾  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ClearFog}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding ClearFogCommand}"
+                                    Content="清除浓雾" />
+
+                                <!--  透明花瓶  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ClearVase}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding ClearVaseCommand}"
+                                    Content="透明花瓶" />
+
+                                <!--  阳光增值  -->
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding BigSun}" />
+                                <Button
+                                    Grid.Row="2"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding BigSunCommand}"
+                                    Content="阳光增值" />
+
+                                <!--  自动收集  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding AutoCollect}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding AutoCollectCommand}"
+                                    Content="自动收集" />
+
+                                <!--  无冷却种植  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NoCDPlanting}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding NoCDPlantingCommand}"
+                                    Content="无冷却种植" />
+
+                                <!--  自动浇水  -->
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding AutoWatering}" />
+                                <Button
+                                    Grid.Row="2"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding AutoWateringCommand}"
+                                    Content="自动浇水" />
+
+                                <!--  0花费种植  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="9"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NoCostPlanting}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="10"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding NoCostPlantingCommand}"
+                                    Content="0花费种植" />
+
+                                <!--  后台运行  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="9"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding RunWhileLocked}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="10"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding RunWhileLockedCommand}"
+                                    Content="后台运行" />
+                            </Grid>
+                        </TabItem>
+
+                        <!--  关卡  -->
+                        <TabItem Header="关卡">
+                            <Grid DataContext="{Binding Level}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="350" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="90" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  设置模式  -->
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="165" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="70" />
+                                        <ColumnDefinition Width="90" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding ModeInput}" />
+                                    <ToggleButton
+                                        x:Name="ModeDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding ModeDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <TextBox
+                                        Grid.Column="2"
+                                        Width="71"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding AdventureInput}" />
+                                    <Button
+                                        x:Name="SetModeBtn"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        Command="{Binding SetModeCommand}"
+                                        Content="混乱关卡" />
+                                    <Popup
+                                        IsOpen="{Binding ModeDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=ModeDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="ModeListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding ModeOptions}"
+                                                SelectedItem="{Binding ModeSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  无尽旗数  -->
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="165" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="70" />
+                                        <ColumnDefinition Width="90" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="EndlessFlagInput"
+                                        Grid.Column="2"
+                                        Width="100"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding EndlessFlag}" />
+                                    <Button
+                                        x:Name="SetEndlessFlagBtn"
+                                        Grid.Column="3"
+                                        Width="90"
+                                        Height="25"
+                                        Command="{Binding SetEndlessFlagCommand}"
+                                        Content="设置无尽旗数" />
+                                </Grid>
+
+                                <!--  EnterNewLevel  -->
+                                <Button
+                                    x:Name="EnterNewLevelBtn"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding EnterNewLevelCommand}"
+                                    Content="EnterNewLevel" />
+
+                                <!--  直接过关  -->
+                                <Button
+                                    x:Name="PassThisLevelBtn"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding PassThisLevelCommand}"
+                                    Content="直接过关" />
+                            </Grid>
+                        </TabItem>
+
+                        <!--  资源  -->
+                        <TabItem Header="资源">
+                            <Grid DataContext="{Binding Resources}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                </Grid.RowDefinitions>
+
+                                <!--  阳光  -->
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Margin="0,0,0,0"
+                                    FontSize="20"
+                                    Text="阳光" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Width="100"
+                                    Height="30"
+                                    Margin="50,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="20"
+                                    Text="{Binding SunCount}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Width="80"
+                                    Height="30"
+                                    Margin="160,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding SunSetCommand}"
+                                    Content="设置阳光" />
+
+                                <!--  阳光上限  -->
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Margin="270,0,0,0"
+                                    FontSize="20"
+                                    Text="阳光上限" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Width="100"
+                                    Height="30"
+                                    Margin="360,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="20"
+                                    Text="{Binding SunCountLimit}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Width="80"
+                                    Height="30"
+                                    Margin="470,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding SunLimitSetCommand}"
+                                    Content="设置阳光上限" />
+
+                                <!--  金钱  -->
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,0,0,0"
+                                    FontSize="20"
+                                    Text="金钱" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Width="100"
+                                    Height="30"
+                                    Margin="50,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="20"
+                                    Text="{Binding MoneyCount}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Width="80"
+                                    Height="30"
+                                    Margin="160,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding MoneySetCommand}"
+                                    Content="设置金钱" />
+
+                                <!--  金钱上限  -->
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="270,0,0,0"
+                                    FontSize="20"
+                                    Text="金钱上限" />
+                                <TextBox
+                                    Grid.Row="1"
+                                    Width="100"
+                                    Height="30"
+                                    Margin="360,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="20"
+                                    Text="{Binding MoneyCountLimit}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Width="80"
+                                    Height="30"
+                                    Margin="470,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding MoneyLimitSetCommand}"
+                                    Content="设置金钱上限" />
+
+                                <!--  价值  -->
+                                <Grid
+                                    Grid.Row="2"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50" />
+                                        <ColumnDefinition Width="130" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        FontSize="20"
+                                        Text="价值" />
+                                    <TextBox
+                                        Grid.Column="1"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding ValueInput}" />
+                                    <ToggleButton
+                                        x:Name="ValueDropdownToggle"
+                                        Grid.Column="2"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding ValueDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <TextBox
+                                        x:Name="ValueInput2"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding ValueInput2}" />
+                                    <Button
+                                        Grid.Column="4"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding ValueSetCommand}"
+                                        Content="设置价值" />
+                                    <Popup
+                                        IsOpen="{Binding ValueDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=ValueDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="ValueListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding ValueOptions}"
+                                                SelectedItem="{Binding ValueSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  伤害  -->
+                                <Grid
+                                    Grid.Row="3"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50" />
+                                        <ColumnDefinition Width="130" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        FontSize="20"
+                                        Text="伤害" />
+                                    <TextBox
+                                        x:Name="DamageInput"
+                                        Grid.Column="1"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding DamageInput}" />
+                                    <ToggleButton
+                                        x:Name="DamageDropdownToggle"
+                                        Grid.Column="2"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding DamageDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <TextBox
+                                        x:Name="DamageInput2"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding DamageInput2}" />
+                                    <Button
+                                        Grid.Column="4"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding DamageSetCommand}"
+                                        Content="设置伤害" />
+                                    <Popup
+                                        IsOpen="{Binding DamageDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=DamageDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="DamageListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding DamageOptions}"
+                                                SelectedItem="{Binding DamageSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  血量  -->
+                                <Grid
+                                    Grid.Row="4"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50" />
+                                        <ColumnDefinition Width="130" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        FontSize="20"
+                                        Text="血量" />
+                                    <TextBox
+                                        x:Name="HealthInput"
+                                        Grid.Column="1"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding HealthInput}" />
+                                    <ToggleButton
+                                        x:Name="HealthDropdownToggle"
+                                        Grid.Column="2"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding HealthDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <TextBox
+                                        x:Name="HealthInput2"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding HealthInput2}" />
+                                    <Button
+                                        Grid.Column="4"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding HealthSetCommand}"
+                                        Content="设置血量" />
+                                    <Popup
+                                        IsOpen="{Binding HealthDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=HealthDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="HealthListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding HealthOptions}"
+                                                SelectedItem="{Binding HealthSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  时间  -->
+                                <Grid
+                                    Grid.Row="5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50" />
+                                        <ColumnDefinition Width="130" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="80" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        FontSize="20"
+                                        Text="时间" />
+                                    <TextBox
+                                        x:Name="TimeInput"
+                                        Grid.Column="1"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding TimeInput}" />
+                                    <ToggleButton
+                                        x:Name="TimeDropdownToggle"
+                                        Grid.Column="2"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding TimeDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <TextBox
+                                        x:Name="TimeInput2"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding TimeInput2}" />
+                                    <Button
+                                        Grid.Column="4"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding TimeSetCommand}"
+                                        Content="设置时间" />
+                                    <Popup
+                                        IsOpen="{Binding TimeDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=TimeDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="TimeListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding TimeOptions}"
+                                                SelectedItem="{Binding TimeSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <!--  植物  -->
+                        <TabItem Header="植物">
+                            <Grid DataContext="{Binding Plants}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  植物无敌  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding InvincPlant}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding InvincPlantCommand}"
+                                    Content="植物无敌" />
+
+                                <!--  只投黄油  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding OnlyButter}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding OnlyButterCommand}"
+                                    Content="只投黄油" />
+
+                                <!--  植物清醒  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding WakeUp}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding WakeUpCommand}"
+                                    Content="植物清醒" />
+
+                                <!--  核弹无坑  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="9"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NoCrater}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="10"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding NoCraterCommand}"
+                                    Content="核弹无坑" />
+
+                                <!--  植物血量显示  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding DrawPlantHP}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding DrawPlantHPCommand}"
+                                    Content="植物血量显示" />
+
+                                <!--  取消压扁  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NoSquish}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding NoSquishCommand}"
+                                    Content="取消压扁" />
+
+                                <!--  土豆准备时间  -->
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Potato}" />
+                                <Button
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_PotatoCommand}"
+                                    Content="土豆准备时间" />
+
+                                <!--  大嘴准备时间  -->
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Chomper}" />
+                                <Button
+                                    Grid.Row="2"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_ChomperCommand}"
+                                    Content="大嘴准备时间" />
+
+                                <!--  光菇准备时间  -->
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Sunshroom}" />
+                                <Button
+                                    Grid.Row="2"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_SunshroomCommand}"
+                                    Content="光菇准备时间" />
+
+                                <!--  磁菇准备时间  -->
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Magnet}" />
+                                <Button
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_MagnetCommand}"
+                                    Content="磁菇准备时间" />
+
+                                <!--  炮准备时间  -->
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Cob}" />
+                                <Button
+                                    Grid.Row="3"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_CobCommand}"
+                                    Content="炮准备时间" />
+
+                                <!--  其他准备时间  -->
+                                <Grid
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="145" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="90" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        Grid.Column="0"
+                                        Width="145"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding CD_OtherInput}" />
+                                    <ToggleButton
+                                        x:Name="OtherCDPlantDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding CD_OtherPlantDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        Grid.Column="2"
+                                        Width="90"
+                                        Height="25"
+                                        Command="{Binding CD_OtherCommand}"
+                                        Content="其他准备时间" />
+                                    <Popup
+                                        IsOpen="{Binding CD_OtherPlantDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=OtherCDPlantDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding CD_OtherPlantOptions}"
+                                                SelectedItem="{Binding CD_OtherPlantSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <!--  僵尸  -->
+                        <TabItem Header="僵尸">
+                            <Grid DataContext="{Binding Zombies}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                    <RowDefinition Height="35" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="20" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  僵尸无敌  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding InvincZombie}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding InvincZombieCommand}"
+                                    Content="僵尸无敌" />
+
+                                <!--  停滞不前  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding StopWalk}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding StopWalkCommand}"
+                                    Content="停滞不前" />
+
+                                <!--  冰车无痕  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NoIceTrap}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding NoIceTrapCommand}"
+                                    Content="冰车无痕" />
+
+                                <!--  丑椒不爆  -->
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="9"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NoExplode}" />
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="10"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding NoExplodeCommand}"
+                                    Content="丑椒不爆" />
+
+                                <!--  僵尸血量显示  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding DrawZombieHP}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding DrawZombieHPCommand}"
+                                    Content="僵尸血量显示" />
+
+                                <!--  僵尸掉落卡片  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding DropPacket}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding DropPacketCommand}"
+                                    Content="僵尸掉落卡片" />
+
+                                <!--  小偷不偷  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NoSteal}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding NoStealCommand}"
+                                    Content="小偷不偷" />
+
+                                <!--  底部一行特殊按钮  -->
+                                <Grid Grid.Row="3" Grid.ColumnSpan="100">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="10" />
+                                        <ColumnDefinition Width="40" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--  魅惑有效  -->
+                                    <TextBox
+                                        Grid.Column="0"
+                                        Width="30"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding AllowMindCtrl}" />
+                                    <Button
+                                        Grid.Column="1"
+                                        Width="60"
+                                        Height="25"
+                                        Command="{Binding ToggleAllowMindCtrlCommand}"
+                                        Content="魅惑有效" />
+
+                                    <!--  取消限制  -->
+                                    <TextBox
+                                        Grid.Column="3"
+                                        Width="30"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding LimitZombieGetDebuff}" />
+                                    <Button
+                                        Grid.Column="4"
+                                        Width="60"
+                                        Height="25"
+                                        Command="{Binding ToggleLimitZombieGetDebuffCommand}"
+                                        Content="取消限制" />
+
+                                    <!--  大蒜  -->
+                                    <Button
+                                        Grid.Column="6"
+                                        Width="40"
+                                        Height="25"
+                                        Command="{Binding SetYuckyFaceCommand}"
+                                        Content="大蒜" />
+
+                                    <!--  黄油  -->
+                                    <Button
+                                        Grid.Column="8"
+                                        Width="40"
+                                        Height="25"
+                                        Command="{Binding SetButteredCommand}"
+                                        Content="黄油" />
+
+                                    <!--  冰封  -->
+                                    <Button
+                                        Grid.Column="10"
+                                        Width="40"
+                                        Height="25"
+                                        Command="{Binding SetIceTrapCommand}"
+                                        Content="冰封" />
+
+                                    <!--  魅惑  -->
+                                    <Button
+                                        Grid.Column="12"
+                                        Width="40"
+                                        Height="25"
+                                        Command="{Binding SetMindControlCommand}"
+                                        Content="魅惑" />
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <!--  出怪  -->
+                        <TabItem Header="出怪">
+                            <Grid DataContext="{Binding Spawn}">
+                                <!--  路障  -->
+                                <TextBox
+                                    x:Name="Spawn_TrafficCone_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding TrafficCone}" />
+                                <Button
+                                    x:Name="Spawn_TrafficCone_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding TrafficConeCommand}"
+                                    Content="路障" />
+
+                                <!--  撑杆  -->
+                                <TextBox
+                                    x:Name="Spawn_Polevaulter_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Polevaulter}" />
+                                <Button
+                                    x:Name="Spawn_Polevaulter_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding PolevaulterCommand}"
+                                    Content="撑杆" />
+
+                                <!--  铁桶  -->
+                                <TextBox
+                                    x:Name="Spawn_Pail_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Pail}" />
+                                <Button
+                                    x:Name="Spawn_Pail_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding PailCommand}"
+                                    Content="铁桶" />
+
+                                <!--  读报  -->
+                                <TextBox
+                                    x:Name="Spawn_Newspaper_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Newspaper}" />
+                                <Button
+                                    x:Name="Spawn_Newspaper_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding NewspaperCommand}"
+                                    Content="读报" />
+
+                                <!--  铁门  -->
+                                <TextBox
+                                    x:Name="Spawn_Door_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Door}" />
+                                <Button
+                                    x:Name="Spawn_Door_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding DoorCommand}"
+                                    Content="铁门" />
+
+                                <!--  橄榄  -->
+                                <TextBox
+                                    x:Name="Spawn_Football_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Football}" />
+                                <Button
+                                    x:Name="Spawn_Football_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding FootballCommand}"
+                                    Content="橄榄" />
+
+                                <!--  舞王  -->
+                                <TextBox
+                                    x:Name="Spawn_Dancer_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Dancer}" />
+                                <Button
+                                    x:Name="Spawn_Dancer_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding DancerCommand}"
+                                    Content="舞王" />
+
+                                <!--  潜水  -->
+                                <TextBox
+                                    x:Name="Spawn_Snorkel_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Snorkel}" />
+                                <Button
+                                    x:Name="Spawn_Snorkel_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding SnorkelCommand}"
+                                    Content="潜水" />
+
+                                <!--  冰车  -->
+                                <TextBox
+                                    x:Name="Spawn_Zamboni_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Zamboni}" />
+                                <Button
+                                    x:Name="Spawn_Zamboni_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZamboniCommand}"
+                                    Content="冰车" />
+
+                                <!--  海豚  -->
+                                <TextBox
+                                    x:Name="Spawn_DolphinRider_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding DolphinRider}" />
+                                <Button
+                                    x:Name="Spawn_DolphinRider_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding DolphinRiderCommand}"
+                                    Content="海豚" />
+
+                                <!--  小丑  -->
+                                <TextBox
+                                    x:Name="Spawn_JackInTheBox_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding JackInTheBox}" />
+                                <Button
+                                    x:Name="Spawn_JackInTheBox_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding JackInTheBoxCommand}"
+                                    Content="小丑" />
+
+                                <!--  气球  -->
+                                <TextBox
+                                    x:Name="Spawn_Balloon_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Balloon}" />
+                                <Button
+                                    x:Name="Spawn_Balloon_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding BalloonCommand}"
+                                    Content="气球" />
+
+                                <!--  矿工  -->
+                                <TextBox
+                                    x:Name="Spawn_Digger_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Digger}" />
+                                <Button
+                                    x:Name="Spawn_Digger_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding DiggerCommand}"
+                                    Content="矿工" />
+
+                                <!--  跳跳  -->
+                                <TextBox
+                                    x:Name="Spawn_Pogo_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Pogo}" />
+                                <Button
+                                    x:Name="Spawn_Pogo_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding PogoCommand}"
+                                    Content="跳跳" />
+
+                                <!--  雪人  -->
+                                <TextBox
+                                    x:Name="Spawn_Yeti_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Yeti}" />
+                                <Button
+                                    x:Name="Spawn_Yeti_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding YetiCommand}"
+                                    Content="雪人" />
+
+                                <!--  蹦极  -->
+                                <TextBox
+                                    x:Name="Spawn_Bungee_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Bungee}" />
+                                <Button
+                                    x:Name="Spawn_Bungee_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding BungeeCommand}"
+                                    Content="蹦极" />
+
+                                <!--  扶梯  -->
+                                <TextBox
+                                    x:Name="Spawn_Ladder_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Ladder}" />
+                                <Button
+                                    x:Name="Spawn_Ladder_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding LadderCommand}"
+                                    Content="扶梯" />
+
+                                <!--  投篮  -->
+                                <TextBox
+                                    x:Name="Spawn_Catapult_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Catapult}" />
+                                <Button
+                                    x:Name="Spawn_Catapult_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding CatapultCommand}"
+                                    Content="投篮" />
+
+                                <!--  白眼  -->
+                                <TextBox
+                                    x:Name="Spawn_Gargantuar_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding Gargantuar}" />
+                                <Button
+                                    x:Name="Spawn_Gargantuar_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding GargantuarCommand}"
+                                    Content="白眼" />
+
+                                <!--  红眼  -->
+                                <TextBox
+                                    x:Name="Spawn_RedeyeGargantuar_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding RedeyeGargantuar}" />
+                                <Button
+                                    x:Name="Spawn_RedeyeGargantuar_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding RedeyeGargantuarCommand}"
+                                    Content="红眼" />
+
+                                <!--  暂停出怪  -->
+                                <TextBox
+                                    x:Name="StopSpawnInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="400,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding StopSpawn}" />
+                                <Button
+                                    x:Name="StopSpawnBtn"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="430,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding StopSpawnCommand}"
+                                    Content="暂停出怪" />
+
+                                <!--  最大密度  -->
+                                <TextBox
+                                    x:Name="MaxPointInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="400,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding MaxPoint}" />
+                                <Button
+                                    x:Name="Btn_MaxPoint"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="430,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding MaxPointCommand}"
+                                    Content="最大密度" />
+
+                                <!--  蹦极处理  -->
+                                <TextBox
+                                    x:Name="BungeeInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="400,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding BungeeCheck}" />
+                                <Button
+                                    x:Name="Btn_Bungee"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="430,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding BungeeHandleCommand}"
+                                    Content="蹦极处理" />
+
+                                <!--  红眼处理  -->
+                                <TextBox
+                                    x:Name="RedeyeInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="400,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding RedeyeCheck}" />
+                                <Button
+                                    x:Name="Btn_Redeye"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="430,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding RedeyeHandleCommand}"
+                                    Content="红眼处理" />
+
+                                <!--  极限出怪测试  -->
+                                <Button
+                                    x:Name="LimitTestBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="0,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding LimitTestCommand}"
+                                    Content="极限出怪测试" />
+
+                                <!--  获取当前出怪  -->
+                                <Button
+                                    x:Name="GetZombieSpawnBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="100,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding GetZombieSpawnCommand}"
+                                    Content="获取当前出怪" />
+
+                                <!--  打印场上僵尸  -->
+                                <Button
+                                    x:Name="PrintZombieSpawnBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="200,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding PrintZombieSpawnCommand}"
+                                    Content="打印场上僵尸" />
+
+                                <!--  波次出怪_数量  -->
+                                <Button
+                                    x:Name="ZombiesInWaveBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="300,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombiesInWaveCountCommand}"
+                                    Content="波次出怪(数量)" />
+
+                                <!--  波次出怪_序号  -->
+                                <Button
+                                    x:Name="ZombiesInWaveBtn2"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="400,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombiesInWaveIndexCommand}"
+                                    Content="波次出怪(序号)" />
+
+                                <!--  启动json编辑  -->
+                                <TextBox
+                                    x:Name="JsonEditZombiesInWave_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding JsonEditZombiesInWave}" />
+                                <Button
+                                    x:Name="JsonEditZombiesInWave_Btn"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="30,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding JsonEditCommand}"
+                                    Content="json编辑" />
+
+                                <!--  载入json  -->
+                                <Button
+                                    x:Name="LoadJsonZombiesInWaveZombiesInWave_Btn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="100,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding LoadJsonZombiesInWaveCommand}"
+                                    Content="载入json" />
+
+                                <!--  刷新血量  -->
+                                <TextBox
+                                    x:Name="ZombieHealthToNextWaveMinInput"
+                                    Width="45"
+                                    Height="25"
+                                    Margin="200,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    Text="{Binding ZombieHealthMin}" />
+                                <TextBox
+                                    x:Name="ZombieHealthToNextWaveMaxInput"
+                                    Width="45"
+                                    Height="25"
+                                    Margin="240,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    Text="{Binding ZombieHealthMax}" />
+                                <Button
+                                    x:Name="Btn_ZombieHealthToNextWave"
+                                    Width="80"
+                                    Height="25"
+                                    Margin="280,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieHealthToNextWaveCommand}"
+                                    Content="刷新出怪血量" />
+                            </Grid>
+                        </TabItem>
+
+                        <!--  战场  -->
+                        <TabItem Header="战场">
+                            <Grid DataContext="{Binding Board}">
+                                <!--  行：GridY  -->
+                                <Grid
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="25" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="RowInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding RowInput}" />
+                                    <ToggleButton
+                                        x:Name="BoardRowDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding BoardRowDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Popup
+                                        IsOpen="{Binding BoardRowDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=BoardRowDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="BoardRowListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding BoardRowOptions}"
+                                                SelectedItem="{Binding SelectedRow}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  列：GridX  -->
+                                <Grid
+                                    Margin="0,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="25" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="ColInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding ColInput}" />
+                                    <ToggleButton
+                                        x:Name="BoardColDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding BoardColDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Popup
+                                        IsOpen="{Binding BoardColDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=BoardColDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="BoardColListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding BoardColOptions}"
+                                                SelectedItem="{Binding SelectedCol}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  放置植物  -->
+                                <Grid
+                                    Margin="95,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="55" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="STInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding STInput}" />
+                                    <ToggleButton
+                                        x:Name="PlantDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding PlantDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="AddPlantBtn"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding AddPlantCommand}"
+                                        Content="放置植物" />
+                                    <TextBox
+                                        x:Name="Imitater"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding Imitater}" />
+                                    <Button
+                                        x:Name="SetPlantImitaterBtn"
+                                        Grid.Column="4"
+                                        Height="25"
+                                        Command="{Binding ToggleImitaterCommand}"
+                                        Content="模仿者" />
+                                    <TextBox
+                                        x:Name="LimitPlantingInput"
+                                        Grid.Column="5"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding LimitPlantingInput}" />
+                                    <Button
+                                        x:Name="LimitPlantingBtn"
+                                        Grid.Column="6"
+                                        Height="25"
+                                        Command="{Binding ToggleLimitPlantingCommand}"
+                                        Content="限制" />
+                                    <Popup
+                                        IsOpen="{Binding PlantDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=PlantDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="PlantListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding PlantOptions}"
+                                                SelectedItem="{Binding SelectedPlant}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  放置僵尸  -->
+                                <Grid
+                                    Margin="95,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="55" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="ZTInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding ZTInput}" />
+                                    <ToggleButton
+                                        x:Name="ZombieDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding ZombieDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="AddZombieBtn"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding AddZombieCommand}"
+                                        Content="放置僵尸" />
+                                    <TextBox
+                                        x:Name="ZXInput"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding ZXPermit}" />
+                                    <Button
+                                        x:Name="SetZXBtn"
+                                        Grid.Column="4"
+                                        Height="25"
+                                        Command="{Binding ToggleZXPermitCommand}"
+                                        Content="列放置" />
+                                    <TextBox
+                                        x:Name="MindCtrlInput"
+                                        Grid.Column="5"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding MindCtrl}" />
+                                    <Button
+                                        x:Name="MindCtrlBtn"
+                                        Grid.Column="6"
+                                        Height="25"
+                                        Command="{Binding ToggleMindCtrlCommand}"
+                                        Content="魅惑" />
+                                    <Popup
+                                        IsOpen="{Binding ZombieDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=ZombieDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="ZombieListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding ZombieOptions}"
+                                                SelectedItem="{Binding SelectedZombie}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  放置物品  -->
+                                <Grid
+                                    Margin="95,65,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="55" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="CTInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding CTInput}" />
+                                    <ToggleButton
+                                        x:Name="CoinDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding CoinDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="AddCoinBtn"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding AddCoinCommand}"
+                                        Content="放置物品" />
+                                    <Popup
+                                        IsOpen="{Binding CoinDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=CoinDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="CoinListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding CoinOptions}"
+                                                SelectedItem="{Binding SelectedCoin}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  放置道具  -->
+                                <Grid
+                                    Margin="95,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="55" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="ItemInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding ItemInput}" />
+                                    <ToggleButton
+                                        x:Name="ItemDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding ItemDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="AddItemBtn"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding AddItemCommand}"
+                                        Content="放置道具" />
+                                    <TextBox
+                                        x:Name="VASETYPEInput"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding VaseTypeInput}" />
+                                    <Button
+                                        Grid.Column="4"
+                                        Height="25"
+                                        Command="{Binding CycleVaseTypeCommand}"
+                                        Content="罐子类型" />
+                                    <TextBox
+                                        x:Name="VASESTATEInput"
+                                        Grid.Column="5"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding VaseStateInput}" />
+                                    <Button
+                                        Grid.Column="6"
+                                        Height="25"
+                                        Command="{Binding CycleItemStateCommand}"
+                                        Content="状态" />
+                                    <Popup
+                                        IsOpen="{Binding ItemDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=ItemDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="ItemListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding ItemOptions}"
+                                                SelectedItem="{Binding SelectedItem}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  清除所有  -->
+                                <Grid
+                                    Margin="315,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="55" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="ClearInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding ClearInput}" />
+                                    <ToggleButton
+                                        x:Name="ClearDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding ClearDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="ClearObjectsBtn"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding ClearObjectsCommand}"
+                                        Content="清除所有" />
+                                    <Popup
+                                        IsOpen="{Binding ClearDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=ClearDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="ClearListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="Name"
+                                                ItemsSource="{Binding ClearOptions}"
+                                                SelectedItem="{Binding SelectedClear}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  推车  -->
+                                <TextBlock
+                                    Margin="0,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    Text="小推车" />
+                                <Button
+                                    x:Name="RunMowerBtn"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="50,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding RunMowerCommand}"
+                                    Content="触发" />
+                                <Button
+                                    x:Name="ReMowerBtn"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="85,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ReMowerCommand}"
+                                    Content="恢复" />
+                                <Button
+                                    x:Name="DeMowerBtn"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="120,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding DeMowerCommand}"
+                                    Content="删除" />
+
+                                <!--  一键搭梯  -->
+                                <Button
+                                    x:Name="SetLadderBtn"
+                                    Width="55"
+                                    Height="25"
+                                    Margin="170,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding SetLadderCommand}"
+                                    Content="一键搭梯" />
+
+                                <!--  限定植物  -->
+                                <TextBox
+                                    x:Name="LimitSeedInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="225,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding LimitSeed}" />
+                                <Button
+                                    x:Name="LimitSeedBtn"
+                                    Width="55"
+                                    Height="25"
+                                    Margin="255,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding LimitSeedCommand}"
+                                    Content="限定植物" />
+
+                                <!--  EasyPlanting  -->
+                                <Button
+                                    x:Name="EasyPlantingBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="0,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding EasyPlantingCommand}"
+                                    Content="EasyPlanting" />
+
+                                <!--  自由种植  -->
+                                <TextBox
+                                    x:Name="FreePlant"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="100,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding FreePlant}" />
+                                <Button
+                                    x:Name="FreePlantBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="130,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding FreePlantCommand}"
+                                    Content="自由种植" />
+
+                                <!--  立即存档  -->
+                                <Button
+                                    x:Name="SaveGameBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="0,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding SaveGameCommand}"
+                                    Content="立即存档" />
+
+                                <!--  禁止存档  -->
+                                <TextBox
+                                    x:Name="BanSaveGame"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="100,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding BanSaveGame}" />
+                                <Button
+                                    x:Name="BanSaveGameBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="130,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding BanSaveGameCommand}"
+                                    Content="禁止存档" />
+                            </Grid>
+                        </TabItem>
+
+                        <!--  挑战  -->
+                        <TabItem Header="挑战">
+                            <Grid DataContext="{Binding Challenge}">
+                                <!--  提示  -->
+                                <TextBlock Margin="550,5,0,0" Text="0:关闭" />
+                                <TextBlock Margin="550,25,0,0" Text="1:开启" />
+                                <TextBlock Margin="550,45,0,0" Text="2:默认" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="35" />
+                                        <RowDefinition Height="35" />
+                                        <RowDefinition Height="35" />
+                                        <RowDefinition Height="35" />
+                                    </Grid.RowDefinitions>
+                                    <!--  风暴  -->
+                                    <TextBox
+                                        x:Name="StormyNightInput"
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding StormyNight}" />
+                                    <Button
+                                        x:Name="Btn_StormyNight"
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding StormyNightCommand}"
+                                        Content="风暴" />
+
+                                    <!--  传送带  -->
+                                    <TextBox
+                                        x:Name="ConveyorBeltInput"
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding ConveyorBelt}" />
+                                    <Button
+                                        x:Name="Btn_ConveyorBelt"
+                                        Grid.Row="0"
+                                        Grid.Column="3"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding ConveyorBeltCommand}"
+                                        Content="传送带" />
+
+                                    <!--  砸罐子  -->
+                                    <TextBox
+                                        x:Name="ScaryPotterInput"
+                                        Grid.Row="0"
+                                        Grid.Column="4"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding ScaryPotter}" />
+                                    <Button
+                                        x:Name="Btn_ScaryPotter"
+                                        Grid.Row="0"
+                                        Grid.Column="5"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding ScaryPotterCommand}"
+                                        Content="砸罐子" />
+
+                                    <!--  砸僵尸  -->
+                                    <TextBox
+                                        x:Name="WhackAZombieInput"
+                                        Grid.Row="0"
+                                        Grid.Column="6"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding WhackAZombie}" />
+                                    <Button
+                                        x:Name="Btn_WhackAZombie"
+                                        Grid.Row="0"
+                                        Grid.Column="7"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding WhackAZombieCommand}"
+                                        Content="砸僵尸" />
+
+                                    <!--  IZombie  -->
+                                    <TextBox
+                                        x:Name="IZombieInput"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding IZombie}" />
+                                    <Button
+                                        x:Name="Btn_IZombie"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding IZombieCommand}"
+                                        Content="IZombie" />
+
+                                    <!--  老虎机  -->
+                                    <TextBox
+                                        x:Name="SlotMachineInput"
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding SlotMachine}" />
+                                    <Button
+                                        x:Name="Btn_SlotMachine"
+                                        Grid.Row="1"
+                                        Grid.Column="3"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding SlotMachineCommand}"
+                                        Content="老虎机" />
+
+                                    <!--  松鼠  -->
+                                    <TextBox
+                                        x:Name="SquirrelInput"
+                                        Grid.Row="1"
+                                        Grid.Column="4"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding Squirrel}" />
+                                    <Button
+                                        x:Name="Btn_Squirrel"
+                                        Grid.Row="1"
+                                        Grid.Column="5"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding SquirrelCommand}"
+                                        Content="松鼠" />
+
+                                    <!--  种子雨  -->
+                                    <TextBox
+                                        x:Name="RainInput"
+                                        Grid.Row="1"
+                                        Grid.Column="6"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding Rain}" />
+                                    <Button
+                                        x:Name="Btn_Rain"
+                                        Grid.Row="1"
+                                        Grid.Column="7"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding RainCommand}"
+                                        Content="种子雨" />
+
+                                    <!--  迷阵  -->
+                                    <TextBox
+                                        x:Name="BeghouledInput"
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding Beghouled}" />
+                                    <Button
+                                        x:Name="Btn_Beghouled"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding BeghouledCommand}"
+                                        Content="迷阵" />
+
+                                    <!--  快跑  -->
+                                    <TextBox
+                                        x:Name="SpeedInput"
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding Speed}" />
+                                    <Button
+                                        x:Name="Btn_Speed"
+                                        Grid.Row="2"
+                                        Grid.Column="3"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding SpeedCommand}"
+                                        Content="快跑" />
+
+                                    <!--  传送门  -->
+                                    <TextBox
+                                        x:Name="PortalInput"
+                                        Grid.Row="2"
+                                        Grid.Column="4"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding Portal}" />
+                                    <Button
+                                        x:Name="Btn_Portal"
+                                        Grid.Row="2"
+                                        Grid.Column="5"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding PortalCommand}"
+                                        Content="传送门" />
+
+                                    <!--  坚不可摧  -->
+                                    <TextBox
+                                        x:Name="LastStandInput"
+                                        Grid.Row="2"
+                                        Grid.Column="6"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding LastStand}" />
+                                    <Button
+                                        x:Name="Btn_LastStand"
+                                        Grid.Row="2"
+                                        Grid.Column="7"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding LastStandCommand}"
+                                        Content="坚不可摧" />
+
+                                    <!--  排山倒海  -->
+                                    <TextBox
+                                        x:Name="ColumnInput"
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Width="30"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding Column}" />
+                                    <Button
+                                        x:Name="Btn_Column"
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding ColumnCommand}"
+                                        Content="排山倒海" />
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <!--  阵型  -->
+                        <TabItem Header="阵型">
+                            <Grid DataContext="{Binding Formation}">
+                                <!--  设置卡槽  -->
+                                <Grid Margin="0,5,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="SPInput1"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding SpInput1}" />
+                                    <ToggleButton
+                                        x:Name="SPInput1DropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding SpInput1DropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Popup
+                                        IsOpen="{Binding SpInput1DropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=SPInput1DropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="SPInput1ListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding SpInput1Options}"
+                                                SelectedItem="{Binding SelectedSp1}" />
+                                        </Border>
+                                    </Popup>
+                                    <TextBox
+                                        x:Name="SPInput2"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding SpInput2}" />
+                                    <ToggleButton
+                                        x:Name="SlotDropdownToggle"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding SlotDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="SetSPBtn"
+                                        Grid.Column="4"
+                                        Height="25"
+                                        Command="{Binding SetSpCommand}"
+                                        Content="设置卡槽" />
+                                    <Popup
+                                        IsOpen="{Binding SlotDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=SlotDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="SlotListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding SlotOptions}"
+                                                SelectedItem="{Binding SelectedSp2}" />
+                                        </Border>
+                                    </Popup>
+                                    <TextBox
+                                        x:Name="SPInput3"
+                                        Grid.Column="5"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding SpInput3}" />
+                                    <Button
+                                        x:Name="SetSPImitaterBtn"
+                                        Grid.Column="6"
+                                        Height="25"
+                                        Command="{Binding ToggleSpImitaterCommand}"
+                                        Content="模仿者" />
+                                </Grid>
+
+                                <!--  设置场景  -->
+                                <Grid Margin="0,215,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="55" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="BGInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding BgInput}" />
+                                    <ToggleButton
+                                        x:Name="BgDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding BgDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="SetBGBtn"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding SetBgCommand}"
+                                        Content="设置场景" />
+                                    <Popup
+                                        IsOpen="{Binding BgDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=BgDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="BgListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding BackgroundOptions}"
+                                                SelectedItem="{Binding SelectedBg}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  随机选卡  -->
+                                <Button
+                                    x:Name="PickRandomSeedBtn"
+                                    Width="65"
+                                    Height="25"
+                                    Margin="315,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding PickRandSeedCommand}"
+                                    Content="随机选卡" />
+
+                                <!--  查看草坪  -->
+                                <Button
+                                    x:Name="ViewLawnBtn"
+                                    Width="65"
+                                    Height="25"
+                                    Margin="315,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ViewLawnCommand}"
+                                    Content="查看草坪" />
+
+                                <!--  一键设置卡组  -->
+                                <Grid Margin="0,185,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="55" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="seedPacketsInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding SeedPacketsInput}" />
+                                    <ToggleButton
+                                        x:Name="seedPacketsDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        HorizontalContentAlignment="Center"
+                                        Content="🔻"
+                                        IsChecked="{Binding SeedPacketsDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="SetseedPacketsBtn"
+                                        Grid.Column="2"
+                                        Width="55"
+                                        Height="25"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        HorizontalContentAlignment="Center"
+                                        Command="{Binding SetSeedPacketsCommand}"
+                                        Content="切换卡组" />
+                                    <Popup
+                                        IsOpen="{Binding SeedPacketsDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=seedPacketsDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="seedPacketsListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="Name"
+                                                ItemsSource="{Binding SeedPacketsOptions}"
+                                                SelectedItem="{Binding SelectedSeedPacket}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  储存卡组  -->
+                                <Button
+                                    x:Name="AddseedPacketsnBtn"
+                                    Width="65"
+                                    Height="25"
+                                    Margin="240,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding AddSeedPacketsCommand}"
+                                    Content="存储卡组" />
+
+                                <!--  一键布阵  -->
+                                <Grid Margin="0,95,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="225" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="FormationInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding FormationInput}" />
+                                    <ToggleButton
+                                        x:Name="FormationDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        HorizontalContentAlignment="Center"
+                                        Content="🔻"
+                                        IsChecked="{Binding FormationDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="SetFormationBtn"
+                                        Grid.Column="2"
+                                        Width="65"
+                                        Height="25"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        HorizontalContentAlignment="Center"
+                                        Command="{Binding SetFormationCommand}"
+                                        Content="一键布阵" />
+                                    <Popup
+                                        IsOpen="{Binding FormationDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=FormationDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="FormationListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="Name"
+                                                ItemsSource="{Binding FormationOptions}"
+                                                SelectedItem="{Binding SelectedFormation}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <!--  储存阵型  -->
+                                <Grid Margin="0,125,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="Formation_Name_Input"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding FormationNameInput}" />
+                                    <Button
+                                        x:Name="AddFormationBtn"
+                                        Grid.Column="1"
+                                        Height="25"
+                                        Command="{Binding AddFormationCommand}"
+                                        Content="存储阵型" />
+                                    <TextBox
+                                        x:Name="Formation_Plant_Input"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding FormationPlant}" />
+                                    <Button
+                                        x:Name="Formation_Plant_Btn"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        Command="{Binding ToggleFormationPlantCommand}"
+                                        Content="储存植物" />
+                                    <TextBox
+                                        x:Name="Formation_Ladder_Input"
+                                        Grid.Column="4"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding FormationLadder}" />
+                                    <Button
+                                        x:Name="Formation_Ladder_Btn"
+                                        Grid.Column="5"
+                                        Width="60"
+                                        Height="25"
+                                        Command="{Binding ToggleFormationLadderCommand}"
+                                        Content="储存梯子" />
+                                    <TextBox
+                                        x:Name="Formation_Vase_Input"
+                                        Grid.Column="6"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding FormationVase}" />
+                                    <Button
+                                        x:Name="Formation_Vase_Btn"
+                                        Grid.Column="7"
+                                        Height="25"
+                                        Command="{Binding ToggleFormationVaseCommand}"
+                                        Content="储存罐子" />
+                                </Grid>
+
+                                <!--  道路  -->
+                                <Grid Margin="0,35,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="Formation_Row_Input"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding FormationRowInput}" />
+                                    <ToggleButton
+                                        x:Name="FormationRowDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding FormationRowDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Popup
+                                        IsOpen="{Binding FormationRowDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=FormationRowDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="FormationRowListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding FormationRowOptions}"
+                                                SelectedItem="{Binding SelectedFormationRow}" />
+                                        </Border>
+                                    </Popup>
+                                    <TextBox
+                                        x:Name="PlantRowTypeInput"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding PlantRowTypeInput}" />
+                                    <ToggleButton
+                                        x:Name="PlantRowTypeDropdownToggle"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding PlantRowTypeDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="PlantRowTypeBtn"
+                                        Grid.Column="4"
+                                        Height="25"
+                                        Command="{Binding PlantRowTypeCommand}"
+                                        Content="设置路状" />
+                                    <Popup
+                                        IsOpen="{Binding PlantRowTypeDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=PlantRowTypeDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="PlantRowTypeListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding PlantRowTypeOptions}"
+                                                SelectedItem="{Binding SelectedPlantRowType}" />
+                                        </Border>
+                                    </Popup>
+                                    <TextBox
+                                        x:Name="GridSquareTogetInput"
+                                        Grid.Column="5"
+                                        Width="30"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding GridSquareTogetInput}" />
+                                    <Button
+                                        x:Name="GridSquareTogetBtn"
+                                        Grid.Column="6"
+                                        Height="25"
+                                        Command="{Binding ToggleGridSquareTogetCommand}"
+                                        Content="同步格子" />
+                                </Grid>
+
+                                <!--  格子  -->
+                                <Grid Margin="0,65,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="140" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="60" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="60" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="Formation_Col_Input"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding FormationColInput}" />
+                                    <ToggleButton
+                                        x:Name="FormationColDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding FormationColDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Popup
+                                        IsOpen="{Binding FormationColDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=FormationColDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="FormationColListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding FormationColOptions}"
+                                                SelectedItem="{Binding SelectedFormationCol}" />
+                                        </Border>
+                                    </Popup>
+                                    <TextBox
+                                        x:Name="GridSquareTypeInput"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        FontSize="16"
+                                        Text="{Binding GridSquareTypeInput}" />
+                                    <ToggleButton
+                                        x:Name="GridSquareTypeDropdownToggle"
+                                        Grid.Column="3"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding GridSquareTypeDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="GridSquareTypeBtn"
+                                        Grid.Column="4"
+                                        Height="25"
+                                        Command="{Binding GridSquareTypeCommand}"
+                                        Content="格子类型" />
+                                    <Popup
+                                        IsOpen="{Binding GridSquareTypeDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=GridSquareTypeDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="GridSquareTypeListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding GridSquareTypeOptions}"
+                                                SelectedItem="{Binding SelectedGridSquareType}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <!--  娱乐  -->
+                        <TabItem Header="娱乐">
+                            <Grid DataContext="{Binding Fun}">
+                                <!--  随机罐子  -->
+                                <TextBox
+                                    x:Name="RandomVaseInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding RandomVase}" />
+                                <Button
+                                    x:Name="RandomVaseBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="30,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding RandomVaseCommand}"
+                                    Content="随机罐子" />
+
+                                <!--  随机卡片  -->
+                                <TextBox
+                                    x:Name="RandomCardInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="130,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding RandomCard}" />
+                                <Button
+                                    x:Name="RandomCardBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="160,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding RandomCardCommand}"
+                                    Content="随机卡片" />
+
+                                <!--  随机卡槽  -->
+                                <TextBox
+                                    x:Name="RandomPacketInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="260,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding RandomPacket}" />
+                                <Button
+                                    x:Name="RandomPacketBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="290,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding RandomPacketCommand}"
+                                    Content="随机卡槽" />
+                            </Grid>
+                        </TabItem>
+                        <!--  快捷脚本  -->
+                        <TabItem Header="快捷脚本">
+                            <Grid DataContext="{Binding QMod}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid
+                                    Grid.Row="0"
+                                    Margin="0,5,0,0"
+                                    VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="500" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="QModInput"
+                                        Grid.Column="0"
+                                        Width="520"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding QMod}" />
+                                    <ToggleButton
+                                        x:Name="QModDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding QModDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Popup
+                                        IsOpen="{Binding QModDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=QModDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="QModListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding QModOptions}"
+                                                SelectedItem="{Binding QModSelected}" />
+                                        </Border>
+                                    </Popup>
+                                    <Button
+                                        x:Name="QModBtn"
+                                        Grid.Column="2"
+                                        Width="90"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding QModCommand}"
+                                        Content="快捷脚本" />
+                                </Grid>
+                                <Grid
+                                    Grid.Row="1"
+                                    Margin="0,5,0,0"
+                                    VerticalAlignment="Top">
+                                    <TextBlock Text="{Binding InfoAll}" />
+                                </Grid>
+                                <Grid
+                                    Grid.Row="2"
+                                    Margin="0,5,0,0"
+                                    VerticalAlignment="Top">
+                                    <TextBlock Text="{Binding DisplayAuthor}" />
+                                </Grid>
+                                <ScrollViewer Grid.Row="3" Margin="0,10,0,0">
+                                    <ItemsControl ItemsSource="{Binding Parameters}">
+                                        <ItemsControl.Resources>
+                                            <!--  定义两种模板  -->
+                                            <DataTemplate x:Key="TextBoxTemplate">
+                                                <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                            <DataTemplate x:Key="ComboBoxTemplate">
+                                                <ComboBox
+                                                    MinWidth="120"
+                                                    HorizontalAlignment="Stretch"
+                                                    ItemsSource="{Binding Options}"
+                                                    SelectedItem="{Binding Value}" />
+                                            </DataTemplate>
+                                        </ItemsControl.Resources>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border
+                                                    Padding="0,5"
+                                                    BorderBrush="LightGray"
+                                                    BorderThickness="0,0,0,1">
+                                                    <StackPanel>
+                                                        <TextBlock
+                                                            Margin="0,0,0,3"
+                                                            Text="{Binding DisplayDescription}"
+                                                            TextWrapping="Wrap"
+                                                            ToolTip="{Binding DisplayDescription}" />
+                                                        <!--  根据 ControlType 选择模板  -->
+                                                        <ContentControl Content="{Binding}">
+                                                            <ContentControl.Style>
+                                                                <Style TargetType="ContentControl">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding ControlType}" Value="TextBox">
+                                                                            <Setter Property="ContentTemplate" Value="{StaticResource TextBoxTemplate}" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding ControlType}" Value="ComboBox">
+                                                                            <Setter Property="ContentTemplate" Value="{StaticResource ComboBoxTemplate}" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </ContentControl.Style>
+                                                        </ContentControl>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+
+                <!--  底部按钮  -->
+                <Grid Grid.Row="3">
+                    <Button
+                        Name="Btn_UpdateVersion"
+                        Width="90"
+                        Height="25"
+                        Margin="-530,0,0,5"
+                        Command="{Binding UpdateVersionCommand}"
+                        Content="获取更新" />
+                    <Button
+                        Width="90"
+                        Height="25"
+                        Margin="-330,0,0,5"
+                        Command="{Binding OpenPathCommand}"
+                        Content="打开文件目录" />
+                    <Button
+                        Width="30"
+                        Height="25"
+                        Margin="365,0,0,5"
+                        Command="{Binding SizeUpCommand}"
+                        Content="+" />
+                    <Button
+                        Width="30"
+                        Height="25"
+                        Margin="430,0,0,5"
+                        Command="{Binding SizeDownCommand}"
+                        Content="-" />
+                    <TextBlock
+                        Name="SizeText"
+                        Width="33"
+                        Height="15"
+                        Margin="300,0,0,5"
+                        Text="{Binding SizeText}" />
+                    <Button
+                        Width="30"
+                        Height="25"
+                        Margin="495,0,0,5"
+                        Command="{Binding SettingCommand}"
+                        Content="环境" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Viewbox>
+</Window>

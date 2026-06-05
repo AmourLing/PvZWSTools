@@ -1,0 +1,37 @@
+[
+    {
+        "Name": "银币",
+        "Value": "Silver",
+        "Default": "1"
+    },
+    {
+        "Name": "金币",
+        "Value": "Gold",
+        "Default": "5"
+    },
+    {
+        "Name": "钻石",
+        "Value": "Diamond",
+        "Default": "100"
+    },
+    {
+        "Name": "小阳光",
+        "Value": "Smallsun",
+        "Default": "15"
+    },
+    {
+        "Name": "中阳光",
+        "Value": "Sun",
+        "Default": "25"
+    },
+    {
+        "Name": "大阳光",
+        "Value": "Largesun",
+        "Default": "50"
+    },
+    {
+        "Name": "微小阳光",
+        "Value": "Tinysun",
+        "Default": "5"
+    }
+]

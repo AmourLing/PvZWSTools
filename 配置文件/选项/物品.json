@@ -1,0 +1,114 @@
+[
+  {
+    "Name": "银币",
+    "Value": "Silver"
+  },
+  {
+    "Name": "金币",
+    "Value": "Gold"
+  },
+  {
+    "Name": "钻石",
+    "Value": "Diamond"
+  },
+  {
+    "Name": "阳光",
+    "Value": "Sun"
+  },
+  {
+    "Name": "小阳光",
+    "Value": "Smallsun"
+  },
+  {
+    "Name": "大阳光",
+    "Value": "Largesun"
+  },
+  {
+    "Name": "FinalSeedPacket",
+    "Value": "FinalSeedPacket"
+  },
+  {
+    "Name": "奖杯",
+    "Value": "Trophy"
+  },
+  {
+    "Name": "铲子",
+    "Value": "Shovel"
+  },
+  {
+    "Name": "图鉴",
+    "Value": "Almanac"
+  },
+  {
+    "Name": "车钥匙",
+    "Value": "Carkeys"
+  },
+  {
+    "Name": "洒水壶",
+    "Value": "WateringCan"
+  },
+  {
+    "Name": "玉米卷",
+    "Value": "Taco"
+  },
+  {
+    "Name": "便条",
+    "Value": "Note"
+  },
+  {
+    "Name": "UsableSeedPacket",
+    "Value": "UsableSeedPacket"
+  },
+  {
+    "Name": "PresentPlant",
+    "Value": "PresentPlant"
+  },
+  {
+    "Name": "钱袋子",
+    "Value": "AwardMoneyBag"
+  },
+  {
+    "Name": "AwardPresent",
+    "Value": "AwardPresent"
+  },
+  {
+    "Name": "钻石袋子",
+    "Value": "AwardBagDiamond"
+  },
+  {
+    "Name": "巧克力",
+    "Value": "Chocolate"
+  },
+  {
+    "Name": "AwardChocolate",
+    "Value": "AwardChocolate"
+  },
+  {
+    "Name": "PresentMinigames",
+    "Value": "PresentMinigames"
+  },
+  {
+    "Name": "PresentPuzzleMode",
+    "Value": "PresentPuzzleMode"
+  },
+  {
+    "Name": "培根",
+    "Value": "Bacon"
+  },
+  {
+    "Name": "AwardSliverSunflower",
+    "Value": "AwardSliverSunflower"
+  },
+  {
+    "Name": "AwardGoldSunflower",
+    "Value": "AwardGoldSunflower"
+  },
+  {
+    "Name": "微小阳光",
+    "Value": "Tinysun"
+  },
+  {
+    "Name": "Award10PottedPlants",
+    "Value": "Award10PottedPlants"
+  }
+]

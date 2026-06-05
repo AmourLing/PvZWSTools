@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <AssemblyName>PvZWSTools</AssemblyName>
+        <Configurations>Debug;Release</Configurations>
+        <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+        <PackageIcon>icon.png</PackageIcon>
+        <StartupObject>PvZWSTools_WPF.App</StartupObject>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <OutputType>Exe</OutputType>
+        <UseWindowsForms>false</UseWindowsForms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <OutputType>Exe</OutputType>
+        <UseWindowsForms>false</UseWindowsForms>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />
+        <PackageReference Include="WebSocketSharp.NetCore" Version="1.0.1-alpha.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="$(SolutionDir)配置文件\**\*">
+            <Link>配置文件\%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Compile Remove="点击操作\**" />
+        <EmbeddedResource Remove="点击操作\**" />
+        <None Remove="点击操作\**" />
+        <Page Remove="点击操作\**" />
+        <Content Include="$(SolutionDir)update/readme.md">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Resources\icon.ico">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+            <_Parameter1>BuildTimestamp</_Parameter1>
+            <_Parameter2>$([System.DateTime]::UtcNow.ToString("o"))</_Parameter2>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\update\readme.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Resources\icon.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\PasswordDialog.xaml">
+        <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      </Page>
+    </ItemGroup>
+
+    <Import Project="..\PvZWSTools_Shared\PvZWSTools_Shared.projitems" Label="Shared" />
+
+</Project>

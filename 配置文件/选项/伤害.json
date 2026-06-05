@@ -1,0 +1,118 @@
+[
+    {
+        "Name": "豌豆",
+        "Value": "Pea",
+        "Default": "20"
+    },
+    {
+        "Name": "冰豆",
+        "Value": "SnowPea",
+        "Default": "20"
+    },
+    {
+        "Name": "卷心菜",
+        "Value": "Cabbage",
+        "Default": "40"
+    },
+    {
+        "Name": "西瓜",
+        "Value": "Melon",
+        "Default": "80"
+    },
+    {
+        "Name": "泡芙",
+        "Value": "Puff",
+        "Default": "20"
+    },
+    {
+        "Name": "冰西瓜",
+        "Value": "Wintermelon",
+        "Default": "40"
+    },
+    {
+        "Name": "火豆",
+        "Value": "Fireball",
+        "Default": "80"
+    },
+    {
+        "Name": "星星",
+        "Value": "Star",
+        "Default": "20"
+    },
+    {
+        "Name": "刺",
+        "Value": "Spike",
+        "Default": "20"
+    },
+
+    {
+        "Name": "篮球",
+        "Value": "Basketball",
+        "Default": "75"
+    },
+    {
+        "Name": "玉米粒",
+        "Value": "Kernel",
+        "Default": "20"
+    },
+    {
+        "Name": "玉米炮弹",
+        "Value": "Cobbig",
+        "Default": "300"
+    },
+    {
+        "Name": "黄油",
+        "Value": "Butter",
+        "Default": "40"
+    },
+    {
+        "Name": "僵尸豆",
+        "Value": "ZombiePea",
+        "Default": "20"
+    },
+    {
+        "Name": "魅惑僵尸豆",
+        "Value": "ZombiePeaMindControl",
+        "Default": "20"
+    },
+    {
+        "Name": "猫刺",
+        "Value": "CattailSpike",
+        "Default": "20"
+    },
+    {
+        "Name": "火红莲刺",
+        "Value": "EndoflameSpike",
+        "Default": "20"
+    },
+    {
+        "Name": "火红莲火球",
+        "Value": "EndoflameFireball",
+        "Default": "40"
+    },
+    {
+        "Name": "灰烬",
+        "Value": "huijin",
+        "Default": "1800"
+    },
+    {
+        "Name": "土豆雷",
+        "Value": "tudou",
+        "Default": "1800"
+    },
+    {
+        "Name": "寒冰菇",
+        "Value": "icegu",
+        "Default": "20"
+    },
+    {
+        "Name": "倭瓜",
+        "Value": "wogua",
+        "Default": "1800"
+    },
+    {
+        "Name": "啃咬",
+        "Value": "kyao",
+        "Default": "4"
+    }
+]

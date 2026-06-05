@@ -1,0 +1,11 @@
+{
+    "name": "",
+    "infoall": "这是一个可以直接使用jspvz.com获取的阵型字符串来布阵的快捷脚本。",
+    "author": "AmourLing",
+
+    "replace": {
+        "{0}": {
+            "info": "阵型字符串"
+        }
+    }
+}

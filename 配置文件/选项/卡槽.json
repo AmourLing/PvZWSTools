@@ -1,0 +1,350 @@
+[
+    {
+        "Name": "豌豆射手",
+        "Value": "Peashooter"
+    },
+    {
+        "Name": "向日葵",
+        "Value": "Sunflower"
+    },
+    {
+        "Name": "樱桃炸弹",
+        "Value": "Cherrybomb"
+    },
+    {
+        "Name": "坚果",
+        "Value": "Wallnut"
+    },
+    {
+        "Name": "土豆地雷",
+        "Value": "Potatomine"
+    },
+    {
+        "Name": "寒冰射手",
+        "Value": "Snowpea"
+    },
+    {
+        "Name": "大嘴花",
+        "Value": "Chomper"
+    },
+    {
+        "Name": "双重射手",
+        "Value": "Repeater"
+    },
+    {
+        "Name": "小喷菇",
+        "Value": "Puffshroom"
+    },
+    {
+        "Name": "阳光菇",
+        "Value": "Sunshroom"
+    },
+    {
+        "Name": "大喷菇",
+        "Value": "Fumeshroom"
+    },
+    {
+        "Name": "咬咬碑",
+        "Value": "Gravebuster"
+    },
+    {
+        "Name": "迷糊菇",
+        "Value": "Hypnoshroom"
+    },
+    {
+        "Name": "胆小菇",
+        "Value": "Scaredyshroom"
+    },
+    {
+        "Name": "冰川菇",
+        "Value": "Iceshroom"
+    },
+    {
+        "Name": "末日菇",
+        "Value": "Doomshroom"
+    },
+    {
+        "Name": "莲叶",
+        "Value": "Lilypad"
+    },
+    {
+        "Name": "窝瓜",
+        "Value": "Squash"
+    },
+    {
+        "Name": "三重射手",
+        "Value": "Threepeater"
+    },
+    {
+        "Name": "缠绕水草",
+        "Value": "Tanglekelp"
+    },
+    {
+        "Name": "火爆辣椒",
+        "Value": "Jalapeno"
+    },
+    {
+        "Name": "地刺",
+        "Value": "Spikeweed"
+    },
+    {
+        "Name": "火炬树桩",
+        "Value": "Torchwood"
+    },
+    {
+        "Name": "高坚果",
+        "Value": "Tallnut"
+    },
+    {
+        "Name": "水兵菇",
+        "Value": "Seashroom"
+    },
+    {
+        "Name": "路灯花",
+        "Value": "Plantern"
+    },
+    {
+        "Name": "仙人掌",
+        "Value": "Cactus"
+    },
+    {
+        "Name": "三叶草",
+        "Value": "Blover"
+    },
+    {
+        "Name": "双向射手",
+        "Value": "Splitpea"
+    },
+    {
+        "Name": "星星果",
+        "Value": "Starfruit"
+    },
+    {
+        "Name": "南瓜头",
+        "Value": "Pumpkinshell"
+    },
+    {
+        "Name": "磁力菇",
+        "Value": "Magnetshroom"
+    },
+    {
+        "Name": "卷心菜投手",
+        "Value": "Cabbagepult"
+    },
+    {
+        "Name": "花盆",
+        "Value": "Flowerpot"
+    },
+    {
+        "Name": "玉米投手",
+        "Value": "Kernelpult"
+    },
+    {
+        "Name": "咖啡豆",
+        "Value": "InstantCoffee"
+    },
+    {
+        "Name": "大蒜",
+        "Value": "Garlic"
+    },
+    {
+        "Name": "萝卜伞",
+        "Value": "Umbrella"
+    },
+    {
+        "Name": "金盏花",
+        "Value": "Marigold"
+    },
+    {
+        "Name": "西瓜投手",
+        "Value": "Melonpult"
+    },
+    {
+        "Name": "机枪射手",
+        "Value": "Gatlingpea"
+    },
+    {
+        "Name": "双胞向日葵",
+        "Value": "Twinsunflower"
+    },
+    {
+        "Name": "多嘴小蘑菇",
+        "Value": "Gloomshroom"
+    },
+    {
+        "Name": "猫尾草",
+        "Value": "Cattail"
+    },
+    {
+        "Name": "冰西瓜",
+        "Value": "Wintermelon"
+    },
+    {
+        "Name": "吸金菇",
+        "Value": "GoldMagnet"
+    },
+    {
+        "Name": "钢地刺",
+        "Value": "Spikerock"
+    },
+    {
+        "Name": "玉米加农炮",
+        "Value": "Cobcannon"
+    },
+    {
+        "Name": "模仿者",
+        "Value": "Imitater"
+    },
+    {
+        "Name": "爆炸坚果",
+        "Value": "ExplodeONut"
+    },
+    {
+        "Name": "巨型坚果",
+        "Value": "GiantWallnut"
+    },
+    {
+        "Name": "幼苗",
+        "Value": "Sprout"
+    },
+    {
+        "Name": "反向双发射手",
+        "Value": "Leftpeater"
+    },
+    {
+        "Name": "超级大嘴花",
+        "Value": "SuperChomper"
+    },
+    {
+        "Name": "泡椒",
+        "Value": "PickledPepper"
+    },
+    {
+        "Name": "火蘑菇",
+        "Value": "FireShroom"
+    },
+    {
+        "Name": "龙舌兰",
+        "Value": "Agave"
+    },
+    {
+        "Name": "火红莲女王",
+        "Value": "Endoflame"
+    },
+    {
+        "Name": "典伊",
+        "Value": "IceGod"
+    },
+    {
+        "Name": "随机模仿者(植物)",
+        "Value": "ImitaterRandomPlant"
+    },
+    {
+        "Name": "随机模仿者(僵尸)",
+        "Value": "ImitaterRandomZombie"
+    },
+    {
+        "Name": "魅惑猫尾草",
+        "Value": "HypnoCattail"
+    },
+    {
+        "Name": "向日葵和豌豆射手",
+        "Value": "SunflowerPea"
+    },
+    {
+        "Name": "豌豆射手和坚果",
+        "Value": "PeaWallnut"
+    },
+    {
+        "Name": "向日葵和坚果",
+        "Value": "SunflowerWallnut"
+    },
+    {
+        "Name": "冰坚果",
+        "Value": "IceWallnut"
+    },
+    {
+        "Name": "重置植物",
+        "Value": "BeghouledButtonShuffle"
+    },
+    {
+        "Name": "填补弹坑",
+        "Value": "BeghouledButtonCrater"
+    },
+    {
+        "Name": "阳光",
+        "Value": "SlotMachineSun"
+    },
+    {
+        "Name": "钻石",
+        "Value": "SlotMachineDiamond"
+    },
+    {
+        "Name": "潜水僵尸",
+        "Value": "ZombiquariumSnorkel"
+    },
+    {
+        "Name": "奖杯",
+        "Value": "ZombiquariumTrophy"
+    },
+    {
+        "Name": "普通僵尸",
+        "Value": "ZombieNormal"
+    },
+    {
+        "Name": "路障僵尸",
+        "Value": "ZombieTrafficCone"
+    },
+    {
+        "Name": "撑杆僵尸",
+        "Value": "ZombiePolevaulter"
+    },
+    {
+        "Name": "铁桶僵尸",
+        "Value": "ZombiePail"
+    },
+    {
+        "Name": "梯子僵尸",
+        "Value": "ZombieLadder"
+    },
+    {
+        "Name": "矿工僵尸",
+        "Value": "ZombieDigger"
+    },
+    {
+        "Name": "飞贼僵尸",
+        "Value": "ZombieBungee"
+    },
+    {
+        "Name": "橄榄球僵尸",
+        "Value": "ZombieFootball"
+    },
+    {
+        "Name": "气球僵尸",
+        "Value": "ZombieBalloon"
+    },
+    {
+        "Name": "铁网门僵尸",
+        "Value": "ZombieScreenDoor"
+    },
+    {
+        "Name": "雪橇车僵尸",
+        "Value": "Zomboni"
+    },
+    {
+        "Name": "蹦蹦僵尸",
+        "Value": "ZombiePogo"
+    },
+    {
+        "Name": "舞者僵尸",
+        "Value": "ZombieDancer"
+    },
+    {
+        "Name": "巨人僵尸",
+        "Value": "ZombieGargantuar"
+    },
+    {
+        "Name": "小鬼僵尸",
+        "Value": "ZombieImp"
+    }
+]

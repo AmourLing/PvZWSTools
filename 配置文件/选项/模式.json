@@ -1,0 +1,383 @@
+[
+    {
+        "Name": "冒险模式",
+        "Value": "Adventure"
+    },
+    {
+        "Name": "白天",
+        "Value": "SurvivalNormalStage1"
+    },
+    {
+        "Name": "黑夜",
+        "Value": "SurvivalNormalStage2"
+    },
+    {
+        "Name": "泳池",
+        "Value": "SurvivalNormalStage3"
+    },
+    {
+        "Name": "浓雾",
+        "Value": "SurvivalNormalStage4"
+    },
+    {
+        "Name": "屋顶",
+        "Value": "SurvivalNormalStage5"
+    },
+    {
+        "Name": "白天(困难)",
+        "Value": "SurvivalHardStage1"
+    },
+    {
+        "Name": "黑夜(困难)",
+        "Value": "SurvivalHardStage2"
+    },
+    {
+        "Name": "泳池(困难)",
+        "Value": "SurvivalHardStage3"
+    },
+    {
+        "Name": "浓雾(困难)",
+        "Value": "SurvivalHardStage4"
+    },
+    {
+        "Name": "屋顶(困难)",
+        "Value": "SurvivalHardStage5"
+    },
+    {
+        "Name": "白天(无限)",
+        "Value": "SurvivalEndlessStage1"
+    },
+    {
+        "Name": "黑夜(无限)",
+        "Value": "SurvivalEndlessStage2"
+    },
+    {
+        "Name": "泳池(无限)",
+        "Value": "SurvivalEndlessStage3"
+    },
+    {
+        "Name": "浓雾(无限)",
+        "Value": "SurvivalEndlessStage4"
+    },
+    {
+        "Name": "屋顶(无限)",
+        "Value": "SurvivalEndlessStage5"
+    },
+    {
+        "Name": "植物僵尸",
+        "Value": "ChallengeWarAndPeas"
+    },
+    {
+        "Name": "坚果保龄球",
+        "Value": "ChallengeWallnutBowling"
+    },
+    {
+        "Name": "拉霸",
+        "Value": "ChallengeSlotMachine"
+    },
+    {
+        "Name": "种子雨",
+        "Value": "ChallengeRainingSeeds"
+    },
+    {
+        "Name": "僵尸迷阵",
+        "Value": "ChallengeBeghouled"
+    },
+    {
+        "Name": "隐形战争",
+        "Value": "ChallengeInvisighoul"
+    },
+    {
+        "Name": "观星",
+        "Value": "ChallengeSeeingStars"
+    },
+    {
+        "Name": "僵尸迷阵(旋风)",
+        "Value": "ChallengeBeghouledTwist"
+    },
+    {
+        "Name": "小小大僵尸",
+        "Value": "ChallengeLittleTrouble"
+    },
+    {
+        "Name": "斗转星移",
+        "Value": "ChallengePortalCombat"
+    },
+    {
+        "Name": "排山倒海",
+        "Value": "ChallengeColumn"
+    },
+    {
+        "Name": "全面冻结",
+        "Value": "ChallengeBobsledBonanza"
+    },
+    {
+        "Name": "僵尸快跑",
+        "Value": "ChallengeSpeed"
+    },
+    {
+        "Name": "打僵尸",
+        "Value": "ChallengeWhackAZombie"
+    },
+    {
+        "Name": "坚不可摧",
+        "Value": "ChallengeLastStand"
+    },
+    {
+        "Name": "植物僵尸2",
+        "Value": "ChallengeWarAndPeas2"
+    },
+    {
+        "Name": "坚果保龄球2",
+        "Value": "ChallengeWallnutBowling2"
+    },
+    {
+        "Name": "蹦蹦舞会",
+        "Value": "ChallengePogoParty"
+    },
+    {
+        "Name": "僵王博士的复仇",
+        "Value": "ChallengeFinalBoss"
+    },
+    {
+        "Name": "当艺术遇上坚果",
+        "Value": "ChallengeArtChallenge1"
+    },
+    {
+        "Name": "晴天",
+        "Value": "ChallengeSunnyDay"
+    },
+    {
+        "Name": "不毛之地",
+        "Value": "ChallengeResodded"
+    },
+    {
+        "Name": "重要时间",
+        "Value": "ChallengeBigTime"
+    },
+    {
+        "Name": "当艺术遇上向日葵",
+        "Value": "ChallengeArtChallenge2"
+    },
+    {
+        "Name": "空袭",
+        "Value": "ChallengeAirRaid"
+    },
+    {
+        "Name": "牛顿的力量",
+        "Value": "ChallengeHighGravity"
+    },
+    {
+        "Name": "坟墓危险",
+        "Value": "ChallengeGraveDanger"
+    },
+    {
+        "Name": "地道战",
+        "Value": "ChallengeShovel"
+    },
+    {
+        "Name": "暴风雨之夜",
+        "Value": "ChallengeStormyNight"
+    },
+    {
+        "Name": "飞贼闪击战",
+        "Value": "ChallengeBungeeBlitz"
+    },
+    {
+        "Name": "松鼠",
+        "Value": "ChallengeSquirrel"
+    },
+    {
+        "Name": "智慧树",
+        "Value": "TreeOfWisdom"
+    },
+    {
+        "Name": "花盆终结者",
+        "Value": "ScaryPotter1"
+    },
+    {
+        "Name": "一路向左",
+        "Value": "ScaryPotter2"
+    },
+    {
+        "Name": "第3个花瓶",
+        "Value": "ScaryPotter3"
+    },
+    {
+        "Name": "连锁反应",
+        "Value": "ScaryPotter4"
+    },
+    {
+        "Name": "金属狂潮",
+        "Value": "ScaryPotter5"
+    },
+    {
+        "Name": "胆怯的制陶工",
+        "Value": "ScaryPotter6"
+    },
+    {
+        "Name": "戏法时刻",
+        "Value": "ScaryPotter7"
+    },
+    {
+        "Name": "连锁反应之二",
+        "Value": "ScaryPotter8"
+    },
+    {
+        "Name": "破坏之王",
+        "Value": "ScaryPotter9"
+    },
+    {
+        "Name": "花盆终结者(无限)",
+        "Value": "ScaryPotterEndless"
+    },
+    {
+        "Name": "僵尸公敌",
+        "Value": "PuzzleIZombie1"
+    },
+    {
+        "Name": "僵尸公敌2",
+        "Value": "PuzzleIZombie2"
+    },
+    {
+        "Name": "地道战(僵尸公敌)",
+        "Value": "PuzzleIZombie3"
+    },
+    {
+        "Name": "完全防御",
+        "Value": "PuzzleIZombie4"
+    },
+    {
+        "Name": "死亡气球",
+        "Value": "PuzzleIZombie5"
+    },
+    {
+        "Name": "力拔山河",
+        "Value": "PuzzleIZombie6"
+    },
+    {
+        "Name": "太空舞步",
+        "Value": "PuzzleIZombie7"
+    },
+    {
+        "Name": "飞檐走壁",
+        "Value": "PuzzleIZombie8"
+    },
+    {
+        "Name": "大混战",
+        "Value": "PuzzleIZombie9"
+    },
+    {
+        "Name": "僵尸公敌(无限)",
+        "Value": "PuzzleIZombieEndless"
+    },
+    {
+        "Name": "僵尸水族馆",
+        "Value": "ChallengeZombiquarium"
+    },
+    {
+        "Name": "巨人之怒1",
+        "Value": "ChallengeAttackOnTitans"
+    },
+    {
+        "Name": "巨人之怒2",
+        "Value": "ChallengeAttackOnTitans2"
+    },
+    {
+        "Name": "巨人之怒3",
+        "Value": "ChallengeAttackOnTitans3"
+    },
+    {
+        "Name": "奇人异尸",
+        "Value": "MarvelousPeople"
+    },
+    {
+        "Name": "奇人异尸2",
+        "Value": "MarvelousPeople2"
+    },
+    {
+        "Name": "奇人异尸3",
+        "Value": "MarvelousPeople3"
+    },
+    {
+        "Name": "奇人异尸4",
+        "Value": "MarvelousPeople4"
+    },
+    {
+        "Name": "随机传送带：无尽",
+        "Value": "RogueConveyorbelt"
+    },
+    {
+        "Name": "随机传送带：十旗",
+        "Value": "RogueConveyorbeltHard"
+    },
+    {
+        "Name": "僵尸博士的复仇2",
+        "Value": "ChallengeFinalBoss2"
+    },
+    {
+        "Name": "排山倒海2",
+        "Value": "ChallengeColumn2"
+    },
+    {
+        "Name": "排山倒海3",
+        "Value": "ChallengeColumn3"
+    },
+    {
+        "Name": "排山倒海4",
+        "Value": "ChallengeColumn4"
+    },
+    {
+        "Name": "白天（地狱）",
+        "Value": "SurvivalHellStage1"
+    },
+    {
+        "Name": "黑夜（地狱）",
+        "Value": "SurvivalHellStage2"
+    },
+    {
+        "Name": "泳池（地狱）",
+        "Value": "SurvivalHellStage3"
+    },
+    {
+        "Name": "浓雾（地狱）",
+        "Value": "SurvivalHellStage4"
+    },
+    {
+        "Name": "屋顶（地狱）",
+        "Value": "SurvivalHellStage5"
+    },
+    {
+        "Name": "奇人异尸4",
+        "Value": "MarvelousPeople4"
+    },
+    {
+        "Name": "泳池派对",
+        "Value": "PoolParty"
+    },
+    {
+        "Name": "雪橇区2",
+        "Value": "ChallengeBobsledBonanza2"
+    },
+    {
+        "Name": "空袭2",
+        "Value": "ChallengeMoreAirRaid"
+    },
+    {
+        "Name": "大泳池",
+        "Value": "BigPoolSurvivalNormalStage"
+    },
+    {
+        "Name": "大泳池（困难）",
+        "Value": "BigPoolSurvivalHardStage"
+    },
+    {
+        "Name": "大泳池（地狱）",
+        "Value": "BigPoolSurvivalHellStage"
+    },
+    {
+        "Name": "融合",
+        "Value": "ChallengeFusion"
+    }
+
+]
