@@ -13,6 +13,8 @@ else:
     y = {ROW}-1
     allCol = bool({COL}==-666)
     allRow = bool({ROW}==-666)
+    gameObjectdeltaX = {DELTA_MX}
+    gameObjectdeltaY = {DELTA_MY}
     seedType = SeedType.{SEEDTYPE}
     imitaterType = SeedType["None"]
     limitPlanting = {LIMITPLANTING}
@@ -32,7 +34,10 @@ else:
                         s = imitaterType
                     if board.CanPlantAt(i,j,s)!=PlantingReason.Ok:
                         continue
-                board.AddPlant(i,j,seedType,imitaterType)
+                plant = board.AddPlant(i,j,seedType,imitaterType)
+                if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+                    plant.mX += gameObjectdeltaX
+                    plant.mY += gameObjectdeltaY
     elif allRow!=0:
         for j in range(0, Y_MAX):
             if limitPlanting==1:
@@ -41,7 +46,10 @@ else:
                     s = imitaterType
                 if board.CanPlantAt(x,j,s)!=PlantingReason.Ok:
                     continue
-            board.AddPlant(x,j,seedType,imitaterType)
+            plant = board.AddPlant(x,j,seedType,imitaterType)
+            if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+                plant.mX += gameObjectdeltaX
+                plant.mY += gameObjectdeltaY
     elif allCol!=0:
         for i in range(0,X_MAX):
             if limitPlanting==1:
@@ -50,7 +58,10 @@ else:
                     s = imitaterType
                 if board.CanPlantAt(i,y,s)!=PlantingReason.Ok:
                     continue
-            board.AddPlant(i,y,seedType,imitaterType)
+            plant = board.AddPlant(i,y,seedType,imitaterType)
+            if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+                plant.mX += gameObjectdeltaX
+                plant.mY += gameObjectdeltaY
     else:
         if limitPlanting==1:
             s=seedType
@@ -58,4 +69,7 @@ else:
                 s = imitaterType
             if board.CanPlantAt(x,y,s)!=PlantingReason.Ok:
                 pass
-        board.AddPlant(x,y,seedType,imitaterType)
+        plant = board.AddPlant(x,y,seedType,imitaterType)
+        if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+            plant.mX += gameObjectdeltaX
+            plant.mY += gameObjectdeltaY

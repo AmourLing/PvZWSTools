@@ -1,29 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
+        <LangVersion>12.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>PvZWSTools</AssemblyName>
         <Configurations>Debug;Release</Configurations>
         <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
         <PackageIcon>icon.png</PackageIcon>
         <StartupObject>PvZWSTools_WPF.App</StartupObject>
         <PackageReadmeFile>readme.md</PackageReadmeFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <OutputType>Exe</OutputType>
         <UseWindowsForms>false</UseWindowsForms>
     </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <OutputType>Exe</OutputType>
-        <UseWindowsForms>false</UseWindowsForms>
-    </PropertyGroup>
-
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.5-beta1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="WebSocketSharp.NetCore" Version="1.0.1-alpha.4" />
     </ItemGroup>
 
@@ -32,10 +26,6 @@
             <Link>配置文件\%(RecursiveDir)%(Filename)%(Extension)</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Compile Remove="点击操作\**" />
-        <EmbeddedResource Remove="点击操作\**" />
-        <None Remove="点击操作\**" />
-        <Page Remove="点击操作\**" />
         <Content Include="$(SolutionDir)update/readme.md">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -52,10 +42,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="..\update\readme.md">
-        <Pack>True</Pack>
-        <PackagePath>\</PackagePath>
-      </None>
+        <None Include="..\update\readme.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -66,11 +56,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Page Update="Views\PasswordDialog.xaml">
-        <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-      </Page>
+        <Page Update="Views\PasswordDialog.xaml">
+            <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+        </Page>
     </ItemGroup>
 
     <Import Project="..\PvZWSTools_Shared\PvZWSTools_Shared.projitems" Label="Shared" />
-
 </Project>

@@ -36,6 +36,8 @@
     public const string JsonPlantFile = "植物.json";
     public const string JsonPlantRowTypeFile = "道路状况.json";
     public const string JsonRowFile = "行.json";
+    public const string JsondeltamYFile = "行偏移量.json";
+    public const string JsondeltamXFile = "列偏移量.json";
     public const string JsonSlotFile = "卡槽.json";
     public const string JsonSlotIndexFile = "卡槽序.json";
     public const string JsonTimeFile = "时间.json";
@@ -92,6 +94,8 @@
         public const string Value = "{VALUE}";
         public const string Value2 = "{VALUE2}";
         public const string ZombieType = "{ZOMBIETYPE}";
+        public const string GameObjectDeltamX = "{DELTA_MX}";
+        public const string GameObjectDeltamY = "{DELTA_MY}";
     }
 
     // 子文件夹名称

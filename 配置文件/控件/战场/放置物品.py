@@ -11,8 +11,13 @@ if board==None:
 else:
     coin_col = {COL}-1
     coin_row = {ROW}-1
+    gameObjectdeltaX = {DELTA_MX}
+    gameObjectdeltaY = {DELTA_MY}
     x=board.GridToPixelX(coin_col,coin_row)
     y=board.GridToPixelY(coin_col,coin_row)
     coinType = CoinType.{COINTYPE}
     coinMotion = CoinMotion.Coin
-    board.AddCoin(x,y,coinType,coinMotion)
+    coin = board.AddCoin(x,y,coinType,coinMotion)
+    if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+        coin.mX += gameObjectdeltaX
+        coin.mY += gameObjectdeltaY

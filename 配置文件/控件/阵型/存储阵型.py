@@ -1,32 +1,43 @@
-# 用于存储阵型
-#2025.07.05
+# 用于存储阵型（存储为对象数组，包含键名）
+# 2025.07.05
+#  2026.06.13
 
-import json
-import os
-import re
+import clr
+clr.AddReference("System.IO")
+clr.AddReference("System")
+clr.AddReference("Newtonsoft.Json")
+
+from System.IO import Path, File, Directory
+from Newtonsoft.Json import JsonConvert, Formatting
+from Newtonsoft.Json.Linq import JArray, JObject
 from Lawn import *
 from Sexy import *
-
-def get_unique_filename(base_dir, name):
-    index = 0
-    while True:
-        if index == 0:
-            filename = f"{name}.json"
-        else:
-            filename = f"{name}_{index}.json"
-        full_path = os.path.join(base_dir, filename)
-        if not os.path.exists(full_path):
-            return full_path
-        index += 1
 
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-try:
-    # 提取数据部分
+def LOG(e, code=0):
+    msg = f"[ErrorCode {code}] {repr(e)}"
+    try:
+        if app is not None:
+            app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
+    except:
+        pass
+    print(msg)
 
-    plant = []
-    if {PLANT}!=0:
+def get_unique_file_path(base_dir, name):
+    index = 0
+    while True:
+        filename = f"{name}.json" if index == 0 else f"{name}_{index}.json"
+        full_path = Path.Combine(base_dir, filename)
+        if not File.Exists(full_path):
+            return full_path
+        index += 1
+
+# 提取植物数据（存储为字典）
+plant = []
+if {PLANT} != 0:
+    try:
         plen = board.mPlants.Count
         for i in range(plen):
             aPlant = board.mPlants[i]
@@ -34,54 +45,72 @@ try:
                 IsShroom = 0
                 if Plant.IsNocturnal(aPlant.mSeedType) and not aPlant.mIsAsleep:
                     IsShroom = 1
-                plant.append([aPlant.mPlantCol,
-                              aPlant.mRow,
-                              int(aPlant.mSeedType),
-                              IsShroom,
-                              int(aPlant.mImitaterType)])
+                plant.append({
+                    "col": aPlant.mPlantCol,
+                    "row": aPlant.mRow,
+                    "seedType": int(aPlant.mSeedType),
+                    "awake": IsShroom,
+                    "imitaterType": int(aPlant.mImitaterType),
+                    "x":aPlant.mX,
+                    "y":aPlant.mY
+                })
+    except Exception as e:
+        LOG(e, 1001)
 
-    ladder = []
-    if {LADDER}!=0:
+# 提取梯子数据
+ladder = []
+if {LADDER} != 0:
+    try:
         ilen = board.mGridItems.Count
         for i in range(ilen):
             gridItem = board.mGridItems[i]
             if gridItem.mGridItemType == GridItemType.Ladder and not gridItem.mDead:
-                ladder.append([gridItem.mGridX,
-                               gridItem.mGridY])
+                ladder.append({
+                    "x": gridItem.mGridX,
+                    "y": gridItem.mGridY
+                })
+    except Exception as e:
+        LOG(e, 1002)
 
-    vase = []
-    if {VASE}!=0:
+# 提取花盆（瓦罐）数据
+vase = []
+if {VASE} != 0:
+    try:
         ilen = board.mGridItems.Count
         for i in range(ilen):
             gridItem = board.mGridItems[i]
             if gridItem.mGridItemType == GridItemType.ScaryPot and not gridItem.mDead:
-                vase.append([gridItem.mGridX,
-                             gridItem.mGridY,
-                             int(gridItem.mGridItemState),
-                             int(gridItem.mSeedType),
-                             int(gridItem.mZombieType),
-                             int(gridItem.mScaryPotType)])
+                vase.append({
+                    "x": gridItem.mGridX,
+                    "y": gridItem.mGridY,
+                    "state": int(gridItem.mGridItemState),
+                    "seedType": int(gridItem.mSeedType),
+                    "zombieType": int(gridItem.mZombieType),
+                    "potType": int(gridItem.mScaryPotType)
+                })
+    except Exception as e:
+        LOG(e, 1003)
 
-    name = "{NAME}"
-    base_dir = r"{PATH}"
-    os.makedirs(base_dir, exist_ok=True)
+name = "{NAME}"
+base_dir = r"{PATH}"
 
-    file_path = get_unique_filename(base_dir, name)
+try:
+    if not Directory.Exists(base_dir):
+        Directory.CreateDirectory(base_dir)
+    file_path = get_unique_file_path(base_dir, name)
 
-    combined_data = {
-        "plants": plant,
-        "ladders": ladder,
-        "vases": vase
-    }
+    combined_data = JObject()
+    combined_data["plants"] = JArray.FromObject(plant)
+    combined_data["ladders"] = JArray.FromObject(ladder)
+    combined_data["vases"] = JArray.FromObject(vase)
 
-    json_str = json.dumps(combined_data, indent=4)
+    json_str = JsonConvert.SerializeObject(combined_data, Formatting.Indented)
+    File.WriteAllText(file_path, json_str)
 
-    json_str = re.sub(r'\[\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\]', r'[\1,\2,\3,\4,\5]', json_str)
-    json_str = re.sub(r'\[\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\]', r'[\1,\2,\3,\4]', json_str)
-    json_str = re.sub(r'\[\s*(-?\d+)\s*,\s*(-?\d+)\s*\]', r'[\1,\2]', json_str)
-
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(json_str)
-    app.DoDialog(16,True,"阵型存储完成",f"阵型已保存为 {os.path.basename(file_path)}","OK",3)
+    success_msg = f"阵型已保存为 {Path.GetFileName(file_path)}"
+    try:
+        app.DoDialog(64, True, "阵型存储完成", success_msg, "OK", 3)
+    except:
+        print(success_msg)
 except Exception as e:
-    app.DoDialog(16,True,"Error",str(e),"OK",3)
+    LOG(e, 2001)

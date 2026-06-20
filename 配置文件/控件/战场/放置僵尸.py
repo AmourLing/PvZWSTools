@@ -18,6 +18,8 @@ else:
         col = {COLPERMIT}#是否允许列放置
         zombieType = ZombieType.{ZOMBIETYPE}
         mindCtrl = {MINDCONTROL}
+        gameObjectdeltaX = {DELTA_MX}
+        gameObjectdeltaY = {DELTA_MY}
         X_MAX=Constants.GRIDSIZEX
         Y_MAX=Constants.MAX_GRIDSIZEY
         if not board.StageHas6Rows():
@@ -35,6 +37,9 @@ else:
                         zombie.mPosY = zombie.GetPosYBasedOnRow(zombie.mRow)
                     if mindCtrl == 1:
                         zombie.StartMindControlled()
+                    if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+                        zombie.mX += gameObjectdeltaX
+                        zombie.mY += gameObjectdeltaY
         elif allRow: #所有行，但没有所有列，或不允许列放置
             for i in range(0,Y_MAX):
                 zombie = board.AddZombieInRow(zombieType,i,-1)
@@ -49,6 +54,9 @@ else:
                     zombie.mPosY = zombie.GetPosYBasedOnRow(zombie.mRow)
                 if mindCtrl == 1:
                     zombie.StartMindControlled()
+                if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+                    zombie.mX += gameObjectdeltaX
+                    zombie.mY += gameObjectdeltaY
         elif col and allCol: #所有列，并且允许列放置
             for j in range(0,X_MAX):
                 zombie = board.AddZombieInRow(zombieType,row,-1)
@@ -61,6 +69,9 @@ else:
                     zombie.mPosY = zombie.GetPosYBasedOnRow(zombie.mRow)
                 if mindCtrl == 1:
                     zombie.StartMindControlled()
+                if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+                    zombie.mX += gameObjectdeltaX
+                    zombie.mY += gameObjectdeltaY
         else:
             zombie = board.AddZombieInRow(zombieType,row,-1)
             if col:
@@ -74,5 +85,8 @@ else:
                 zombie.mPosY = zombie.GetPosYBasedOnRow(zombie.mRow)
             if mindCtrl == 1:
                 zombie.StartMindControlled()
+            if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+                zombie.mX += gameObjectdeltaX
+                zombie.mY += gameObjectdeltaY
     except Exception as e:
         app.DoDialog(16,True,"ERROR!",repr(e),"OK",3)

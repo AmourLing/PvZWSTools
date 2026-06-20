@@ -51,11 +51,13 @@ def zombieNameTranslate(i):
 
 app = GlobalStaticVars.gLawnApp
 
+_had_draw_zombiespawn = False
+
 @M.HookTo(Board.DrawGameObjects)
 def Board_DrawGameObjects(orig, self, g):
     orig(self, g)
     if app.mSeedChooserScreen is None:
-        print("选卡界面为None，不绘制僵尸列表")
+        _had_draw_zombiespawn = True
         return
 
     allowed_names = []
@@ -72,5 +74,6 @@ def Board_DrawGameObjects(orig, self, g):
     color = SexyColor(255, 0, 0)
 
     TodCommon.TodDrawString(g, text, x, y, font, color, DrawStringJustification.Left, 0.7)
-
-    print(f"绘制成功，共 {len(allowed_names)} 种僵尸: {allowed_names}")
+    if not _had_draw_zombiespawn:
+        print(f"绘制成功，共 {len(allowed_names)} 种僵尸: {allowed_names}")
+        _had_draw_zombiespawn = True

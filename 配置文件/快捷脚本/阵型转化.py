@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
 # 用于放置阵型 / 解码阵型字符串（以网页版逻辑为准，输出与给定 JSON 同构）
-# 2025.07.05
+# 2025.07.05 (IronPython 无标准库版)
 
-import json
-import re
 import clr
 from Lawn import *
 from Sexy import *
 
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
+
+def LOG(e, code=0):
+    msg = f"[ErrorCode {code}] {repr(e)}"
+    try:
+        if app is not None:
+            app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
+    except:
+        pass
+    print(msg)
 
 def decode_formation_string(formation_str):
     if not formation_str:
@@ -28,7 +35,7 @@ def decode_formation_string(formation_str):
             if t.isdigit():
                 t = int(t)
             else:
-                t = int(t, 16)
+                t = int(t, 16)      # 十六进制字符串转整数
         mapping = {10: 16, 21: 33, 30: 48, 31: 49, 32: 50}
         return mapping.get(t, t)
 
@@ -46,13 +53,13 @@ def decode_formation_string(formation_str):
             col = int(col_str) - 1
             awake = int(awake_flag)
             imitate = int(imi_flag)
-            imitate_type = 53 if imitate == 1 else 0   # 关键修改
+            imitate_type = 53 if imitate == 1 else 0
 
             if t in (16, 33, 30, 35):
                 plants.append([col, row, t, awake, imitate_type])
             elif t == 48:   # 梯子
                 ladders.append([col, row])
-            elif t == 49 or t == 50:
+            elif t in (49, 50):
                 pass
             else:
                 plants.append([col, row, t, awake, imitate_type])
@@ -65,7 +72,7 @@ def decode_formation_string(formation_str):
             col = int(col_str) - 1
             awake = 1 if opacity == '1' else 0
             imitate = 1 if side == '1' else 0
-            imitate_type = 53 if imitate == 1 else 0   # 关键修改
+            imitate_type = 53 if imitate == 1 else 0
 
             if t in (16, 33, 30, 35):
                 plants.append([col, row, t, awake, imitate_type])
@@ -74,7 +81,7 @@ def decode_formation_string(formation_str):
             else:
                 plants.append([col, row, t, awake, imitate_type])
 
-        # 10字段道具（仅梯子）
+        # 10字段道具（仅梯子/罐子）
         elif num == 10:
             t_raw, row_str, col_str, _, _, _, _, _, x, y = fields
             t = normalize_type(t_raw)
@@ -124,21 +131,22 @@ def place_formation(formation_data):
         else:
             continue
 
-        # 放置植物（模仿者类型因游戏API不同可能需要映射，此处直接传 imitate_type）
         board.NewPlant(col, row, SeedType(seed_type), SeedType(imitate_type))
 
-        # 如果需要唤醒且不是咖啡豆本身（防止递归），添加咖啡豆
+        # 如果需要唤醒且不是咖啡豆本身
         if awake == 1 and seed_type != 35:
             board.NewPlant(col, row, SeedType.InstantCoffee, SeedType["None"])
 
     for col, row in ladders:
         board.AddALadder(col, row)
 
-
-origstr = "{0}"
+origstr = "{0}"   # 请替换为实际的阵型字符串
 try:
     formation = decode_formation_string(origstr)
     place_formation(formation)
-    app.DoDialog(16, True, "布阵完成", "阵型已成功放置！", "OK", 3)
+    try:
+        app.DoDialog(64, True, "布阵完成", "阵型已成功放置！", "OK", 3)
+    except:
+        print("阵型已成功放置！")
 except Exception as e:
-    app.DoDialog(16, True, "无输入", str(e), "OK", 3)
+    LOG(e, 2001)

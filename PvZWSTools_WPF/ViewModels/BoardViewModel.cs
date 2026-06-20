@@ -14,9 +14,11 @@ namespace PvZWSTools_WPF.ViewModels
 
         private string _banSaveGame = Constants.c_Symbol_Off;
 
-        private string _banSaveGameInput = Constants.c_Symbol_Off;
-
         private bool _boardColDropdownToggleIsChecked;
+
+        private bool _boarddeltamXDropdownToggleIsChecked;
+
+        private bool _boarddeltamYDropdownToggleIsChecked;
 
         private bool _boardRowDropdownToggleIsChecked;
 
@@ -29,9 +31,12 @@ namespace PvZWSTools_WPF.ViewModels
         private string _colInput = "第1列";
 
         private string _ctInput = "银币";
-        private string _freePlant = Constants.c_Symbol_Off;
 
-        private string _freePlantInput = Constants.c_Symbol_Off;
+        private string _deltamXInput = "0";
+
+        private string _deltamYInput = "0";
+
+        private string _freePlant = Constants.c_Symbol_Off;
 
         private string _imitater = Constants.c_Symbol_Off;
 
@@ -54,13 +59,14 @@ namespace PvZWSTools_WPF.ViewModels
         private bool _plantDropdownToggleIsChecked;
 
         private string _rowInput = "第1行";
-
         private NameOption _selectedClear;
 
         private NameOption _selectedCoin;
 
         private NameOption _selectedCol;
 
+        private NameOption _selecteddeltamX;
+        private NameOption _selecteddeltamY;
         private NameOption _selectedItem;
 
         private NameOption _selectedPlant;
@@ -98,6 +104,8 @@ namespace PvZWSTools_WPF.ViewModels
             ClearOptions = OptionsLoader.Load(Constants.JsonClearFile);
             BoardRowOptions = OptionsLoader.Load(Constants.JsonRowFile);
             BoardColOptions = OptionsLoader.Load(Constants.JsonColFile);
+            BoarddeltamYOptions = OptionsLoader.Load(Constants.JsondeltamYFile);
+            BoarddeltamXOptions = OptionsLoader.Load(Constants.JsondeltamXFile);
         }
 
         public ICommand AddCoinCommand => new RelayCommand(async _ =>
@@ -105,12 +113,16 @@ namespace PvZWSTools_WPF.ViewModels
             string coinType = NameOption.GetValue(CTInput, CoinOptions);
             string row = NameOption.GetValue(RowInput, BoardRowOptions);
             string col = NameOption.GetValue(ColInput, BoardColOptions);
+            string deltaX = NameOption.GetValue(DeltamXInput, BoarddeltamXOptions);
+            string deltaY = NameOption.GetValue(DeltamYInput, BoarddeltamYOptions);
             await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "放置物品",
                 new Dictionary<string, string>
                 {
                     [Constants.Placeholders.Row] = row,
                     [Constants.Placeholders.Col] = col,
-                    [Constants.Placeholders.CoinType] = coinType
+                    [Constants.Placeholders.CoinType] = coinType,
+                    [Constants.Placeholders.GameObjectDeltamX] = deltaX,
+                    [Constants.Placeholders.GameObjectDeltamY] = deltaY,
                 });
         });
 
@@ -121,6 +133,8 @@ namespace PvZWSTools_WPF.ViewModels
             string zombieType = NameOption.GetValue(ZTInput, ZombieOptions);
             string row = NameOption.GetValue(RowInput, BoardRowOptions);
             string col = NameOption.GetValue(ColInput, BoardColOptions);
+            string deltaX = NameOption.GetValue(DeltamXInput, BoarddeltamXOptions);
+            string deltaY = NameOption.GetValue(DeltamYInput, BoarddeltamYOptions);
             await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "放置道具",
                 new Dictionary<string, string>
                 {
@@ -130,7 +144,9 @@ namespace PvZWSTools_WPF.ViewModels
                     ["{SCARYPOT_SEEDTYPE}"] = seedType,
                     ["{SCARYPOT_ZOMBIETYPE}"] = zombieType,
                     ["{SCARYPOT_SCARYPOTTYPE}"] = VaseType,
-                    ["{SCARYPOT_STATE}"] = VaseState
+                    ["{SCARYPOT_STATE}"] = VaseState,
+                    [Constants.Placeholders.GameObjectDeltamX] = deltaX,
+                    [Constants.Placeholders.GameObjectDeltamY] = deltaY,
                 });
         });
 
@@ -139,14 +155,18 @@ namespace PvZWSTools_WPF.ViewModels
             string seedType = NameOption.GetValue(STInput, PlantOptions);
             string row = NameOption.GetValue(RowInput, BoardRowOptions);
             string col = NameOption.GetValue(ColInput, BoardColOptions);
+            string deltaX = NameOption.GetValue(DeltamXInput, BoarddeltamXOptions);
+            string deltaY = NameOption.GetValue(DeltamYInput, BoarddeltamYOptions);
             await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "放置植物",
                 new Dictionary<string, string>
                 {
                     [Constants.Placeholders.Row] = row,
                     [Constants.Placeholders.Col] = col,
                     [Constants.Placeholders.SeedType] = seedType,
-                    [Constants.Placeholders.Imitater] = ButtonHelper.GetCheckValue(ItInput),
-                    [Constants.Placeholders.LimitPlanting] = ButtonHelper.GetCheckValue(LimitPlantingInput)
+                    [Constants.Placeholders.Imitater] = ButtonHelper.GetCheckValue(Imitater),
+                    [Constants.Placeholders.LimitPlanting] = ButtonHelper.GetCheckValue(LimitPlantingInput),
+                    [Constants.Placeholders.GameObjectDeltamX] = deltaX,
+                    [Constants.Placeholders.GameObjectDeltamY] = deltaY,
                 });
         });
 
@@ -155,6 +175,8 @@ namespace PvZWSTools_WPF.ViewModels
             string zombieType = NameOption.GetValue(ZTInput, ZombieOptions);
             string row = NameOption.GetValue(RowInput, BoardRowOptions);
             string col = NameOption.GetValue(ColInput, BoardColOptions);
+            string deltaX = NameOption.GetValue(DeltamXInput, BoarddeltamXOptions);
+            string deltaY = NameOption.GetValue(DeltamYInput, BoarddeltamYOptions);
             await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "放置僵尸",
                 new Dictionary<string, string>
                 {
@@ -162,7 +184,9 @@ namespace PvZWSTools_WPF.ViewModels
                     [Constants.Placeholders.ZombieType] = zombieType,
                     [Constants.Placeholders.ColPermit] = ButtonHelper.GetCheckValue(ZXPermit),
                     [Constants.Placeholders.Col] = col,
-                    [Constants.Placeholders.MindControl] = ButtonHelper.GetCheckValue(MindCtrl)
+                    [Constants.Placeholders.MindControl] = ButtonHelper.GetCheckValue(MindCtrl),
+                    [Constants.Placeholders.GameObjectDeltamX] = deltaX,
+                    [Constants.Placeholders.GameObjectDeltamY] = deltaY,
                 });
         });
 
@@ -186,6 +210,22 @@ namespace PvZWSTools_WPF.ViewModels
         }
 
         public ObservableCollection<NameOption> BoardColOptions { get; }
+
+        public bool BoarddeltamXDropdownToggleIsChecked
+        {
+            get => _boarddeltamXDropdownToggleIsChecked;
+            set { _boarddeltamXDropdownToggleIsChecked = value; OnPropertyChanged(); }
+        }
+
+        public ObservableCollection<NameOption> BoarddeltamXOptions { get; }
+
+        public bool BoarddeltamYDropdownToggleIsChecked
+        {
+            get => _boarddeltamYDropdownToggleIsChecked;
+            set { _boarddeltamYDropdownToggleIsChecked = value; OnPropertyChanged(); }
+        }
+
+        public ObservableCollection<NameOption> BoarddeltamYOptions { get; }
 
         public bool BoardRowDropdownToggleIsChecked
         {
@@ -226,12 +266,6 @@ namespace PvZWSTools_WPF.ViewModels
             set { _colInput = value; OnPropertyChanged(); }
         }
 
-        public string LimitSeedInput
-        {
-            get => _limitSeedInput;
-            set { _limitSeedInput = value; OnPropertyChanged(); }
-        }
-
         public string CTInput
         {
             get => _ctInput;
@@ -260,8 +294,20 @@ namespace PvZWSTools_WPF.ViewModels
             };
         });
 
+        public string DeltamXInput
+        {
+            get => _deltamXInput;
+            set { _deltamXInput = value; OnPropertyChanged(); }
+        }
+
+        public string DeltamYInput
+        {
+            get => _deltamYInput;
+            set { _deltamYInput = value; OnPropertyChanged(); }
+        }
+
         public ICommand DeMowerCommand => new RelayCommand(async _ =>
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "小推车",
+                            await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "小推车",
                 new Dictionary<string, string> { ["{DE}"] = "1" }));
 
         public ICommand EasyPlantingCommand => new RelayCommand(async _ =>
@@ -316,6 +362,14 @@ namespace PvZWSTools_WPF.ViewModels
         {
             get => _limitSeed;
             set { _limitSeed = value; OnPropertyChanged(); }
+        }
+
+        public ICommand LimitSeedCommand => new RelayCommand(_ => LimitSeed = ButtonHelper.ToggleCheck(LimitSeed));
+
+        public string LimitSeedInput
+        {
+            get => _limitSeedInput;
+            set { _limitSeedInput = value; OnPropertyChanged(); }
         }
 
         public string MindCtrl
@@ -395,6 +449,32 @@ namespace PvZWSTools_WPF.ViewModels
             }
         }
 
+        public NameOption SelecteddeltamX
+        {
+            get => _selecteddeltamX;
+            set
+            {
+                _selecteddeltamX = value;
+
+                if(value != null)
+                    DeltamXInput = value.Name;
+                BoarddeltamXDropdownToggleIsChecked = false; OnPropertyChanged();
+            }
+        }
+
+        public NameOption SelecteddeltamY
+        {
+            get => _selecteddeltamY;
+            set
+            {
+                _selecteddeltamY = value;
+
+                if(value != null)
+                    DeltamYInput = value.Name;
+                BoarddeltamYDropdownToggleIsChecked = false; OnPropertyChanged();
+            }
+        }
+
         public NameOption SelectedItem
         {
             get => _selectedItem;
@@ -463,7 +543,6 @@ namespace PvZWSTools_WPF.ViewModels
 
         public ICommand ToggleMindCtrlCommand => new RelayCommand(_ => MindCtrl = ButtonHelper.ToggleCheck(MindCtrl));
         public ICommand ToggleZXPermitCommand => new RelayCommand(_ => ZXPermit = ButtonHelper.ToggleCheck(ZXPermit));
-        public ICommand LimitSeedCommand => new RelayCommand(_ => LimitSeed = ButtonHelper.ToggleCheck(LimitSeed));
 
         public string VaseState
         {

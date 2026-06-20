@@ -12,6 +12,8 @@ if board==None:
 else:
     item_x = {COL}-1
     item_y = {ROW}-1
+    gameObjectdeltaX = {DELTA_MX}
+    gameObjectdeltaY = {DELTA_MY}
     gridItemType = GridItemType.{ITEM}
     newGridItem = GridItem.GetNewGridItem()
     newGridItem.mGridItemType = gridItemType
@@ -51,10 +53,20 @@ else:
         newGridItem.mPosX = board.GridToPixelX(item_x, item_y)
         newGridItem.mPosY = board.GridToPixelY(item_x, item_y)
         newGridItem.mRenderOrder = Board.MakeRenderOrder(RenderLayer.GraveStone, item_y, 9)
-    newGridItem.mGridX = item_x
-    newGridItem.mGridY = item_y
-    board.mGridItems.Add(newGridItem)
-    if gridItemType == GridItemType.Rake:
+    elif gridItemType == GridItemType.Rake:
         theReanimation = board.CreateRakeReanim(newGridItem.mPosX, newGridItem.mPosY, 0)
         newGridItem.mGridItemReanimID = app.ReanimationGetID(theReanimation)
         newGridItem.mGridItemState = GridItemState.RakeAttracting
+    elif gridItemType == GridItemType.Talisman:
+        num = board.GridToPixelX(item_x, item_y)
+        num2 = board.GridToPixelY(item_x, item_y) - 30
+        reanimation = app.AddReanimation(num, num2, 0, ReanimationType.Talisman)
+        reanimation.PlayReanim("anim_overdue_souls", ReanimLoopType.Loop, 10, 12.0)
+        newGridItem.mGridItemReanimID = app.ReanimationGetID(reanimation)
+        newGridItem.mGridItemCounter = 3000
+    newGridItem.mGridX = item_x
+    newGridItem.mGridY = item_y
+    if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
+        zombie.mX += gameObjectdeltaX
+        zombie.mY += gameObjectdeltaY
+    board.mGridItems.Add(newGridItem)
