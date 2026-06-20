@@ -279,6 +279,10 @@
     <string name="board_strings_1_4_value">0</string>
     <string name="board_strings_1_5_key">植物种植限制</string>
     <string name="board_strings_1_5_value">0</string>
+    <string name="board_strings_1_6_key">列(x)偏移量</string>
+    <string name="board_strings_1_6_value">0</string>
+    <string name="board_strings_1_7_key">行(y)偏移量</string>
+    <string name="board_strings_1_7_value">0</string>
 
     <string name="board_strings_2">放置僵尸</string>
     <string name="board_strings_2_1_key">僵尸行</string>
@@ -291,6 +295,10 @@
     <string name="board_strings_2_4_value">1</string>
     <string name="board_strings_2_5_key">是否被魅惑</string>
     <string name="board_strings_2_5_value">0</string>
+    <string name="board_strings_2_6_key">列(x)偏移量</string>
+    <string name="board_strings_2_6_value">0</string>
+    <string name="board_strings_2_7_key">行(y)偏移量</string>
+    <string name="board_strings_2_7_value">0</string>
 
     <string name="board_strings_3">放置物品</string>
     <string name="board_strings_3_1_key">物品行</string>
@@ -299,6 +307,10 @@
     <string name="board_strings_3_2_value">0</string>
     <string name="board_strings_3_3_key">物品类型</string>
     <string name="board_strings_3_3_value">0</string>
+    <string name="board_strings_3_4_key">列(x)偏移量</string>
+    <string name="board_strings_3_4_value">0</string>
+    <string name="board_strings_3_5_key">行(y)偏移量</string>
+    <string name="board_strings_3_5_value">0</string>
 
     <string name="board_strings_4">放置道具</string>
     <string name="board_strings_4_1_key">道具行</string>
@@ -315,6 +327,10 @@
     <string name="board_strings_4_6_value">1</string>
     <string name="board_strings_4_7_key">花瓶状态</string>
     <string name="board_strings_4_7_value">3</string>
+    <string name="board_strings_4_8_key">列(x)偏移量</string>
+    <string name="board_strings_4_8_value">0</string>
+    <string name="board_strings_4_9_key">行(y)偏移量</string>
+    <string name="board_strings_4_9_value">0</string>
 
     <string name="board_strings_5">清除植物</string>
     <string name="board_strings_6">清除僵尸</string>
@@ -396,27 +412,27 @@
     <string name="setups_strings_1_2_value">0</string>
     <string name="setups_strings_1_3_key">是否为模仿者</string>
     <string name="setups_strings_1_3_value">0</string>
-    
+
     <string name="setups_strings_2">设置场景</string>
     <string name="setups_strings_2_1_key">设置的场景</string>
     <string name="setups_strings_2_1_value">0</string>
-    
+
     <string name="setups_strings_3">随机选卡</string>
-    
+
     <string name="setups_strings_4">查看草坪</string>
-    
+
     <string name="setups_strings_5">切换卡组</string>
     <string name="setups_strings_5_1_key">需要启动的卡组名称</string>
     <string name="setups_strings_5_1_value">default</string>
-    
+
     <string name="setups_strings_6">存储卡组</string>
     <string name="setups_strings_6_1_key">将当前卡组名称保存为</string>
     <string name="setups_strings_6_1_value">DefaultCardName</string>
-    
+
     <string name="setups_strings_7">一键布阵</string>
     <string name="setups_strings_7_1_key">需要布置的阵型名称</string>
     <string name="setups_strings_7_1_value">DefaultFormationName</string>
-    
+
     <string name="setups_strings_8">存储阵型</string>
     <string name="setups_strings_8_1_key">将当前阵型名称保存为</string>
     <string name="setups_strings_8_1_value">DefaultFormationName</string>
@@ -426,7 +442,7 @@
     <string name="setups_strings_8_3_value">1</string>
     <string name="setups_strings_8_4_key">是否存储罐子</string>
     <string name="setups_strings_8_4_value">0</string>
-    
+
     <string name="setups_strings_9">设置道路状况</string>
     <string name="setups_strings_9_1_key">第几行</string>
     <string name="setups_strings_9_1_value">1</string>
@@ -434,7 +450,7 @@
     <string name="setups_strings_9_2_value">0</string>
     <string name="setups_strings_9_3_key">是否同步格子</string>
     <string name="setups_strings_9_3_value">1</string>
-    
+
     <string name="setups_strings_10">设置格子类型</string>
     <string name="setups_strings_10_1_key">第几行</string>
     <string name="setups_strings_10_1_value">1</string>
@@ -446,11 +462,11 @@
     <string name="fun_strings_1">随机罐子</string>
     <string name="fun_strings_1_1_key">随机罐子{CHECK}(输入0为关闭,1为开启)</string>
     <string name="fun_strings_1_1_value">1</string>
-    
+
     <string name="fun_strings_2">随机卡片</string>
     <string name="fun_strings_2_1_key">随机卡片{CHECK}(输入0为关闭,1为开启)</string>
     <string name="fun_strings_2_1_value">1</string>
-    
+
     <string name="fun_strings_3">随机卡槽</string>
     <string name="fun_strings_3_1_key">随机卡槽{CHECK}(输入0为关闭,1为开启)</string>
     <string name="fun_strings_3_1_value">1</string>

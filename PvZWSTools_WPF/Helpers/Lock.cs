@@ -6,7 +6,7 @@ namespace PvZWSTools_WPF.Helpers
 {
     public static class Lock
     {
-        private const string EXPIRATION_DATE = "2026-06-19";
+        private const string EXPIRATION_DATE = "2026-06-27";
 
         private const string PASSWORD = "LING";
 

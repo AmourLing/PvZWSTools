@@ -1,37 +1,50 @@
-#用于存储卡槽方案
-#2025.07.05
+# 用于存储卡槽方案
+# 2025.07.05
+#2026.06.13
 
-import json
-import os
+import clr
+clr.AddReference("System.IO")
+clr.AddReference("Newtonsoft.Json")
+
+from System.IO import Path, File, Directory
+from Newtonsoft.Json import JsonConvert, Formatting
 from Lawn import *
 from Sexy import *
 
-seed = []
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-spn=0
-while True:
+def LOG(e, code=0):
+    msg = f"[ErrorCode {code}] {repr(e)}"
     try:
-        pt=int(board.mSeedBank.mSeedPackets[spn].mPacketType)
-        it=int(board.mSeedBank.mSeedPackets[spn].mImitaterType)
-        seed.append([pt,it])
-        spn+=1
+        if app is not None:
+            app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
     except:
-        break
+        pass
+    print(msg)
+
+seed = []
+spn = 0
+try:
+    while True:
+        pt = int(board.mSeedBank.mSeedPackets[spn].mPacketType)
+        it = int(board.mSeedBank.mSeedPackets[spn].mImitaterType)
+        seed.append([pt, it])
+        spn += 1
+except Exception:
+    pass
 
 name = "{NAME}"
 
 try:
-    base_dir = os.path.join(r"{PATH}", r"card")
-    file_path = os.path.join(base_dir, f"{name}.json")
-    os.makedirs(base_dir, exist_ok=True)
-    combined_data = {
-        "seedPackets": seed,
-    }
+    base_dir = Path.Combine(r"{PATH}")
+    if not Directory.Exists(base_dir):
+        Directory.CreateDirectory(base_dir)
 
-    with open(os.path.join(base_dir, f"{name}.json"), "w", encoding="utf-8") as f:
-        json.dump(combined_data, f, indent=2)
+    file_path = Path.Combine(base_dir, f"{name}.json")
 
+    combined_data = {"seedPackets": seed}
+    json_str = JsonConvert.SerializeObject(combined_data, Formatting.Indented)
+    File.WriteAllText(file_path, json_str)
 except Exception as e:
-    app.DoDialog(16,True,"ERROR!",repr(e),"OK",3)
+    LOG(e, 1001)

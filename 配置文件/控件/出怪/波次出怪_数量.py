@@ -1,70 +1,129 @@
-#僵尸出怪列表
-#2025.07.05
+# 僵尸出怪列表 (按数量输出)
+# 2025.07.05 (IronPython 无标准库版，使用 MatchEvaluator 修复反向引用)
 
+import clr
+
+clr.AddReference("System.IO")
+clr.AddReference("System")
+clr.AddReference("Newtonsoft.Json")
+
+from System.IO import Path, File, Directory
+from System.Text.RegularExpressions import Regex, MatchEvaluator
+from Newtonsoft.Json import JsonConvert, Formatting
+from Newtonsoft.Json.Linq import JObject, JArray
 from Lawn import *
 from Sexy import *
-import json
-import os
-import re
-from collections import OrderedDict
-
-def load_zombie_names():
-    path=r"{PATH}"
-    with open(path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-        return {int(item["Value"]): item["Name"] for item in data}
 
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
+
+def LOG(e, code=0):
+    msg = f"[ErrorCode {code}] {repr(e)}"
+    app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
+    print(msg)
+
+def safe_int(value, default=0, error_code=5000):
+    """安全转换为整数，支持枚举、JValue、字符串等"""
+    try:
+        return int(value)
+    except Exception as e:
+        try:
+            s = str(value).strip()
+            if s == '':
+                return default
+            return int(s)
+        except:
+            LOG(Exception(f"safe_int failed: value={value!r} type={type(value)} original={e}"), error_code)
+            return default
+
+def load_zombie_names():
+    path = r"{PATH}"
+    if not File.Exists(path):
+        LOG(Exception(f"Zombie name mapping file not found: {path}"), 1001)
+        return {}
+    try:
+        content = File.ReadAllText(path)
+        array = JArray.Parse(content)
+        result = {}
+        for item in array:
+            value_str = str(item["Value"])
+            try:
+                zombie_enum = getattr(ZombieType, value_str)
+                enum_id = int(zombie_enum)
+            except:
+                continue
+            name = str(item["Name"])
+            result[enum_id] = name
+        return result
+    except Exception as e:
+        LOG(e, 1002)
+        return {}
+
 ALLOW_JSON_ZOMBIES_IN_WAVE = "{CHECK}"
 
 if board is None:
-    app.DoDialog(16, True, "ERROR!", "未找到board进程", "OK", 3)
-elif ALLOW_JSON_ZOMBIES_IN_WAVE!="1":
+    LOG(Exception("未找到board进程"), 2001)
+elif ALLOW_JSON_ZOMBIES_IN_WAVE != "1":
     zombie_names = load_zombie_names()
-    for  i in range(0,board.mNumWaves):
-        print("第{}波".format(i+1),end=":")
-        z_dic={}
-        for j in range(0,50):
-            z = int(board.mZombiesInWave[i, j])
-            if z==-1:
+    max_zombie_type = safe_int(ZombieType.RedeyeGargantuar, error_code=2002)
+    for i in range(0, board.mNumWaves):
+        print("第{}波".format(i+1), end=":")
+        z_dic = {}
+        for j in range(0, 50):
+            z_raw = board.mZombiesInWave[i, j]
+            z = safe_int(z_raw, default=-1, error_code=2003)
+            if z == -1:
                 break
-            if z_dic.get(z,-1)==-1:
-                z_dic[z]=1
-            else:
-                z_dic[z]+=1
-        for k in range(0,int(ZombieType.RedeyeGargantuar)+1):
-            if z_dic.get(k,-1)!=-1:
-                name = zombie_names.get(k, ZombieType(z))
-                print(f"{name}x{z_dic[k]}",end=" ")
+            z_dic[z] = z_dic.get(z, 0) + 1
+        for k in range(0, max_zombie_type + 1):
+            if k in z_dic:
+                name = zombie_names.get(k, ZombieType(k))
+                print(f"{name}x{z_dic[k]}", end=" ")
         print("")
 else:
     try:
-        combined_data = OrderedDict()
-        combined_data["NumWaves"]=board.mNumWaves
+        combined_data = JObject()
+        combined_data["NumWaves"] = board.mNumWaves
+        max_zombie_type = safe_int(ZombieType.RedeyeGargantuar, error_code=3001)
         for i in range(0, board.mNumWaves):
             z_dic = {}
             for j in range(0, 50):
-                z = int(board.mZombiesInWave[i, j])
+                z_raw = board.mZombiesInWave[i, j]
+                z = safe_int(z_raw, default=-1, error_code=3002)
                 if z == -1:
                     break
-                z_dic[z] = z_dic.get(z, 0) + 1      
-            wave_data = []
-            for k in range(0, int(ZombieType.RedeyeGargantuar) + 1):
+                z_dic[z] = z_dic.get(z, 0) + 1
+            wave_array = JArray()
+            for k in range(0, max_zombie_type + 1):
                 if k in z_dic:
-                    wave_data.append([k, z_dic[k]])
+                    pair = JArray()
+                    pair.Add(k)
+                    pair.Add(z_dic[k])
+                    wave_array.Add(pair)
             wave_key = "wave{}".format(i+1)
-            combined_data[wave_key] = wave_data 
-        json_str = json.dumps(combined_data, indent=4)
-        json_str = re.sub(r'\[\s*(-?\d+)\s*,\s*(-?\d+)\s*\]', r'[\1,\2]', json_str)
-        file_path = os.path.join(r"{DEFAULTPATH}","ZombiesInWave.json")
-        if os.path.exists(file_path):
-            os.remove(file_path)
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(json_str)
+            combined_data[wave_key] = wave_array
+        json_str = JsonConvert.SerializeObject(combined_data, Formatting.Indented)
+
+        # 使用 MatchEvaluator 正确替换，避免输出反斜杠
+        def replacer(m):
+            return f"[{m.Groups[1].Value},{m.Groups[2].Value}]"
+        json_str = Regex.Replace(json_str, r'\[\s*(-?\d+)\s*,\s*(-?\d+)\s*\]', MatchEvaluator(replacer))
+
+        default_dir = r"{DEFAULTPATH}"
+        if not Directory.Exists(default_dir):
+            Directory.CreateDirectory(default_dir)
+        file_path = Path.Combine(default_dir, "ZombiesInWave.json")
+        if File.Exists(file_path):
+            File.Delete(file_path)
+        File.WriteAllText(file_path, json_str)
+
+        # 使用 ShellExecute 打开文件
         try:
-            os.startfile(file_path)
+            from System.Diagnostics import Process, ProcessStartInfo
+            psi = ProcessStartInfo(file_path)
+            psi.UseShellExecute = True
+            Process.Start(psi)
         except Exception as e:
-            app.DoDialog(16,True,"ERROR1!",repr(e),"OK",3)
+            LOG(e, 4001)
     except Exception as e:
-        app.DoDialog(16,True,"ERROR2!",repr(e),"OK",3)
+        LOG(e, 4002)

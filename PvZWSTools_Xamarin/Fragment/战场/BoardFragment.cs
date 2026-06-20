@@ -13,6 +13,8 @@ namespace PvZWSTools_Xamarin
         private static readonly string mBoardPath = "战场";
         private Dictionary<string, string> map;
         private Dictionary<string, Dictionary<string, string>> BoardColOptions { get; set; }
+        private Dictionary<string, Dictionary<string, string>> BoarddeltamXOptions { get; set; }
+        private Dictionary<string, Dictionary<string, string>> BoarddeltamYOptions { get; set; }
         private Dictionary<string, Dictionary<string, string>> BoardRowOptions { get; set; }
         private Dictionary<string, Dictionary<string, string>> CoinOptions { get; set; }
         private Dictionary<string, Dictionary<string, string>> ItemOptions { get; set; }
@@ -42,6 +44,8 @@ namespace PvZWSTools_Xamarin
             ItemOptions = new Dictionary<string, Dictionary<string, string>>();
             BoardColOptions = new Dictionary<string, Dictionary<string, string>>();
             BoardRowOptions = new Dictionary<string, Dictionary<string, string>>();
+            BoarddeltamXOptions = new Dictionary<string, Dictionary<string, string>>();
+            BoarddeltamYOptions = new Dictionary<string, Dictionary<string, string>>();
             LoadOptions();
         }
 
@@ -54,6 +58,9 @@ namespace PvZWSTools_Xamarin
                 dropdownOptions[GetString(Resource.String.board_strings_1_1_key)] = BoardRowOptions[GetString(Resource.String.board_strings_1_1_key)];
                 dropdownOptions[GetString(Resource.String.board_strings_1_3_key)] = PlantOptions[GetString(Resource.String.board_strings_1_3_key)];
                 dropdownOptions[GetString(Resource.String.board_strings_1_2_key)] = BoardColOptions[GetString(Resource.String.board_strings_1_2_key)];
+                dropdownOptions[GetString(Resource.String.board_strings_1_6_key)] = BoarddeltamXOptions[GetString(Resource.String.board_strings_1_6_key)];
+                dropdownOptions[GetString(Resource.String.board_strings_1_7_key)] = BoarddeltamYOptions[GetString(Resource.String.board_strings_1_7_key)];
+
                 CreateInputDialog.OptAndDone4(Activity, GetString(Resource.String.board_strings_1), new Dictionary<string, string>
                 {
                     [GetString(Resource.String.board_strings_1_1_key)] = map[GetString(Resource.String.board_strings_1_1_key)],
@@ -61,13 +68,17 @@ namespace PvZWSTools_Xamarin
                     [GetString(Resource.String.board_strings_1_3_key)] = map[GetString(Resource.String.board_strings_1_3_key)],
                     [GetString(Resource.String.board_strings_1_4_key)] = map[GetString(Resource.String.board_strings_1_4_key)],
                     [GetString(Resource.String.board_strings_1_5_key)] = map[GetString(Resource.String.board_strings_1_5_key)],
+                    [GetString(Resource.String.board_strings_1_6_key)] = map[GetString(Resource.String.board_strings_1_6_key)],
+                    [GetString(Resource.String.board_strings_1_7_key)] = map[GetString(Resource.String.board_strings_1_7_key)],
                 }, mBoardPath, GetString(Resource.String.board_strings_1), new Dictionary<string, string>
                 {
                     ["{ROW}"] = "0",
                     ["{COL}"] = "1",
                     ["{SEEDTYPE}"] = "2",
                     ["{IMITATER}"] = "3",
-                    ["{LIMITPLANTING}"] = "4"
+                    ["{LIMITPLANTING}"] = "4",
+                    ["{DELTA_MX}"] = "5",
+                    ["{DELTA_MY}"] = "6"
                 }, map, dropdownOptions);
             };
 
@@ -77,6 +88,9 @@ namespace PvZWSTools_Xamarin
                 dropdownOptions[GetString(Resource.String.board_strings_2_2_key)] = ZombieOptions[GetString(Resource.String.board_strings_2_2_key)];
                 dropdownOptions[GetString(Resource.String.board_strings_2_1_key)] = BoardRowOptions[GetString(Resource.String.board_strings_2_1_key)];
                 dropdownOptions[GetString(Resource.String.board_strings_2_4_key)] = BoardColOptions[GetString(Resource.String.board_strings_2_4_key)];
+                dropdownOptions[GetString(Resource.String.board_strings_2_6_key)] = BoarddeltamXOptions[GetString(Resource.String.board_strings_2_6_key)];
+                dropdownOptions[GetString(Resource.String.board_strings_2_7_key)] = BoarddeltamYOptions[GetString(Resource.String.board_strings_2_7_key)];
+
                 CreateInputDialog.OptAndDone3(Activity, GetString(Resource.String.board_strings_2), new Dictionary<string, string>
                 {
                     [GetString(Resource.String.board_strings_2_1_key)] = map[GetString(Resource.String.board_strings_2_1_key)],
@@ -84,33 +98,50 @@ namespace PvZWSTools_Xamarin
                     [GetString(Resource.String.board_strings_2_3_key)] = map[GetString(Resource.String.board_strings_2_3_key)],
                     [GetString(Resource.String.board_strings_2_4_key)] = map[GetString(Resource.String.board_strings_2_4_key)],
                     [GetString(Resource.String.board_strings_2_5_key)] = map[GetString(Resource.String.board_strings_2_5_key)],
+                    [GetString(Resource.String.board_strings_2_6_key)] = map[GetString(Resource.String.board_strings_2_6_key)],
+                    [GetString(Resource.String.board_strings_2_7_key)] = map[GetString(Resource.String.board_strings_2_7_key)],
                 }, mBoardPath, GetString(Resource.String.board_strings_2), new Dictionary<string, string>
                 {
                     ["{ROW}"] = "0",
                     ["{ZOMBIETYPE}"] = "1",
                     ["{COLPERMIT}"] = "2",
-                    ["{GRIDX}"] = "3",
-                    ["{MINDCONTROL}"] = "4"
+                    ["{COL}"] = "3",
+                    ["{MINDCONTROL}"] = "4",
+                    ["{DELTA_MX}"] = "5",
+                    ["{DELTA_MY}"] = "6"
                 }, map, dropdownOptions);
             };
             view.FindViewById<Button>(Resource.Id.button3).Click += (sender, e) =>
+            {
+                var dropdownOptionsForAddCoin = new Dictionary<string, Dictionary<string, string>>();
+                dropdownOptionsForAddCoin[GetString(Resource.String.board_strings_3_4_key)] = BoarddeltamXOptions[GetString(Resource.String.board_strings_3_4_key)];
+                dropdownOptionsForAddCoin[GetString(Resource.String.board_strings_3_5_key)] = BoarddeltamYOptions[GetString(Resource.String.board_strings_3_5_key)];
+
                 CreateInputDialog.OptAndDone3(Activity, GetString(Resource.String.board_strings_3), new Dictionary<string, string>
                 {
                     [GetString(Resource.String.board_strings_3_1_key)] = map[GetString(Resource.String.board_strings_3_1_key)],
                     [GetString(Resource.String.board_strings_3_2_key)] = map[GetString(Resource.String.board_strings_3_2_key)],
                     [GetString(Resource.String.board_strings_3_3_key)] = map[GetString(Resource.String.board_strings_3_3_key)],
+                    [GetString(Resource.String.board_strings_3_4_key)] = map[GetString(Resource.String.board_strings_3_4_key)],
+                    [GetString(Resource.String.board_strings_3_5_key)] = map[GetString(Resource.String.board_strings_3_5_key)],
                 }, mBoardPath, GetString(Resource.String.board_strings_3), new Dictionary<string, string>
                 {
                     ["{ROW}"] = "0",
                     ["{COL}"] = "1",
-                    ["{COINTYPE}"] = "2"
-                }, map, CoinOptions);
+                    ["{COINTYPE}"] = "2",
+                    ["{DELTA_MX}"] = "3",
+                    ["{DELTA_MY}"] = "4"
+                }, map, dropdownOptionsForAddCoin);
+            };
             view.FindViewById<Button>(Resource.Id.button4).Click += (sender, e) =>
             {
                 var dropdownOptionsForAddItem = new Dictionary<string, Dictionary<string, string>>();
                 dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_3_key)] = ItemOptions[GetString(Resource.String.board_strings_4_3_key)];
-                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_4_key)] = PlantOptions[GetString(Resource.String.board_strings_1_3_key)];
-                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_5_key)] = ZombieOptions[GetString(Resource.String.board_strings_2_2_key)];
+                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_4_key)] = PlantOptions[GetString(Resource.String.board_strings_4_4_key)];
+                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_5_key)] = ZombieOptions[GetString(Resource.String.board_strings_4_5_key)];
+                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_7_key)] = BoarddeltamXOptions[GetString(Resource.String.board_strings_4_7_key)];
+                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_8_key)] = BoarddeltamYOptions[GetString(Resource.String.board_strings_4_8_key)];
+
                 CreateInputDialog.OptAndDone4(Activity, GetString(Resource.String.board_strings_4), new Dictionary<string, string>
                 {
                     [GetString(Resource.String.board_strings_4_1_key)] = map[GetString(Resource.String.board_strings_4_1_key)],
@@ -129,6 +160,8 @@ namespace PvZWSTools_Xamarin
                     ["{SCARYPOT_ZOMBIETYPE}"] = "4",
                     ["{SCARYPOT_SCARYPOTTYPE}"] = "5",
                     ["{SCARYPOT_STATE}"] = "6",
+                    ["{DELTA_MX}"] = "7",
+                    ["{DELTA_MY}"] = "8"
                 }, map, dropdownOptionsForAddItem);
             };
             view.FindViewById<Button>(Resource.Id.button5).Click += (sender, e) =>
@@ -248,16 +281,22 @@ namespace PvZWSTools_Xamarin
                 [GetString(Resource.String.board_strings_1_3_key)] = GetString(Resource.String.board_strings_1_3_value),
                 [GetString(Resource.String.board_strings_1_4_key)] = GetString(Resource.String.board_strings_1_4_value),
                 [GetString(Resource.String.board_strings_1_5_key)] = GetString(Resource.String.board_strings_1_5_value),
+                [GetString(Resource.String.board_strings_1_6_key)] = GetString(Resource.String.board_strings_1_6_value),
+                [GetString(Resource.String.board_strings_1_7_key)] = GetString(Resource.String.board_strings_1_7_value),
 
                 [GetString(Resource.String.board_strings_2_1_key)] = GetString(Resource.String.board_strings_2_1_value),
                 [GetString(Resource.String.board_strings_2_2_key)] = GetString(Resource.String.board_strings_2_2_value),
                 [GetString(Resource.String.board_strings_2_3_key)] = GetString(Resource.String.board_strings_2_3_value),
                 [GetString(Resource.String.board_strings_2_4_key)] = GetString(Resource.String.board_strings_2_4_value),
                 [GetString(Resource.String.board_strings_2_5_key)] = GetString(Resource.String.board_strings_2_5_value),
+                [GetString(Resource.String.board_strings_2_6_key)] = GetString(Resource.String.board_strings_2_6_value),
+                [GetString(Resource.String.board_strings_2_7_key)] = GetString(Resource.String.board_strings_2_7_value),
 
                 [GetString(Resource.String.board_strings_3_1_key)] = GetString(Resource.String.board_strings_3_1_value),
                 [GetString(Resource.String.board_strings_3_2_key)] = GetString(Resource.String.board_strings_3_2_value),
                 [GetString(Resource.String.board_strings_3_3_key)] = GetString(Resource.String.board_strings_3_3_value),
+                [GetString(Resource.String.board_strings_3_4_key)] = GetString(Resource.String.board_strings_3_4_value),
+                [GetString(Resource.String.board_strings_3_5_key)] = GetString(Resource.String.board_strings_3_5_value),
 
                 [GetString(Resource.String.board_strings_4_1_key)] = GetString(Resource.String.board_strings_4_1_value),
                 [GetString(Resource.String.board_strings_4_2_key)] = GetString(Resource.String.board_strings_4_2_value),
@@ -266,6 +305,8 @@ namespace PvZWSTools_Xamarin
                 [GetString(Resource.String.board_strings_4_5_key)] = GetString(Resource.String.board_strings_4_5_value),
                 [GetString(Resource.String.board_strings_4_6_key)] = GetString(Resource.String.board_strings_4_6_value),
                 [GetString(Resource.String.board_strings_4_7_key)] = GetString(Resource.String.board_strings_4_7_value),
+                [GetString(Resource.String.board_strings_4_8_key)] = GetString(Resource.String.board_strings_4_8_value),
+                [GetString(Resource.String.board_strings_4_9_key)] = GetString(Resource.String.board_strings_4_9_value),
 
                 [GetString(Resource.String.board_strings_9_1_key)] = GetString(Resource.String.board_strings_9_1_value),
                 [GetString(Resource.String.board_strings_9_2_key)] = GetString(Resource.String.board_strings_9_2_value),
@@ -283,7 +324,7 @@ namespace PvZWSTools_Xamarin
         {
             try
             {
-                string[] option = { "植物", "僵尸", "物品", "道具", "行", "列" };
+                string[] option = { "植物", "僵尸", "物品", "道具", "行", "列", "行偏移量", "列偏移量" };
                 var externalFilesDir = Android.App.Application.Context.GetExternalFilesDir(null);
                 if(externalFilesDir == null)
                 {
@@ -335,6 +376,21 @@ namespace PvZWSTools_Xamarin
                             case "列":
                                 BoardColOptions[GetString(Resource.String.board_strings_1_2_key)] = Dict;
                                 BoardColOptions[GetString(Resource.String.board_strings_2_4_key)] = Dict;
+                                break;
+
+                            case "行偏移量":
+                                BoarddeltamYOptions[GetString(Resource.String.board_strings_1_7_key)] = Dict;
+                                BoarddeltamYOptions[GetString(Resource.String.board_strings_2_7_key)] = Dict;
+                                BoarddeltamYOptions[GetString(Resource.String.board_strings_3_5_key)] = Dict;
+                                BoarddeltamYOptions[GetString(Resource.String.board_strings_4_9_key)] = Dict;
+
+                                break;
+
+                            case "列偏移量":
+                                BoarddeltamXOptions[GetString(Resource.String.board_strings_1_6_key)] = Dict;
+                                BoarddeltamYOptions[GetString(Resource.String.board_strings_2_6_key)] = Dict;
+                                BoarddeltamYOptions[GetString(Resource.String.board_strings_3_4_key)] = Dict;
+                                BoarddeltamYOptions[GetString(Resource.String.board_strings_4_8_key)] = Dict;
                                 break;
 
                             default:

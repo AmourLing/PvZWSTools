@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using WebSocketSharp.NetCore;
 using PvZWSTools_WPF.Helpers;
+using Newtonsoft.Json;
 
 namespace PvZWSTools_WPF.Services
 {
