@@ -47,7 +47,7 @@ namespace PvZWSTools_WPF.ViewModels
         private string _itInput = Constants.c_Symbol_Off;
 
         private string _limitPlanting = Constants.c_Symbol_Off;
-
+        private string _isSleeping = Constants.c_Symbol_Off;
         private string _limitSeed = Constants.c_Symbol_Off;
 
         private string _limitSeedInput = Constants.c_Symbol_Off;
@@ -167,6 +167,7 @@ namespace PvZWSTools_WPF.ViewModels
                     [Constants.Placeholders.LimitPlanting] = ButtonHelper.GetCheckValue(LimitPlantingInput),
                     [Constants.Placeholders.GameObjectDeltamX] = deltaX,
                     [Constants.Placeholders.GameObjectDeltamY] = deltaY,
+                    [Constants.Placeholders.IsSleeping] = ButtonHelper.GetCheckValue(IsSleepingInput),
                 });
         });
 
@@ -358,6 +359,12 @@ namespace PvZWSTools_WPF.ViewModels
             set { _limitPlanting = value; OnPropertyChanged(); }
         }
 
+        public string IsSleepingInput
+        {
+            get => _isSleeping;
+            set { _isSleeping = value; OnPropertyChanged(); }
+        }
+
         public string LimitSeed
         {
             get => _limitSeed;
@@ -540,6 +547,7 @@ namespace PvZWSTools_WPF.ViewModels
 
         public ICommand ToggleImitaterCommand => new RelayCommand(_ => Imitater = ButtonHelper.ToggleCheck(Imitater));
         public ICommand ToggleLimitPlantingCommand => new RelayCommand(_ => LimitPlantingInput = ButtonHelper.ToggleCheck(LimitPlantingInput));
+        public ICommand ToggleIsSleepingCommand => new RelayCommand(_ => IsSleepingInput = ButtonHelper.ToggleCheck(IsSleepingInput));
 
         public ICommand ToggleMindCtrlCommand => new RelayCommand(_ => MindCtrl = ButtonHelper.ToggleCheck(MindCtrl));
         public ICommand ToggleZXPermitCommand => new RelayCommand(_ => ZXPermit = ButtonHelper.ToggleCheck(ZXPermit));

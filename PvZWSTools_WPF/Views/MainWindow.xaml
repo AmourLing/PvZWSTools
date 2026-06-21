@@ -2031,6 +2031,8 @@
                                         <ColumnDefinition Width="40" />
                                         <ColumnDefinition Width="30" />
                                         <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
                                     </Grid.ColumnDefinitions>
                                     <TextBox
                                         x:Name="STInput"
@@ -2080,6 +2082,19 @@
                                         Height="25"
                                         Command="{Binding ToggleLimitPlantingCommand}"
                                         Content="限制" />
+                                    <TextBox
+                                        x:Name="IsSleepingInput"
+                                        Grid.Column="7"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding IsSleepingInput}" />
+                                    <Button
+                                        x:Name="IsSleepingBtn"
+                                        Grid.Column="8"
+                                        Height="25"
+                                        Command="{Binding ToggleIsSleepingCommand}"
+                                        Content="沉睡" />
                                     <Popup
                                         IsOpen="{Binding PlantDropdownToggleIsChecked, Mode=TwoWay}"
                                         Placement="Bottom"

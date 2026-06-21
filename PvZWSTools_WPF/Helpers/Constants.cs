@@ -96,6 +96,7 @@
         public const string ZombieType = "{ZOMBIETYPE}";
         public const string GameObjectDeltamX = "{DELTA_MX}";
         public const string GameObjectDeltamY = "{DELTA_MY}";
+        public const string IsSleeping = "{ISSLEEPING}";
     }
 
     // 子文件夹名称

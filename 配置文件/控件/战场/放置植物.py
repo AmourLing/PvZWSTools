@@ -18,6 +18,7 @@ else:
     seedType = SeedType.{SEEDTYPE}
     imitaterType = SeedType["None"]
     limitPlanting = {LIMITPLANTING}
+    isSleeping = {ISSLEEPING}
     X_MAX=Constants.GRIDSIZEX
     Y_MAX=Constants.MAX_GRIDSIZEY
     if not board.StageHas6Rows():
@@ -35,6 +36,8 @@ else:
                     if board.CanPlantAt(i,j,s)!=PlantingReason.Ok:
                         continue
                 plant = board.AddPlant(i,j,seedType,imitaterType)
+                if isSleeping:
+                    plant.SetSleeping(True)
                 if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
                     plant.mX += gameObjectdeltaX
                     plant.mY += gameObjectdeltaY
@@ -47,6 +50,8 @@ else:
                 if board.CanPlantAt(x,j,s)!=PlantingReason.Ok:
                     continue
             plant = board.AddPlant(x,j,seedType,imitaterType)
+            if isSleeping:
+                plant.SetSleeping(True)
             if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
                 plant.mX += gameObjectdeltaX
                 plant.mY += gameObjectdeltaY
@@ -59,6 +64,8 @@ else:
                 if board.CanPlantAt(i,y,s)!=PlantingReason.Ok:
                     continue
             plant = board.AddPlant(i,y,seedType,imitaterType)
+            if isSleeping:
+                plant.SetSleeping(True)
             if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
                 plant.mX += gameObjectdeltaX
                 plant.mY += gameObjectdeltaY
@@ -70,6 +77,8 @@ else:
             if board.CanPlantAt(x,y,s)!=PlantingReason.Ok:
                 pass
         plant = board.AddPlant(x,y,seedType,imitaterType)
+        if isSleeping:
+            plant.SetSleeping(True)
         if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
             plant.mX += gameObjectdeltaX
             plant.mY += gameObjectdeltaY
