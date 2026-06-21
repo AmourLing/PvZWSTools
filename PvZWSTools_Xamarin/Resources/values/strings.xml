@@ -283,6 +283,8 @@
     <string name="board_strings_1_6_value">0</string>
     <string name="board_strings_1_7_key">行(y)偏移量</string>
     <string name="board_strings_1_7_value">0</string>
+    <string name="board_strings_1_8_key">是否沉睡</string>
+    <string name="board_strings_1_8_value">0</string>
 
     <string name="board_strings_2">放置僵尸</string>
     <string name="board_strings_2_1_key">僵尸行</string>
