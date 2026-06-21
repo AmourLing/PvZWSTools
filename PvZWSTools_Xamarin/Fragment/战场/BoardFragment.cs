@@ -70,6 +70,7 @@ namespace PvZWSTools_Xamarin
                     [GetString(Resource.String.board_strings_1_5_key)] = map[GetString(Resource.String.board_strings_1_5_key)],
                     [GetString(Resource.String.board_strings_1_6_key)] = map[GetString(Resource.String.board_strings_1_6_key)],
                     [GetString(Resource.String.board_strings_1_7_key)] = map[GetString(Resource.String.board_strings_1_7_key)],
+                    [GetString(Resource.String.board_strings_1_8_key)] = map[GetString(Resource.String.board_strings_1_8_key)],
                 }, mBoardPath, GetString(Resource.String.board_strings_1), new Dictionary<string, string>
                 {
                     ["{ROW}"] = "0",
@@ -78,7 +79,8 @@ namespace PvZWSTools_Xamarin
                     ["{IMITATER}"] = "3",
                     ["{LIMITPLANTING}"] = "4",
                     ["{DELTA_MX}"] = "5",
-                    ["{DELTA_MY}"] = "6"
+                    ["{DELTA_MY}"] = "6",
+                    ["{ISSLEEPING}"] = "7"
                 }, map, dropdownOptions);
             };
 
@@ -283,6 +285,7 @@ namespace PvZWSTools_Xamarin
                 [GetString(Resource.String.board_strings_1_5_key)] = GetString(Resource.String.board_strings_1_5_value),
                 [GetString(Resource.String.board_strings_1_6_key)] = GetString(Resource.String.board_strings_1_6_value),
                 [GetString(Resource.String.board_strings_1_7_key)] = GetString(Resource.String.board_strings_1_7_value),
+                [GetString(Resource.String.board_strings_1_8_key)] = GetString(Resource.String.board_strings_1_8_value),
 
                 [GetString(Resource.String.board_strings_2_1_key)] = GetString(Resource.String.board_strings_2_1_value),
                 [GetString(Resource.String.board_strings_2_2_key)] = GetString(Resource.String.board_strings_2_2_value),

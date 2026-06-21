@@ -53,7 +53,6 @@ else:
         newGridItem.mPosX = board.GridToPixelX(item_x, item_y)
         newGridItem.mPosY = board.GridToPixelY(item_x, item_y)
         newGridItem.mRenderOrder = Board.MakeRenderOrder(RenderLayer.GraveStone, item_y, 9)
-    elif gridItemType == GridItemType.Rake:
         theReanimation = board.CreateRakeReanim(newGridItem.mPosX, newGridItem.mPosY, 0)
         newGridItem.mGridItemReanimID = app.ReanimationGetID(theReanimation)
         newGridItem.mGridItemState = GridItemState.RakeAttracting
@@ -67,6 +66,6 @@ else:
     newGridItem.mGridX = item_x
     newGridItem.mGridY = item_y
     if not (gameObjectdeltaX == 0 and gameObjectdeltaY == 0):
-        zombie.mX += gameObjectdeltaX
-        zombie.mY += gameObjectdeltaY
+        newGridItem.mX += gameObjectdeltaX
+        newGridItem.mY += gameObjectdeltaY
     board.mGridItems.Add(newGridItem)
