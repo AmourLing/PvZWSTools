@@ -11517,229 +11517,361 @@ namespace PvZWSTools_Xamarin
 			public const int spawning_strings_2_20_value = 2131624393;
 			
 			// aapt resource value: 0x7F0E01CA
-			public const int spawning_strings_2_2_key = 2131624394;
+			public const int spawning_strings_2_21_key = 2131624394;
 			
 			// aapt resource value: 0x7F0E01CB
-			public const int spawning_strings_2_2_value = 2131624395;
+			public const int spawning_strings_2_21_value = 2131624395;
 			
 			// aapt resource value: 0x7F0E01CC
-			public const int spawning_strings_2_3_key = 2131624396;
+			public const int spawning_strings_2_22_key = 2131624396;
 			
 			// aapt resource value: 0x7F0E01CD
-			public const int spawning_strings_2_3_value = 2131624397;
+			public const int spawning_strings_2_22_value = 2131624397;
 			
 			// aapt resource value: 0x7F0E01CE
-			public const int spawning_strings_2_4_key = 2131624398;
+			public const int spawning_strings_2_23_key = 2131624398;
 			
 			// aapt resource value: 0x7F0E01CF
-			public const int spawning_strings_2_4_value = 2131624399;
+			public const int spawning_strings_2_23_value = 2131624399;
 			
 			// aapt resource value: 0x7F0E01D0
-			public const int spawning_strings_2_5_key = 2131624400;
+			public const int spawning_strings_2_24_key = 2131624400;
 			
 			// aapt resource value: 0x7F0E01D1
-			public const int spawning_strings_2_5_value = 2131624401;
+			public const int spawning_strings_2_24_value = 2131624401;
 			
 			// aapt resource value: 0x7F0E01D2
-			public const int spawning_strings_2_6_key = 2131624402;
+			public const int spawning_strings_2_25_key = 2131624402;
 			
 			// aapt resource value: 0x7F0E01D3
-			public const int spawning_strings_2_6_value = 2131624403;
+			public const int spawning_strings_2_25_value = 2131624403;
 			
 			// aapt resource value: 0x7F0E01D4
-			public const int spawning_strings_2_7_key = 2131624404;
+			public const int spawning_strings_2_26_key = 2131624404;
 			
 			// aapt resource value: 0x7F0E01D5
-			public const int spawning_strings_2_7_value = 2131624405;
+			public const int spawning_strings_2_26_value = 2131624405;
 			
 			// aapt resource value: 0x7F0E01D6
-			public const int spawning_strings_2_8_key = 2131624406;
+			public const int spawning_strings_2_27_key = 2131624406;
 			
 			// aapt resource value: 0x7F0E01D7
-			public const int spawning_strings_2_8_value = 2131624407;
+			public const int spawning_strings_2_27_value = 2131624407;
 			
 			// aapt resource value: 0x7F0E01D8
-			public const int spawning_strings_2_9_key = 2131624408;
+			public const int spawning_strings_2_28_key = 2131624408;
 			
 			// aapt resource value: 0x7F0E01D9
-			public const int spawning_strings_2_9_value = 2131624409;
+			public const int spawning_strings_2_28_value = 2131624409;
 			
 			// aapt resource value: 0x7F0E01DA
-			public const int spawning_strings_3 = 2131624410;
+			public const int spawning_strings_2_29_key = 2131624410;
 			
 			// aapt resource value: 0x7F0E01DB
-			public const int spawning_strings_4 = 2131624411;
+			public const int spawning_strings_2_29_value = 2131624411;
 			
 			// aapt resource value: 0x7F0E01DC
-			public const int spawning_strings_4_1_key = 2131624412;
+			public const int spawning_strings_2_2_key = 2131624412;
 			
 			// aapt resource value: 0x7F0E01DD
-			public const int spawning_strings_4_1_value = 2131624413;
+			public const int spawning_strings_2_2_value = 2131624413;
 			
 			// aapt resource value: 0x7F0E01DE
-			public const int spawning_strings_5 = 2131624414;
+			public const int spawning_strings_2_30_key = 2131624414;
 			
 			// aapt resource value: 0x7F0E01DF
-			public const int spawning_strings_5_1_key = 2131624415;
+			public const int spawning_strings_2_30_value = 2131624415;
 			
 			// aapt resource value: 0x7F0E01E0
-			public const int spawning_strings_5_1_value = 2131624416;
+			public const int spawning_strings_2_31_key = 2131624416;
 			
 			// aapt resource value: 0x7F0E01E1
-			public const int spawning_strings_6 = 2131624417;
+			public const int spawning_strings_2_31_value = 2131624417;
 			
 			// aapt resource value: 0x7F0E01E2
-			public const int spawning_strings_7 = 2131624418;
+			public const int spawning_strings_2_32_key = 2131624418;
 			
 			// aapt resource value: 0x7F0E01E3
-			public const int spawning_strings_8 = 2131624419;
+			public const int spawning_strings_2_32_value = 2131624419;
 			
 			// aapt resource value: 0x7F0E01E4
-			public const int spawning_strings_8_1_key = 2131624420;
+			public const int spawning_strings_2_33_key = 2131624420;
 			
 			// aapt resource value: 0x7F0E01E5
-			public const int spawning_strings_8_1_value = 2131624421;
+			public const int spawning_strings_2_33_value = 2131624421;
 			
 			// aapt resource value: 0x7F0E01E6
-			public const int spawning_strings_8_2_key = 2131624422;
+			public const int spawning_strings_2_34_key = 2131624422;
 			
 			// aapt resource value: 0x7F0E01E7
-			public const int spawning_strings_8_2_value = 2131624423;
+			public const int spawning_strings_2_34_value = 2131624423;
 			
 			// aapt resource value: 0x7F0E01E8
-			public const int status_bar_notification_info_overflow = 2131624424;
+			public const int spawning_strings_2_35_key = 2131624424;
 			
 			// aapt resource value: 0x7F0E01E9
-			public const int url = 2131624425;
+			public const int spawning_strings_2_35_value = 2131624425;
 			
 			// aapt resource value: 0x7F0E01EA
-			public const int ws_connected = 2131624426;
+			public const int spawning_strings_2_36_key = 2131624426;
 			
 			// aapt resource value: 0x7F0E01EB
-			public const int ws_disconnected = 2131624427;
+			public const int spawning_strings_2_36_value = 2131624427;
 			
 			// aapt resource value: 0x7F0E01EC
-			public const int zombie_strings_1 = 2131624428;
+			public const int spawning_strings_2_37_key = 2131624428;
 			
 			// aapt resource value: 0x7F0E01ED
-			public const int zombie_strings_10 = 2131624429;
+			public const int spawning_strings_2_37_value = 2131624429;
 			
 			// aapt resource value: 0x7F0E01EE
-			public const int zombie_strings_10_1_key = 2131624430;
+			public const int spawning_strings_2_38_key = 2131624430;
 			
 			// aapt resource value: 0x7F0E01EF
-			public const int zombie_strings_10_1_value = 2131624431;
+			public const int spawning_strings_2_38_value = 2131624431;
 			
 			// aapt resource value: 0x7F0E01F0
-			public const int zombie_strings_10_2_key = 2131624432;
+			public const int spawning_strings_2_39_key = 2131624432;
 			
 			// aapt resource value: 0x7F0E01F1
-			public const int zombie_strings_10_2_value = 2131624433;
+			public const int spawning_strings_2_39_value = 2131624433;
 			
 			// aapt resource value: 0x7F0E01F2
-			public const int zombie_strings_11 = 2131624434;
+			public const int spawning_strings_2_3_key = 2131624434;
 			
 			// aapt resource value: 0x7F0E01F3
-			public const int zombie_strings_11_1_key = 2131624435;
+			public const int spawning_strings_2_3_value = 2131624435;
 			
 			// aapt resource value: 0x7F0E01F4
-			public const int zombie_strings_11_1_value = 2131624436;
+			public const int spawning_strings_2_40_key = 2131624436;
 			
 			// aapt resource value: 0x7F0E01F5
-			public const int zombie_strings_1_1_key = 2131624437;
+			public const int spawning_strings_2_40_value = 2131624437;
 			
 			// aapt resource value: 0x7F0E01F6
-			public const int zombie_strings_1_1_value = 2131624438;
+			public const int spawning_strings_2_4_key = 2131624438;
 			
 			// aapt resource value: 0x7F0E01F7
-			public const int zombie_strings_2 = 2131624439;
+			public const int spawning_strings_2_4_value = 2131624439;
 			
 			// aapt resource value: 0x7F0E01F8
-			public const int zombie_strings_2_1_key = 2131624440;
+			public const int spawning_strings_2_5_key = 2131624440;
 			
 			// aapt resource value: 0x7F0E01F9
-			public const int zombie_strings_2_1_value = 2131624441;
+			public const int spawning_strings_2_5_value = 2131624441;
 			
 			// aapt resource value: 0x7F0E01FA
-			public const int zombie_strings_3 = 2131624442;
+			public const int spawning_strings_2_6_key = 2131624442;
 			
 			// aapt resource value: 0x7F0E01FB
-			public const int zombie_strings_3_1_key = 2131624443;
+			public const int spawning_strings_2_6_value = 2131624443;
 			
 			// aapt resource value: 0x7F0E01FC
-			public const int zombie_strings_3_1_value = 2131624444;
+			public const int spawning_strings_2_7_key = 2131624444;
 			
 			// aapt resource value: 0x7F0E01FD
-			public const int zombie_strings_4 = 2131624445;
+			public const int spawning_strings_2_7_value = 2131624445;
 			
 			// aapt resource value: 0x7F0E01FE
-			public const int zombie_strings_4_1_key = 2131624446;
+			public const int spawning_strings_2_8_key = 2131624446;
 			
 			// aapt resource value: 0x7F0E01FF
-			public const int zombie_strings_4_1_value = 2131624447;
+			public const int spawning_strings_2_8_value = 2131624447;
 			
 			// aapt resource value: 0x7F0E0200
-			public const int zombie_strings_5 = 2131624448;
+			public const int spawning_strings_2_9_key = 2131624448;
 			
 			// aapt resource value: 0x7F0E0201
-			public const int zombie_strings_5_1_key = 2131624449;
+			public const int spawning_strings_2_9_value = 2131624449;
 			
 			// aapt resource value: 0x7F0E0202
-			public const int zombie_strings_5_1_value = 2131624450;
+			public const int spawning_strings_3 = 2131624450;
 			
 			// aapt resource value: 0x7F0E0203
-			public const int zombie_strings_6 = 2131624451;
+			public const int spawning_strings_4 = 2131624451;
 			
 			// aapt resource value: 0x7F0E0204
-			public const int zombie_strings_6_1_key = 2131624452;
+			public const int spawning_strings_4_1_key = 2131624452;
 			
 			// aapt resource value: 0x7F0E0205
-			public const int zombie_strings_6_1_value = 2131624453;
+			public const int spawning_strings_4_1_value = 2131624453;
 			
 			// aapt resource value: 0x7F0E0206
-			public const int zombie_strings_7 = 2131624454;
+			public const int spawning_strings_5 = 2131624454;
 			
 			// aapt resource value: 0x7F0E0207
-			public const int zombie_strings_7_1_key = 2131624455;
+			public const int spawning_strings_5_1_key = 2131624455;
 			
 			// aapt resource value: 0x7F0E0208
-			public const int zombie_strings_7_1_value = 2131624456;
+			public const int spawning_strings_5_1_value = 2131624456;
 			
 			// aapt resource value: 0x7F0E0209
-			public const int zombie_strings_7_2_key = 2131624457;
+			public const int spawning_strings_6 = 2131624457;
 			
 			// aapt resource value: 0x7F0E020A
-			public const int zombie_strings_7_2_value = 2131624458;
+			public const int spawning_strings_7 = 2131624458;
 			
 			// aapt resource value: 0x7F0E020B
-			public const int zombie_strings_8 = 2131624459;
+			public const int spawning_strings_8 = 2131624459;
 			
 			// aapt resource value: 0x7F0E020C
-			public const int zombie_strings_8_1_key = 2131624460;
+			public const int spawning_strings_8_1_key = 2131624460;
 			
 			// aapt resource value: 0x7F0E020D
-			public const int zombie_strings_8_1_value = 2131624461;
+			public const int spawning_strings_8_1_value = 2131624461;
 			
 			// aapt resource value: 0x7F0E020E
-			public const int zombie_strings_8_2_key = 2131624462;
+			public const int spawning_strings_8_2_key = 2131624462;
 			
 			// aapt resource value: 0x7F0E020F
-			public const int zombie_strings_8_2_value = 2131624463;
+			public const int spawning_strings_8_2_value = 2131624463;
 			
 			// aapt resource value: 0x7F0E0210
-			public const int zombie_strings_9 = 2131624464;
+			public const int status_bar_notification_info_overflow = 2131624464;
 			
 			// aapt resource value: 0x7F0E0211
-			public const int zombie_strings_9_1_key = 2131624465;
+			public const int sync_card_default = 2131624465;
 			
 			// aapt resource value: 0x7F0E0212
-			public const int zombie_strings_9_1_value = 2131624466;
+			public const int sync_card_label = 2131624466;
 			
 			// aapt resource value: 0x7F0E0213
-			public const int zombie_strings_9_2_key = 2131624467;
+			public const int sync_card_no = 2131624467;
 			
 			// aapt resource value: 0x7F0E0214
-			public const int zombie_strings_9_2_value = 2131624468;
+			public const int sync_card_yes = 2131624468;
+			
+			// aapt resource value: 0x7F0E0215
+			public const int url = 2131624469;
+			
+			// aapt resource value: 0x7F0E0216
+			public const int ws_connected = 2131624470;
+			
+			// aapt resource value: 0x7F0E0217
+			public const int ws_disconnected = 2131624471;
+			
+			// aapt resource value: 0x7F0E0218
+			public const int zombie_strings_1 = 2131624472;
+			
+			// aapt resource value: 0x7F0E0219
+			public const int zombie_strings_10 = 2131624473;
+			
+			// aapt resource value: 0x7F0E021A
+			public const int zombie_strings_10_1_key = 2131624474;
+			
+			// aapt resource value: 0x7F0E021B
+			public const int zombie_strings_10_1_value = 2131624475;
+			
+			// aapt resource value: 0x7F0E021C
+			public const int zombie_strings_10_2_key = 2131624476;
+			
+			// aapt resource value: 0x7F0E021D
+			public const int zombie_strings_10_2_value = 2131624477;
+			
+			// aapt resource value: 0x7F0E021E
+			public const int zombie_strings_11 = 2131624478;
+			
+			// aapt resource value: 0x7F0E021F
+			public const int zombie_strings_11_1_key = 2131624479;
+			
+			// aapt resource value: 0x7F0E0220
+			public const int zombie_strings_11_1_value = 2131624480;
+			
+			// aapt resource value: 0x7F0E0221
+			public const int zombie_strings_1_1_key = 2131624481;
+			
+			// aapt resource value: 0x7F0E0222
+			public const int zombie_strings_1_1_value = 2131624482;
+			
+			// aapt resource value: 0x7F0E0223
+			public const int zombie_strings_2 = 2131624483;
+			
+			// aapt resource value: 0x7F0E0224
+			public const int zombie_strings_2_1_key = 2131624484;
+			
+			// aapt resource value: 0x7F0E0225
+			public const int zombie_strings_2_1_value = 2131624485;
+			
+			// aapt resource value: 0x7F0E0226
+			public const int zombie_strings_3 = 2131624486;
+			
+			// aapt resource value: 0x7F0E0227
+			public const int zombie_strings_3_1_key = 2131624487;
+			
+			// aapt resource value: 0x7F0E0228
+			public const int zombie_strings_3_1_value = 2131624488;
+			
+			// aapt resource value: 0x7F0E0229
+			public const int zombie_strings_4 = 2131624489;
+			
+			// aapt resource value: 0x7F0E022A
+			public const int zombie_strings_4_1_key = 2131624490;
+			
+			// aapt resource value: 0x7F0E022B
+			public const int zombie_strings_4_1_value = 2131624491;
+			
+			// aapt resource value: 0x7F0E022C
+			public const int zombie_strings_5 = 2131624492;
+			
+			// aapt resource value: 0x7F0E022D
+			public const int zombie_strings_5_1_key = 2131624493;
+			
+			// aapt resource value: 0x7F0E022E
+			public const int zombie_strings_5_1_value = 2131624494;
+			
+			// aapt resource value: 0x7F0E022F
+			public const int zombie_strings_6 = 2131624495;
+			
+			// aapt resource value: 0x7F0E0230
+			public const int zombie_strings_6_1_key = 2131624496;
+			
+			// aapt resource value: 0x7F0E0231
+			public const int zombie_strings_6_1_value = 2131624497;
+			
+			// aapt resource value: 0x7F0E0232
+			public const int zombie_strings_7 = 2131624498;
+			
+			// aapt resource value: 0x7F0E0233
+			public const int zombie_strings_7_1_key = 2131624499;
+			
+			// aapt resource value: 0x7F0E0234
+			public const int zombie_strings_7_1_value = 2131624500;
+			
+			// aapt resource value: 0x7F0E0235
+			public const int zombie_strings_7_2_key = 2131624501;
+			
+			// aapt resource value: 0x7F0E0236
+			public const int zombie_strings_7_2_value = 2131624502;
+			
+			// aapt resource value: 0x7F0E0237
+			public const int zombie_strings_8 = 2131624503;
+			
+			// aapt resource value: 0x7F0E0238
+			public const int zombie_strings_8_1_key = 2131624504;
+			
+			// aapt resource value: 0x7F0E0239
+			public const int zombie_strings_8_1_value = 2131624505;
+			
+			// aapt resource value: 0x7F0E023A
+			public const int zombie_strings_8_2_key = 2131624506;
+			
+			// aapt resource value: 0x7F0E023B
+			public const int zombie_strings_8_2_value = 2131624507;
+			
+			// aapt resource value: 0x7F0E023C
+			public const int zombie_strings_9 = 2131624508;
+			
+			// aapt resource value: 0x7F0E023D
+			public const int zombie_strings_9_1_key = 2131624509;
+			
+			// aapt resource value: 0x7F0E023E
+			public const int zombie_strings_9_1_value = 2131624510;
+			
+			// aapt resource value: 0x7F0E023F
+			public const int zombie_strings_9_2_key = 2131624511;
+			
+			// aapt resource value: 0x7F0E0240
+			public const int zombie_strings_9_2_value = 2131624512;
 			
 			static String()
 			{

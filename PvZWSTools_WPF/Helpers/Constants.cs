@@ -1,4 +1,6 @@
-﻿public static class Constants
+﻿namespace PvZWSTools_WPF.Helpers;
+
+public static class Constants
 {
     #region 符号
 
@@ -19,6 +21,7 @@
     public const string Folder_Options = "选项";
     public const string Folder_Scripts = "快捷脚本";
     public const string Folder_SeedPackets = "卡组";
+    public const string Folder_Log = "Log";
 
     #endregion 文件夹
 
@@ -51,6 +54,7 @@
     // 占位符
     public static class Placeholders
     {
+        public const string JsonData = "{JSON_DATA}";
         public const string AdventureNum = "{ADVENTURENUM}";
         public const string BungeeCheck = "{BUNGEE_CHECK}";
         public const string Check = "{CHECK}";

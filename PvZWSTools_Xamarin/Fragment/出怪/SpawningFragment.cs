@@ -29,7 +29,6 @@ namespace PvZWSTools_Xamarin
             }
         }
 
-        //出怪
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             View view = inflater.Inflate(Resource.Layout.spawning_fragment, container, false);
@@ -44,7 +43,8 @@ namespace PvZWSTools_Xamarin
                     ["{REDEYE_CHECK}"] = "1"
                 });
             view.FindViewById<Button>(Resource.Id.button2).Click += (sender, e) =>
-                CreateInputDialog.OptAndDone2(Activity, GetString(Resource.String.spawning_strings_2), new Dictionary<string, string>
+            {
+                var keysDict = new Dictionary<string, string>
                 {
                     [GetString(Resource.String.spawning_strings_2_1_key)] = map[GetString(Resource.String.spawning_strings_2_1_key)],
                     [GetString(Resource.String.spawning_strings_2_2_key)] = map[GetString(Resource.String.spawning_strings_2_2_key)],
@@ -66,29 +66,82 @@ namespace PvZWSTools_Xamarin
                     [GetString(Resource.String.spawning_strings_2_18_key)] = map[GetString(Resource.String.spawning_strings_2_18_key)],
                     [GetString(Resource.String.spawning_strings_2_19_key)] = map[GetString(Resource.String.spawning_strings_2_19_key)],
                     [GetString(Resource.String.spawning_strings_2_20_key)] = map[GetString(Resource.String.spawning_strings_2_20_key)],
-                }, mSpawningPath, GetString(Resource.String.spawning_strings_2), new Dictionary<string, string>
+                    [GetString(Resource.String.spawning_strings_2_21_key)] = map[GetString(Resource.String.spawning_strings_2_21_key)],
+                    [GetString(Resource.String.spawning_strings_2_22_key)] = map[GetString(Resource.String.spawning_strings_2_22_key)],
+                    [GetString(Resource.String.spawning_strings_2_23_key)] = map[GetString(Resource.String.spawning_strings_2_23_key)],
+                    [GetString(Resource.String.spawning_strings_2_24_key)] = map[GetString(Resource.String.spawning_strings_2_24_key)],
+                    [GetString(Resource.String.spawning_strings_2_25_key)] = map[GetString(Resource.String.spawning_strings_2_25_key)],
+                    [GetString(Resource.String.spawning_strings_2_26_key)] = map[GetString(Resource.String.spawning_strings_2_26_key)],
+                    [GetString(Resource.String.spawning_strings_2_27_key)] = map[GetString(Resource.String.spawning_strings_2_27_key)],
+                    [GetString(Resource.String.spawning_strings_2_28_key)] = map[GetString(Resource.String.spawning_strings_2_28_key)],
+                    [GetString(Resource.String.spawning_strings_2_29_key)] = map[GetString(Resource.String.spawning_strings_2_29_key)],
+                    [GetString(Resource.String.spawning_strings_2_30_key)] = map[GetString(Resource.String.spawning_strings_2_30_key)],
+                    [GetString(Resource.String.spawning_strings_2_31_key)] = map[GetString(Resource.String.spawning_strings_2_31_key)],
+                    [GetString(Resource.String.spawning_strings_2_32_key)] = map[GetString(Resource.String.spawning_strings_2_32_key)],
+                    [GetString(Resource.String.spawning_strings_2_33_key)] = map[GetString(Resource.String.spawning_strings_2_33_key)],
+                    [GetString(Resource.String.spawning_strings_2_34_key)] = map[GetString(Resource.String.spawning_strings_2_34_key)],
+                    [GetString(Resource.String.spawning_strings_2_35_key)] = map[GetString(Resource.String.spawning_strings_2_35_key)],
+                    [GetString(Resource.String.spawning_strings_2_36_key)] = map[GetString(Resource.String.spawning_strings_2_36_key)],
+                    [GetString(Resource.String.spawning_strings_2_37_key)] = map[GetString(Resource.String.spawning_strings_2_37_key)],
+                    [GetString(Resource.String.spawning_strings_2_38_key)] = map[GetString(Resource.String.spawning_strings_2_38_key)],
+                    [GetString(Resource.String.spawning_strings_2_39_key)] = map[GetString(Resource.String.spawning_strings_2_39_key)],
+                    [GetString(Resource.String.spawning_strings_2_40_key)] = map[GetString(Resource.String.spawning_strings_2_40_key)]
+                };
+
+                var defaultValues = new Dictionary<string, string>
                 {
-                    ["{SPAWN_TRAFFICCONE_CHECK}"] = "0",
-                    ["{SPAWN_POLEVAULTER_CHECK}"] = "1",
-                    ["{SPAWN_PAIL_CHECK}"] = "2",
-                    ["{SPAWN_NEWSPAPER_CHECK}"] = "3",
-                    ["{SPAWN_DOOR_CHECK}"] = "4",
-                    ["{SPAWN_FOOTBALL_CHECK}"] = "5",
-                    ["{SPAWN_DANCE_CHECK}"] = "6",
-                    ["{SPAWN_SNORKEL_CHECK}"] = "7",
-                    ["{SPAWN_ZAMBONI_CHECK}"] = "8",
-                    ["{SPAWN_DOLPHINRIDER_CHECK}"] = "9",
-                    ["{SPAWN_JACKINTHEBOX_CHECK}"] = "10",
-                    ["{SPAWN_BALLOON_CHECK}"] = "11",
-                    ["{SPAWN_DIGGER_CHECK}"] = "12",
-                    ["{SPAWN_POGO_CHECK}"] = "13",
-                    ["{SPAWN_YETI_CHECK}"] = "14",
-                    ["{SPAWN_BUNGEE_CHECK}"] = "15",
-                    ["{SPAWN_LADDER_CHECK}"] = "16",
-                    ["{SPAWN_CATAPULT_CHECK}"] = "17",
-                    ["{SPAWN_GARGANTUAR_CHECK}"] = "18",
-                    ["{SPAWN_REDEYEGARGANTUAR_CHECK}"] = "19",
-                }, map);
+                    ["{SPAWN_ZOMBIENORMAL_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEFLAG_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIETRAFFICCONE_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEPOLEVAULTER_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEPAIL_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIENEWSPAPER_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEDOOR_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEFOOTBALL_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEDANCER_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEBACKUPDANCER_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEDUCKYTUBE_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIESNORKEL_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEZAMBONI_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEBOBSLED_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEDOLPHINRIDER_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEJACKINTHEBOX_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEBALLOON_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEDIGGER_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEPOGO_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEYETI_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEBUNGEE_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIELADDER_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIECATAPULT_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEGARGANTUAR_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEIMP_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEBOSS_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEPEAHEAD_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEWALLNUTHEAD_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEJALAPENOHEAD_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEGATLINGHEAD_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIESQUASHHEAD_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIETALLNUTHEAD_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEREDEYEGARGANTUAR_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEROBOTTITAN_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEREDEYEROBOTTITAN_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEMONK_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEFOOTBALLPREMIUM_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIENINJA_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIETALISMAN_CHECK}"] = "2",
+                    ["{SPAWN_ZOMBIEPROPELLER_CHECK}"] = "2"
+                };
+
+                CreateInputDialog.OptAndDone2(
+                    Activity,
+                    GetString(Resource.String.spawning_strings_2),
+                    keysDict,
+                    mSpawningPath,
+                    GetString(Resource.String.spawning_strings_2),
+                    defaultValues,
+                    map
+                );
+            };
             view.FindViewById<Button>(Resource.Id.button3).Click += (sender, e) =>
                 CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.spawning_strings_3), new Dictionary<string, string>
                 {
@@ -171,6 +224,26 @@ namespace PvZWSTools_Xamarin
                 [GetString(Resource.String.spawning_strings_2_18_key)] = GetString(Resource.String.spawning_strings_2_18_value),
                 [GetString(Resource.String.spawning_strings_2_19_key)] = GetString(Resource.String.spawning_strings_2_19_value),
                 [GetString(Resource.String.spawning_strings_2_20_key)] = GetString(Resource.String.spawning_strings_2_20_value),
+                [GetString(Resource.String.spawning_strings_2_21_key)] = GetString(Resource.String.spawning_strings_2_21_value),
+                [GetString(Resource.String.spawning_strings_2_22_key)] = GetString(Resource.String.spawning_strings_2_22_value),
+                [GetString(Resource.String.spawning_strings_2_23_key)] = GetString(Resource.String.spawning_strings_2_23_value),
+                [GetString(Resource.String.spawning_strings_2_24_key)] = GetString(Resource.String.spawning_strings_2_24_value),
+                [GetString(Resource.String.spawning_strings_2_25_key)] = GetString(Resource.String.spawning_strings_2_25_value),
+                [GetString(Resource.String.spawning_strings_2_26_key)] = GetString(Resource.String.spawning_strings_2_26_value),
+                [GetString(Resource.String.spawning_strings_2_27_key)] = GetString(Resource.String.spawning_strings_2_27_value),
+                [GetString(Resource.String.spawning_strings_2_28_key)] = GetString(Resource.String.spawning_strings_2_28_value),
+                [GetString(Resource.String.spawning_strings_2_29_key)] = GetString(Resource.String.spawning_strings_2_29_value),
+                [GetString(Resource.String.spawning_strings_2_30_key)] = GetString(Resource.String.spawning_strings_2_30_value),
+                [GetString(Resource.String.spawning_strings_2_31_key)] = GetString(Resource.String.spawning_strings_2_31_value),
+                [GetString(Resource.String.spawning_strings_2_32_key)] = GetString(Resource.String.spawning_strings_2_32_value),
+                [GetString(Resource.String.spawning_strings_2_33_key)] = GetString(Resource.String.spawning_strings_2_33_value),
+                [GetString(Resource.String.spawning_strings_2_34_key)] = GetString(Resource.String.spawning_strings_2_34_value),
+                [GetString(Resource.String.spawning_strings_2_35_key)] = GetString(Resource.String.spawning_strings_2_35_value),
+                [GetString(Resource.String.spawning_strings_2_36_key)] = GetString(Resource.String.spawning_strings_2_36_value),
+                [GetString(Resource.String.spawning_strings_2_37_key)] = GetString(Resource.String.spawning_strings_2_37_value),
+                [GetString(Resource.String.spawning_strings_2_38_key)] = GetString(Resource.String.spawning_strings_2_38_value),
+                [GetString(Resource.String.spawning_strings_2_39_key)] = GetString(Resource.String.spawning_strings_2_39_value),
+                [GetString(Resource.String.spawning_strings_2_40_key)] = GetString(Resource.String.spawning_strings_2_40_value),
                 [GetString(Resource.String.spawning_strings_4_1_key)] = GetString(Resource.String.spawning_strings_4_1_value),
                 [GetString(Resource.String.spawning_strings_5_1_key)] = GetString(Resource.String.spawning_strings_5_1_value),
                 [GetString(Resource.String.spawning_strings_8_1_key)] = GetString(Resource.String.spawning_strings_8_1_value),
@@ -179,5 +252,3 @@ namespace PvZWSTools_Xamarin
         }
     }
 }
-
-//无用的注释罢了

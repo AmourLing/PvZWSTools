@@ -1,8 +1,14 @@
-# 用于放置阵型
-# 2025.07.05 
-#  2026.06.13 
+# 一键布阵.py
+# 使用 Newtonsoft.Json 解析，避免 .Value 属性，改用 ToString()
+# 兼容列表和对象格式
+
 import clr
-from System.IO import Path, File, Directory
+clr.AddReference("System")
+clr.AddReference("Newtonsoft.Json")
+
+from System import Convert
+from System.Text import Encoding
+from Newtonsoft.Json.Linq import JObject, JArray
 from Lawn import *
 from Sexy import *
 
@@ -10,129 +16,125 @@ app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
 def LOG(e, code=0):
-    return
-    msg = f"[ErrorCode {code}] {repr(e)}"
+    msg = "[ErrorCode " + str(code) + "] " + repr(e)
     try:
-        if app is not None and hasattr(app, 'DoDialog') and callable(app.DoDialog):
+        if app is not None:
             app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
     except:
         pass
     print(msg)
 
-def extract_json_array(text, key):
-    import re
-    pattern = rf'"{key}"\s*:\s*\['
-    match = re.search(pattern, text)
-    if not match:
-        return []
-    start = match.start()
-    bracket_start = text.find('[', match.start())
-    if bracket_start == -1:
-        return []
-    i = bracket_start
-    bracket_count = 0
-    while i < len(text):
-        ch = text[i]
-        if ch == '[':
-            bracket_count += 1
-        elif ch == ']':
-            bracket_count -= 1
-            if bracket_count == 0:
-                array_str = text[bracket_start:i+1]
-                array_str = re.sub(r'\btrue\b', 'True', array_str)
-                array_str = re.sub(r'\bfalse\b', 'False', array_str)
-                array_str = re.sub(r'\bnull\b', 'None', array_str)
-                try:
-                    return eval(array_str)
-                except Exception as e:
-                    return []
-        i += 1
-    return []
-
-def load_formation(name, key):
-    base_dir = Path.Combine(r"{PATH}")
-    if not Directory.Exists(base_dir):
-        Directory.CreateDirectory(base_dir)
-
-    file_path = Path.Combine(base_dir, f"{name}.json")
-    if not File.Exists(file_path):
-        return []
-
+def get_int(token, default=0):
+    """安全地将 JToken 转为整数"""
+    if token is None:
+        return default
     try:
-        content = File.ReadAllText(file_path)
-        return extract_json_array(content, key)
-    except Exception as e:
-        LOG(e, 1001)
-        return []
+        return int(token.ToString())
+    except:
+        return default
 
-def parse_plant_data(plant_item):
-    if isinstance(plant_item, dict):
-        col = int(plant_item.get("col", 0))
-        row = int(plant_item.get("row", 0))
-        seed_type = int(plant_item.get("seedType", 0))
-        awake = int(plant_item.get("awake", 0))
-        imitate_type = int(plant_item.get("imitaterType", 0))
-        if imitate_type < 0:
-            imitate_type = 0
-        x = int(plant_item.get("x", -666))
-        y = int(plant_item.get("y", -666))
-        return col, row, seed_type, awake, imitate_type, x, y
-    if isinstance(plant_item, list):
-        x = -666
-        y = -666
-        if len(plant_item) == 5:
-            col, row, seed_type, awake, imitate_type = [int(v) for v in plant_item]
-        elif len(plant_item) == 4:
-            col, row, seed_type, awake = [int(v) for v in plant_item]
-            imitate_type = 0
-        else:
-            raise ValueError(f"植物数据长度不符: {len(plant_item)}")
-        if imitate_type < 0:
-            imitate_type = 0
-        return col, row, seed_type, awake, imitate_type, x, y
-    raise ValueError(f"不支持的植物数据格式: {plant_item}")
+def get_plant_data(item):
+    col = 0
+    row = 0
+    seed_type = 0
+    awake = 0
+    imitate_type = 0
+    x = -666
+    y = -666
 
-def parse_ladder_data(ladder_item):
-    if isinstance(ladder_item, dict):
-        x = int(ladder_item.get("x", 0))
-        y = int(ladder_item.get("y", 0))
-        return x, y
-    if isinstance(ladder_item, list) and len(ladder_item) >= 2:
-        return int(ladder_item[0]), int(ladder_item[1])
-    raise ValueError(f"不支持的梯子数据格式: {ladder_item}")
-
-formation_name = "{NAME}"
-
-def load_saved_formation():
+    # 尝试作为数组处理（索引访问）
     try:
-        for plant in list(board.mPlants):
-            plant.Die()
+        _ = item[0]
+        col = get_int(item[0])
+        row = get_int(item[1]) if item.Count > 1 else 0
+        seed_type = get_int(item[2]) if item.Count > 2 else 0
+        awake = get_int(item[3]) if item.Count > 3 else 0
+        imitate_type = get_int(item[4]) if item.Count > 4 else 0
+        x = get_int(item[5]) if item.Count > 5 else -666
+        y = get_int(item[6]) if item.Count > 6 else -666
+    except:
+        # 当作对象处理
+        col = get_int(item["col"])
+        row = get_int(item["row"])
+        seed_type = get_int(item["seedType"])
+        awake = get_int(item["awake"])
+        imitate_type = get_int(item["imitaterType"])
+        x = get_int(item["x"], -666)
+        y = get_int(item["y"], -666)
+
+    if imitate_type < 0:
+        imitate_type = 0
+    return col, row, seed_type, awake, imitate_type, x, y
+
+def get_ladder_data(item):
+    x = 0
+    y = 0
+    try:
+        _ = item[0]
+        x = get_int(item[0])
+        y = get_int(item[1]) if item.Count > 1 else 0
+    except:
+        x = get_int(item["x"])
+        y = get_int(item["y"])
+    return x, y
+
+def load_formation_from_json(json_data):
+    LOG("开始布阵", 0)
+
+    # 清除现有植物
+    try:
+        for p in list(board.mPlants):
+            p.Die()
     except Exception as e:
         LOG(e, 2001)
 
-    plants = load_formation(formation_name, "plants")
+    # 解析 JSON
+    try:
+        data = JObject.Parse(json_data)
+    except Exception as e:
+        LOG(e, 1000)
+        return
 
-    for idx, plant_data in enumerate(plants):
+    plants = data["plants"]
+    if plants is None:
+        plants = JArray()
+    ladders = data["ladders"]
+    if ladders is None:
+        ladders = JArray()
+
+    LOG("植物数量: " + str(plants.Count), 0)
+    LOG("梯子数量: " + str(ladders.Count), 0)
+
+    # 布置植物
+    for item in plants:
         try:
-            col, row, seed_type, awake, imitate_type, x, y = parse_plant_data(plant_data)
+            col, row, seed_type, awake, imitate_type, x, y = get_plant_data(item)
             plant_obj = board.NewPlant(col, row, SeedType(seed_type), SeedType(imitate_type))
+            # 唤醒蘑菇
             if awake == 1 and seed_type != 35:
-                coffee_obj = board.NewPlant(col, row, SeedType.InstantCoffee, SeedType(0))
+                board.NewPlant(col, row, SeedType.InstantCoffee, SeedType(0))
+            # 自定义坐标
             if x != -666 and y != -666 and plant_obj is not None:
                 plant_obj.mX = x
                 plant_obj.mY = y
         except Exception as e:
-            LOG(e, 20004)
+            LOG(e, 2004)
 
-    ladders = load_formation(formation_name, "ladders")
-    for idx, ladder_data in enumerate(ladders):
+    # 布置梯子
+    for item in ladders:
         try:
-            x, y = parse_ladder_data(ladder_data)
+            x, y = get_ladder_data(item)
             board.AddALadder(x, y)
         except Exception as e:
             LOG(e, 2003)
 
+    LOG("布阵完成", 0)
+
+# 主执行
+base64_data = "{JSON_BASE64}"
 try:
-    load_saved_formation()
+    json_bytes = Convert.FromBase64String(base64_data)
+    json_str = Encoding.UTF8.GetString(json_bytes)
+    load_formation_from_json(json_str)
 except Exception as e:
     LOG(e, 9999)

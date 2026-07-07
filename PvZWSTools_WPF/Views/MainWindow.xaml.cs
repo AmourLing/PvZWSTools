@@ -4,70 +4,63 @@ using System.Reflection;
 using System.Windows;
 using PvZWSTools_WPF.Services;
 using PvZWSTools_WPF.ViewModels;
+using PvZWSTools_WPF.Helpers;
+using static PvZWSTools_Shared.Sharedstring;
 
-namespace PvZWSTools_WPF.Views
+namespace PvZWSTools_WPF.Views;
+
+public partial class MainWindow:Window
 {
-    public partial class MainWindow:Window
+    private readonly MainWindowViewModel _viewModel;
+
+    private bool _isResizing = false;
+
+    public MainWindow()
     {
-        private readonly MainWindowViewModel _viewModel;
+        InitializeComponent();
 
-        private bool _isResizing = false;
-
-        public MainWindow()
+        Title = Title + "_" + CompileTime.GetCompileTime()?.ToString("yyyyMMdd");
+        if(IsBetaVersion)
         {
-            InitializeComponent();
-
-            Title = Title + "_" + GetCompileTime();
-
-            var connection = new ConnectionService(Dispatcher);
-            string defaultPath = Directory.GetCurrentDirectory();
-            var settingsService = new SettingsService(defaultPath);
-
-            _viewModel = new MainWindowViewModel(connection, settingsService, defaultPath);
-
-            _viewModel.ShowSettingsDialog += (s, e) =>
-            {
-                var dialog = new SettingDialog(
-                    settingsService,
-                    "允许自动连接",
-                    "取消发送连接提醒"
-                    );
-                dialog.Owner = this;
-                _ = dialog.ShowDialog();
-            };
-
-            DataContext = _viewModel;
+            Title += "_Beta";
         }
+        var connection = new ConnectionService(Dispatcher);
+        string defaultPath = Directory.GetCurrentDirectory();
+        var settingsService = new SettingsService(defaultPath);
 
-        private string GetCompileTime()
+        _viewModel = new MainWindowViewModel(connection, settingsService, defaultPath);
+
+        _viewModel.ShowSettingsDialog += (s, e) =>
         {
-            AssemblyMetadataAttribute attribute = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyMetadataAttribute>();
-            DateTime buildTime = default(DateTime);
-            if(attribute != null && attribute.Key == "BuildTimestamp")
+            var dialog = new SettingDialog(
+                settingsService,
+                "允许自动连接",
+                "取消发送连接提醒"
+                );
+            dialog.Owner = this;
+            _ = dialog.ShowDialog();
+        };
+
+        DataContext = _viewModel;
+    }
+
+    private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if(_isResizing) return;
+        _isResizing = true;
+
+        try
+        {
+            if(e.WidthChanged)
             {
-                buildTime = DateTime.Parse(attribute.Value);
+                Height = Width / 1.6;
             }
-            return buildTime.ToString("yyyyMMdd");
+            double percentage = (Width / 640.0) * 100;
+            _viewModel.SizeText = $"{percentage:F0}%";
         }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        finally
         {
-            if(_isResizing) return;
-            _isResizing = true;
-
-            try
-            {
-                if(e.WidthChanged)
-                {
-                    Height = Width / 1.6;
-                }
-                double percentage = (Width / 640.0) * 100;
-                _viewModel.SizeText = $"{percentage:F0}%";
-            }
-            finally
-            {
-                _isResizing = false;
-            }
+            _isResizing = false;
         }
     }
 }

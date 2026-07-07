@@ -141,8 +141,8 @@ namespace PvZWSTools_Xamarin
                 dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_3_key)] = ItemOptions[GetString(Resource.String.board_strings_4_3_key)];
                 dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_4_key)] = PlantOptions[GetString(Resource.String.board_strings_4_4_key)];
                 dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_5_key)] = ZombieOptions[GetString(Resource.String.board_strings_4_5_key)];
-                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_7_key)] = BoarddeltamXOptions[GetString(Resource.String.board_strings_4_7_key)];
-                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_8_key)] = BoarddeltamYOptions[GetString(Resource.String.board_strings_4_8_key)];
+                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_8_key)] = BoarddeltamXOptions[GetString(Resource.String.board_strings_4_8_key)];
+                dropdownOptionsForAddItem[GetString(Resource.String.board_strings_4_9_key)] = BoarddeltamYOptions[GetString(Resource.String.board_strings_4_9_key)];
 
                 CreateInputDialog.OptAndDone4(Activity, GetString(Resource.String.board_strings_4), new Dictionary<string, string>
                 {
@@ -153,6 +153,8 @@ namespace PvZWSTools_Xamarin
                     [GetString(Resource.String.board_strings_4_5_key)] = map[GetString(Resource.String.board_strings_4_5_key)],
                     [GetString(Resource.String.board_strings_4_6_key)] = map[GetString(Resource.String.board_strings_4_6_key)],
                     [GetString(Resource.String.board_strings_4_7_key)] = map[GetString(Resource.String.board_strings_4_7_key)],
+                    [GetString(Resource.String.board_strings_4_8_key)] = map[GetString(Resource.String.board_strings_4_8_key)],
+                    [GetString(Resource.String.board_strings_4_9_key)] = map[GetString(Resource.String.board_strings_4_9_key)],
                 }, mBoardPath, GetString(Resource.String.board_strings_4), new Dictionary<string, string>
                 {
                     ["{ROW}"] = "0",
@@ -357,10 +359,12 @@ namespace PvZWSTools_Xamarin
                         {
                             case "植物":
                                 PlantOptions[GetString(Resource.String.board_strings_1_3_key)] = Dict;
+                                PlantOptions[GetString(Resource.String.board_strings_4_4_key)] = Dict;
                                 break;
 
                             case "僵尸":
                                 ZombieOptions[GetString(Resource.String.board_strings_2_2_key)] = Dict;
+                                ZombieOptions[GetString(Resource.String.board_strings_4_5_key)] = Dict;
                                 break;
 
                             case "物品":
@@ -391,9 +395,9 @@ namespace PvZWSTools_Xamarin
 
                             case "列偏移量":
                                 BoarddeltamXOptions[GetString(Resource.String.board_strings_1_6_key)] = Dict;
-                                BoarddeltamYOptions[GetString(Resource.String.board_strings_2_6_key)] = Dict;
-                                BoarddeltamYOptions[GetString(Resource.String.board_strings_3_4_key)] = Dict;
-                                BoarddeltamYOptions[GetString(Resource.String.board_strings_4_8_key)] = Dict;
+                                BoarddeltamXOptions[GetString(Resource.String.board_strings_2_6_key)] = Dict;
+                                BoarddeltamXOptions[GetString(Resource.String.board_strings_3_4_key)] = Dict;
+                                BoarddeltamXOptions[GetString(Resource.String.board_strings_4_8_key)] = Dict;
                                 break;
 
                             default:

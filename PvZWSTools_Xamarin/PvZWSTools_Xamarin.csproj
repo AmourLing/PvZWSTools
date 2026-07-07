@@ -28,6 +28,7 @@
     <SkipDeploy>false</SkipDeploy>
     <DeployOnBuild>true</DeployOnBuild>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -75,6 +76,7 @@
     <Compile Include="Fragment\ConnetionFragment.cs" />
     <Compile Include="Fragment\僵尸\ZombieFragment.cs" />
     <Compile Include="Fragment\资源\ResourcesFragment.cs" />
+    <Compile Include="Helpers\CompileTimeHelper.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="NameOption.cs" />
     <Compile Include="ResourceManager.cs" />
@@ -121,19 +123,13 @@
     <AndroidResource Include="Resources\layout\spawning_fragment.xml" />
     <AndroidResource Include="Resources\layout\others_fragment.xml" />
     <AndroidResource Include="Resources\layout\script_fragment.xml" />
-    <AndroidResource Include="Resources\drawable\icon.png" />
-  </ItemGroup>
-  <ItemGroup>
+      <AndroidResource Include="Resources\layout\level_fragment.xml" />
+      <AndroidResource Include="Resources\layout\resources_fragment.xml" />
     <AndroidResource Include="Resources\layout\plant_fragment.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\zombie_fragment.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\nav_header_main.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\fun_fragment.xml" />
+      <AndroidResource Include="Resources\drawable\icon.png" />
   </ItemGroup>
   <Import Project="..\PvZWSTools_Shared\PvZWSTools_Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
@@ -148,12 +144,24 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\need.zip" />
   </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\level_fragment.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-    <AndroidResource Include="Resources\layout\resources_fragment.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
+    <!-- 生成编译时间信息 -->
+    <!-- 生成编译时间信息 -->
+    <!-- 生成编译时间信息 -->
+    <!-- 生成编译时间信息 -->
+    <Target Name="GenerateBuildInfo" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <!-- 使用 'o' 标准格式生成 ISO 8601 字符串 -->
+            <BuildTime>$([System.DateTime]::UtcNow.ToString('o'))</BuildTime>
+            <BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</BuildInfoFile>
+        </PropertyGroup>
+        <WriteLinesToFile
+            File="$(BuildInfoFile)"
+            Lines="using System%3B%0anamespace PvZWSTools_Xamarin.Helpers%0a{%0a    public static class BuildInfo%0a    {%0a        public const string CompileTime = &quot;$(BuildTime)&quot;%3B%0a    }%0a}"
+            Overwrite="true"
+            Encoding="UTF-8" />
+        <!-- 将生成的文件加入到编译列表 -->
+        <ItemGroup>
+            <Compile Include="$(BuildInfoFile)" />
+        </ItemGroup>
+    </Target>
 </Project>
