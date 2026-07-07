@@ -1,13 +1,12 @@
-# 用于切换卡组
-# 2025.07.05
-# 2026.06.13
+# 切换卡组.py
+# 接收 Base64 编码的 JSON 数据，使用 Newtonsoft.Json 解析并设置卡槽
 
 import clr
-
-clr.AddReference("System.IO")
+clr.AddReference("System")
 clr.AddReference("Newtonsoft.Json")
 
-from System.IO import Path, File, Directory
+from System import Convert
+from System.Text import Encoding
 from Newtonsoft.Json.Linq import JObject
 from Lawn import *
 from Sexy import *
@@ -24,45 +23,29 @@ def LOG(e, code=0):
         pass
     print(msg)
 
-def load_seedpacket(name):
-    base_dir = Path.Combine(r"{PATH}")
-    if not Directory.Exists(base_dir):
-        Directory.CreateDirectory(base_dir)
-
-    file_path = Path.Combine(base_dir, f"{name}.json")
-
-    if not File.Exists(file_path):
-        return []
-
+def load_seedpackets_from_json(json_data):
     try:
-        content = File.ReadAllText(file_path)
-        data = JObject.Parse(content)
-        # 获取 seedPackets 字段
+        data = JObject.Parse(json_data)
         seed_packets = data["seedPackets"]
         if seed_packets is None:
-            return []
-        # 将 JArray 转换为 Python 列表的列表
-        return [list(pair) for pair in seed_packets]
+            return
+        spn = 0
+        for pair in seed_packets:
+            if spn >= len(board.mSeedBank.mSeedPackets):
+                break
+            # 使用 ToString() 避免泛型 Value 问题
+            pt = int(pair[0].ToString())
+            it = int(pair[1].ToString())
+            board.mSeedBank.mSeedPackets[spn].SetPacketType(SeedType(pt), SeedType(it))
+            spn += 1
     except Exception as e:
         LOG(e, 1001)
-        return []
 
-seedpacket_name = "{NAME}"
-
-def load_saved_seedpackets():
-    seedPackets = load_seedpacket(seedpacket_name)
-    spn = 0
-    for item in seedPackets:
-        if isinstance(item, (list, tuple)) and len(item) >= 2:
-            pt = int(item[0])
-            it = int(item[1])
-            try:
-                board.mSeedBank.mSeedPackets[spn].SetPacketType(SeedType(pt), SeedType(it))
-                spn += 1
-            except:
-                break
-
+# 主执行
+base64_data = "{JSON_BASE64}"
 try:
-    load_saved_seedpackets()
+    json_bytes = Convert.FromBase64String(base64_data)
+    json_str = Encoding.UTF8.GetString(json_bytes)
+    load_seedpackets_from_json(json_str)
 except Exception as e:
-    LOG(e, 2001)
+    LOG(e, 9999)

@@ -2,61 +2,60 @@
 using System.Windows.Input;
 using PvZWSTools_WPF.Helpers;
 
-namespace PvZWSTools_WPF.Views
+namespace PvZWSTools_WPF.Views;
+
+public partial class PasswordDialog:Window
 {
-    public partial class PasswordDialog:Window
+    public bool IsPasswordCorrect { get; private set; }
+    private int _attemptCount = 0;
+
+    public PasswordDialog()
     {
-        public bool IsPasswordCorrect { get; private set; }
-        private int _attemptCount = 0;
+        InitializeComponent();
+        _ = PasswordBox.Focus();
+    }
 
-        public PasswordDialog()
+    private void OkButton_Click(object sender, RoutedEventArgs e)
+    {
+        _attemptCount++;
+        string password = PasswordBox.Password;
+
+        if(Lock.VerifyPassword(password))
         {
-            InitializeComponent();
-            _ = PasswordBox.Focus();
+            IsPasswordCorrect = true;
+            DialogResult = true;
+            Close();
         }
-
-        private void OkButton_Click(object sender, RoutedEventArgs e)
+        else
         {
-            _attemptCount++;
-            string password = PasswordBox.Password;
-
-            if(Lock.VerifyPassword(password))
+            if(_attemptCount >= 3)
             {
-                IsPasswordCorrect = true;
-                DialogResult = true;
+                ErrorText.Text = "密码错误已达3次，程序将退出";
+                DialogResult = false;
                 Close();
             }
             else
             {
-                if(_attemptCount >= 3)
-                {
-                    ErrorText.Text = "密码错误已达3次，程序将退出";
-                    DialogResult = false;
-                    Close();
-                }
-                else
-                {
-                    ErrorText.Text = $"密码错误，还剩 {3 - _attemptCount} 次机会";
-                    PasswordBox.Clear();
-                    _ = PasswordBox.Focus();
-                }
+                ErrorText.Text = $"密码错误，还剩 {3 - _attemptCount} 次机会";
+                PasswordBox.Clear();
+                _ = PasswordBox.Focus();
             }
         }
+    }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            IsPasswordCorrect = false;
-            DialogResult = false;
-            Close();
-        }
+    private void CancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        IsPasswordCorrect = false;
+        DialogResult = false;
+        Close();
+    }
 
-        protected override void OnKeyDown(KeyEventArgs e)
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if(e.Key == Key.Enter)
         {
-            if(e.Key == Key.Enter)
-            {
-                OkButton_Click(this, new RoutedEventArgs());
-            }
-            base.OnKeyDown(e);
+            OkButton_Click(this, new RoutedEventArgs());
         }
+        base.OnKeyDown(e);
     }
 }

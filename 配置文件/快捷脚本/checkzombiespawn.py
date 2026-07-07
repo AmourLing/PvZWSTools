@@ -55,6 +55,7 @@ _had_draw_zombiespawn = False
 
 @M.HookTo(Board.DrawGameObjects)
 def Board_DrawGameObjects(orig, self, g):
+    global _had_draw_zombiespawn
     orig(self, g)
     if app.mSeedChooserScreen is None:
         _had_draw_zombiespawn = True
