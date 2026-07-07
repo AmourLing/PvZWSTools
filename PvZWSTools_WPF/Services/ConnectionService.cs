@@ -6,98 +6,97 @@ using WebSocketSharp.NetCore;
 using PvZWSTools_WPF.Helpers;
 using Newtonsoft.Json;
 
-namespace PvZWSTools_WPF.Services
+namespace PvZWSTools_WPF.Services;
+
+public class ConnectionService:IConnectionService, IDisposable
 {
-    public class ConnectionService:IConnectionService, IDisposable
+    private WebSocket _ws;
+    private readonly Dispatcher _dispatcher;
+    private CancellationTokenSource _cts;
+    private bool _isConnecting;
+
+    public bool IsConnected { get; private set; }
+
+    public event EventHandler<bool> ConnectionStateChanged;
+
+    public event EventHandler<string> ConnectionError;
+
+    public event EventHandler<string> MessageReceived;
+
+    public ConnectionService(Dispatcher dispatcher)
     {
-        private WebSocket _ws;
-        private readonly Dispatcher _dispatcher;
-        private CancellationTokenSource _cts;
-        private bool _isConnecting;
+        _dispatcher = dispatcher;
+    }
 
-        public bool IsConnected { get; private set; }
+    public async Task ConnectAsync(string address, CancellationToken cancellationToken = default)
+    {
+        if(_isConnecting || IsConnected) return;
 
-        public event EventHandler<bool> ConnectionStateChanged;
+        _isConnecting = true;
+        _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-        public event EventHandler<string> ConnectionError;
-
-        public event EventHandler<string> MessageReceived;
-
-        public ConnectionService(Dispatcher dispatcher)
+        try
         {
-            _dispatcher = dispatcher;
-        }
+            _ws = new WebSocket(address);
+            _ws.OnMessage += (s, e) => MessageReceived?.Invoke(this, e.Data);
+            _ws.OnOpen += (s, e) => OnStateChanged(true);
+            _ws.OnClose += (s, e) => OnStateChanged(false);
+            _ws.OnError += (s, e) => OnError(e.Message);
 
-        public async Task ConnectAsync(string address, CancellationToken cancellationToken = default)
+            using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, timeoutCts.Token);
+
+            await Task.Run(() => _ws.Connect(), linkedCts.Token);
+        }
+        catch(OperationCanceledException)
         {
-            if(_isConnecting || IsConnected) return;
-
-            _isConnecting = true;
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-            try
-            {
-                _ws = new WebSocket(address);
-                _ws.OnMessage += (s, e) => MessageReceived?.Invoke(this, e.Data);
-                _ws.OnOpen += (s, e) => OnStateChanged(true);
-                _ws.OnClose += (s, e) => OnStateChanged(false);
-                _ws.OnError += (s, e) => OnError(e.Message);
-
-                using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, timeoutCts.Token);
-
-                await Task.Run(() => _ws.Connect(), linkedCts.Token);
-            }
-            catch(OperationCanceledException)
-            {
-                OnError("连接超时");
-            }
-            catch(Exception ex)
-            {
-                OnError(ex.Message);
-            }
-            finally
-            {
-                _isConnecting = false;
-            }
+            OnError("连接超时");
         }
-
-        public void Disconnect()
+        catch(Exception ex)
         {
-            _cts?.Cancel();
-            if(_ws?.ReadyState == WebSocketState.Open)
-                _ws.Close();
-            _ws = null;
-            IsConnected = false;
-            OnStateChanged(false);
+            OnError(ex.Message);
         }
-
-        public async Task SendAsync(string message)
+        finally
         {
-            if(!IsConnected)
-            {
-                Log.Error("WebSocket未连接");
-                throw new InvalidOperationException("WebSocket未连接");
-            }
-            await Task.Run(() => _ws.SendAsync(message, _ => { }));
+            _isConnecting = false;
         }
+    }
 
-        private void OnStateChanged(bool connected)
-        {
-            IsConnected = connected;
-            _dispatcher.Invoke(() => ConnectionStateChanged?.Invoke(this, connected));
-        }
+    public void Disconnect()
+    {
+        _cts?.Cancel();
+        if(_ws?.ReadyState == WebSocketState.Open)
+            _ws.Close();
+        _ws = null;
+        IsConnected = false;
+        OnStateChanged(false);
+    }
 
-        private void OnError(string error)
+    public async Task SendAsync(string message)
+    {
+        if(!IsConnected)
         {
-            Log.Error(error);
-            _dispatcher.Invoke(() => ConnectionError?.Invoke(this, error));
+            Log.Error("WebSocket未连接");
+            throw new InvalidOperationException("WebSocket未连接");
         }
+        await Task.Run(() => _ws.SendAsync(message, _ => { }));
+    }
 
-        public void Dispose()
-        {
-            _cts?.Dispose();
-            _ws?.Close();
-        }
+    private void OnStateChanged(bool connected)
+    {
+        IsConnected = connected;
+        _dispatcher.Invoke(() => ConnectionStateChanged?.Invoke(this, connected));
+    }
+
+    private void OnError(string error)
+    {
+        Log.Error(error);
+        _dispatcher.Invoke(() => ConnectionError?.Invoke(this, error));
+    }
+
+    public void Dispose()
+    {
+        _cts?.Dispose();
+        _ws?.Close();
     }
 }

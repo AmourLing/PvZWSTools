@@ -1,13 +1,11 @@
-# 用于存储阵型（存储为对象数组，包含键名）
-# 2025.07.05
-#  2026.06.13
-
 import clr
 clr.AddReference("System.IO")
 clr.AddReference("System")
 clr.AddReference("Newtonsoft.Json")
 
 from System.IO import Path, File, Directory
+from System import Convert
+from System.Text import Encoding
 from Newtonsoft.Json import JsonConvert, Formatting
 from Newtonsoft.Json.Linq import JArray, JObject
 from Lawn import *
@@ -25,16 +23,7 @@ def LOG(e, code=0):
         pass
     print(msg)
 
-def get_unique_file_path(base_dir, name):
-    index = 0
-    while True:
-        filename = f"{name}.json" if index == 0 else f"{name}_{index}.json"
-        full_path = Path.Combine(base_dir, filename)
-        if not File.Exists(full_path):
-            return full_path
-        index += 1
-
-# 提取植物数据（存储为字典）
+# 提取植物数据
 plant = []
 if {PLANT} != 0:
     try:
@@ -51,13 +40,13 @@ if {PLANT} != 0:
                     "seedType": int(aPlant.mSeedType),
                     "awake": IsShroom,
                     "imitaterType": int(aPlant.mImitaterType),
-                    "x":aPlant.mX,
-                    "y":aPlant.mY
+                    "x": aPlant.mX,
+                    "y": aPlant.mY
                 })
     except Exception as e:
         LOG(e, 1001)
 
-# 提取梯子数据
+# 提取梯子
 ladder = []
 if {LADDER} != 0:
     try:
@@ -72,7 +61,7 @@ if {LADDER} != 0:
     except Exception as e:
         LOG(e, 1002)
 
-# 提取花盆（瓦罐）数据
+# 提取花盆
 vase = []
 if {VASE} != 0:
     try:
@@ -91,26 +80,21 @@ if {VASE} != 0:
     except Exception as e:
         LOG(e, 1003)
 
-name = "{NAME}"
-base_dir = r"{PATH}"
+combined_data = JObject()
+combined_data["plants"] = JArray.FromObject(plant)
+combined_data["ladders"] = JArray.FromObject(ladder)
+combined_data["vases"] = JArray.FromObject(vase)
+
+json_str = JsonConvert.SerializeObject(combined_data, Formatting.Indented)
+json_bytes = Encoding.UTF8.GetBytes(json_str)
+base64_str = Convert.ToBase64String(json_bytes)
+
+print("FORMATION_BASE64_START")
+print(base64_str)
+print("FORMATION_BASE64_END")
+print("===END===")
 
 try:
-    if not Directory.Exists(base_dir):
-        Directory.CreateDirectory(base_dir)
-    file_path = get_unique_file_path(base_dir, name)
-
-    combined_data = JObject()
-    combined_data["plants"] = JArray.FromObject(plant)
-    combined_data["ladders"] = JArray.FromObject(ladder)
-    combined_data["vases"] = JArray.FromObject(vase)
-
-    json_str = JsonConvert.SerializeObject(combined_data, Formatting.Indented)
-    File.WriteAllText(file_path, json_str)
-
-    success_msg = f"阵型已保存为 {Path.GetFileName(file_path)}"
-    try:
-        app.DoDialog(64, True, "阵型存储完成", success_msg, "OK", 3)
-    except:
-        print(success_msg)
-except Exception as e:
-    LOG(e, 2001)
+    app.DoDialog(64, True, "阵型提取完成", f"数据已准备，将由 PvZWSTools 保存为 { {NAME} }", "OK", 3)
+except:
+    pass

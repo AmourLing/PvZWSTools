@@ -248,6 +248,23 @@
                                     Height="25"
                                     Command="{Binding RunWhileLockedCommand}"
                                     Content="后台运行" />
+
+                                <!--  去除遮挡 -->
+                                <TextBox
+                                    Grid.Row="2"
+                                    Grid.Column="9"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding RemoveCoverLayer}" />
+                                <Button
+                                    Grid.Row="2"
+                                    Grid.Column="10"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding RemoveCoverLayerCommand}"
+                                    Content="去除遮挡" />
                             </Grid>
                         </TabItem>
 
@@ -1220,9 +1237,10 @@
                         <!--  出怪  -->
                         <TabItem Header="出怪">
                             <Grid DataContext="{Binding Spawn}">
-                                <!--  路障  -->
+                                <!--  ========== 僵尸生成控件（共 40 种）==========  -->
+                                <!--  第 1 行：Normal, Flag, TrafficCone, Polevaulter, Pail  -->
                                 <TextBox
-                                    x:Name="Spawn_TrafficCone_Input"
+                                    x:Name="Spawn_ZombieNormal_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="0,5,0,0"
@@ -1230,20 +1248,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding TrafficCone}" />
+                                    Text="{Binding ZombieNormal}" />
                                 <Button
-                                    x:Name="Spawn_TrafficCone_Btn"
+                                    x:Name="Spawn_ZombieNormal_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="30,5,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding TrafficConeCommand}"
-                                    Content="路障" />
+                                    Command="{Binding ZombieNormalCommand}"
+                                    Content="普僵" />
 
-                                <!--  撑杆  -->
                                 <TextBox
-                                    x:Name="Spawn_Polevaulter_Input"
+                                    x:Name="Spawn_ZombieFlag_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="80,5,0,0"
@@ -1251,20 +1268,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Polevaulter}" />
+                                    Text="{Binding ZombieFlag}" />
                                 <Button
-                                    x:Name="Spawn_Polevaulter_Btn"
+                                    x:Name="Spawn_ZombieFlag_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="110,5,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding PolevaulterCommand}"
-                                    Content="撑杆" />
+                                    Command="{Binding ZombieFlagCommand}"
+                                    Content="旗子" />
 
-                                <!--  铁桶  -->
                                 <TextBox
-                                    x:Name="Spawn_Pail_Input"
+                                    x:Name="Spawn_ZombieTrafficCone_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="160,5,0,0"
@@ -1272,20 +1288,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Pail}" />
+                                    Text="{Binding ZombieTrafficCone}" />
                                 <Button
-                                    x:Name="Spawn_Pail_Btn"
+                                    x:Name="Spawn_ZombieTrafficCone_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="190,5,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding PailCommand}"
-                                    Content="铁桶" />
+                                    Command="{Binding ZombieTrafficConeCommand}"
+                                    Content="路障" />
 
-                                <!--  读报  -->
                                 <TextBox
-                                    x:Name="Spawn_Newspaper_Input"
+                                    x:Name="Spawn_ZombiePolevaulter_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="240,5,0,0"
@@ -1293,20 +1308,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Newspaper}" />
+                                    Text="{Binding ZombiePolevaulter}" />
                                 <Button
-                                    x:Name="Spawn_Newspaper_Btn"
+                                    x:Name="Spawn_ZombiePolevaulter_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="270,5,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding NewspaperCommand}"
-                                    Content="读报" />
+                                    Command="{Binding ZombiePolevaulterCommand}"
+                                    Content="撑杆" />
 
-                                <!--  铁门  -->
                                 <TextBox
-                                    x:Name="Spawn_Door_Input"
+                                    x:Name="Spawn_ZombiePail_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="320,5,0,0"
@@ -1314,20 +1328,20 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Door}" />
+                                    Text="{Binding ZombiePail}" />
                                 <Button
-                                    x:Name="Spawn_Door_Btn"
+                                    x:Name="Spawn_ZombiePail_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="350,5,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding DoorCommand}"
-                                    Content="铁门" />
+                                    Command="{Binding ZombiePailCommand}"
+                                    Content="铁桶" />
 
-                                <!--  橄榄  -->
+                                <!--  第 2 行：Newspaper, Door, Football, Dancer, BackupDancer  -->
                                 <TextBox
-                                    x:Name="Spawn_Football_Input"
+                                    x:Name="Spawn_ZombieNewspaper_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="0,35,0,0"
@@ -1335,20 +1349,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Football}" />
+                                    Text="{Binding ZombieNewspaper}" />
                                 <Button
-                                    x:Name="Spawn_Football_Btn"
+                                    x:Name="Spawn_ZombieNewspaper_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="30,35,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding FootballCommand}"
-                                    Content="橄榄" />
+                                    Command="{Binding ZombieNewspaperCommand}"
+                                    Content="读报" />
 
-                                <!--  舞王  -->
                                 <TextBox
-                                    x:Name="Spawn_Dancer_Input"
+                                    x:Name="Spawn_ZombieDoor_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="80,35,0,0"
@@ -1356,20 +1369,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Dancer}" />
+                                    Text="{Binding ZombieDoor}" />
                                 <Button
-                                    x:Name="Spawn_Dancer_Btn"
+                                    x:Name="Spawn_ZombieDoor_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="110,35,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding DancerCommand}"
-                                    Content="舞王" />
+                                    Command="{Binding ZombieDoorCommand}"
+                                    Content="网门" />
 
-                                <!--  潜水  -->
                                 <TextBox
-                                    x:Name="Spawn_Snorkel_Input"
+                                    x:Name="Spawn_ZombieFootball_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="160,35,0,0"
@@ -1377,20 +1389,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Snorkel}" />
+                                    Text="{Binding ZombieFootball}" />
                                 <Button
-                                    x:Name="Spawn_Snorkel_Btn"
+                                    x:Name="Spawn_ZombieFootball_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="190,35,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding SnorkelCommand}"
-                                    Content="潜水" />
+                                    Command="{Binding ZombieFootballCommand}"
+                                    Content="橄榄球" />
 
-                                <!--  冰车  -->
                                 <TextBox
-                                    x:Name="Spawn_Zamboni_Input"
+                                    x:Name="Spawn_ZombieDancer_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="240,35,0,0"
@@ -1398,20 +1409,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Zamboni}" />
+                                    Text="{Binding ZombieDancer}" />
                                 <Button
-                                    x:Name="Spawn_Zamboni_Btn"
+                                    x:Name="Spawn_ZombieDancer_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="270,35,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding ZamboniCommand}"
-                                    Content="冰车" />
+                                    Command="{Binding ZombieDancerCommand}"
+                                    Content="舞王" />
 
-                                <!--  海豚  -->
                                 <TextBox
-                                    x:Name="Spawn_DolphinRider_Input"
+                                    x:Name="Spawn_ZombieBackupDancer_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="320,35,0,0"
@@ -1419,20 +1429,20 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding DolphinRider}" />
+                                    Text="{Binding ZombieBackupDancer}" />
                                 <Button
-                                    x:Name="Spawn_DolphinRider_Btn"
+                                    x:Name="Spawn_ZombieBackupDancer_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="350,35,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding DolphinRiderCommand}"
-                                    Content="海豚" />
+                                    Command="{Binding ZombieBackupDancerCommand}"
+                                    Content="伴舞" />
 
-                                <!--  小丑  -->
+                                <!--  第 3 行：DuckyTube, Snorkel, Zamboni, Bobsled, DolphinRider  -->
                                 <TextBox
-                                    x:Name="Spawn_JackInTheBox_Input"
+                                    x:Name="Spawn_ZombieDuckyTube_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="0,65,0,0"
@@ -1440,20 +1450,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding JackInTheBox}" />
+                                    Text="{Binding ZombieDuckyTube}" />
                                 <Button
-                                    x:Name="Spawn_JackInTheBox_Btn"
+                                    x:Name="Spawn_ZombieDuckyTube_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="30,65,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding JackInTheBoxCommand}"
-                                    Content="小丑" />
+                                    Command="{Binding ZombieDuckyTubeCommand}"
+                                    Content="鸭子" />
 
-                                <!--  气球  -->
                                 <TextBox
-                                    x:Name="Spawn_Balloon_Input"
+                                    x:Name="Spawn_ZombieSnorkel_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="80,65,0,0"
@@ -1461,20 +1470,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Balloon}" />
+                                    Text="{Binding ZombieSnorkel}" />
                                 <Button
-                                    x:Name="Spawn_Balloon_Btn"
+                                    x:Name="Spawn_ZombieSnorkel_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="110,65,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding BalloonCommand}"
-                                    Content="气球" />
+                                    Command="{Binding ZombieSnorkelCommand}"
+                                    Content="潜水" />
 
-                                <!--  矿工  -->
                                 <TextBox
-                                    x:Name="Spawn_Digger_Input"
+                                    x:Name="Spawn_ZombieZamboni_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="160,65,0,0"
@@ -1482,20 +1490,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Digger}" />
+                                    Text="{Binding ZombieZamboni}" />
                                 <Button
-                                    x:Name="Spawn_Digger_Btn"
+                                    x:Name="Spawn_ZombieZamboni_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="190,65,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding DiggerCommand}"
-                                    Content="矿工" />
+                                    Command="{Binding ZombieZamboniCommand}"
+                                    Content="雪橇车" />
 
-                                <!--  跳跳  -->
                                 <TextBox
-                                    x:Name="Spawn_Pogo_Input"
+                                    x:Name="Spawn_ZombieBobsled_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="240,65,0,0"
@@ -1503,20 +1510,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Pogo}" />
+                                    Text="{Binding ZombieBobsled}" />
                                 <Button
-                                    x:Name="Spawn_Pogo_Btn"
+                                    x:Name="Spawn_ZombieBobsled_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="270,65,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding PogoCommand}"
-                                    Content="跳跳" />
+                                    Command="{Binding ZombieBobsledCommand}"
+                                    Content="小队" />
 
-                                <!--  雪人  -->
                                 <TextBox
-                                    x:Name="Spawn_Yeti_Input"
+                                    x:Name="Spawn_ZombieDolphinRider_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="320,65,0,0"
@@ -1524,20 +1530,20 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Yeti}" />
+                                    Text="{Binding ZombieDolphinRider}" />
                                 <Button
-                                    x:Name="Spawn_Yeti_Btn"
+                                    x:Name="Spawn_ZombieDolphinRider_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="350,65,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding YetiCommand}"
-                                    Content="雪人" />
+                                    Command="{Binding ZombieDolphinRiderCommand}"
+                                    Content="海豚" />
 
-                                <!--  蹦极  -->
+                                <!--  第 4 行：JackInTheBox, Balloon, Digger, Pogo, Yeti  -->
                                 <TextBox
-                                    x:Name="Spawn_Bungee_Input"
+                                    x:Name="Spawn_ZombieJackInTheBox_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="0,95,0,0"
@@ -1545,20 +1551,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Bungee}" />
+                                    Text="{Binding ZombieJackInTheBox}" />
                                 <Button
-                                    x:Name="Spawn_Bungee_Btn"
+                                    x:Name="Spawn_ZombieJackInTheBox_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="30,95,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding BungeeCommand}"
-                                    Content="蹦极" />
+                                    Command="{Binding ZombieJackInTheBoxCommand}"
+                                    Content="小丑" />
 
-                                <!--  扶梯  -->
                                 <TextBox
-                                    x:Name="Spawn_Ladder_Input"
+                                    x:Name="Spawn_ZombieBalloon_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="80,95,0,0"
@@ -1566,20 +1571,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Ladder}" />
+                                    Text="{Binding ZombieBalloon}" />
                                 <Button
-                                    x:Name="Spawn_Ladder_Btn"
+                                    x:Name="Spawn_ZombieBalloon_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="110,95,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding LadderCommand}"
-                                    Content="扶梯" />
+                                    Command="{Binding ZombieBalloonCommand}"
+                                    Content="气球" />
 
-                                <!--  投篮  -->
                                 <TextBox
-                                    x:Name="Spawn_Catapult_Input"
+                                    x:Name="Spawn_ZombieDigger_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="160,95,0,0"
@@ -1587,20 +1591,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Catapult}" />
+                                    Text="{Binding ZombieDigger}" />
                                 <Button
-                                    x:Name="Spawn_Catapult_Btn"
+                                    x:Name="Spawn_ZombieDigger_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="190,95,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding CatapultCommand}"
-                                    Content="投篮" />
+                                    Command="{Binding ZombieDiggerCommand}"
+                                    Content="矿工" />
 
-                                <!--  白眼  -->
                                 <TextBox
-                                    x:Name="Spawn_Gargantuar_Input"
+                                    x:Name="Spawn_ZombiePogo_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="240,95,0,0"
@@ -1608,20 +1611,19 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding Gargantuar}" />
+                                    Text="{Binding ZombiePogo}" />
                                 <Button
-                                    x:Name="Spawn_Gargantuar_Btn"
+                                    x:Name="Spawn_ZombiePogo_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="270,95,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding GargantuarCommand}"
-                                    Content="白眼" />
+                                    Command="{Binding ZombiePogoCommand}"
+                                    Content="蹦极" />
 
-                                <!--  红眼  -->
                                 <TextBox
-                                    x:Name="Spawn_RedeyeGargantuar_Input"
+                                    x:Name="Spawn_ZombieYeti_Input"
                                     Width="30"
                                     Height="25"
                                     Margin="320,95,0,0"
@@ -1629,16 +1631,420 @@
                                     VerticalAlignment="Top"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding RedeyeGargantuar}" />
+                                    Text="{Binding ZombieYeti}" />
                                 <Button
-                                    x:Name="Spawn_RedeyeGargantuar_Btn"
+                                    x:Name="Spawn_ZombieYeti_Btn"
                                     Width="40"
                                     Height="25"
                                     Margin="350,95,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Command="{Binding RedeyeGargantuarCommand}"
+                                    Command="{Binding ZombieYetiCommand}"
+                                    Content="雪人" />
+
+                                <!--  第 5 行：Bungee, Ladder, Catapult, Gargantuar, Imp  -->
+                                <TextBox
+                                    x:Name="Spawn_ZombieBungee_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieBungee}" />
+                                <Button
+                                    x:Name="Spawn_ZombieBungee_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieBungeeCommand}"
+                                    Content="飞贼" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieLadder_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieLadder}" />
+                                <Button
+                                    x:Name="Spawn_ZombieLadder_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieLadderCommand}"
+                                    Content="梯子" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieCatapult_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieCatapult}" />
+                                <Button
+                                    x:Name="Spawn_ZombieCatapult_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieCatapultCommand}"
+                                    Content="投石车" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieGargantuar_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieGargantuar}" />
+                                <Button
+                                    x:Name="Spawn_ZombieGargantuar_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieGargantuarCommand}"
+                                    Content="白眼" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieImp_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieImp}" />
+                                <Button
+                                    x:Name="Spawn_ZombieImp_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieImpCommand}"
+                                    Content="小鬼" />
+
+                                <!--  第 6 行：Boss, PeaHead, WallnutHead, JalapenoHead, GatlingHead  -->
+                                <TextBox
+                                    x:Name="Spawn_ZombieBoss_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieBoss}" />
+                                <Button
+                                    x:Name="Spawn_ZombieBoss_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieBossCommand}"
+                                    Content="僵王" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombiePeaHead_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombiePeaHead}" />
+                                <Button
+                                    x:Name="Spawn_ZombiePeaHead_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombiePeaHeadCommand}"
+                                    Content="豌豆" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieWallnutHead_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieWallnutHead}" />
+                                <Button
+                                    x:Name="Spawn_ZombieWallnutHead_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieWallnutHeadCommand}"
+                                    Content="坚果" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieJalapenoHead_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieJalapenoHead}" />
+                                <Button
+                                    x:Name="Spawn_ZombieJalapenoHead_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieJalapenoHeadCommand}"
+                                    Content="辣椒" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieGatlingHead_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieGatlingHead}" />
+                                <Button
+                                    x:Name="Spawn_ZombieGatlingHead_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,155,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieGatlingHeadCommand}"
+                                    Content="机枪" />
+
+                                <!--  第 7 行：SquashHead, TallnutHead, RedeyeGargantuar, RobotTitan, RedeyeRobotTitan  -->
+                                <TextBox
+                                    x:Name="Spawn_ZombieSquashHead_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieSquashHead}" />
+                                <Button
+                                    x:Name="Spawn_ZombieSquashHead_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieSquashHeadCommand}"
+                                    Content="窝瓜" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieTallnutHead_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieTallnutHead}" />
+                                <Button
+                                    x:Name="Spawn_ZombieTallnutHead_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieTallnutHeadCommand}"
+                                    Content="高坚果" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieRedeyeGargantuar_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieRedeyeGargantuar}" />
+                                <Button
+                                    x:Name="Spawn_ZombieRedeyeGargantuar_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieRedeyeGargantuarCommand}"
                                     Content="红眼" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieRobotTitan_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieRobotTitan}" />
+                                <Button
+                                    x:Name="Spawn_ZombieRobotTitan_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieRobotTitanCommand}"
+                                    Content="白眼机械" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieRedeyeRobotTitan_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieRedeyeRobotTitan}" />
+                                <Button
+                                    x:Name="Spawn_ZombieRedeyeRobotTitan_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,185,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieRedeyeRobotTitanCommand}"
+                                    Content="红眼机械" />
+
+                                <!--  第 8 行：Monk, FootballPremium, Ninja, Talisman, Propeller  -->
+                                <TextBox
+                                    x:Name="Spawn_ZombieMonk_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieMonk}" />
+                                <Button
+                                    x:Name="Spawn_ZombieMonk_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="30,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieMonkCommand}"
+                                    Content="武僧" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieFootballPremium_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="80,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieFootballPremium}" />
+                                <Button
+                                    x:Name="Spawn_ZombieFootballPremium_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="110,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieFootballPremiumCommand}"
+                                    Content="黑橄榄球" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieNinja_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="160,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieNinja}" />
+                                <Button
+                                    x:Name="Spawn_ZombieNinja_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="190,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieNinjaCommand}"
+                                    Content="女忍者" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombieTalisman_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="240,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombieTalisman}" />
+                                <Button
+                                    x:Name="Spawn_ZombieTalisman_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="270,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombieTalismanCommand}"
+                                    Content="天尸" />
+
+                                <TextBox
+                                    x:Name="Spawn_ZombiePropeller_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding ZombiePropeller}" />
+                                <Button
+                                    x:Name="Spawn_ZombiePropeller_Btn"
+                                    Width="40"
+                                    Height="25"
+                                    Margin="350,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding ZombiePropellerCommand}"
+                                    Content="螺旋桨" />
 
                                 <!--  暂停出怪  -->
                                 <TextBox
@@ -1729,7 +2135,7 @@
                                     x:Name="LimitTestBtn"
                                     Width="90"
                                     Height="25"
-                                    Margin="0,125,0,0"
+                                    Margin="0,245,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding LimitTestCommand}"
@@ -1740,7 +2146,7 @@
                                     x:Name="GetZombieSpawnBtn"
                                     Width="90"
                                     Height="25"
-                                    Margin="100,125,0,0"
+                                    Margin="100,245,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding GetZombieSpawnCommand}"
@@ -1751,7 +2157,7 @@
                                     x:Name="PrintZombieSpawnBtn"
                                     Width="90"
                                     Height="25"
-                                    Margin="200,125,0,0"
+                                    Margin="200,245,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding PrintZombieSpawnCommand}"
@@ -1762,7 +2168,7 @@
                                     x:Name="ZombiesInWaveBtn"
                                     Width="90"
                                     Height="25"
-                                    Margin="300,125,0,0"
+                                    Margin="300,245,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding ZombiesInWaveCountCommand}"
@@ -1773,7 +2179,7 @@
                                     x:Name="ZombiesInWaveBtn2"
                                     Width="90"
                                     Height="25"
-                                    Margin="400,125,0,0"
+                                    Margin="400,245,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding ZombiesInWaveIndexCommand}"
@@ -1784,7 +2190,7 @@
                                     x:Name="JsonEditZombiesInWave_Input"
                                     Width="30"
                                     Height="25"
-                                    Margin="0,155,0,0"
+                                    Margin="0,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     FontSize="16"
@@ -1794,7 +2200,7 @@
                                     x:Name="JsonEditZombiesInWave_Btn"
                                     Width="60"
                                     Height="25"
-                                    Margin="30,155,0,0"
+                                    Margin="30,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding JsonEditCommand}"
@@ -1805,7 +2211,7 @@
                                     x:Name="LoadJsonZombiesInWaveZombiesInWave_Btn"
                                     Width="90"
                                     Height="25"
-                                    Margin="100,155,0,0"
+                                    Margin="100,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding LoadJsonZombiesInWaveCommand}"
@@ -1816,7 +2222,7 @@
                                     x:Name="ZombieHealthToNextWaveMinInput"
                                     Width="45"
                                     Height="25"
-                                    Margin="200,155,0,0"
+                                    Margin="200,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     FontSize="16"
@@ -1825,7 +2231,7 @@
                                     x:Name="ZombieHealthToNextWaveMaxInput"
                                     Width="45"
                                     Height="25"
-                                    Margin="240,155,0,0"
+                                    Margin="240,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     FontSize="16"
@@ -1834,7 +2240,7 @@
                                     x:Name="Btn_ZombieHealthToNextWave"
                                     Width="80"
                                     Height="25"
-                                    Margin="280,155,0,0"
+                                    Margin="280,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding ZombieHealthToNextWaveCommand}"
@@ -3117,7 +3523,26 @@
                                         </Border>
                                     </Popup>
                                 </Grid>
-
+                                <TextBox
+                                    x:Name="Formation_Sync_Card_Input"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="320,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    HorizontalContentAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Formation_Sync_CardInput}" />
+                                <Button
+                                    x:Name="Formation_Sync_CardBtn"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="350,95,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    HorizontalContentAlignment="Center"
+                                    Command="{Binding ToggleFormation_Sync_CardCommand}"
+                                    Content="同步卡组" />
                                 <!--  储存阵型  -->
                                 <Grid Margin="0,125,0,0" VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>

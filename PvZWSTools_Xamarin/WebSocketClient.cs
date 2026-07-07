@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
-using PvZWSTools_Shared;  
+using PvZWSTools_Shared;
 
 namespace PvZWSTools_Xamarin
 {
@@ -17,13 +17,14 @@ namespace PvZWSTools_Xamarin
         private Action<bool> onConnectionStatusChanged;
         private bool autoConnectEnabled = false;
 
+        public event EventHandler<string> MessageReceived;
+
         public WebSocketClient(Action<bool> onConnectionStatusChanged = null)
         {
             this.onConnectionStatusChanged = onConnectionStatusChanged;
         }
+
         public bool IsConnected => ws?.ReadyState == WebSocketState.Open;
-
-
 
         public void EnableAutoConnect(bool enabled)
         {
@@ -110,6 +111,7 @@ namespace PvZWSTools_Xamarin
             ws.OnMessage += (sender, e) =>
             {
                 Android.Util.Log.Debug("WebSocketClient", $"收到消息: {e.Data}");
+                MessageReceived?.Invoke(this, e.Data);
             };
 
             ws.OnOpen += (sender, e) =>
@@ -118,8 +120,7 @@ namespace PvZWSTools_Xamarin
                 isConnecting = false;
                 stopAutoConnect = false;
 
-                Send(Sharedstring.GetLogoDisplayString);
-
+                Send(Sharedstring.GetLogoDisplayString(true));
 
                 // 更新连接状态
                 onConnectionStatusChanged?.Invoke(true);

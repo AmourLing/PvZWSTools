@@ -11,7 +11,7 @@ if board is None:
 else:
 
     zombieAllowedstr = ""
-    for i in range(0,int(ZombieType.RedeyeGargantuar)+1):
+    for i in range(0,int(ZombieType.ZombieTypesCount)):
         zombieAllowedstr += f"{ZombieType(i)} => {board.mZombieAllowed[i]}\n"
     zombieAllowedstr += "===END==="
     print(zombieAllowedstr)
