@@ -26,6 +26,8 @@
             <Link>配置文件\%(RecursiveDir)%(Filename)%(Extension)</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <None Remove="gardenpng\mainpage.png" />
+        <None Remove="Resources\MainPage.png" />
         <Content Include="$(SolutionDir)update/readme.md">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -49,9 +51,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="gardenpng\mainpage.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="Resources\icon.png">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+          <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

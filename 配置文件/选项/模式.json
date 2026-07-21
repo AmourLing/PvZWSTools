@@ -312,6 +312,10 @@
         "Value": "ChallengeFinalBoss2"
     },
     {
+        "Name": "随机模仿者",
+        "Value": "ImitaterRandom"
+    },
+    {
         "Name": "排山倒海2",
         "Value": "ChallengeColumn2"
     },
@@ -374,6 +378,13 @@
     {
         "Name": "融合",
         "Value": "ChallengeFusion"
+    },
+    {
+        "Name": "随机挑战",
+        "Value": "ChallengeStageRandom"
+    },
+    {
+        "Name": "占领高地",
+        "Value": "OccupyHighGround"
     }
-
 ]
