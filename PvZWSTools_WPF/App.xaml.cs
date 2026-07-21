@@ -21,7 +21,13 @@ public partial class App:Application
 
     public App()
     {
-        Log.Info("欢迎使用PvZWSTools");
+        string welcomeMessage = "欢迎使用PvZWSTools，";
+        welcomeMessage += CompileTime.GetCompileTime()?.ToString("yyyy-MM-dd HH:mm:ss");
+        if(IsBetaVersion)
+        {
+            welcomeMessage += " Beta";
+        }
+        Log.Info(welcomeMessage);
 
         Console.Title = titles[new Random().Next(0, titles.Length)];
     }

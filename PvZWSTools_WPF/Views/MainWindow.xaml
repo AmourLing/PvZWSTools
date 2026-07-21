@@ -249,7 +249,7 @@
                                     Command="{Binding RunWhileLockedCommand}"
                                     Content="后台运行" />
 
-                                <!--  去除遮挡 -->
+                                <!--  去除遮挡  -->
                                 <TextBox
                                     Grid.Row="2"
                                     Grid.Column="9"
@@ -3970,6 +3970,16 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </ScrollViewer>
+                            </Grid>
+                        </TabItem>
+                        <TabItem x:Name="GardenPage" Header="花园">
+                            <Grid DataContext="{Binding QMod}">
+                                <TabControl>
+                                    <TabItem x:Name="MainPage" Header="主花园">
+                                        <ImageBrush ImageSource="pack://application:,,,/gardenpng/mainpage.png" Stretch="Fill" />
+                                    </TabItem>
+                                    <TabItem x:Name="MushroomPage" Header="蘑菇园" />
+                                </TabControl>
                             </Grid>
                         </TabItem>
                     </TabControl>
