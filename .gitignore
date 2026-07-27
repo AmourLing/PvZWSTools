@@ -5,9 +5,10 @@
 .github
 .vs
 PvZWSTools_WPF/Properties
-PvZWSTools_Xamarin/Asset
+PvZWSTools_Xamarin/Assets/need.zip
 update
 .editorconfig
 .gitattributes
 .gitignore
 pyrightconfig.json
+*.user
