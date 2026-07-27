@@ -415,7 +415,7 @@ public class SetupsFragment:AndroidX.Fragment.App.Fragment
     }
 
     // ====================================================================
-    // 一键布阵（移除同步卡组）
+    // 一键布阵
     // ====================================================================
     private void OnLoadFormationClick(object sender, EventArgs e)
     {
@@ -541,7 +541,8 @@ public class SetupsFragment:AndroidX.Fragment.App.Fragment
                 {
                     string content = ExtractMsgFromWebSocketMessage(msg);
                     messageList.Add(content);
-                    if(content.Contains("===END==="))
+                    // 注意：这里匹配新的结束标记
+                    if(content.Contains("SEEDPACKET_JSON_END"))
                     {
                         ws.MessageReceived -= handler;
                         tcs.TrySetResult(messageList);
@@ -565,13 +566,16 @@ public class SetupsFragment:AndroidX.Fragment.App.Fragment
                 string fullOutput = string.Join("", allMessages);
                 LogHelper.Log($"卡组完整输出长度: {fullOutput.Length}");
 
-                const string startMarker = "SEEDPACKET_BASE64_START";
-                const string endMarker = "SEEDPACKET_BASE64_END";
+                // 更新标记以匹配 Python 脚本
+                const string startMarker = "SEEDPACKET_JSON_START";
+                const string endMarker = "SEEDPACKET_JSON_END";
+
                 int si = fullOutput.IndexOf(startMarker);
                 int ei = fullOutput.IndexOf(endMarker);
+
                 if(si == -1 || ei == -1 || ei <= si)
                 {
-                    string msg = "未能找到卡组Base64标记";
+                    string msg = "未能找到卡组JSON标记 (SEEDPACKET_JSON_START/END)";
                     LogHelper.Log(msg);
                     Toast.MakeText(Activity, msg, ToastLength.Long).Show();
                     return;
@@ -645,7 +649,7 @@ public class SetupsFragment:AndroidX.Fragment.App.Fragment
     }
 
     // ====================================================================
-    // 存储阵型（移除同步卡组）
+    // 存储阵型
     // ====================================================================
     private void OnSaveFormationClick(object sender, EventArgs e)
     {
@@ -715,7 +719,8 @@ public class SetupsFragment:AndroidX.Fragment.App.Fragment
                 {
                     string content = ExtractMsgFromWebSocketMessage(msg);
                     messageList.Add(content);
-                    if(content.Contains("===END==="))
+                    // 注意：这里匹配新的结束标记
+                    if(content.Contains("FORMATION_JSON_END"))
                     {
                         ws.MessageReceived -= handler;
                         tcs.TrySetResult(messageList);
@@ -738,13 +743,16 @@ public class SetupsFragment:AndroidX.Fragment.App.Fragment
                 string fullOutput = string.Join("", allMessages);
                 LogHelper.Log($"阵型完整输出长度: {fullOutput.Length}");
 
-                const string fStart = "FORMATION_BASE64_START";
-                const string fEnd = "FORMATION_BASE64_END";
+                // 更新标记以匹配 Python 脚本
+                const string fStart = "FORMATION_JSON_START";
+                const string fEnd = "FORMATION_JSON_END";
+
                 int si = fullOutput.IndexOf(fStart);
                 int ei = fullOutput.IndexOf(fEnd);
+
                 if(si == -1 || ei == -1 || ei <= si)
                 {
-                    string msg = "未能找到阵型Base64标记";
+                    string msg = "未能找到阵型JSON标记 (FORMATION_JSON_START/END)";
                     LogHelper.Log(msg);
                     Toast.MakeText(Activity, msg, ToastLength.Long).Show();
                     return;

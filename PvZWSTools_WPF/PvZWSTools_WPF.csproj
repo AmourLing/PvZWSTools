@@ -28,7 +28,7 @@
         </Content>
         <None Remove="gardenpng\mainpage.png" />
         <None Remove="Resources\MainPage.png" />
-        <Content Include="$(SolutionDir)update/readme.md">
+        <Content Include="$(SolutionDir)readme.md">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="Resources\icon.ico">
