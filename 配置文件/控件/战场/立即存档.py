@@ -10,7 +10,6 @@ app=GlobalStaticVars.gLawnApp
 board=app.mBoard
 
 SaveGame_Name="game{}_{}.dat".format(int(app.mPlayerInfo.mId),int(app.mGameMode))
-#SaveGame_Path=Path.Combine(r"{ADDRESS}","userdata",SaveGame_Name)
 SaveGame_Path=Path.Combine(Directory.GetCurrentDirectory(),"docs","userdata",SaveGame_Name)
 
 @M.HookTo(SexyAppBase.WriteBufferToFile)
