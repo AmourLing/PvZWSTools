@@ -204,6 +204,7 @@ namespace PvZWSTools_WPF.ViewModels
                 new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(BanSaveGame) });
         });
 
+
         public bool BoardColDropdownToggleIsChecked
         {
             get => _boardColDropdownToggleIsChecked;
@@ -415,6 +416,9 @@ namespace PvZWSTools_WPF.ViewModels
 
         public ICommand SaveGameCommand => new RelayCommand(async _ =>
             await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "立即存档"));
+
+        public ICommand LoadGameCommand => new RelayCommand(async _ =>
+            await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "立即回档"));
 
         public NameOption SelectedClear
         {

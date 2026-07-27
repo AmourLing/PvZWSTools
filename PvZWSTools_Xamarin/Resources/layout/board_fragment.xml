@@ -76,6 +76,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/board_strings_14" />
+        <Button
+            android:id="@+id/button15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/board_strings_15" />
     </TableLayout>
 </ScrollView>
 

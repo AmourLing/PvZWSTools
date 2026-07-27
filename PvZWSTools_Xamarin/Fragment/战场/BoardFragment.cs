@@ -254,12 +254,12 @@ namespace PvZWSTools_Xamarin
                 });
             view.FindViewById<Button>(Resource.Id.button13).Click += (sender, e) =>
                 CreateInputDialog.OptAndDone(
-                Activity,
-                GetString(Resource.String.board_strings_13),
-                new Dictionary<string, string> { },
-               mBoardPath,
-               GetString(Resource.String.board_strings_13),
-                new Dictionary<string, string> { }
+                    Activity,
+                    GetString(Resource.String.board_strings_13),
+                    new Dictionary<string, string> { },
+                    mBoardPath,
+                    GetString(Resource.String.board_strings_13),
+                    new Dictionary<string, string> { }
                 );
             view.FindViewById<Button>(Resource.Id.button14).Click += (sender, e) =>
                 CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.board_strings_14), new Dictionary<string, string>
@@ -269,6 +269,15 @@ namespace PvZWSTools_Xamarin
                 {
                     ["{CHECK}"] = "0"
                 });
+            view.FindViewById<Button>(Resource.Id.button15).Click += (sender, e) =>
+                CreateInputDialog.OptAndDone(
+                    Activity,
+                    GetString(Resource.String.board_strings_15),
+                    new Dictionary<string, string> { },
+                    mBoardPath,
+                    GetString(Resource.String.board_strings_15),
+                    new Dictionary<string, string> { }
+                );
             return view;
         }
 

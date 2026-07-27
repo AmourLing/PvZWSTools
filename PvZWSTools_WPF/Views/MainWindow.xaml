@@ -2892,6 +2892,17 @@
                                     Command="{Binding SaveGameCommand}"
                                     Content="立即存档" />
 
+                                <!--  立即回档  -->
+                                <Button
+                                    x:Name="LoadGameBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="0,215,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding LoadGameCommand}"
+                                    Content="立即回档" />
+                                
                                 <!--  禁止存档  -->
                                 <TextBox
                                     x:Name="BanSaveGame"

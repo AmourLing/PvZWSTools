@@ -404,6 +404,8 @@
     <string name="board_strings_14_1_key">{CHECK}</string>
     <string name="board_strings_14_1_value">1</string>
 
+    <string name="board_strings_15">立即回档</string>
+    
     <string name="challenge_strings_1">风暴</string>
     <string name="challenge_strings_1_1_key">2为默认，0为关，1为开</string>
     <string name="challenge_strings_1_1_value">2</string>
