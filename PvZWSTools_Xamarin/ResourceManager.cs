@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,7 +16,6 @@ public static class ResourceManager
     private static bool _isInitialized = false;
     private static string _versionFilePath;
     private static string _zipHashFilePath;
-
 
     public static bool CheckResourceIntegrity()
     {
@@ -199,7 +198,7 @@ public static class ResourceManager
             // 或者创建强制更新标记文件
             var forceUpdatePath = Path.Combine(_externalResourcesPath, "force_update.txt");
             File.WriteAllText(forceUpdatePath, DateTime.Now.ToString());
-                    _ = Android.Util.Log.Info("ResourceManager", "已创建强制更新标记文件");
+            _ = Android.Util.Log.Info("ResourceManager", "已创建强制更新标记文件");
         }
         catch(Exception ex)
         {

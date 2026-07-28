@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="Fragment\BaseFragment.cs" />
     <Compile Include="Fragment\娱乐\FunFragment.cs" />
     <Compile Include="Fragment\植物\PlantFragment.cs" />
     <Compile Include="Fragment\快捷脚本\ScriptFragment.cs" />

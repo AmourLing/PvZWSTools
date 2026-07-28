@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using Android.Util;
@@ -187,7 +187,6 @@ public static class Log
         }
     }
 
-
     private enum LogPriority
     {
         Debug,
@@ -215,12 +214,15 @@ public static class Log
                     case LogPriority.Debug:
                         _ = Android.Util.Log.Debug("PvZWSTools", message);
                         break;
+
                     case LogPriority.Info:
                         _ = Android.Util.Log.Info("PvZWSTools", message);
                         break;
+
                     case LogPriority.Warn:
                         _ = Android.Util.Log.Warn("PvZWSTools", message);
                         break;
+
                     case LogPriority.Error:
                         _ = Android.Util.Log.Error("PvZWSTools", message);
                         break;

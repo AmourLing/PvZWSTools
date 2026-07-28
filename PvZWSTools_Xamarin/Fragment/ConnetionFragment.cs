@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.OS;
@@ -17,8 +17,10 @@ public class ConnectionFragment:Fragment
 
     // 标记是否正在执行连接/断开操作
     private bool isActionInProgress = false;
+
     // 标记是否处于冷却期
     private bool isCooldown = false;
+
     // 用于取消冷却计时的令牌源（可选，用于更精确的控制）
     private CancellationTokenSource cooldownCts;
 

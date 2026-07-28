@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,7 +34,6 @@ public class ScriptFragment:AndroidX.Fragment.App.Fragment
         LoadOptions();
     }
 
-    //快捷脚本
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.Inflate(Resource.Layout.script_fragment, container, false);
@@ -52,7 +51,7 @@ public class ScriptFragment:AndroidX.Fragment.App.Fragment
                 [GetString(Resource.String.script_strings_1_6_key)] = map[GetString(Resource.String.script_strings_1_6_key)],
                 [GetString(Resource.String.script_strings_1_7_key)] = map[GetString(Resource.String.script_strings_1_7_key)],
                 [GetString(Resource.String.script_strings_1_8_key)] = map[GetString(Resource.String.script_strings_1_8_key)],
-            }, "快捷脚本",string.Empty, new Dictionary<string, string>
+            }, "快捷脚本", string.Empty, new Dictionary<string, string>
             {
                 ["{NAME}"] = "0",
                 ["{1}"] = "1",

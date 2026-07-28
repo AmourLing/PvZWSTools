@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using WebSocketSharp;
 using PvZWSTools_Shared;
 using PvZWSTools_Xamarin.Helpers;

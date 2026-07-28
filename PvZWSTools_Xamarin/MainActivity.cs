@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,6 +37,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
     // 自动重连相关
     private Timer _reconnectTimer;
+
     private DateTime _lastReconnectAttempt = DateTime.MinValue;
     private const int RECONNECT_INTERVAL_MS = 3000;
     private bool _isReconnecting = false;
@@ -77,47 +78,61 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             case Resource.Id.nav_others:
                 fragment = new OthersFragment();
                 break;
+
             case Resource.Id.nav_level:
                 fragment = new LevelFragment();
                 break;
+
             case Resource.Id.nav_resources:
                 fragment = new ResourcesFragment();
                 break;
+
             case Resource.Id.nav_plant:
                 fragment = new PlantFragment();
                 break;
+
             case Resource.Id.nav_zombie:
                 fragment = new ZombieFragment();
                 break;
+
             case Resource.Id.nav_spawning:
                 fragment = new SpawningFragment();
                 break;
+
             case Resource.Id.nav_board:
                 fragment = new BoardFragment();
                 break;
+
             case Resource.Id.nav_challenge:
                 fragment = new ChallengeFragment();
                 break;
+
             case Resource.Id.nav_formation:
                 fragment = new FormationFragment();
                 break;
+
             case Resource.Id.nav_fun:
                 fragment = new FunFragment();
                 break;
+
             case Resource.Id.nav_script:
                 fragment = new ScriptFragment();
                 break;
+
             case Resource.Id.nav_connect:
                 fragment = new ConnectionFragment();
                 break;
+
             case Resource.Id.nav_settings:
                 ShowSettingsDialog();
                 return true;
+
             case Resource.Id.nav_updateversion:
                 var uri = Android.Net.Uri.Parse(Sharedstring.BaseUpdateUrl);
                 var intent = new Intent(Intent.ActionView, uri);
                 StartActivity(intent);
                 return true;
+
             default:
                 return false;
         }
@@ -202,6 +217,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             }
         });
     }
+
     protected override void OnCreate(Bundle savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
@@ -277,7 +293,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         base.OnPause();
         // 可选：如果在后台不想重连，可以暂停定时器
-        // StopReconnectTimer(); 
+        // StopReconnectTimer();
     }
 
     private void ApplySettings()

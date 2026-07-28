@@ -1,106 +1,84 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Android.OS;
+using Android.Text.Style;
 using Android.Views;
 using Android.Widget;
+using PvZWSTools_Xamarin;
 
-namespace PvZWSTools_Xamarin;
-
-public class OthersFragment:AndroidX.Fragment.App.Fragment
+public class OthersFragment:BaseFragment
 {
     private static readonly string mOthersPath = "杂项";
+    protected override string FragmentPath => mOthersPath;
+    private static readonly string OptionFileNameSwitch1 = "开关1";
+
+    protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>()
+    {
+        [Resource.String.others_strings_1_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_2_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_3_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_4_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_5_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_6_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_7_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_8_1_key] = OptionFileNameSwitch1,
+    };
+
+    protected override void InitializeMap()
+    {
+        Map[GetString(Resource.String.others_strings_1_1_key)] = GetString(Resource.String.others_strings_1_1_value);
+        Map[GetString(Resource.String.others_strings_2_1_key)] = GetString(Resource.String.others_strings_2_1_value);
+        Map[GetString(Resource.String.others_strings_3_1_key)] = GetString(Resource.String.others_strings_3_1_value);
+        Map[GetString(Resource.String.others_strings_4_1_key)] = GetString(Resource.String.others_strings_4_1_value);
+        Map[GetString(Resource.String.others_strings_5_1_key)] = GetString(Resource.String.others_strings_5_1_value);
+        Map[GetString(Resource.String.others_strings_6_1_key)] = GetString(Resource.String.others_strings_6_1_value);
+        Map[GetString(Resource.String.others_strings_7_1_key)] = GetString(Resource.String.others_strings_7_1_value);
+        Map[GetString(Resource.String.others_strings_8_1_key)] = GetString(Resource.String.others_strings_8_1_value);
+        Map[GetString(Resource.String.others_strings_9_1_key)] = GetString(Resource.String.others_strings_9_1_value);
+
+    }
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.Inflate(Resource.Layout.others_fragment, container, false);
-        view.FindViewById<Button>(Resource.Id.button1).Click += (sender, e) =>
+
+        void SetupButton(int btnId, int titleResId, int keyResId, string defaultValueKey, string defaultValue)
         {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_1), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_1_1_key)] = GetString(Resource.String.others_strings_1_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_1), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
-        view.FindViewById<Button>(Resource.Id.button2).Click += (sender, e) =>
-        {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_2), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_2_1_key)] = GetString(Resource.String.others_strings_2_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_2), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
-        view.FindViewById<Button>(Resource.Id.button3).Click += (sender, e) =>
-        {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_3), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_3_1_key)] = GetString(Resource.String.others_strings_3_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_3), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
-        view.FindViewById<Button>(Resource.Id.button4).Click += (sender, e) =>
-        {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_4), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_4_1_key)] = GetString(Resource.String.others_strings_4_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_4), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
-        view.FindViewById<Button>(Resource.Id.button5).Click += (sender, e) =>
-        {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_5), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_5_1_key)] = GetString(Resource.String.others_strings_5_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_5), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
-        view.FindViewById<Button>(Resource.Id.button6).Click += (sender, e) =>
-        {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_6), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_6_1_key)] = GetString(Resource.String.others_strings_6_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_6), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
-        view.FindViewById<Button>(Resource.Id.button7).Click += (sender, e) =>
-        {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_7), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_7_1_key)] = GetString(Resource.String.others_strings_7_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_7), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
-        view.FindViewById<Button>(Resource.Id.button8).Click += (sender, e) =>
-        {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_8), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_8_1_key)] = GetString(Resource.String.others_strings_8_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_8), new Dictionary<string, string>
-            {
-                ["{CHECK}"] = "0"
-            });
-        };
+            string key1 = GetString(keyResId);
+            view.FindViewById<Button>(btnId).Click += (sender, e) =>
+                CreateInputDialog.OptAndDone3(Activity,
+                GetString(titleResId),
+                new Dictionary<string, string>
+                {
+                    [key1] = key1
+                },
+                FragmentPath,
+                GetString(titleResId),
+                new Dictionary<string, string>
+                {
+                    [defaultValueKey] = defaultValue
+                }, Map, BuildDropdownOptions(key1));
+        }
+
+        SetupButton(Resource.Id.button1, Resource.String.others_strings_1, Resource.String.others_strings_1_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button2, Resource.String.others_strings_2, Resource.String.others_strings_2_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button3, Resource.String.others_strings_3, Resource.String.others_strings_3_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button4, Resource.String.others_strings_4, Resource.String.others_strings_4_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button5, Resource.String.others_strings_5, Resource.String.others_strings_5_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button6, Resource.String.others_strings_6, Resource.String.others_strings_6_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button7, Resource.String.others_strings_7, Resource.String.others_strings_7_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button8, Resource.String.others_strings_8, Resource.String.others_strings_8_1_key, "{CHECK}", "0");
         view.FindViewById<Button>(Resource.Id.button9).Click += (sender, e) =>
         {
-            CreateInputDialog.OptAndDone(Activity, GetString(Resource.String.others_strings_9), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.others_strings_9_1_key)] = GetString(Resource.String.others_strings_9_1_value),
-            }, mOthersPath, GetString(Resource.String.others_strings_9), new Dictionary<string, string>
-            {
-                ["{TREEHEIGHT}"] = "0"
-            });
+            string key1 = GetString(Resource.String.others_strings_9_1_key);
+            CreateInputDialog.OptAndDone2(
+                Activity,
+                GetString(Resource.String.others_strings_9),
+                BuildInitialData(key1),
+                FragmentPath,
+                GetString(Resource.String.others_strings_9_1_key),
+                new Dictionary<string, string> { ["{TREEHEIGHT}"] = "0" },
+                Map
+            );
         };
         return view;
     }
