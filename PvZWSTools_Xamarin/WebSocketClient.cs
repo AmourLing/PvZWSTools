@@ -1,215 +1,214 @@
-﻿using Android.Widget;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
 using WebSocketSharp;
 using PvZWSTools_Shared;
+using PvZWSTools_Xamarin.Helpers;
 
-namespace PvZWSTools_Xamarin
+namespace PvZWSTools_Xamarin;
+
+public class WebSocketClient
 {
-    public class WebSocketClient
+    private WebSocket ws;
+    private readonly object lockObj = new object();
+
+    private string currentUrl;
+    private Action<bool> onConnectionStatusChanged;
+    private bool suppressConnectionMessage = false;
+
+    public event EventHandler<string> MessageReceived;
+
+    public WebSocketClient(Action<bool> onConnectionStatusChanged = null)
     {
-        private WebSocket ws;
-        private Timer connectionCheckTimer;
-        private bool isConnecting = false;
-        private bool stopAutoConnect = false;
-        private string currentUrl;
-        private Action<bool> onConnectionStatusChanged;
-        private bool autoConnectEnabled = false;
+        this.onConnectionStatusChanged = onConnectionStatusChanged;
+    }
 
-        public event EventHandler<string> MessageReceived;
-
-        public WebSocketClient(Action<bool> onConnectionStatusChanged = null)
+    public bool IsConnected
+    {
+        get
         {
-            this.onConnectionStatusChanged = onConnectionStatusChanged;
-        }
-
-        public bool IsConnected => ws?.ReadyState == WebSocketState.Open;
-
-        public void EnableAutoConnect(bool enabled)
-        {
-            autoConnectEnabled = enabled;
-
-            if(enabled)
+            lock(lockObj)
             {
-                StartConnectionCheckTimer();
-            }
-            else
-            {
-                StopConnectionCheckTimer();
+                return ws?.ReadyState == WebSocketState.Open;
             }
         }
+    }
 
-        private void StartConnectionCheckTimer()
+    public void EnableSuppressConnectionMessage(bool enabled)
+    {
+        suppressConnectionMessage = enabled;
+    }
+
+    /// <summary>
+    /// 连接到指定地址
+    /// </summary>
+    public void Connect(string url)
+    {
+        lock(lockObj)
         {
-            if(connectionCheckTimer == null)
-            {
-                connectionCheckTimer = new Timer(ConnectionCheckCallback, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(250));
-            }
+            currentUrl = url;
         }
+        ConnectInternal(url);
+    }
 
-        private void StopConnectionCheckTimer()
+    /// <summary>
+    /// 内部连接逻辑
+    /// </summary>
+    private void ConnectInternal(string url)
+    {
+        WebSocket oldWs = null;
+
+        lock(lockObj)
         {
-            if(connectionCheckTimer != null)
+            if(ws != null)
             {
-                connectionCheckTimer.Dispose();
-                connectionCheckTimer = null;
-            }
-        }
+                if(ws.ReadyState == WebSocketState.Open)
+                {
+                    return; // 已连接，无需操作
+                }
 
-        private void ConnectionCheckCallback(object state)
-        {
-            // 如果设置了停止自动连接，则不检查
-            if(stopAutoConnect)
-                return;
-
-            // 如果未启用自动连接，则不检查
-            if(!autoConnectEnabled)
-                return;
-
-            // 如果正在连接中，则跳过
-            if(isConnecting)
-                return;
-
-            // 如果已经连接，则跳过
-            if(IsConnected)
-                return;
-
-            // 如果当前URL为空，则跳过
-            if(string.IsNullOrWhiteSpace(currentUrl))
-                return;
-
-            // 开始连接
-            isConnecting = true;
-
-            Task.Run(() =>
-            {
+                // 清理旧实例
                 try
                 {
-                    Android.Util.Log.Info("WebSocketClient", $"自动连接检查：尝试连接到 {currentUrl}");
-                    Connect(currentUrl);
-                }
-                finally
-                {
-                    isConnecting = false;
-                }
-            });
-        }
+                    ws.OnMessage -= Ws_OnMessage;
+                    ws.OnOpen -= Ws_OnOpen;
+                    ws.OnClose -= Ws_OnClose;
+                    ws.OnError -= Ws_OnError;
 
-        public void Connect(string url)
-        {
-            if(ws != null && ws.ReadyState == WebSocketState.Open)
-            {
-                Disconnect();
+                    if(ws.ReadyState == WebSocketState.Connecting)
+                        ws.CloseAsync();
+                    else if(ws.ReadyState == WebSocketState.Open)
+                        ws.Close();
+                }
+                catch { }
+
+                oldWs = ws;
+                ws = null;
             }
 
-            currentUrl = url;
-            stopAutoConnect = false;
-
+            // 创建新实例
             ws = new WebSocket(url);
+            ws.OnMessage += Ws_OnMessage;
+            ws.OnOpen += Ws_OnOpen;
+            ws.OnClose += Ws_OnClose;
+            ws.OnError += Ws_OnError;
+        }
 
-            ws.OnMessage += (sender, e) =>
+        try
+        {
+            Log.Debug($"[WebSocketClient]正在连接: {url}");
+            ws.Connect();
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"[WebSocketClient]连接异常: {ex.Message}");
+            UpdateConnectionStatus(false);
+        }
+    }
+
+    private void Ws_OnMessage(object sender, MessageEventArgs e)
+    {
+        Log.Debug($"[WebSocketClient]收到消息: {e.Data}");
+        MessageReceived?.Invoke(this, e.Data);
+    }
+
+    private void Ws_OnOpen(object sender, EventArgs e)
+    {
+        Log.Info($"[WebSocketClient]连接成功: {currentUrl}");
+        UpdateConnectionStatus(true);
+
+        string msg = Sharedstring.GetLogoDisplayString(!suppressConnectionMessage);
+        Send(msg);
+
+        RunOnMainThread(() =>
+        {
+            MainActivity.Instance?.UpdateConnectionStatus(true);
+        });
+    }
+
+    private void Ws_OnClose(object sender, CloseEventArgs e)
+    {
+        Log.Info($"[WebSocketClient]连接关闭: {e.Reason}");
+        UpdateConnectionStatus(false);
+
+        RunOnMainThread(() =>
+        {
+            MainActivity.Instance?.UpdateConnectionStatus(false);
+        });
+    }
+
+    private void Ws_OnError(object sender, ErrorEventArgs e)
+    {
+        Log.Error($"[WebSocketClient]连接错误: {e.Message}");
+        UpdateConnectionStatus(false);
+
+        RunOnMainThread(() =>
+        {
+            MainActivity.Instance?.UpdateConnectionStatus(false);
+        });
+    }
+
+    private void UpdateConnectionStatus(bool isConnected)
+    {
+        onConnectionStatusChanged?.Invoke(isConnected);
+    }
+
+    public void Disconnect()
+    {
+        WebSocket wsToClose = null;
+        lock(lockObj)
+        {
+            if(ws?.ReadyState == WebSocketState.Open || ws?.ReadyState == WebSocketState.Connecting)
             {
-                Android.Util.Log.Debug("WebSocketClient", $"收到消息: {e.Data}");
-                MessageReceived?.Invoke(this, e.Data);
-            };
+                wsToClose = ws;
+                ws = null;
+            }
+        }
 
-            ws.OnOpen += (sender, e) =>
-            {
-                Android.Util.Log.Info("WebSocketClient", $"连接成功: {url}");
-                isConnecting = false;
-                stopAutoConnect = false;
-
-                Send(Sharedstring.GetLogoDisplayString(true));
-
-                // 更新连接状态
-                onConnectionStatusChanged?.Invoke(true);
-
-                // 发送连接成功的消息到MainActivity
-                MainActivity.Instance?.RunOnUiThread(() =>
-                {
-                    // 更新菜单项的标题
-                    MainActivity.Instance.UpdateConnectionStatus(true);
-                });
-            };
-
-            ws.OnClose += (sender, e) =>
-            {
-                Android.Util.Log.Info("WebSocketClient", $"连接关闭: {e.Reason}");
-
-                // 更新连接状态
-                onConnectionStatusChanged?.Invoke(false);
-
-                // 如果不是手动断开，尝试重连
-                if(!stopAutoConnect && autoConnectEnabled)
-                {
-                    Android.Util.Log.Info("WebSocketClient", "连接断开，将尝试重连");
-                }
-
-                MainActivity.Instance?.RunOnUiThread(() =>
-                {
-                    // 更新菜单项的标题
-                    MainActivity.Instance.UpdateConnectionStatus(false);
-                });
-            };
-
-            ws.OnError += (sender, e) =>
-            {
-                Android.Util.Log.Error("WebSocketClient", $"连接错误: {e.Message}");
-
-                // 更新连接状态
-                onConnectionStatusChanged?.Invoke(false);
-
-                // 连接错误时也尝试重连
-                if(!stopAutoConnect && autoConnectEnabled)
-                {
-                    Android.Util.Log.Info("WebSocketClient", "连接错误，将尝试重连");
-                }
-
-                MainActivity.Instance?.RunOnUiThread(() =>
-                {
-                    // 更新菜单项的标题
-                    MainActivity.Instance.UpdateConnectionStatus(false);
-                });
-            };
-
+        if(wsToClose != null)
+        {
             try
             {
-                ws.Connect();
+                if(wsToClose.ReadyState == WebSocketState.Connecting)
+                    wsToClose.CloseAsync();
+                else
+                    wsToClose.Close();
             }
-            catch(Exception ex)
-            {
-                Android.Util.Log.Error("WebSocketClient", $"连接异常: {ex.Message}");
-            }
+            catch { }
         }
 
-        public void Disconnect()
+        UpdateConnectionStatus(false);
+        Log.Info($"[WebSocketClient]手动断开连接");
+    }
+
+    public void Send(string command)
+    {
+        if(IsConnected)
         {
-            stopAutoConnect = true;
-
-            if(ws?.ReadyState == WebSocketState.Open)
-            {
-                ws.Close();
-            }
-
-            // 更新连接状态
-            onConnectionStatusChanged?.Invoke(false);
-
-            Android.Util.Log.Info("WebSocketClient", "手动断开连接，停止自动连接");
-        }
-
-        public void Send(string command)
-        {
-            if(IsConnected)
+            try
             {
                 ws.SendAsync(command, null);
             }
+            catch(Exception ex)
+            {
+                Log.Error($"[WebSocketClient]发送消息失败: {ex.Message}");
+            }
         }
+    }
 
-        public void Dispose()
+    public void Dispose()
+    {
+        Disconnect();
+    }
+
+    private void RunOnMainThread(Action action)
+    {
+        if(action == null) return;
+        try
         {
-            StopConnectionCheckTimer();
-            Disconnect();
+            MainActivity.Instance?.RunOnUiThread(action);
+        }
+        catch(Exception ex)
+        {
+            Log.Warning($"[WebSocketClient]无法在主线程执行操作: {ex.Message}");
         }
     }
 }

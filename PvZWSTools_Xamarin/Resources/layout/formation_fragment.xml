@@ -10,51 +10,51 @@
             android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_1" />
+            android:text="@string/formation_strings_1" />
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_2" />
+            android:text="@string/formation_strings_2" />
         <Button
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_3" />
+            android:text="@string/formation_strings_3" />
         <Button
             android:id="@+id/button4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_4" />
+            android:text="@string/formation_strings_4" />
         <Button
             android:id="@+id/button5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_5" />
+            android:text="@string/formation_strings_5" />
         <Button
             android:id="@+id/button6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_6" />
+            android:text="@string/formation_strings_6" />
         <Button
             android:id="@+id/button7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_7" />
+            android:text="@string/formation_strings_7" />
         <Button
             android:id="@+id/button8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_8" />
+            android:text="@string/formation_strings_8" />
         <Button
             android:id="@+id/button9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_9" />
+            android:text="@string/formation_strings_9" />
         <Button
             android:id="@+id/button10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/setups_strings_10" />
+            android:text="@string/formation_strings_10" />
     </TableLayout>
 </ScrollView>

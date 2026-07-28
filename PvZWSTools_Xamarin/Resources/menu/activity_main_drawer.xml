@@ -29,7 +29,7 @@
             android:title="挑战" />
 
         <item
-            android:id="@+id/nav_setups"
+            android:id="@+id/nav_formation"
             android:title="阵型" />
 
         <item
@@ -52,7 +52,7 @@
                 android:title="获取新版本" />
             <item
                 android:id="@+id/nav_versioninfo"
-                android:title="当前版本20260621-beta" />
+                android:title="当前版本20260728-beta" />
         </menu>
     </item>
 </menu>

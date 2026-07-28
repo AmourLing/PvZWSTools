@@ -71,13 +71,13 @@
     <Compile Include="Fragment\关卡\LevelFragment.cs" />
     <Compile Include="Fragment\杂项\OthersFragment.cs" />
     <Compile Include="Fragment\出怪\SpawningFragment.cs" />
-    <Compile Include="Fragment\阵型\SetupsFragment.cs" />
+    <Compile Include="Fragment\阵型\FormationFragment.cs" />
     <Compile Include="Fragment\CreateInputDialog.cs" />
     <Compile Include="Fragment\ConnetionFragment.cs" />
     <Compile Include="Fragment\僵尸\ZombieFragment.cs" />
     <Compile Include="Fragment\资源\ResourcesFragment.cs" />
     <Compile Include="Helpers\CompileTimeHelper.cs" />
-    <Compile Include="LogHelper.cs" />
+    <Compile Include="Helpers\Log.cs" />
     <Compile Include="NameOption.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
@@ -116,20 +116,20 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\setups_fragment.xml" />
+    <AndroidResource Include="Resources\layout\formation_fragment.xml" />
     <AndroidResource Include="Resources\layout\board_fragment.xml" />
     <AndroidResource Include="Resources\layout\challenge_fragment.xml" />
     <AndroidResource Include="Resources\layout\connection_fragment.xml" />
     <AndroidResource Include="Resources\layout\spawning_fragment.xml" />
     <AndroidResource Include="Resources\layout\others_fragment.xml" />
     <AndroidResource Include="Resources\layout\script_fragment.xml" />
-      <AndroidResource Include="Resources\layout\level_fragment.xml" />
-      <AndroidResource Include="Resources\layout\resources_fragment.xml" />
+    <AndroidResource Include="Resources\layout\level_fragment.xml" />
+    <AndroidResource Include="Resources\layout\resources_fragment.xml" />
     <AndroidResource Include="Resources\layout\plant_fragment.xml" />
     <AndroidResource Include="Resources\layout\zombie_fragment.xml" />
     <AndroidResource Include="Resources\layout\nav_header_main.xml" />
     <AndroidResource Include="Resources\layout\fun_fragment.xml" />
-      <AndroidResource Include="Resources\drawable\icon.png" />
+    <AndroidResource Include="Resources\drawable\icon.png" />
   </ItemGroup>
   <Import Project="..\PvZWSTools_Shared\PvZWSTools_Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
@@ -144,24 +144,20 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\need.zip" />
   </ItemGroup>
-    <!-- 生成编译时间信息 -->
-    <!-- 生成编译时间信息 -->
-    <!-- 生成编译时间信息 -->
-    <!-- 生成编译时间信息 -->
-    <Target Name="GenerateBuildInfo" BeforeTargets="BeforeBuild">
-        <PropertyGroup>
-            <!-- 使用 'o' 标准格式生成 ISO 8601 字符串 -->
-            <BuildTime>$([System.DateTime]::UtcNow.ToString('o'))</BuildTime>
-            <BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</BuildInfoFile>
-        </PropertyGroup>
-        <WriteLinesToFile
-            File="$(BuildInfoFile)"
-            Lines="using System%3B%0anamespace PvZWSTools_Xamarin.Helpers%0a{%0a    public static class BuildInfo%0a    {%0a        public const string CompileTime = &quot;$(BuildTime)&quot;%3B%0a    }%0a}"
-            Overwrite="true"
-            Encoding="UTF-8" />
-        <!-- 将生成的文件加入到编译列表 -->
-        <ItemGroup>
-            <Compile Include="$(BuildInfoFile)" />
-        </ItemGroup>
-    </Target>
+  <!-- 生成编译时间信息 -->
+  <!-- 生成编译时间信息 -->
+  <!-- 生成编译时间信息 -->
+  <!-- 生成编译时间信息 -->
+  <Target Name="GenerateBuildInfo" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <!-- 使用 'o' 标准格式生成 ISO 8601 字符串 -->
+      <BuildTime>$([System.DateTime]::UtcNow.ToString('o'))</BuildTime>
+      <BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</BuildInfoFile>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(BuildInfoFile)" Lines="using System%3B%0anamespace PvZWSTools_Xamarin.Helpers%0a{%0a    public static class BuildInfo%0a    {%0a        public const string CompileTime = &quot;$(BuildTime)&quot;%3B%0a    }%0a}" Overwrite="true" Encoding="UTF-8" />
+    <!-- 将生成的文件加入到编译列表 -->
+    <ItemGroup>
+      <Compile Include="$(BuildInfoFile)" />
+    </ItemGroup>
+  </Target>
 </Project>

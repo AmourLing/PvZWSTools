@@ -450,59 +450,59 @@
     <string name="challenge_strings_9_1_key">2为默认，0为关，1为开</string>
     <string name="challenge_strings_9_1_value">2</string>
 
-    <string name="setups_strings_1">设置卡槽</string>
-    <string name="setups_strings_1_1_key">第几个卡槽</string>
-    <string name="setups_strings_1_1_value">0</string>
-    <string name="setups_strings_1_2_key">要修改成什么类型</string>
-    <string name="setups_strings_1_2_value">0</string>
-    <string name="setups_strings_1_3_key">是否为模仿者</string>
-    <string name="setups_strings_1_3_value">0</string>
+    <string name="formation_strings_1">设置卡槽</string>
+    <string name="formation_strings_1_1_key">第几个卡槽</string>
+    <string name="formation_strings_1_1_value">0</string>
+    <string name="formation_strings_1_2_key">要修改成什么类型</string>
+    <string name="formation_strings_1_2_value">0</string>
+    <string name="formation_strings_1_3_key">是否为模仿者</string>
+    <string name="formation_strings_1_3_value">0</string>
 
-    <string name="setups_strings_2">设置场景</string>
-    <string name="setups_strings_2_1_key">设置的场景</string>
-    <string name="setups_strings_2_1_value">0</string>
+    <string name="formation_strings_2">设置场景</string>
+    <string name="formation_strings_2_1_key">设置的场景</string>
+    <string name="formation_strings_2_1_value">0</string>
 
-    <string name="setups_strings_3">随机选卡</string>
+    <string name="formation_strings_3">随机选卡</string>
 
-    <string name="setups_strings_4">查看草坪</string>
+    <string name="formation_strings_4">查看草坪</string>
 
-    <string name="setups_strings_5">切换卡组</string>
-    <string name="setups_strings_5_1_key">需要启动的卡组名称</string>
-    <string name="setups_strings_5_1_value">default</string>
+    <string name="formation_strings_5">切换卡组</string>
+    <string name="formation_strings_5_1_key">需要启动的卡组名称</string>
+    <string name="formation_strings_5_1_value">default</string>
 
-    <string name="setups_strings_6">存储卡组</string>
-    <string name="setups_strings_6_1_key">将当前卡组名称保存为</string>
-    <string name="setups_strings_6_1_value">DefaultCardName</string>
+    <string name="formation_strings_6">存储卡组</string>
+    <string name="formation_strings_6_1_key">将当前卡组名称保存为</string>
+    <string name="formation_strings_6_1_value">DefaultCardName</string>
 
-    <string name="setups_strings_7">一键布阵</string>
-    <string name="setups_strings_7_1_key">需要布置的阵型名称</string>
-    <string name="setups_strings_7_1_value">DefaultFormationName</string>
+    <string name="formation_strings_7">一键布阵</string>
+    <string name="formation_strings_7_1_key">需要布置的阵型名称</string>
+    <string name="formation_strings_7_1_value">DefaultFormationName</string>
 
-    <string name="setups_strings_8">存储阵型</string>
-    <string name="setups_strings_8_1_key">将当前阵型名称保存为</string>
-    <string name="setups_strings_8_1_value">DefaultFormationName</string>
-    <string name="setups_strings_8_2_key">是否存储植物</string>
-    <string name="setups_strings_8_2_value">1</string>
-    <string name="setups_strings_8_3_key">是否存储梯子</string>
-    <string name="setups_strings_8_3_value">1</string>
-    <string name="setups_strings_8_4_key">是否存储罐子</string>
-    <string name="setups_strings_8_4_value">0</string>
+    <string name="formation_strings_8">存储阵型</string>
+    <string name="formation_strings_8_1_key">将当前阵型名称保存为</string>
+    <string name="formation_strings_8_1_value">DefaultFormationName</string>
+    <string name="formation_strings_8_2_key">是否存储植物</string>
+    <string name="formation_strings_8_2_value">1</string>
+    <string name="formation_strings_8_3_key">是否存储梯子</string>
+    <string name="formation_strings_8_3_value">1</string>
+    <string name="formation_strings_8_4_key">是否存储罐子</string>
+    <string name="formation_strings_8_4_value">0</string>
 
-    <string name="setups_strings_9">设置道路状况</string>
-    <string name="setups_strings_9_1_key">第几行</string>
-    <string name="setups_strings_9_1_value">1</string>
-    <string name="setups_strings_9_2_key">类型</string>
-    <string name="setups_strings_9_2_value">0</string>
-    <string name="setups_strings_9_3_key">是否同步格子</string>
-    <string name="setups_strings_9_3_value">1</string>
+    <string name="formation_strings_9">设置道路状况</string>
+    <string name="formation_strings_9_1_key">第几行</string>
+    <string name="formation_strings_9_1_value">1</string>
+    <string name="formation_strings_9_2_key">类型</string>
+    <string name="formation_strings_9_2_value">0</string>
+    <string name="formation_strings_9_3_key">是否同步格子</string>
+    <string name="formation_strings_9_3_value">1</string>
 
-    <string name="setups_strings_10">设置格子类型</string>
-    <string name="setups_strings_10_1_key">第几行</string>
-    <string name="setups_strings_10_1_value">1</string>
-    <string name="setups_strings_10_2_key">第几列</string>
-    <string name="setups_strings_10_2_value">1</string>
-    <string name="setups_strings_10_3_key">类型</string>
-    <string name="setups_strings_10_3_value">1</string>
+    <string name="formation_strings_10">设置格子类型</string>
+    <string name="formation_strings_10_1_key">第几行</string>
+    <string name="formation_strings_10_1_value">1</string>
+    <string name="formation_strings_10_2_key">第几列</string>
+    <string name="formation_strings_10_2_value">1</string>
+    <string name="formation_strings_10_3_key">类型</string>
+    <string name="formation_strings_10_3_value">1</string>
 
     <string name="sync_card_label">同步卡组</string>
     <string name="sync_card_yes">是</string>

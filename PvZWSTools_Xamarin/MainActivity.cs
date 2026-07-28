@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -14,6 +15,7 @@ using AndroidX.DrawerLayout.Widget;
 using Google.Android.Material.Navigation;
 using PvZWSTools_Shared;
 using static PvZWSTools_Shared.Sharedstring;
+using PvZWSTools_Xamarin.Helpers;
 
 namespace PvZWSTools_Xamarin;
 
@@ -32,6 +34,12 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     public static string AppFilesPath { get; private set; }
 
     public static MainActivity Instance { get; private set; }
+
+    // 自动重连相关
+    private Timer _reconnectTimer;
+    private DateTime _lastReconnectAttempt = DateTime.MinValue;
+    private const int RECONNECT_INTERVAL_MS = 3000;
+    private bool _isReconnecting = false;
 
     public string GetLastWebSocketAddress()
     {
@@ -69,67 +77,53 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             case Resource.Id.nav_others:
                 fragment = new OthersFragment();
                 break;
-
             case Resource.Id.nav_level:
                 fragment = new LevelFragment();
                 break;
-
             case Resource.Id.nav_resources:
                 fragment = new ResourcesFragment();
                 break;
-
             case Resource.Id.nav_plant:
                 fragment = new PlantFragment();
                 break;
-
             case Resource.Id.nav_zombie:
                 fragment = new ZombieFragment();
                 break;
-
             case Resource.Id.nav_spawning:
                 fragment = new SpawningFragment();
                 break;
-
             case Resource.Id.nav_board:
                 fragment = new BoardFragment();
                 break;
-
             case Resource.Id.nav_challenge:
                 fragment = new ChallengeFragment();
                 break;
-
-            case Resource.Id.nav_setups:
-                fragment = new SetupsFragment();
+            case Resource.Id.nav_formation:
+                fragment = new FormationFragment();
                 break;
-
             case Resource.Id.nav_fun:
                 fragment = new FunFragment();
                 break;
-
             case Resource.Id.nav_script:
                 fragment = new ScriptFragment();
                 break;
-
             case Resource.Id.nav_connect:
                 fragment = new ConnectionFragment();
                 break;
-
             case Resource.Id.nav_settings:
                 ShowSettingsDialog();
                 return true;
-
             case Resource.Id.nav_updateversion:
                 var uri = Android.Net.Uri.Parse(Sharedstring.BaseUpdateUrl);
                 var intent = new Intent(Intent.ActionView, uri);
                 StartActivity(intent);
                 return true;
-
             default:
                 return false;
         }
         if(fragment != null)
         {
-            SupportFragmentManager.BeginTransaction()
+            _ = SupportFragmentManager.BeginTransaction()
                 .Replace(Resource.Id.content_frame, fragment)
                 .Commit();
         }
@@ -152,17 +146,16 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
     public override bool OnPrepareOptionsMenu(IMenu menu)
     {
-        // 每次准备菜单时更新连接状态
         var settingsMenuItem = menu.FindItem(Resource.Id.action_settings);
         if(settingsMenuItem != null)
         {
             if(_isConnected)
             {
-                settingsMenuItem.SetTitle(Resource.String.ws_connected);
+                _ = settingsMenuItem.SetTitle(Resource.String.ws_connected);
             }
             else
             {
-                settingsMenuItem.SetTitle(Resource.String.ws_disconnected);
+                _ = settingsMenuItem.SetTitle(Resource.String.ws_disconnected);
             }
         }
         return base.OnPrepareOptionsMenu(menu);
@@ -171,11 +164,9 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
     {
         Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
         base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    // 保存WebSocket地址到设置
     public void SaveWebSocketAddress(string address)
     {
         if(_appSettings != null && !string.IsNullOrWhiteSpace(address))
@@ -185,34 +176,32 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         }
     }
 
-    // 获取是否显示连接提醒
-    public bool ShouldShowConnectionNotification()
-    {
-        return _appSettings?.ShowConnectionNotification ?? true;
-    }
-
-    // 更新连接状态的方法
     public void UpdateConnectionStatus(bool isConnected)
     {
         _isConnected = isConnected;
 
         RunOnUiThread(() =>
         {
-            // 方法1：直接更新保存的菜单项引用
             if(_settingsMenuItem != null)
             {
                 if(isConnected)
                 {
-                    _settingsMenuItem.SetTitle(Resource.String.ws_connected);
+                    _ = _settingsMenuItem.SetTitle(Resource.String.ws_connected);
                 }
                 else
                 {
-                    _settingsMenuItem.SetTitle(Resource.String.ws_disconnected);
+                    _ = _settingsMenuItem.SetTitle(Resource.String.ws_disconnected);
                 }
+            }
+
+            // 通知当前显示的 ConnectionFragment 更新 UI
+            var currentFragment = SupportFragmentManager.FindFragmentById(Resource.Id.content_frame);
+            if(currentFragment is ConnectionFragment connFragment)
+            {
+                connFragment.NotifyConnectionStatusChanged(isConnected);
             }
         });
     }
-
     protected override void OnCreate(Bundle savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
@@ -226,48 +215,35 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
         string configPath = Path.Combine(AppFilesPath, "配置文件");
         if(!Directory.Exists(configPath))
-            Directory.CreateDirectory(configPath);
+            _ = Directory.CreateDirectory(configPath);
 
-        string logPath = Path.Combine(configPath, "Log");
-        if(!Directory.Exists(logPath))
-            Directory.CreateDirectory(logPath);
+        Log.Initialize(configPath);
+        Log.Info("MainActivity 启动");
+        Log.Info($"存储路径: {AppFilesPath}");
 
-        LogHelper.Initialize(configPath);
-        LogHelper.Log("MainActivity 启动 (私有存储)");
-
-        // 设置文件路径
         _settingsPath = Path.Combine(configPath, "setting.json");
         _appSettings = AppSettings.Load(_settingsPath);
 
-        // 显示解压提示对话框
         ShowExtractDialog();
 
-        // 异步初始化资源管理器
-        Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             try
             {
-                // 初始化资源管理器（这会解压资源文件）
                 ResourceManager.Initialize();
-
-                // 回到UI线程更新界面
                 RunOnUiThread(() =>
                 {
-                    // 关闭解压对话框
                     HideExtractDialog();
-
-                    // 继续正常的主界面初始化
                     FinishInitialization();
                 });
             }
             catch(Exception ex)
             {
+                Log.Error("资源初始化失败", ex);
                 RunOnUiThread(() =>
                 {
                     HideExtractDialog();
                     Toast.MakeText(this, $"资源初始化失败: {ex.Message}", ToastLength.Long).Show();
-
-                    // 如果资源初始化失败，仍然尝试继续
                     FinishInitialization();
                 });
             }
@@ -276,31 +252,54 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
     protected override void OnDestroy()
     {
+        Log.Info("MainActivity 销毁");
         Instance = null;
+
+        // 停止重连定时器
+        StopReconnectTimer();
+
+        // 先断开 WebSocket
         ws?.Dispose();
+
+        // 最后关闭日志流
+        Log.Shutdown();
+
         base.OnDestroy();
     }
 
     protected override void OnResume()
     {
         base.OnResume();
-
-        // 应用设置
         ApplySettings();
     }
 
-    // 应用设置
+    protected override void OnPause()
+    {
+        base.OnPause();
+        // 可选：如果在后台不想重连，可以暂停定时器
+        // StopReconnectTimer(); 
+    }
+
     private void ApplySettings()
     {
         if(ws != null)
         {
-            ws.EnableAutoConnect(_appSettings.AutoConnect);
+            ws.EnableSuppressConnectionMessage(_appSettings.SuppressConnectionMessage);
+
+            // 根据设置启用或禁用自动重连
+            if(_appSettings.AutoConnectEnabled)
+            {
+                StartReconnectTimer();
+            }
+            else
+            {
+                StopReconnectTimer();
+            }
         }
     }
 
     private void FinishInitialization()
     {
-        // 继续完成正常的初始化流程
         try
         {
             AndroidX.AppCompat.Widget.Toolbar toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
@@ -318,7 +317,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             var versionItem = menu.FindItem(Resource.Id.nav_versioninfo);
             if(versionItem != null)
             {
-                var compileTime = Helpers.CompileTimeHelper.GetCompileTime();
+                var compileTime = CompileTimeHelper.GetCompileTime();
                 string versionSuffix = compileTime?.ToString("yyyyMMdd") ?? "未知";
                 string title = $"当前版本{versionSuffix}";
                 if(IsBetaVersion)
@@ -330,24 +329,21 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
             if(SupportFragmentManager.BackStackEntryCount == 0)
             {
-                SupportFragmentManager.BeginTransaction()
+                _ = SupportFragmentManager.BeginTransaction()
                     .Replace(Resource.Id.content_frame, new ConnectionFragment())
                     .Commit();
             }
 
-            Task.Run(() =>
+            _ = Task.Run(() =>
             {
-                // 初始化WebSocketClient，启用自动连接
                 ws = new WebSocketClient((isConnected) =>
                 {
-                    // 连接状态变化的回调
                     RunOnUiThread(() =>
                     {
                         UpdateConnectionStatus(isConnected);
                     });
                 });
 
-                // 应用设置
                 RunOnUiThread(() =>
                 {
                     ApplySettings();
@@ -356,15 +352,72 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         }
         catch(Exception ex)
         {
+            Log.Error("应用初始化失败", ex);
             Toast.MakeText(this, $"应用初始化失败: {ex.Message}", ToastLength.Long).Show();
         }
     }
 
-    // 帮助方法：检查ReconnectInterval属性是否存在
-    private System.Reflection.PropertyInfo GetReconnectIntervalProperty()
+    // --- 自动重连逻辑 ---
+
+    private void StartReconnectTimer()
     {
-        return typeof(AppSettings).GetProperty("ReconnectInterval");
+        if(_reconnectTimer == null)
+        {
+            Log.Info("[MainActivity] 启动自动重连定时器");
+            _reconnectTimer = new Timer(ReconnectCallback, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000));
+        }
     }
+
+    private void StopReconnectTimer()
+    {
+        if(_reconnectTimer != null)
+        {
+            Log.Info("[MainActivity] 停止自动重连定时器");
+            _reconnectTimer.Dispose();
+            _reconnectTimer = null;
+        }
+    }
+
+    private void ReconnectCallback(object state)
+    {
+        if(!_appSettings.AutoConnectEnabled || _isReconnecting || _isConnected || ws == null)
+            return;
+
+        string address = GetLastWebSocketAddress();
+        if(string.IsNullOrWhiteSpace(address))
+            return;
+
+        if((DateTime.Now - _lastReconnectAttempt).TotalMilliseconds < RECONNECT_INTERVAL_MS)
+            return;
+
+        lock(this)
+        {
+            if(_isReconnecting || _isConnected) return;
+
+            _isReconnecting = true;
+            _lastReconnectAttempt = DateTime.Now;
+        }
+
+        Log.Info($"[MainActivity] 自动重连尝试: {address}");
+
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                ws.Connect(address);
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"[MainActivity] 自动重连异常: {ex.Message}");
+            }
+            finally
+            {
+                _isReconnecting = false;
+            }
+        });
+    }
+
+    // --- 对话框逻辑 ---
 
     private void HideExtractDialog()
     {
@@ -375,28 +428,16 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         }
     }
 
-    // 帮助方法：设置ReconnectInterval属性
-    private void SetReconnectInterval(AppSettings settings, int value)
-    {
-        var property = GetReconnectIntervalProperty();
-        if(property != null)
-        {
-            property.SetValue(settings, value);
-        }
-    }
-
     private void ShowExtractDialog()
     {
-        // 创建解压提示对话框
         var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-        builder.SetTitle("正在准备资源文件");
-        builder.SetMessage("正在解压必要资源，请稍候...");
-        builder.SetCancelable(false); // 不允许用户取消
+        _ = builder.SetTitle("正在准备资源文件");
+        _ = builder.SetMessage("正在解压必要资源，请稍候...");
+        _ = builder.SetCancelable(false);
 
-        // 创建一个进度条
         ProgressBar progressBar = new ProgressBar(this);
         progressBar.Indeterminate = true;
-        builder.SetView(progressBar);
+        _ = builder.SetView(progressBar);
 
         _extractDialog = builder.Create();
         _extractDialog.Show();
@@ -410,20 +451,23 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             ViewGroup.LayoutParams.MatchParent,
             ViewGroup.LayoutParams.WrapContent);
         layout.SetPadding(50, 30, 50, 30);
+
         var chkAutoConnect = new CheckBox(this)
         {
             Text = "允许自动连接",
-            Checked = _appSettings.AutoConnect
+            Checked = _appSettings.AutoConnectEnabled
         };
         chkAutoConnect.SetTextSize(Android.Util.ComplexUnitType.Sp, 16);
         chkAutoConnect.SetPadding(0, 0, 0, 30);
+
         var chkShowNotification = new CheckBox(this)
         {
-            Text = "显示连接提醒",
-            Checked = _appSettings.ShowConnectionNotification
+            Text = "取消连接提醒",
+            Checked = _appSettings.SuppressConnectionMessage
         };
         chkShowNotification.SetTextSize(Android.Util.ComplexUnitType.Sp, 16);
         chkShowNotification.SetPadding(0, 0, 0, 10);
+
         var txtWsAddressLabel = new TextView(this)
         {
             Text = "WebSocket地址:",
@@ -438,67 +482,39 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         };
         txtWsAddress.SetTextSize(Android.Util.ComplexUnitType.Sp, 14);
         txtWsAddress.SetPadding(10, 10, 10, 10);
+
         var gradientDrawable = new GradientDrawable();
         gradientDrawable.SetCornerRadius(8f);
         gradientDrawable.SetStroke(2, Android.Graphics.Color.LightGray);
         gradientDrawable.SetColor(Android.Graphics.Color.White);
         txtWsAddress.Background = gradientDrawable;
-        var txtReconnectIntervalLabel = new TextView(this)
-        {
-            Text = "重连间隔(毫秒):",
-            TextSize = 16
-        };
-        txtReconnectIntervalLabel.SetPadding(0, 20, 0, 10);
 
-        var txtReconnectInterval = new EditText(this)
-        {
-            Text = "250",
-            InputType = Android.Text.InputTypes.ClassNumber
-        };
-        txtReconnectInterval.SetTextSize(Android.Util.ComplexUnitType.Sp, 14);
-        txtReconnectInterval.SetPadding(10, 10, 10, 10);
-        var gradientDrawable2 = new GradientDrawable();
-        gradientDrawable2.SetCornerRadius(8f);
-        gradientDrawable2.SetStroke(2, Android.Graphics.Color.LightGray);
-        gradientDrawable2.SetColor(Android.Graphics.Color.White);
-        txtReconnectInterval.Background = gradientDrawable2;
         layout.AddView(chkAutoConnect);
         layout.AddView(chkShowNotification);
         layout.AddView(txtWsAddressLabel);
         layout.AddView(txtWsAddress);
-        layout.AddView(txtReconnectIntervalLabel);
-        layout.AddView(txtReconnectInterval);
 
         var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-        builder.SetTitle("设置");
-        builder.SetView(layout);
+        _ = builder.SetTitle("设置");
+        _ = builder.SetView(layout);
 
-        builder.SetPositiveButton("确定", (sender, e) =>
+        _ = builder.SetPositiveButton("确定", (sender, e) =>
         {
-            _appSettings.AutoConnect = chkAutoConnect.Checked;
-            _appSettings.ShowConnectionNotification = chkShowNotification.Checked;
+            _appSettings.AutoConnectEnabled = chkAutoConnect.Checked;
+            _appSettings.SuppressConnectionMessage = chkShowNotification.Checked;
             var address = txtWsAddress.Text?.Trim();
             if(!string.IsNullOrEmpty(address))
             {
                 _appSettings.LastWebSocketAddress = address;
             }
 
-            if(int.TryParse(txtReconnectInterval.Text, out int interval) && interval > 0)
-            {
-                if(GetReconnectIntervalProperty() != null)
-                {
-                    SetReconnectInterval(_appSettings, interval);
-                }
-            }
-
             _appSettings.Save(_settingsPath);
-
-            ApplySettings();
+            ApplySettings(); // 应用新设置
 
             Toast.MakeText(this, "设置已保存", ToastLength.Short).Show();
         });
 
-        builder.SetNegativeButton("取消", (Android.Content.IDialogInterfaceOnClickListener)null);
+        _ = builder.SetNegativeButton("取消", (Android.Content.IDialogInterfaceOnClickListener)null);
 
         var dialog = builder.Create();
         dialog.Show();

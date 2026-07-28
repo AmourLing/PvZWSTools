@@ -1,11 +1,9 @@
-﻿namespace PvZWSTools_Xamarin
+﻿namespace PvZWSTools_Xamarin;
+
+public class NameOption
 {
-    //？啊
-    public class NameOption
-    {
-        public string Default { get; set; }
-        public string DisplayName => $"[{Value}]{Name}";
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
+    public string Default { get; set; }
+    public string DisplayName => $"[{Value}]{Name}";
+    public string Name { get; set; }
+    public string Value { get; set; }
 }

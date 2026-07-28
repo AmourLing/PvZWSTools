@@ -2,14 +2,12 @@
 using System;
 using System.IO;
 
-namespace PvZWSTools_Xamarin
-{
+namespace PvZWSTools_Xamarin;
     public class AppSettings
     {
-        public bool AutoConnect { get; set; }  // 允许自动连接
-        public bool ShowConnectionNotification { get; set; }  // 允许显示连接提醒
+        public bool AutoConnectEnabled { get; set; }  // 允许自动连接
+        public bool SuppressConnectionMessage { get; set; }  // 取消显示连接提醒
         public string LastWebSocketAddress { get; set; }  // 上次连接成功的WebSocket地址
-        public int ReconnectInterval { get; set; } = 250;  // 重连间隔，默认250毫秒
 
         // 保存设置到文件
         public void Save(string settingsPath)
@@ -19,7 +17,7 @@ namespace PvZWSTools_Xamarin
                 string directory = Path.GetDirectoryName(settingsPath);
                 if(!Directory.Exists(directory))
                 {
-                    Directory.CreateDirectory(directory);
+                    _ = Directory.CreateDirectory(directory);
                 }
 
                 string json = JsonConvert.SerializeObject(this, Formatting.Indented);
@@ -27,7 +25,7 @@ namespace PvZWSTools_Xamarin
             }
             catch(Exception ex)
             {
-                Android.Util.Log.Error("AppSettings", $"保存设置失败: {ex.Message}");
+                _ =Android.Util.Log.Error("AppSettings", $"保存设置失败: {ex.Message}");
             }
         }
 
@@ -44,17 +42,15 @@ namespace PvZWSTools_Xamarin
             }
             catch(Exception ex)
             {
-                Android.Util.Log.Error("AppSettings", $"加载设置失败: {ex.Message}");
+                _ = Android.Util.Log.Error("AppSettings", $"加载设置失败: {ex.Message}");
             }
 
             // 如果文件不存在或加载失败，返回默认设置
             return new AppSettings
             {
-                AutoConnect = false,
-                ShowConnectionNotification = true,
+                AutoConnectEnabled = false,
+                SuppressConnectionMessage = false,
                 LastWebSocketAddress = "ws://localhost:8080/Py",
-                ReconnectInterval = 250
             };
         }
     }
-}
