@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows.Input;
 using PvZWSTools_WPF.Commands;
 using PvZWSTools_WPF.Helpers;
@@ -12,6 +12,9 @@ public class OthersViewModel:ViewModelBase
 
     private string _autoCollect = Constants.c_Symbol_Off;
     private string _autoCollectName = "自动收集";
+
+    private string _autoFertilizerBugSpray = Constants.c_Symbol_Off;
+    private string _autoFertilizerBugSprayName = "补充肥料杀虫剂";
 
     private string _autoWatering = Constants.c_Symbol_Off;
     private string _autoWateringName = "自动浇水";
@@ -56,6 +59,19 @@ public class OthersViewModel:ViewModelBase
         AutoCollect = ButtonHelper.ToggleCheck(AutoCollect);
         await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoCollectName,
             new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoCollect) });
+    });
+
+    public string AutoFertilizerBugSpray
+    {
+        get => _autoFertilizerBugSpray;
+        set { _autoFertilizerBugSpray = value; OnPropertyChanged(); }
+    }
+
+    public ICommand AutoFertilizerBugSprayCommand => new RelayCommand(async _ =>
+    {
+        AutoFertilizerBugSpray = ButtonHelper.ToggleCheck(AutoFertilizerBugSpray);
+        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoFertilizerBugSprayName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoFertilizerBugSpray) });
     });
 
     public string AutoWatering

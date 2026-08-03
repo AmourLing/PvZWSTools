@@ -21,6 +21,8 @@ public class OthersFragment:BaseFragment
         [Resource.String.others_strings_6_1_key] = OptionFileNameSwitch1,
         [Resource.String.others_strings_7_1_key] = OptionFileNameSwitch1,
         [Resource.String.others_strings_8_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_10_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_11_1_key] = OptionFileNameSwitch1,
     };
 
     protected override void InitializeMap()
@@ -34,7 +36,8 @@ public class OthersFragment:BaseFragment
         Map[GetString(Resource.String.others_strings_7_1_key)] = GetString(Resource.String.others_strings_7_1_value);
         Map[GetString(Resource.String.others_strings_8_1_key)] = GetString(Resource.String.others_strings_8_1_value);
         Map[GetString(Resource.String.others_strings_9_1_key)] = GetString(Resource.String.others_strings_9_1_value);
-
+        Map[GetString(Resource.String.others_strings_10_1_key)] = GetString(Resource.String.others_strings_10_1_value);
+        Map[GetString(Resource.String.others_strings_11_1_key)] = GetString(Resource.String.others_strings_11_1_value);
     }
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -80,6 +83,8 @@ public class OthersFragment:BaseFragment
                 Map
             );
         };
+        SetupButton(Resource.Id.button10, Resource.String.others_strings_10, Resource.String.others_strings_10_1_key, "{CHECK}", "0");
+        SetupButton(Resource.Id.button11, Resource.String.others_strings_11, Resource.String.others_strings_11_1_key, "{CHECK}", "0");
         return view;
     }
 }

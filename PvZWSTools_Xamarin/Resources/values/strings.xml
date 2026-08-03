@@ -47,6 +47,14 @@
     <string name="others_strings_9_1_key">输入树的高度</string>
     <string name="others_strings_9_1_value">1437</string>
 
+    <string name="others_strings_10">去除遮挡</string>
+    <string name="others_strings_10_1_key">去除遮挡{CHECK}</string>
+    <string name="others_strings_10_1_value">1</string>
+
+    <string name="others_strings_11">补充肥料杀虫剂</string>
+    <string name="others_strings_11_1_key">补充肥料杀虫剂{CHECK}</string>
+    <string name="others_strings_11_1_value">1</string>
+
     <string name="level_strings_1">EnterNewLevel</string>
 
     <string name="level_strings_2">直接过关</string>
