@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="PvZWSTools_WPF.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -68,6 +68,7 @@
                         <TabItem Header="杂项">
                             <Grid DataContext="{Binding Others}">
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
                                     <RowDefinition Height="35" />
                                     <RowDefinition Height="35" />
                                     <RowDefinition Height="35" />
@@ -265,6 +266,23 @@
                                     Height="25"
                                     Command="{Binding RemoveCoverLayerCommand}"
                                     Content="去除遮挡" />
+
+                                <!--  补充肥料杀虫剂  -->
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding AutoFertilizerBugSpray}" />
+                                <Button
+                                    Grid.Row="3"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding AutoFertilizerBugSprayCommand}"
+                                    Content="补充肥料杀虫剂" />
                             </Grid>
                         </TabItem>
 
@@ -2902,7 +2920,7 @@
                                     VerticalAlignment="Top"
                                     Command="{Binding LoadGameCommand}"
                                     Content="立即回档" />
-                                
+
                                 <!--  禁止存档  -->
                                 <TextBox
                                     x:Name="BanSaveGame"

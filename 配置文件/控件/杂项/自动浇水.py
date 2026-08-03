@@ -14,7 +14,7 @@ AppVersionNumber = app.AppVersionNumber
 IsPGvZVersion = ("PGvZ" in AppVersionNumber)
 
 @M.HookTo(ZenGarden.ZenGardenUpdate)
-def ZenGarden_ZenGardenUpdate(orig,self):
+def ZenGarden_ZenGardenUpdate_Auto_Watering(orig,self):
     if self.mApp.GetDialog(4) != None:
         return
     orig(self)
@@ -34,15 +34,15 @@ def ZenGarden_ZenGardenUpdate(orig,self):
                         plantsNeed = self.GetPlantsNeed(pottedPlant)
                         x=int(plant.mX+plant.mWidth/2)
                         y=int(plant.mY+plant.mHeight/2)
-                        if plantsNeed == PottedPlantNeed.Water and self.mBoard.CanUseGameObject(GameObjectType.WateringCan):                            
+                        if plantsNeed == PottedPlantNeed.Water and self.mBoard.CanUseGameObject(GameObjectType.WateringCan):
                             self.MouseDownWithFeedingTool(x,y,CursorType.WateringCan)
                             if self.mApp.mPlayerInfo.mPurchases[13]==2:
                                 Diamond_water_check=True
                                 break
                         elif plantsNeed == PottedPlantNeed.Fertilizer and self.mBoard.CanUseGameObject(GameObjectType.Fertilizer) and self.mApp.mPlayerInfo.mPurchases[14] > 1000:
-                            self.MouseDownWithFeedingTool(x,y,CursorType.Fertilizer)      
+                            self.MouseDownWithFeedingTool(x,y,CursorType.Fertilizer)
                         elif plantsNeed == PottedPlantNeed.Bugspray and self.mBoard.CanUseGameObject(GameObjectType.BugSpray) and self.mApp.mPlayerInfo.mPurchases[15] > 1000:
-                            self.MouseDownWithFeedingTool(x,y,CursorType.BugSpray)  
+                            self.MouseDownWithFeedingTool(x,y,CursorType.BugSpray)
                         elif plantsNeed == PottedPlantNeed.Phonograph and self.mBoard.CanUseGameObject(GameObjectType.Phonograph):
                             self.MouseDownWithFeedingTool(x,y,CursorType.Phonograph)
     else:
