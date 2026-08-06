@@ -1,3 +1,4 @@
+import Sexy
 from Lawn import *
 from Sexy import *
 from Sexy.TodLib import *
@@ -71,7 +72,7 @@ def Board_DrawGameObjects(orig, self, g):
 
     text = "\n".join(allowed_names)
     x, y = 1120, 50
-    font = Resources.FONT_DWARVENTODCRAFT12
+    font = Sexy.Resources.FONT_DWARVENTODCRAFT12
     color = SexyColor(255, 0, 0)
 
     TodCommon.TodDrawString(g, text, x, y, font, color, DrawStringJustification.Left, 0.7)

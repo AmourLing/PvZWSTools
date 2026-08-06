@@ -3,6 +3,7 @@
 
 DRAW_PLANT_HP_CHECK = {CHECK}
 
+import Lawn,Sexy
 from Lawn import *
 from Sexy import *
 from Sexy.TodLib import *
@@ -18,4 +19,4 @@ def Plant_Draw(orig,self,g):
         theColor = SexyColor(0, 255, 0)
         aHpx = 0
         aHpy = -20
-        TodCommon.TodDrawString(g, aHpstr, aHpx, aHpy, Resources.FONT_DWARVENTODCRAFT12, theColor, DrawStringJustification.Left,0.7)
+        TodCommon.TodDrawString(g, aHpstr, aHpx, aHpy, Sexy.Resources.FONT_DWARVENTODCRAFT12, theColor, DrawStringJustification.Left,0.7)

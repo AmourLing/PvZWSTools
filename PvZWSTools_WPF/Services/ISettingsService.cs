@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PvZWSTools_WPF.Models;
+﻿using PvZWSTools_WPF.Models;
 
-namespace PvZWSTools_WPF.Services
+namespace PvZWSTools_WPF.Services;
+
+public interface ISettingsService
 {
-    public interface ISettingsService
-    {
-        AppSettings Settings { get; }
+    AppSettings Settings { get; }
 
-        void Save();
-    }
+    void Save();
 }

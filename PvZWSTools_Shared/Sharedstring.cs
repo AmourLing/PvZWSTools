@@ -5,7 +5,7 @@ public class Sharedstring
     /// <summary>
     /// 是否为测试版
     /// </summary>
-    public static readonly bool IsBetaVersion = true;
+    public static readonly bool IsBetaVersion = false;
     /// <summary>
     /// 企鹅群
     /// </summary>

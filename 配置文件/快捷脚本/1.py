@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import Sexy
 from Sexy import *
 from Lawn import *
 from System import DateTime, Enum
@@ -14,10 +15,10 @@ _editor_widget = None
 # FONT_PICO129, FONT_BRIANNETOD12
 # 选一个合适大小、美观的字体
 try:
-    default_font = Resources.FONT_DWARVENTODCRAFT12
+    default_font = Sexy.Resources.FONT_DWARVENTODCRAFT12
 except:
     try:
-        default_font = Resources.FONT_BRIANNETOD12
+        default_font = Sexy.Resources.FONT_BRIANNETOD12
     except:
         default_font = None
         print("WARNING: No font found. Text will not be displayed.")

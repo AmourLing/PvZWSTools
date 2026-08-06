@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using PvZWSTools_Xamarin;
+
+namespace PvZWSTools_Xamarin;
 
 public class LevelFragment:BaseFragment
 {

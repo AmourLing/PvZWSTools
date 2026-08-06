@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Android.OS;
-using Android.Views;
 using Android.Widget;
 using Newtonsoft.Json;
 

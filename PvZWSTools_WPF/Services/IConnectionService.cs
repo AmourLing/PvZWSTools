@@ -1,23 +1,18 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace PvZWSTools_WPF.Services;
 
-namespace PvZWSTools_WPF.Services
+public interface IConnectionService
 {
-    public interface IConnectionService
-    {
-        bool IsConnected { get; }
+    bool IsConnected { get; }
 
-        event EventHandler<bool> ConnectionStateChanged;
+    event EventHandler<bool> ConnectionStateChanged;
 
-        event EventHandler<string> ConnectionError;
+    event EventHandler<string> ConnectionError;
 
-        event EventHandler<string> MessageReceived;
+    event EventHandler<string> MessageReceived;
 
-        Task ConnectAsync(string address, CancellationToken cancellationToken = default);
+    Task ConnectAsync(string address, CancellationToken cancellationToken = default);
 
-        void Disconnect();
+    void Disconnect();
 
-        Task SendAsync(string message);
-    }
+    Task SendAsync(string message);
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -145,18 +145,12 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\need.zip" />
   </ItemGroup>
-  <!-- 生成编译时间信息 -->
-  <!-- 生成编译时间信息 -->
-  <!-- 生成编译时间信息 -->
-  <!-- 生成编译时间信息 -->
   <Target Name="GenerateBuildInfo" BeforeTargets="BeforeBuild">
     <PropertyGroup>
-      <!-- 使用 'o' 标准格式生成 ISO 8601 字符串 -->
       <BuildTime>$([System.DateTime]::UtcNow.ToString('o'))</BuildTime>
       <BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</BuildInfoFile>
     </PropertyGroup>
     <WriteLinesToFile File="$(BuildInfoFile)" Lines="using System%3B%0anamespace PvZWSTools_Xamarin.Helpers%0a{%0a    public static class BuildInfo%0a    {%0a        public const string CompileTime = &quot;$(BuildTime)&quot;%3B%0a    }%0a}" Overwrite="true" Encoding="UTF-8" />
-    <!-- 将生成的文件加入到编译列表 -->
     <ItemGroup>
       <Compile Include="$(BuildInfoFile)" />
     </ItemGroup>

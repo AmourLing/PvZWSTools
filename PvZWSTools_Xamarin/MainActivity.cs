@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,8 +14,8 @@ using AndroidX.Core.View;
 using AndroidX.DrawerLayout.Widget;
 using Google.Android.Material.Navigation;
 using PvZWSTools_Shared;
-using static PvZWSTools_Shared.Sharedstring;
 using PvZWSTools_Xamarin.Helpers;
+using static PvZWSTools_Shared.Sharedstring;
 
 namespace PvZWSTools_Xamarin;
 
@@ -333,8 +333,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             var versionItem = menu.FindItem(Resource.Id.nav_versioninfo);
             if(versionItem != null)
             {
-                var compileTime = CompileTimeHelper.GetCompileTime();
-                string versionSuffix = compileTime?.ToString("yyyyMMdd") ?? "未知";
+                var versionSuffix = CompileTimeHelper.GetCompileTimeString("yyyyMMdd");
                 string title = $"当前版本{versionSuffix}";
                 if(IsBetaVersion)
                 {

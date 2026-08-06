@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace PvZWSTools_Xamarin.Helpers;
 
@@ -19,5 +19,11 @@ public static class CompileTimeHelper
             _ = Android.Util.Log.Error("CompileTime", $"读取编译时间失败: {ex.Message}");
         }
         return null;
+    }
+
+    public static string GetCompileTimeString(string format)
+    {
+        var compileTime = GetCompileTime();
+        return compileTime?.ToString(format) ?? "未知";
     }
 }
