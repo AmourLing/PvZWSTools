@@ -1,9 +1,9 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using PvZWSTools_WPF.Commands;
 using PvZWSTools_WPF.Models;
 using PvZWSTools_WPF.Services;
-using PvZWSTools_WPF.ViewModels;
+
+namespace PvZWSTools_WPF.ViewModels;
 
 public class SettingDialogViewModel:ViewModelBase
 {

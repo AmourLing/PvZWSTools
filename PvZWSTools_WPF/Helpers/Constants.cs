@@ -1,4 +1,4 @@
-namespace PvZWSTools_WPF.Helpers;
+﻿namespace PvZWSTools_WPF.Helpers;
 
 public static class Constants
 {

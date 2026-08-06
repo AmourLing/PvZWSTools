@@ -1,69 +1,67 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 using PvZWSTools_WPF.Helpers;
 using PvZWSTools_WPF.Models;
 
-namespace PvZWSTools_WPF.Services
+namespace PvZWSTools_WPF.Services;
+
+public class SettingsService:ISettingsService
 {
-    public class SettingsService:ISettingsService
+    private readonly string _filePath;
+    private AppSettings _settings;
+
+    public SettingsService(string baseDirectory)
     {
-        private readonly string _filePath;
-        private AppSettings _settings;
+        _filePath = Path.Combine(baseDirectory, Constants.Folder_Need, "setting.json");
+        Load();
+    }
 
-        public SettingsService(string baseDirectory)
+    public AppSettings Settings => _settings;
+
+    public void Save()
+    {
+        try
         {
-            _filePath = Path.Combine(baseDirectory, Constants.Folder_Need, "setting.json");
-            Load();
-        }
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(_filePath));
+            var json = JsonConvert.SerializeObject(_settings, Formatting.Indented);
+            File.WriteAllText(_filePath, json);
 
-        public AppSettings Settings => _settings;
+            Log.Info("配置保存成功：");
 
-        public void Save()
-        {
-            try
-            {
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(_filePath));
-                var json = JsonConvert.SerializeObject(_settings, Formatting.Indented);
-                File.WriteAllText(_filePath, json);
-
-                Log.Info("配置保存成功：");
-
-                Log.Raw($"允许自动连接:{Settings.AutoConnectEnabled}",
-                        Settings.AutoConnectEnabled ? ConsoleColor.Green : ConsoleColor.Red);
-                Log.Raw($"取消发送连接提醒:{Settings.SuppressConnectionMessage}",
-                        Settings.SuppressConnectionMessage ? ConsoleColor.Green : ConsoleColor.Red);
-            }
-            catch(Exception ex)
-            {
-                Log.Error($"设置保存失败: {ex}");
-            }
-        }
-
-        private void Load()
-        {
-            try
-            {
-                if(File.Exists(_filePath))
-                {
-                    var json = File.ReadAllText(_filePath);
-                    _settings = JsonConvert.DeserializeObject<AppSettings>(json) ?? new AppSettings();
-                }
-                else
-                {
-                    _settings = new AppSettings();
-                }
-                Log.Info("配置加载成功：");
-                Log.Raw($"允许自动连接:{Settings.AutoConnectEnabled}",
+            Log.Raw($"允许自动连接:{Settings.AutoConnectEnabled}",
                     Settings.AutoConnectEnabled ? ConsoleColor.Green : ConsoleColor.Red);
-                Log.Raw($"取消发送连接提醒:{Settings.SuppressConnectionMessage}",
+            Log.Raw($"取消发送连接提醒:{Settings.SuppressConnectionMessage}",
                     Settings.SuppressConnectionMessage ? ConsoleColor.Green : ConsoleColor.Red);
-            }
-            catch(Exception ex)
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"设置保存失败: {ex}");
+        }
+    }
+
+    private void Load()
+    {
+        try
+        {
+            if(File.Exists(_filePath))
             {
-                Log.Error($"设置加载失败: {ex}");
+                var json = File.ReadAllText(_filePath);
+                _settings = JsonConvert.DeserializeObject<AppSettings>(json) ?? new AppSettings();
+            }
+            else
+            {
                 _settings = new AppSettings();
             }
+            Log.Info("配置加载成功：");
+            Log.Raw($"允许自动连接:{Settings.AutoConnectEnabled}",
+                Settings.AutoConnectEnabled ? ConsoleColor.Green : ConsoleColor.Red);
+            Log.Raw($"取消发送连接提醒:{Settings.SuppressConnectionMessage}",
+                Settings.SuppressConnectionMessage ? ConsoleColor.Green : ConsoleColor.Red);
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"设置加载失败: {ex}");
+            _settings = new AppSettings();
         }
     }
 }
