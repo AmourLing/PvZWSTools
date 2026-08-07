@@ -76,7 +76,6 @@ public class LevelViewModel:ViewModelBase
                 await _scriptExec.ExecuteAsync(Constants.SubFolders.Level, "设置无尽旗数",
                     new Dictionary<string, string> { [Constants.Placeholders.Flag] = EndlessFlag }));
 
-    // 命令
     public ICommand SetModeCommand => new RelayCommand(async _ =>
     {
         string modeValue = NameOption.GetValue(ModeInput, ModeOptions);

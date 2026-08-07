@@ -181,7 +181,6 @@ public class ResourcesViewModel:ViewModelBase
         await _scriptExec.ExecuteAsync(Constants.SubFolders.Resources, _sunCountLimitName,
             new Dictionary<string, string> { [Constants.Placeholders.SunMoneyLimit] = SunCountLimit }));
 
-    // 命令
     public ICommand SunSetCommand => new RelayCommand(async _ =>
         await _scriptExec.ExecuteAsync(Constants.SubFolders.Resources, _sunCountName,
             new Dictionary<string, string> { [Constants.Placeholders.SunMoney] = SunCount }));

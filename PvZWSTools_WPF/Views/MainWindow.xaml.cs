@@ -10,7 +10,6 @@ namespace PvZWSTools_WPF.Views;
 public partial class MainWindow:Window
 {
     private readonly MainWindowViewModel _viewModel;
-
     private bool _isResizing = false;
 
     public MainWindow()
@@ -22,20 +21,27 @@ public partial class MainWindow:Window
         {
             Title += "_Beta";
         }
+
         var connection = new ConnectionService(Dispatcher);
         string defaultPath = Directory.GetCurrentDirectory();
         var settingsService = new SettingsService(defaultPath);
+        var messageProcessor = new MessageProcessor();
+        var dialogService = new DialogService();
 
-        _viewModel = new MainWindowViewModel(connection, settingsService, defaultPath);
+        _viewModel = new MainWindowViewModel(
+            connection,
+            settingsService,
+            defaultPath,
+            dialogService,
+            messageProcessor
+        );
 
         _viewModel.ShowSettingsDialog += (s, e) =>
         {
-            var dialog = new SettingDialog(
-                settingsService,
-                "允许自动连接",
-                "取消发送连接提醒"
-                );
-            dialog.Owner = this;
+            var dialog = new SettingDialog(settingsService, "允许自动连接", "取消发送连接提醒")
+            {
+                Owner = this
+            };
             _ = dialog.ShowDialog();
         };
 
@@ -52,9 +58,8 @@ public partial class MainWindow:Window
             if(e.WidthChanged)
             {
                 Height = Width / 1.6;
+                _viewModel.UpdateSize(Width);
             }
-            double percentage = (Width / 640.0) * 100;
-            _viewModel.SizeText = $"{percentage:F0}%";
         }
         finally
         {
