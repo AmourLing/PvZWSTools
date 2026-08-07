@@ -14,7 +14,6 @@ public class FormationViewModel:ViewModelBase
     private readonly string _defaultPath;
     private readonly IScriptExecutionService _scriptExec;
 
-    // --- 私有字段 ---
     private bool _bgDropdownToggleIsChecked;
 
     private string _bgInput = "白天";
@@ -60,7 +59,6 @@ public class FormationViewModel:ViewModelBase
         _scriptExec = scriptExec;
         _defaultPath = defaultPath;
 
-        // 初始化选项列表
         BackgroundOptions = OptionsLoader.Load(Constants.JsonBackgroundFile);
         SlotOptions = OptionsLoader.Load(Constants.JsonSlotFile);
         SpInput1Options = OptionsLoader.Load(Constants.JsonSlotIndexFile);
@@ -73,7 +71,6 @@ public class FormationViewModel:ViewModelBase
         LoadSeedPacketsOptions();
     }
 
-    // --- 属性 ---
     public string Formation_Sync_CardInput { get => _formation_Sync_CardInput; set { _formation_Sync_CardInput = value; OnPropertyChanged(); } }
 
     public ICommand ToggleFormation_Sync_CardCommand => new RelayCommand(_ => Formation_Sync_CardInput = ButtonHelper.ToggleCheck(Formation_Sync_CardInput));
@@ -139,13 +136,10 @@ public class FormationViewModel:ViewModelBase
     public string SpInput2 { get => _spInput2; set { _spInput2 = value; OnPropertyChanged(); } }
     public string SpInput3 { get => _spInput3; set { _spInput3 = value; OnPropertyChanged(); } }
 
-    // --- 命令 ---
-
     public ICommand AddFormationCommand => new RelayCommand(async _ =>
     {
         try
         {
-            // 1. 存储阵型
             string output = await _scriptExec.ExecuteWithResultAsync(
                 Constants.SubFolders.Formation,
                 "存储阵型",
@@ -158,7 +152,6 @@ public class FormationViewModel:ViewModelBase
                 }
             );
 
-            // 提取 JSON (Base64 字符串)
             string jsonBase64 = ExtractJsonFromOutput(output, "FORMATION_JSON_START", "FORMATION_JSON_END");
 
             if(string.IsNullOrEmpty(jsonBase64))
@@ -167,7 +160,6 @@ public class FormationViewModel:ViewModelBase
                 return;
             }
 
-            // 解码 Base64 得到原始 JSON
             string jsonContent;
             try
             {
@@ -180,7 +172,6 @@ public class FormationViewModel:ViewModelBase
                 return;
             }
 
-            // 保存阵型文件
             string dir = Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_Formations);
             if(!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
@@ -189,7 +180,6 @@ public class FormationViewModel:ViewModelBase
 
             LoadFormationOptions();
 
-            // 2. 同步卡组（如果开启）
             if(Formation_Sync_CardInput == Constants.c_Symbol_On)
             {
                 await SaveSeedPacketsAsync(FormationNameInput);
@@ -221,14 +211,12 @@ public class FormationViewModel:ViewModelBase
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jsonContent);
             string base64 = Convert.ToBase64String(bytes);
 
-            // 1. 布阵
             await _scriptExec.ExecuteAsync(
                 Constants.SubFolders.Formation,
                 "一键布阵",
                 new Dictionary<string, string> { ["{JSON_BASE64}"] = base64 }
             );
 
-            // 2. 同步卡组（如果开启）
             if(Formation_Sync_CardInput == Constants.c_Symbol_On)
             {
                 await LoadSeedPacketsAsync(selectedName);
@@ -250,7 +238,6 @@ public class FormationViewModel:ViewModelBase
                 new Dictionary<string, string> { ["{NAME}"] = SeedPacketsInput }
             );
 
-            // 提取 JSON (Base64 字符串) - 使用与阵型相同的逻辑
             string jsonBase64 = ExtractJsonFromOutput(output, "SEEDPACKET_JSON_START", "SEEDPACKET_JSON_END");
 
             if(string.IsNullOrEmpty(jsonBase64))
@@ -259,7 +246,6 @@ public class FormationViewModel:ViewModelBase
                 return;
             }
 
-            // 解码 Base64 得到原始 JSON
             string jsonContent;
             try
             {
@@ -272,7 +258,6 @@ public class FormationViewModel:ViewModelBase
                 return;
             }
 
-            // 保存卡组文件
             string dir = Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_SeedPackets);
             if(!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
@@ -393,7 +378,6 @@ public class FormationViewModel:ViewModelBase
         catch(Exception ex) { ShowError(ex.Message); }
     });
 
-    // --- 切换命令 ---
     public ICommand ToggleFormationLadderCommand => new RelayCommand(_ => FormationLadder = ButtonHelper.ToggleCheck(FormationLadder));
 
     public ICommand ToggleFormationPlantCommand => new RelayCommand(_ => FormationPlant = ButtonHelper.ToggleCheck(FormationPlant));
@@ -402,8 +386,6 @@ public class FormationViewModel:ViewModelBase
     public ICommand ToggleImitaterSlotCommand => new RelayCommand(_ => ImitaterSlot = ButtonHelper.ToggleCheck(ImitaterSlot));
     public ICommand ToggleSpImitaterCommand => new RelayCommand(_ => SpInput3 = ButtonHelper.ToggleCheck(SpInput3));
 
-    // --- 辅助方法 ---
-
     /// <summary>
     /// 从脚本输出中提取 JSON 数据（支持 Base64 或纯 JSON）
     /// </summary>
@@ -411,7 +393,6 @@ public class FormationViewModel:ViewModelBase
     {
         if(string.IsNullOrEmpty(output)) return null;
 
-        // 1. 尝试使用标记提取
         if(!string.IsNullOrEmpty(startMarker) && !string.IsNullOrEmpty(endMarker))
         {
             int startIdx = output.IndexOf(startMarker);
@@ -422,13 +403,11 @@ public class FormationViewModel:ViewModelBase
                 string content = output.Substring(startIdx + startMarker.Length, endIdx - startIdx - startMarker.Length).Trim();
                 if(!string.IsNullOrEmpty(content))
                 {
-                    // 清理可能的换行符，因为 Base64 不应该包含换行
                     return Regex.Replace(content, @"\s+", "");
                 }
             }
         }
 
-        // 2. Fallback: 尝试查找最后一个完整的 JSON 对象 ({...})
         int braceStart = output.LastIndexOf('{');
         int braceEnd = output.LastIndexOf('}');
 
@@ -441,7 +420,6 @@ public class FormationViewModel:ViewModelBase
             }
         }
 
-        // 3. Fallback: 如果看起来像 Base64
         if(!output.Contains("{") && Regex.IsMatch(output.Trim(), @"^[A-Za-z0-9+/=]+$"))
         {
             return output.Trim();
@@ -473,7 +451,6 @@ public class FormationViewModel:ViewModelBase
         }
         catch
         {
-            // 如果不是 Base64，尝试直接使用
             jsonContent = jsonBase64;
         }
 

@@ -146,7 +146,6 @@ public class SpawnViewModel:ViewModelBase
             }
         });
 
-    // 10. BackupDancer
     public string ZombieBackupDancer
     {
         get => _zombieBackupDancer;
@@ -155,7 +154,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieBackupDancerCommand => CreateSpawnToggleCommand("ZombieBackupDancer");
 
-    // 17. Balloon
     public string ZombieBalloon
     {
         get => _zombieBalloon;
@@ -164,7 +162,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieBalloonCommand => CreateSpawnToggleCommand("ZombieBalloon");
 
-    // 14. Bobsled
     public string ZombieBobsled
     {
         get => _zombieBobsled;
@@ -173,7 +170,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieBobsledCommand => CreateSpawnToggleCommand("ZombieBobsled");
 
-    // 26. Boss
     public string ZombieBoss
     {
         get => _zombieBoss;
@@ -182,7 +178,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieBossCommand => CreateSpawnToggleCommand("ZombieBoss");
 
-    // 21. Bungee
     public string ZombieBungee
     {
         get => _zombieBungee;
@@ -191,7 +186,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieBungeeCommand => CreateSpawnToggleCommand("ZombieBungee");
 
-    // 23. Catapult
     public string ZombieCatapult
     {
         get => _zombieCatapult;
@@ -200,7 +194,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieCatapultCommand => CreateSpawnToggleCommand("ZombieCatapult");
 
-    // 9. Dancer
     public string ZombieDancer
     {
         get => _zombieDancer;
@@ -209,7 +202,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieDancerCommand => CreateSpawnToggleCommand("ZombieDancer");
 
-    // 18. Digger
     public string ZombieDigger
     {
         get => _zombieDigger;
@@ -218,7 +210,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieDiggerCommand => CreateSpawnToggleCommand("ZombieDigger");
 
-    // 15. DolphinRider
     public string ZombieDolphinRider
     {
         get => _zombieDolphinRider;
@@ -227,7 +218,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieDolphinRiderCommand => CreateSpawnToggleCommand("ZombieDolphinRider");
 
-    // 7. Door
     public string ZombieDoor
     {
         get => _zombieDoor;
@@ -236,7 +226,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieDoorCommand => CreateSpawnToggleCommand("ZombieDoor");
 
-    // 11. DuckyTube
     public string ZombieDuckyTube
     {
         get => _zombieDuckyTube;
@@ -245,7 +234,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieDuckyTubeCommand => CreateSpawnToggleCommand("ZombieDuckyTube");
 
-    // 2. Flag
     public string ZombieFlag
     {
         get => _zombieFlag;
@@ -254,7 +242,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieFlagCommand => CreateSpawnToggleCommand("ZombieFlag");
 
-    // 8. Football
     public string ZombieFootball
     {
         get => _zombieFootball;
@@ -263,7 +250,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieFootballCommand => CreateSpawnToggleCommand("ZombieFootball");
 
-    // 37. FootballPremium
     public string ZombieFootballPremium
     {
         get => _zombieFootballPremium;
@@ -272,7 +258,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieFootballPremiumCommand => CreateSpawnToggleCommand("ZombieFootballPremium");
 
-    // 24. Gargantuar
     public string ZombieGargantuar
     {
         get => _zombieGargantuar;
@@ -281,7 +266,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieGargantuarCommand => CreateSpawnToggleCommand("ZombieGargantuar");
 
-    // 30. GatlingHead
     public string ZombieGatlingHead
     {
         get => _zombieGatlingHead;
@@ -298,7 +282,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieHealthToNextWaveCommand => new RelayCommand(async _ => await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "刷新血量", new Dictionary<string, string> { [Constants.Placeholders.Min] = ZombieHealthMin, [Constants.Placeholders.Max] = ZombieHealthMax }));
 
-    // 25. Imp
     public string ZombieImp
     {
         get => _zombieImp;
@@ -307,7 +290,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieImpCommand => CreateSpawnToggleCommand("ZombieImp");
 
-    // 16. JackInTheBox
     public string ZombieJackInTheBox
     {
         get => _zombieJackInTheBox;
@@ -316,7 +298,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieJackInTheBoxCommand => CreateSpawnToggleCommand("ZombieJackInTheBox");
 
-    // 29. JalapenoHead
     public string ZombieJalapenoHead
     {
         get => _zombieJalapenoHead;
@@ -325,7 +306,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieJalapenoHeadCommand => CreateSpawnToggleCommand("ZombieJalapenoHead");
 
-    // 22. Ladder
     public string ZombieLadder
     {
         get => _zombieLadder;
@@ -334,7 +314,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieLadderCommand => CreateSpawnToggleCommand("ZombieLadder");
 
-    // 36. Monk
     public string ZombieMonk
     {
         get => _zombieMonk;
@@ -343,7 +322,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieMonkCommand => CreateSpawnToggleCommand("ZombieMonk");
 
-    // 6. Newspaper
     public string ZombieNewspaper
     {
         get => _zombieNewspaper;
@@ -352,7 +330,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieNewspaperCommand => CreateSpawnToggleCommand("ZombieNewspaper");
 
-    // 38. Ninja
     public string ZombieNinja
     {
         get => _zombieNinja;
@@ -361,7 +338,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieNinjaCommand => CreateSpawnToggleCommand("ZombieNinja");
 
-    // 1. Normal
     public string ZombieNormal
     {
         get => _zombieNormal;
@@ -370,7 +346,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieNormalCommand => CreateSpawnToggleCommand("ZombieNormal");
 
-    // 5. Pail
     public string ZombiePail
     {
         get => _zombiePail;
@@ -379,7 +354,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombiePailCommand => CreateSpawnToggleCommand("ZombiePail");
 
-    // 27. PeaHead
     public string ZombiePeaHead
     {
         get => _zombiePeaHead;
@@ -388,7 +362,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombiePeaHeadCommand => CreateSpawnToggleCommand("ZombiePeaHead");
 
-    // 19. Pogo
     public string ZombiePogo
     {
         get => _zombiePogo;
@@ -397,7 +370,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombiePogoCommand => CreateSpawnToggleCommand("ZombiePogo");
 
-    // 4. Polevaulter
     public string ZombiePolevaulter
     {
         get => _zombiePolevaulter;
@@ -406,7 +378,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombiePolevaulterCommand => CreateSpawnToggleCommand("ZombiePolevaulter");
 
-    // 40. Propeller
     public string ZombiePropeller
     {
         get => _zombiePropeller;
@@ -415,7 +386,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombiePropellerCommand => CreateSpawnToggleCommand("ZombiePropeller");
 
-    // 33. RedeyeGargantuar
     public string ZombieRedeyeGargantuar
     {
         get => _zombieRedeyeGargantuar;
@@ -424,7 +394,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieRedeyeGargantuarCommand => CreateSpawnToggleCommand("ZombieRedeyeGargantuar");
 
-    // 35. RedeyeRobotTitan
     public string ZombieRedeyeRobotTitan
     {
         get => _zombieRedeyeRobotTitan;
@@ -433,7 +402,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieRedeyeRobotTitanCommand => CreateSpawnToggleCommand("ZombieRedeyeRobotTitan");
 
-    // 34. RobotTitan
     public string ZombieRobotTitan
     {
         get => _zombieRobotTitan;
@@ -454,7 +422,6 @@ public class SpawnViewModel:ViewModelBase
             await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "波次出怪_序号", new Dictionary<string, string> { [Constants.Placeholders.Path] = path, [Constants.Placeholders.DefaultPath] = _defaultPath, [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(JsonEditZombiesInWave) });
         });
 
-    // 12. Snorkel
     public string ZombieSnorkel
     {
         get => _zombieSnorkel;
@@ -463,7 +430,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieSnorkelCommand => CreateSpawnToggleCommand("ZombieSnorkel");
 
-    // 31. SquashHead
     public string ZombieSquashHead
     {
         get => _zombieSquashHead;
@@ -472,7 +438,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieSquashHeadCommand => CreateSpawnToggleCommand("ZombieSquashHead");
 
-    // 39. Talisman
     public string ZombieTalisman
     {
         get => _zombieTalisman;
@@ -481,7 +446,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieTalismanCommand => CreateSpawnToggleCommand("ZombieTalisman");
 
-    // 32. TallnutHead
     public string ZombieTallnutHead
     {
         get => _zombieTallnutHead;
@@ -490,7 +454,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieTallnutHeadCommand => CreateSpawnToggleCommand("ZombieTallnutHead");
 
-    // 3. TrafficCone
     public string ZombieTrafficCone
     {
         get => _zombieTrafficCone;
@@ -499,7 +462,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieTrafficConeCommand => CreateSpawnToggleCommand("ZombieTrafficCone");
 
-    // 28. WallnutHead
     public string ZombieWallnutHead
     {
         get => _zombieWallnutHead;
@@ -508,7 +470,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieWallnutHeadCommand => CreateSpawnToggleCommand("ZombieWallnutHead");
 
-    // 20. Yeti
     public string ZombieYeti
     {
         get => _zombieYeti;
@@ -517,7 +478,6 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieYetiCommand => CreateSpawnToggleCommand("ZombieYeti");
 
-    // 13. Zamboni
     public string ZombieZamboni
     {
         get => _zombieZamboni;
@@ -586,7 +546,7 @@ public class SpawnViewModel:ViewModelBase
             if(!bool.TryParse(boolStr, out bool isAllowed)) continue;
 
             string newSymbol = isAllowed ? Constants.c_Symbol_On : Constants.c_Symbol_Off;
-            string propName = "Zombie" + zombieType;   // 直接拼接
+            string propName = "Zombie" + zombieType;
 
             var prop = GetType().GetProperty(propName);
             if(prop != null && prop.PropertyType == typeof(string))

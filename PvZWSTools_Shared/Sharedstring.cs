@@ -27,7 +27,7 @@ public class Sharedstring
     /// <summary>
     /// 连接后发送的语句
     /// </summary>
-    /// <returns></returns>
+    /// <returns>string</returns>
     public static string GetLogoDisplayString(bool sendmsg = true)
     {
         string msg =

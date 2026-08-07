@@ -1,9 +1,9 @@
-﻿using System.Windows.Input;
+﻿using System.Text.RegularExpressions;
+using System.Windows.Input;
 using PvZWSTools_Shared;
 using PvZWSTools_WPF.Commands;
 using PvZWSTools_WPF.Helpers;
 using PvZWSTools_WPF.Services;
-using PvZWSTools_WPF.Views;
 
 namespace PvZWSTools_WPF.ViewModels;
 
@@ -11,49 +11,111 @@ public class GardenViewModel:ViewModelBase
 {
     private readonly IScriptExecutionService _scriptExec;
     private readonly IConnectionService _connection;
+    private readonly IDialogService _dialogService;
 
-    public GardenViewModel(IScriptExecutionService scriptExec, IConnectionService connection)
+    private int _selectedTabIndex;
+    private string _currentGardenType;
+
+    public GardenViewModel(IScriptExecutionService scriptExec, IConnectionService connection, IDialogService dialogService)
     {
         _scriptExec = scriptExec;
         _connection = connection;
+        _dialogService = dialogService;
+
+        _selectedTabIndex = 0;
+        UpdateGardenType(0);
+    }
+
+    public int SelectedTabIndex
+    {
+        get => _selectedTabIndex;
+        set
+        {
+            if(_selectedTabIndex != value)
+            {
+                _selectedTabIndex = value;
+                OnPropertyChanged();
+                UpdateGardenType(value);
+            }
+        }
+    }
+
+    public string CurrentGardenType
+    {
+        get => _currentGardenType;
+        private set
+        {
+            if(_currentGardenType != value)
+            {
+                _currentGardenType = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private void UpdateGardenType(int index)
+    {
+        switch(index)
+        {
+            case 0: CurrentGardenType = "主花园1"; break;
+            case 1: CurrentGardenType = "主花园2"; break;
+            case 2: CurrentGardenType = "主花园(夜)"; break;
+            case 3: CurrentGardenType = "蘑菇园1"; break;
+            case 4: CurrentGardenType = "蘑菇园2"; break;
+            case 5: CurrentGardenType = "水族馆"; break;
+            default: CurrentGardenType = "未知"; break;
+        }
     }
 
     public ICommand GardenButtonCommand => new RelayCommand(param =>
     {
-        if(param is GardenButtonParams p)
+        if(param is string coordString)
         {
-            OpenGardenDialog(p.Row, p.Col, p.GardenType);
+            var match = Regex.Match(coordString, @"\((\d+),(\d+)\)");
+            if(match.Success)
+            {
+                int row = int.Parse(match.Groups[1].Value);
+                int col = int.Parse(match.Groups[2].Value);
+                OpenGardenDialog(row, col, CurrentGardenType);
+            }
         }
     });
 
-    private async void OpenGardenDialog(int row, int col, int gardenType)
+    private async void OpenGardenDialog(int row, int col, string gardenTypeName)
     {
-        var dialog = new GardenDialog(row, col);
-        if(dialog.ShowDialog() == true)
+        var vm = new GardenDialogViewModel
         {
-            var vm = dialog.DataContext as GardenDialogViewModel;
-            if(vm == null) return;
+            Row = row,
+            Col = col
+        };
 
-            string sendText = Sharedstring.GardenChangeText
-                .Replace("{mGardenType}", gardenType.ToString())
-                .Replace("{mX}", (col - 1).ToString())
-                .Replace("{mY}", (row - 1).ToString())
-                .Replace("{mSeedType}", vm.SelectedSeedTypeValue)
-                .Replace("{mFacing}", vm.SelectedFacingValue.ToString())
-                .Replace("{mPlantAge}", vm.SelectedAgeValue.ToString());
+        bool confirmed = await _dialogService.ShowDialogAsync(vm);
+        if(!confirmed) return;
 
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, "GardenEdit",
-                new System.Collections.Generic.Dictionary<string, string>
-                {
-                    { "script", sendText }
-                }, "花园编辑命令已发送");
-        }
+        int gardenType = GetGardenTypeValue(gardenTypeName);
+
+        string sendText = Sharedstring.GardenChangeText
+            .Replace("{mGardenType}", gardenType.ToString())
+            .Replace("{mX}", (col - 1).ToString())
+            .Replace("{mY}", (row - 1).ToString())
+            .Replace("{mSeedType}", vm.SelectedSeedTypeValue)
+            .Replace("{mFacing}", vm.SelectedFacingValue.ToString())
+            .Replace("{mPlantAge}", vm.SelectedAgeValue.ToString());
+
+        await _connection.SendAsync(sendText);
     }
 
-    public class GardenButtonParams
+    private int GetGardenTypeValue(string typeName)
     {
-        public int Row { get; set; }
-        public int Col { get; set; }
-        public int GardenType { get; set; }
+        return typeName switch
+        {
+            "主花园1" => 0,
+            "主花园2" => 4,
+            "主花园(夜)" => 6,
+            "蘑菇园1" => 1,
+            "蘑菇园2" => 5,
+            "水族馆" => 3,
+            _ => 0
+        };
     }
 }

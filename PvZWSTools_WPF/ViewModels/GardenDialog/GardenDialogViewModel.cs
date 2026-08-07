@@ -10,39 +10,68 @@ namespace PvZWSTools_WPF.ViewModels;
 
 public class GardenDialogViewModel:ViewModelBase
 {
-    private readonly int _row;
-    private readonly int _col;
-    private string _defaultSeedType;
+    private int _row;
+    private int _col;
+    private string _locationText;
 
-    public GardenDialogViewModel(int row, int col, string defaultSeedType = "豌豆射手")
+    public GardenDialogViewModel()
     {
-        _row = row;
-        _col = col;
-        _defaultSeedType = defaultSeedType;
-        LocationText = $"现在正在修改({row},{col})";
+        LoadOptions();
+        SetDefaultSelections();
+        OkCommand = new RelayCommand(_ => Ok());
+        CancelCommand = new RelayCommand(_ => Cancel());
+    }
 
-        // 加载植物选项
+    public GardenDialogViewModel(int row, int col, string defaultSeedType = "豌豆射手") : this()
+    {
+        Row = row;
+        Col = col;
+        // 如有自定义默认种子类型，可在此赋值
+        // SelectedSeedTypeName = defaultSeedType;
+    }
+
+    public int Row
+    {
+        get => _row;
+        set { _row = value; OnPropertyChanged(); UpdateLocationText(); }
+    }
+
+    public int Col
+    {
+        get => _col;
+        set { _col = value; OnPropertyChanged(); UpdateLocationText(); }
+    }
+
+    public string LocationText
+    {
+        get => _locationText;
+        private set { _locationText = value; OnPropertyChanged(); }
+    }
+
+    private void UpdateLocationText() => LocationText = $"现在正在修改({Row},{Col})";
+
+    private void LoadOptions()
+    {
         string configDir = Path.Combine(Directory.GetCurrentDirectory(),
             Constants.Folder_Need, Constants.Folder_Options);
         string plantFilePath = Path.Combine(configDir, Constants.JsonPlantFile);
         if(File.Exists(plantFilePath))
         {
             string json = File.ReadAllText(plantFilePath);
-            SeedTypeOptions = JsonConvert.DeserializeObject<ObservableCollection<NameOption>>(json);
+            SeedTypeOptions = JsonConvert.DeserializeObject<ObservableCollection<NameOption>>(json)
+                              ?? new ObservableCollection<NameOption>();
         }
         else
         {
             SeedTypeOptions = new ObservableCollection<NameOption>();
         }
 
-        // 朝向选项
         FacingOptions = new ObservableCollection<NameOption>
         {
             new NameOption { Name = "右", Value = "0" },
             new NameOption { Name = "左", Value = "1" }
         };
 
-        // 年龄选项
         AgeOptions = new ObservableCollection<NameOption>
         {
             new NameOption { Name = "幼苗", Value = "0" },
@@ -50,29 +79,36 @@ public class GardenDialogViewModel:ViewModelBase
             new NameOption { Name = "中", Value = "2" },
             new NameOption { Name = "大", Value = "3" }
         };
+    }
 
-        // 设置默认值
-        SelectedSeedTypeName = defaultSeedType;
+    private void SetDefaultSelections()
+    {
+        SelectedSeedTypeName = "豌豆射手";
         SelectedFacingDisplay = "[0]右";
         SelectedAgeDisplay = "[3]大";
-
-        // 命令
-        OkCommand = new RelayCommand(_ => Ok());
-        CancelCommand = new RelayCommand(_ => Cancel());
     }
+
+    // ---------- 命令 ----------
+    public ICommand OkCommand { get; private set; }
+
+    public ICommand CancelCommand { get; private set; }
 
     public event EventHandler RequestClose;
 
-    // 位置文本
-    private string _locationText;
+    public bool? DialogResult { get; private set; }
 
-    public string LocationText
+    private void Ok()
     {
-        get => _locationText;
-        set { _locationText = value; OnPropertyChanged(); }
+        DialogResult = true;
+        RequestClose?.Invoke(this, EventArgs.Empty);
     }
 
-    // 植物类型选项
+    private void Cancel()
+    {
+        DialogResult = false;
+        RequestClose?.Invoke(this, EventArgs.Empty);
+    }
+
     private ObservableCollection<NameOption> _seedTypeOptions;
 
     public ObservableCollection<NameOption> SeedTypeOptions
@@ -114,7 +150,6 @@ public class GardenDialogViewModel:ViewModelBase
         set { _selectedSeedTypeName = value; OnPropertyChanged(); }
     }
 
-    // 朝向
     private ObservableCollection<NameOption> _facingOptions;
 
     public ObservableCollection<NameOption> FacingOptions
@@ -156,7 +191,6 @@ public class GardenDialogViewModel:ViewModelBase
         set { _selectedFacingDisplay = value; OnPropertyChanged(); }
     }
 
-    // 年龄
     private ObservableCollection<NameOption> _ageOptions;
 
     public ObservableCollection<NameOption> AgeOptions
@@ -198,12 +232,6 @@ public class GardenDialogViewModel:ViewModelBase
         set { _selectedAgeDisplay = value; OnPropertyChanged(); }
     }
 
-    // 命令
-    public ICommand OkCommand { get; }
-
-    public ICommand CancelCommand { get; }
-
-    // 结果属性（供调用者获取）
     public string SelectedSeedTypeValue
     {
         get
@@ -231,16 +259,5 @@ public class GardenDialogViewModel:ViewModelBase
             var match = System.Text.RegularExpressions.Regex.Match(SelectedAgeDisplay, @"\[(\d+)\].+");
             return match.Success ? int.Parse(match.Groups[1].Value) : 3;
         }
-    }
-
-    private void Ok()
-    {
-        RequestClose?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void Cancel()
-    {
-        // 不设置结果，直接关闭
-        RequestClose?.Invoke(this, EventArgs.Empty);
     }
 }

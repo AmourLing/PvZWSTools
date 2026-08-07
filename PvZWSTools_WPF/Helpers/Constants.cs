@@ -51,7 +51,6 @@ public static class Constants
 
     public const string JsonSettingFile = "setting.json";
 
-    // 占位符
     public static class Placeholders
     {
         public const string JsonData = "{JSON_DATA}";
@@ -103,7 +102,6 @@ public static class Constants
         public const string IsSleeping = "{ISSLEEPING}";
     }
 
-    // 子文件夹名称
     public static class SubFolders
     {
         public const string Board = "战场";
