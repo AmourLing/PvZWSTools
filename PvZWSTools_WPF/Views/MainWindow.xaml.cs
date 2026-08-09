@@ -21,6 +21,9 @@ public partial class MainWindow:Window
         {
             Title += "_Beta";
         }
+#if DEBUG // 调试模式下隐藏花园编辑页面
+        GardenPage.Visibility = Visibility.Visible;
+#endif
 
         var connection = new ConnectionService(Dispatcher);
         string defaultPath = Directory.GetCurrentDirectory();
@@ -42,7 +45,10 @@ public partial class MainWindow:Window
             {
                 Owner = this
             };
-            _ = dialog.ShowDialog();
+            if(dialog.ShowDialog() == true)
+            {
+                _viewModel.ReloadSettingsFromService();
+            }
         };
 
         DataContext = _viewModel;

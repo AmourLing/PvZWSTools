@@ -73,9 +73,11 @@ public class ConnectionService:IConnectionService, IDisposable
         if(!IsConnected)
         {
             Log.Error("WebSocket未连接");
-            throw new InvalidOperationException("WebSocket未连接");
         }
-        await Task.Run(() => _ws.SendAsync(message, _ => { }));
+        else
+        {
+            await Task.Run(() => _ws.SendAsync(message, _ => { }));
+        }
     }
 
     private void OnStateChanged(bool connected)

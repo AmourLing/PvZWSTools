@@ -4001,7 +4001,10 @@
                                 </ScrollViewer>
                             </Grid>
                         </TabItem>
-                        <TabItem x:Name="GardenPage" Header="花园">
+                        <TabItem
+                            x:Name="GardenPage"
+                            Header="花园"
+                            Visibility="Hidden">
                             <Grid DataContext="{Binding Garden}">
                                 <TabControl SelectedIndex="{Binding SelectedTabIndex}">
                                     <TabItem x:Name="MainPage" Header="主花园1">
@@ -4136,45 +4139,38 @@
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="98,145,460,78"
+                                                Margin="166,141,392,82"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,3)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="166,141,392,82"
+                                                Margin="240,145,318,78"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,4)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="240,145,318,78"
+                                                Margin="325,141,233,82"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,5)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="325,141,233,82"
+                                                Margin="391,137,167,86"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,6)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="391,137,167,86"
-                                                Command="{Binding GardenButtonCommand}"
-                                                CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
-                                                Content="(3,7)" />
-                                            <Button
-                                                Width="50"
-                                                Height="30"
                                                 Margin="472,141,86,82"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
-                                                Content="(3,1)" />
+                                                Content="(3,7)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
@@ -4372,45 +4368,38 @@
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="98,145,460,78"
+                                                Margin="166,141,392,82"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,3)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="166,141,392,82"
+                                                Margin="240,145,318,78"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,4)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="240,145,318,78"
+                                                Margin="325,141,233,82"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,5)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="325,141,233,82"
+                                                Margin="391,137,167,86"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,6)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="391,137,167,86"
-                                                Command="{Binding GardenButtonCommand}"
-                                                CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
-                                                Content="(3,7)" />
-                                            <Button
-                                                Width="50"
-                                                Height="30"
                                                 Margin="472,141,86,82"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
-                                                Content="(3,1)" />
+                                                Content="(3,7)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
@@ -4605,52 +4594,45 @@
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="98,145,460,78"
+                                                Margin="97,142,461,81"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,2)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="97,142,461,81"
+                                                Margin="166,139,392,84"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,3)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="166,139,392,84"
+                                                Margin="239,142,319,81"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,4)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="239,142,319,81"
+                                                Margin="325,141,233,82"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,5)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="325,141,233,82"
+                                                Margin="391,137,167,86"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
                                                 Content="(3,6)" />
                                             <Button
                                                 Width="50"
                                                 Height="30"
-                                                Margin="391,137,167,86"
-                                                Command="{Binding GardenButtonCommand}"
-                                                CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
-                                                Content="(3,7)" />
-                                            <Button
-                                                Width="50"
-                                                Height="30"
                                                 Margin="462,140,96,83"
                                                 Command="{Binding GardenButtonCommand}"
                                                 CommandParameter="{Binding Content, RelativeSource={RelativeSource Mode=Self}}"
-                                                Content="(3,1)"
+                                                Content="(3,7)"
                                                 RenderTransformOrigin="0.131,0.683" />
                                             <Button
                                                 Width="50"
