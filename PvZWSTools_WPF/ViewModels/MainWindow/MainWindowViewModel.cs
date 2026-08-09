@@ -197,30 +197,6 @@ public class MainWindowViewModel:ViewModelBase
 
     public ZombiesViewModel Zombies { get; }
 
-    public void SaveSettings()
-    {
-        try
-        {
-            var settings = new AppSettings
-            {
-                AutoConnectEnabled = AutoConnectEnabled,
-                SuppressConnectionMessage = SuppressConnectionMessage
-            };
-            string dir = Path.Combine(_defaultPath, Constants.Folder_Need);
-            _ = Directory.CreateDirectory(dir);
-            string path = Path.Combine(dir, "setting.json");
-            string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            File.WriteAllText(path, json);
-            OnPropertyChanged();
-
-            Log.Info($"setting保存成功");
-        }
-        catch(Exception ex)
-        {
-            Log.Error($"setting保存失败：{ex}");
-        }
-    }
-
     public void UpdateSize(double width)
     {
         double percentage = (width / 640.0) * 100;
@@ -269,21 +245,16 @@ public class MainWindowViewModel:ViewModelBase
 
     private void LoadSettings()
     {
-        string path = Path.Combine(_defaultPath, Constants.Folder_Need, "setting.json");
-        if(File.Exists(path))
-        {
-            try
-            {
-                var json = File.ReadAllText(path);
-                var settings = JsonConvert.DeserializeObject<AppSettings>(json);
-                if(settings != null)
-                {
-                    AutoConnectEnabled = settings.AutoConnectEnabled;
-                    SuppressConnectionMessage = settings.SuppressConnectionMessage;
-                }
-            }
-            catch { }
-        }
+        var settings = _settingsService.Settings;
+        AutoConnectEnabled = settings.AutoConnectEnabled;
+        SuppressConnectionMessage = settings.SuppressConnectionMessage;
+    }
+
+    public void ReloadSettingsFromService() => LoadSettings();
+
+    public void SaveSettings()
+    {
+        _settingsService.Save();
     }
 
     private void OpenPath()

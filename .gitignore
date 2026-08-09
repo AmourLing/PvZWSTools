@@ -12,3 +12,5 @@ update
 .gitignore
 pyrightconfig.json
 *.user
+.zip
+.pubxml
