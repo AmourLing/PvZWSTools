@@ -9,6 +9,10 @@ public class ZombieFragment:BaseFragment
 {
     private static readonly string mZombiePath = "僵尸";
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override string FragmentPath => mZombiePath;
     private static readonly string OptionFileNameSwitch1 = "开关1";
 

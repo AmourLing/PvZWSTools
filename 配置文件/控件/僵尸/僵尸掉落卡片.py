@@ -1,3 +1,4 @@
+#僵尸掉落卡片
 # 僵尸死亡掉落卡片
 # 2025.07.05
 #2026.06.13
@@ -11,7 +12,6 @@ from Sexy import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
-# 是否启用掉落自定义卡片（True/False，请根据实际情况替换）
 DROPPACKET_CHECK = {CHECK}
 
 def LOG(e, code=0):

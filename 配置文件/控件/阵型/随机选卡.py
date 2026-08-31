@@ -1,3 +1,4 @@
+#随机选卡
 #在选卡界面时随机选卡
 
 from Lawn import *

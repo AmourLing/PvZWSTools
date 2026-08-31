@@ -9,6 +9,10 @@ public class ChallengeFragment:BaseFragment
 {
     private static readonly string mChallengePath = "挑战";
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override string FragmentPath => mChallengePath;
     private static readonly string OptionFileNameSwitch2 = "开关2";
 

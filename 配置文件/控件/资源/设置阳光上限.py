@@ -1,3 +1,5 @@
+#设置阳光上限
+
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M

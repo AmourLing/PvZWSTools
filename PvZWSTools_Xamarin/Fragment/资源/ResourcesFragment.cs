@@ -11,6 +11,10 @@ public class ResourcesFragment:BaseFragment
 
     protected override string FragmentPath => mResourcesPath;
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>
     {
         // 伤害选项

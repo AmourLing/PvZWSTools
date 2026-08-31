@@ -21,6 +21,10 @@ public class FormationFragment:BaseFragment
 
     protected override string FragmentPath => mFormationPath;
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>
     {
         // 固定选项文件映射

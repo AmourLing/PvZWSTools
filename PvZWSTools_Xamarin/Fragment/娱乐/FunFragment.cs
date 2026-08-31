@@ -10,6 +10,10 @@ public class FunFragment:BaseFragment
     private static readonly string mFunPath = "娱乐";
     protected override string FragmentPath => mFunPath;
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>()
     {
         [Resource.String.fun_strings_1_1_key] = "开关1",

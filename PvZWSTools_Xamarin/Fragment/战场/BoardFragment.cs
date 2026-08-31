@@ -11,6 +11,10 @@ public class BoardFragment:BaseFragment
 
     protected override string FragmentPath => mBoardPath;
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>
     {
         [Resource.String.board_strings_1_1_key] = "行",

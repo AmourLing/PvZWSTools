@@ -1,3 +1,5 @@
+#存储卡组
+
 import clr
 clr.AddReference("System.IO")
 clr.AddReference("System")

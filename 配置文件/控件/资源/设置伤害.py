@@ -1,3 +1,4 @@
+#设置伤害
 #修改伤害
 #2025.12.07
 #2026.01.24
@@ -19,7 +20,7 @@ try:
             GameConstants.gProjectileDefinition[i].mDamage = {DAMAGE2}
 except:
     try:
-        if DAMAGE_VALUE_NUM.get("huijin","EMPTY")!="EMPTY": 
+        if DAMAGE_VALUE_NUM.get("huijin","EMPTY")!="EMPTY":
             @M.HookTo(Zombie.ApplyBurn)
             def Zombie_ApplyBurn(orig,self):
                 try:
@@ -137,7 +138,7 @@ except:
                                          ZombieType.Boss,
                                          ZombieType.RobotTitan,
                                          ZombieType.RedeyeRobotTitan]
-                 or self.IsBouncingPogo() 
+                 or self.IsBouncingPogo()
                  or self.IsBobsledTeamWithSled()
                  or self.mZombiePhase in [ZombiePhase.PolevaulterInVault,
                                           ZombiePhase.PolevaulterPreVault ,

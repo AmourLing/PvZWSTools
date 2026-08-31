@@ -357,9 +357,13 @@ public class CreateInputDialog
         string filename,
         Dictionary<string, string> replaceDict,
         Dictionary<string, string> map,
-        Dictionary<string, Dictionary<string, string>> dropdownOptions)
+        Dictionary<string, Dictionary<string, string>> dropdownOptions,
+        Action<string[]> onAfterConfirm = null)
     {
         Opt3(Activity, title, fieldLabels, map, dropdownOptions, values =>
-            Done(path, filename, replaceDict, values));
+        {
+            Done(path, filename, replaceDict, values);
+            onAfterConfirm?.Invoke(values);
+        });
     }
 }

@@ -1,0 +1,551 @@
+<resources>
+    <string name="app_name">PvZWSTools</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">无用的按钮罢了</string>
+    <string name="ws_connected">ws已连接</string>
+    <string name="ws_disconnected">ws未连接</string>
+    <string name="app_name_Android">PvZWSTools for Android</string>
+    <string name="disclaimer">本工具完全免费</string>
+
+    <string name="url">ws://localhost:8080/Py</string>
+    <string name="connect">连接</string>
+
+    <string name="others_strings_1">自动收集</string>
+    <string name="others_strings_1_1_key">自动收集{CHECK}</string>
+    <string name="others_strings_1_1_value">1</string>
+
+    <string name="others_strings_2">自动浇水</string>
+    <string name="others_strings_2_1_key">自动浇水{CHECK}</string>
+    <string name="others_strings_2_1_value">1</string>
+
+    <string name="others_strings_3">阳光增值</string>
+    <string name="others_strings_3_1_key">阳光增值{CHECK}</string>
+    <string name="others_strings_3_1_value">1</string>
+
+    <string name="others_strings_4">清除浓雾</string>
+    <string name="others_strings_4_1_key">清除浓雾{CHECK}</string>
+    <string name="others_strings_4_1_value">1</string>
+
+    <string name="others_strings_5">罐子透视</string>
+    <string name="others_strings_5_1_key">罐子透视{CHECK}</string>
+    <string name="others_strings_5_1_value">1</string>
+
+    <string name="others_strings_6">取消冷却</string>
+    <string name="others_strings_6_1_key">取消冷却{CHECK}</string>
+    <string name="others_strings_6_1_value">1</string>
+
+    <string name="others_strings_7">取消阳光</string>
+    <string name="others_strings_7_1_key">取消阳光{CHECK}</string>
+    <string name="others_strings_7_1_value">1</string>
+
+    <string name="others_strings_8">后台运行</string>
+    <string name="others_strings_8_1_key">后台运行{CHECK}</string>
+    <string name="others_strings_8_1_value">1</string>
+
+    <string name="others_strings_9">智慧树高度</string>
+    <string name="others_strings_9_1_key">输入树的高度</string>
+    <string name="others_strings_9_1_value">1437</string>
+
+    <string name="others_strings_10">去除遮挡</string>
+    <string name="others_strings_10_1_key">去除遮挡{CHECK}</string>
+    <string name="others_strings_10_1_value">1</string>
+
+    <string name="others_strings_11">补充肥料杀虫剂</string>
+    <string name="others_strings_11_1_key">补充肥料杀虫剂{CHECK}</string>
+    <string name="others_strings_11_1_value">1</string>
+
+    <string name="level_strings_1">EnterNewLevel</string>
+
+    <string name="level_strings_2">直接过关</string>
+
+    <string name="level_strings_3">设置无尽旗数</string>
+    <string name="level_strings_3_1_key">无尽旗数</string>
+    <string name="level_strings_3_1_value">2333</string>
+
+    <string name="level_strings_4">混乱关卡</string>
+    <string name="level_strings_4_1_key">模式</string>
+    <string name="level_strings_4_1_value">0</string>
+    <string name="level_strings_4_2_key">关卡(仅冒险生效)</string>
+    <string name="level_strings_4_2_value">1</string>
+
+    <string name="resources_strings_1">设置伤害</string>
+    <string name="resources_strings_1_1_key">设置伤害的对象</string>
+    <string name="resources_strings_1_1_value">pea</string>
+    <string name="resources_strings_1_2_key">设置伤害数值</string>
+    <string name="resources_strings_1_2_value">20</string>
+
+    <string name="resources_strings_2">设置血量</string>
+    <string name="resources_strings_2_1_key">设置血量的对象</string>
+    <string name="resources_strings_2_1_value">normal</string>
+    <string name="resources_strings_2_2_key">设置血量数值</string>
+    <string name="resources_strings_2_2_value">300</string>
+
+    <string name="resources_strings_3">设置金钱</string>
+    <string name="resources_strings_3_1_key">金钱数</string>
+    <string name="resources_strings_3_1_value">2333</string>
+
+    <string name="resources_strings_4">设置金钱上限</string>
+    <string name="resources_strings_4_1_key">金钱数上限</string>
+    <string name="resources_strings_4_1_value">123456789</string>
+
+    <string name="resources_strings_5">设置阳光</string>
+    <string name="resources_strings_5_1_key">阳光</string>
+    <string name="resources_strings_5_1_value">8000</string>
+
+    <string name="resources_strings_6">设置阳光上限</string>
+    <string name="resources_strings_6_1_key">阳光上限</string>
+    <string name="resources_strings_6_1_value">99990</string>
+
+    <string name="resources_strings_7">设置时间</string>
+    <string name="resources_strings_7_1_key">设置时间的对象</string>
+    <string name="resources_strings_7_1_value">fog</string>
+    <string name="resources_strings_7_2_key">设置时间数值</string>
+    <string name="resources_strings_7_2_value">0</string>
+
+    <string name="resources_strings_8">设置价值</string>
+    <string name="resources_strings_8_1_key">设置价值的对象</string>
+    <string name="resources_strings_8_1_value">silver</string>
+    <string name="resources_strings_8_2_key">设置价值数值</string>
+    <string name="resources_strings_8_2_value">1</string>
+
+    <string name="plant_strings_1">大嘴花准备时间</string>
+    <string name="plant_strings_1_1_key">大嘴花{CHECK}</string>
+    <string name="plant_strings_1_1_value">1</string>
+
+    <string name="plant_strings_2">玉米炮准备时间</string>
+    <string name="plant_strings_2_1_key">玉米炮{CHECK}</string>
+    <string name="plant_strings_2_1_value">1</string>
+
+    <string name="plant_strings_3">磁力菇准备时间</string>
+    <string name="plant_strings_3_1_key">磁力菇{CHECK}</string>
+    <string name="plant_strings_3_1_value">1</string>
+
+    <string name="plant_strings_4">其他植物准备时间</string>
+    <string name="plant_strings_4_1_key">其他植物{SEEDTYPE}</string>
+    <string name="plant_strings_4_1_value">0</string>
+
+    <string name="plant_strings_5">土豆雷准备时间</string>
+    <string name="plant_strings_5_1_key">土豆雷{CHECK}</string>
+    <string name="plant_strings_5_1_value">1</string>
+
+    <string name="plant_strings_6">阳光菇准备时间</string>
+    <string name="plant_strings_6_1_key">阳光菇{CHECK}</string>
+    <string name="plant_strings_6_1_value">1</string>
+
+    <string name="plant_strings_7">植物血量显示</string>
+    <string name="plant_strings_7_1_key">植物血量显示{CHECK}</string>
+    <string name="plant_strings_7_1_value">1</string>
+
+    <string name="plant_strings_8">植物无敌</string>
+    <string name="plant_strings_8_1_key">植物无敌{CHECK}</string>
+    <string name="plant_strings_8_1_value">1</string>
+
+    <string name="plant_strings_9">核弹无坑</string>
+    <string name="plant_strings_9_1_key">核弹无坑{CHECK}</string>
+    <string name="plant_strings_9_1_value">1</string>
+
+    <string name="plant_strings_10">取消压扁</string>
+    <string name="plant_strings_10_1_key">取消压扁{CHECK}</string>
+    <string name="plant_strings_10_1_value">1</string>
+
+    <string name="plant_strings_11">只投黄油</string>
+    <string name="plant_strings_11_1_key">只投黄油{CHECK}</string>
+    <string name="plant_strings_11_1_value">1</string>
+
+    <string name="plant_strings_12">植物清醒</string>
+    <string name="plant_strings_12_1_key">植物清醒{CHECK}</string>
+    <string name="plant_strings_12_1_value">1</string>
+
+    <string name="zombie_strings_1">僵尸血量显示</string>
+    <string name="zombie_strings_1_1_key">僵尸血量显示{CHECK}</string>
+    <string name="zombie_strings_1_1_value">1</string>
+
+    <string name="zombie_strings_2">僵尸掉落卡片</string>
+    <string name="zombie_strings_2_1_key">僵尸掉落卡片{CHECK}</string>
+    <string name="zombie_strings_2_1_value">1</string>
+
+    <string name="zombie_strings_3">僵尸无敌</string>
+    <string name="zombie_strings_3_1_key">僵尸无敌{CHECK}</string>
+    <string name="zombie_strings_3_1_value">1</string>
+
+    <string name="zombie_strings_4">丑椒不爆</string>
+    <string name="zombie_strings_4_1_key">丑椒不爆{CHECK}</string>
+    <string name="zombie_strings_4_1_value">1</string>
+
+    <string name="zombie_strings_5">冰车无痕</string>
+    <string name="zombie_strings_5_1_key">冰车无痕{CHECK}</string>
+    <string name="zombie_strings_5_1_value">1</string>
+
+    <string name="zombie_strings_6">小偷不偷</string>
+    <string name="zombie_strings_6_1_key">小偷不偷{CHECK}</string>
+    <string name="zombie_strings_6_1_value">1</string>
+
+    <string name="zombie_strings_7">一键黄油效果</string>
+    <string name="zombie_strings_7_1_key">黄油效果魅惑有效</string>
+    <string name="zombie_strings_7_1_value">0</string>
+    <string name="zombie_strings_7_2_key">黄油效果取消限制</string>
+    <string name="zombie_strings_7_2_value">0</string>
+
+    <string name="zombie_strings_8">一键冰封效果</string>
+    <string name="zombie_strings_8_1_key">冰封效果魅惑有效</string>
+    <string name="zombie_strings_8_1_value">0</string>
+    <string name="zombie_strings_8_2_key">冰封效果取消限制</string>
+    <string name="zombie_strings_8_2_value">0</string>
+
+    <string name="zombie_strings_9">一键魅惑效果</string>
+    <string name="zombie_strings_9_1_key">魅惑有效</string>
+    <string name="zombie_strings_9_1_value">0</string>
+    <string name="zombie_strings_9_2_key">魅惑效果取消限制</string>
+    <string name="zombie_strings_9_2_value">0</string>
+
+    <string name="zombie_strings_10">一键大蒜效果</string>
+    <string name="zombie_strings_10_1_key">大蒜效果魅惑有效</string>
+    <string name="zombie_strings_10_1_value">0</string>
+    <string name="zombie_strings_10_2_key">大蒜效果取消限制</string>
+    <string name="zombie_strings_10_2_value">0</string>
+
+    <string name="zombie_strings_11">停滞不前</string>
+    <string name="zombie_strings_11_1_key">停滞不前{CHECK}</string>
+    <string name="zombie_strings_11_1_value">1</string>
+
+    <string name="spawning_strings_1">蹦极红眼处理</string>
+    <string name="spawning_strings_1_1_key">蹦极</string>
+    <string name="spawning_strings_1_1_value">1</string>
+    <string name="spawning_strings_1_2_key">红眼</string>
+    <string name="spawning_strings_1_2_value">1</string>
+
+    <string name="spawning_strings_2">修改出怪</string>
+    <!-- 修改出怪（共40种） -->
+    <string name="spawning_strings_2_1_key">普僵</string>
+    <string name="spawning_strings_2_1_value">2</string>
+    <string name="spawning_strings_2_2_key">旗子</string>
+    <string name="spawning_strings_2_2_value">2</string>
+    <string name="spawning_strings_2_3_key">路障</string>
+    <string name="spawning_strings_2_3_value">2</string>
+    <string name="spawning_strings_2_4_key">撑杆</string>
+    <string name="spawning_strings_2_4_value">2</string>
+    <string name="spawning_strings_2_5_key">铁桶</string>
+    <string name="spawning_strings_2_5_value">2</string>
+    <string name="spawning_strings_2_6_key">读报</string>
+    <string name="spawning_strings_2_6_value">2</string>
+    <string name="spawning_strings_2_7_key">网门</string>
+    <string name="spawning_strings_2_7_value">2</string>
+    <string name="spawning_strings_2_8_key">橄榄球</string>
+    <string name="spawning_strings_2_8_value">2</string>
+    <string name="spawning_strings_2_9_key">舞者</string>
+    <string name="spawning_strings_2_9_value">2</string>
+    <string name="spawning_strings_2_10_key">伴舞</string>
+    <string name="spawning_strings_2_10_value">2</string>
+    <string name="spawning_strings_2_11_key">救生圈</string>
+    <string name="spawning_strings_2_11_value">2</string>
+    <string name="spawning_strings_2_12_key">潜水</string>
+    <string name="spawning_strings_2_12_value">2</string>
+    <string name="spawning_strings_2_13_key">雪橇车</string>
+    <string name="spawning_strings_2_13_value">2</string>
+    <string name="spawning_strings_2_14_key">雪橇车小队</string>
+    <string name="spawning_strings_2_14_value">2</string>
+    <string name="spawning_strings_2_15_key">海豚骑士</string>
+    <string name="spawning_strings_2_15_value">2</string>
+    <string name="spawning_strings_2_16_key">小丑</string>
+    <string name="spawning_strings_2_16_value">2</string>
+    <string name="spawning_strings_2_17_key">气球</string>
+    <string name="spawning_strings_2_17_value">2</string>
+    <string name="spawning_strings_2_18_key">矿工</string>
+    <string name="spawning_strings_2_18_value">2</string>
+    <string name="spawning_strings_2_19_key">蹦蹦</string>
+    <string name="spawning_strings_2_19_value">2</string>
+    <string name="spawning_strings_2_20_key">雪人</string>
+    <string name="spawning_strings_2_20_value">2</string>
+    <string name="spawning_strings_2_21_key">飞贼</string>
+    <string name="spawning_strings_2_21_value">2</string>
+    <string name="spawning_strings_2_22_key">梯子</string>
+    <string name="spawning_strings_2_22_value">2</string>
+    <string name="spawning_strings_2_23_key">投石车</string>
+    <string name="spawning_strings_2_23_value">2</string>
+    <string name="spawning_strings_2_24_key">巨人</string>
+    <string name="spawning_strings_2_24_value">2</string>
+    <string name="spawning_strings_2_25_key">小鬼</string>
+    <string name="spawning_strings_2_25_value">2</string>
+    <string name="spawning_strings_2_26_key">博士</string>
+    <string name="spawning_strings_2_26_value">2</string>
+    <string name="spawning_strings_2_27_key">豌豆射手</string>
+    <string name="spawning_strings_2_27_value">2</string>
+    <string name="spawning_strings_2_28_key">坚果</string>
+    <string name="spawning_strings_2_28_value">2</string>
+    <string name="spawning_strings_2_29_key">火爆辣椒</string>
+    <string name="spawning_strings_2_29_value">2</string>
+    <string name="spawning_strings_2_30_key">机枪射手</string>
+    <string name="spawning_strings_2_30_value">2</string>
+    <string name="spawning_strings_2_31_key">窝瓜</string>
+    <string name="spawning_strings_2_31_value">2</string>
+    <string name="spawning_strings_2_32_key">高坚果</string>
+    <string name="spawning_strings_2_32_value">2</string>
+    <string name="spawning_strings_2_33_key">红眼巨人</string>
+    <string name="spawning_strings_2_33_value">2</string>
+    <string name="spawning_strings_2_34_key">白眼机械</string>
+    <string name="spawning_strings_2_34_value">2</string>
+    <string name="spawning_strings_2_35_key">红眼机械</string>
+    <string name="spawning_strings_2_35_value">2</string>
+    <string name="spawning_strings_2_36_key">武僧</string>
+    <string name="spawning_strings_2_36_value">2</string>
+    <string name="spawning_strings_2_37_key">黑橄榄球</string>
+    <string name="spawning_strings_2_37_value">2</string>
+    <string name="spawning_strings_2_38_key">女忍者</string>
+    <string name="spawning_strings_2_38_value">2</string>
+    <string name="spawning_strings_2_39_key">天尸</string>
+    <string name="spawning_strings_2_39_value">2</string>
+    <string name="spawning_strings_2_40_key">螺旋桨</string>
+    <string name="spawning_strings_2_40_value">2</string>
+
+    <string name="spawning_strings_3">极限出怪测试</string>
+
+    <string name="spawning_strings_4">最大密度</string>
+    <string name="spawning_strings_4_1_key">{CHECK}</string>
+    <string name="spawning_strings_4_1_value">1</string>
+
+    <string name="spawning_strings_5">暂停出怪</string>
+    <string name="spawning_strings_5_1_key">{CHECK}</string>
+    <string name="spawning_strings_5_1_value">1</string>
+
+    <string name="spawning_strings_6">波次出怪_数量</string>
+    <string name="spawning_strings_7">载入json</string>
+
+    <string name="spawning_strings_8">刷新血量</string>
+    <string name="spawning_strings_8_1_key">出怪血量最小比例</string>
+    <string name="spawning_strings_8_1_value">0.5</string>
+    <string name="spawning_strings_8_2_key">出怪血量最大比例</string>
+    <string name="spawning_strings_8_2_value">0.65</string>
+
+    <string name="board_strings_1">放置植物</string>
+    <string name="board_strings_1_1_key">植物行</string>
+    <string name="board_strings_1_1_value">1</string>
+    <string name="board_strings_1_2_key">植物列</string>
+    <string name="board_strings_1_2_value">1</string>
+    <string name="board_strings_1_3_key">植物种类</string>
+    <string name="board_strings_1_3_value">0</string>
+    <string name="board_strings_1_4_key">是否为模仿者</string>
+    <string name="board_strings_1_4_value">0</string>
+    <string name="board_strings_1_5_key">植物种植限制</string>
+    <string name="board_strings_1_5_value">0</string>
+    <string name="board_strings_1_6_key">列(x)偏移量</string>
+    <string name="board_strings_1_6_value">0</string>
+    <string name="board_strings_1_7_key">行(y)偏移量</string>
+    <string name="board_strings_1_7_value">0</string>
+    <string name="board_strings_1_8_key">是否沉睡</string>
+    <string name="board_strings_1_8_value">0</string>
+
+    <string name="board_strings_2">放置僵尸</string>
+    <string name="board_strings_2_1_key">僵尸行</string>
+    <string name="board_strings_2_1_value">1</string>
+    <string name="board_strings_2_2_key">僵尸类型</string>
+    <string name="board_strings_2_2_value">0</string>
+    <string name="board_strings_2_3_key">允许列放置</string>
+    <string name="board_strings_2_3_value">0</string>
+    <string name="board_strings_2_4_key">僵尸列</string>
+    <string name="board_strings_2_4_value">1</string>
+    <string name="board_strings_2_5_key">是否被魅惑</string>
+    <string name="board_strings_2_5_value">0</string>
+    <string name="board_strings_2_6_key">列(x)偏移量</string>
+    <string name="board_strings_2_6_value">0</string>
+    <string name="board_strings_2_7_key">行(y)偏移量</string>
+    <string name="board_strings_2_7_value">0</string>
+
+    <string name="board_strings_3">放置物品</string>
+    <string name="board_strings_3_1_key">物品行</string>
+    <string name="board_strings_3_1_value">0</string>
+    <string name="board_strings_3_2_key">物品列</string>
+    <string name="board_strings_3_2_value">0</string>
+    <string name="board_strings_3_3_key">物品类型</string>
+    <string name="board_strings_3_3_value">0</string>
+    <string name="board_strings_3_4_key">列(x)偏移量</string>
+    <string name="board_strings_3_4_value">0</string>
+    <string name="board_strings_3_5_key">行(y)偏移量</string>
+    <string name="board_strings_3_5_value">0</string>
+
+    <string name="board_strings_4">放置道具</string>
+    <string name="board_strings_4_1_key">道具行</string>
+    <string name="board_strings_4_1_value">1</string>
+    <string name="board_strings_4_2_key">道具列</string>
+    <string name="board_strings_4_2_value">1</string>
+    <string name="board_strings_4_3_key">道具类型</string>
+    <string name="board_strings_4_3_value">0</string>
+    <string name="board_strings_4_4_key">花瓶(植物类型)</string>
+    <string name="board_strings_4_4_value">0</string>
+    <string name="board_strings_4_5_key">花瓶(僵尸类型)</string>
+    <string name="board_strings_4_5_value">0</string>
+    <string name="board_strings_4_6_key">花瓶类型</string>
+    <string name="board_strings_4_6_value">1</string>
+    <string name="board_strings_4_7_key">花瓶状态</string>
+    <string name="board_strings_4_7_value">3</string>
+    <string name="board_strings_4_8_key">列(x)偏移量</string>
+    <string name="board_strings_4_8_value">0</string>
+    <string name="board_strings_4_9_key">行(y)偏移量</string>
+    <string name="board_strings_4_9_value">0</string>
+
+    <string name="board_strings_5">清除植物</string>
+    <string name="board_strings_6">清除僵尸</string>
+    <string name="board_strings_7">清除物品</string>
+    <string name="board_strings_8">清除道具</string>
+
+    <string name="board_strings_9">小推车</string>
+    <string name="board_strings_9_1_key">触发(输入1选择,只输入一个1)</string>
+    <string name="board_strings_9_1_value">0</string>
+    <string name="board_strings_9_2_key">恢复</string>
+    <string name="board_strings_9_2_value">0</string>
+    <string name="board_strings_9_3_key">删除</string>
+    <string name="board_strings_9_3_value">0</string>
+
+    <string name="board_strings_10">一键搭梯</string>
+    <string name="board_strings_10_1_key">是否限定植物类型</string>
+    <string name="board_strings_10_1_value">1</string>
+
+    <string name="board_strings_11">EasyPlanting</string>
+
+    <string name="board_strings_12">自由种植</string>
+    <string name="board_strings_12_1_key">自由种植{CHECK}</string>
+    <string name="board_strings_12_1_value">0</string>
+
+    <string name="board_strings_13">立即存档</string>
+
+    <string name="board_strings_14">禁止存档</string>
+    <string name="board_strings_14_1_key">禁止存档{CHECK}</string>
+    <string name="board_strings_14_1_value">1</string>
+
+    <string name="board_strings_15">立即回档</string>
+
+    <string name="challenge_strings_1">风暴</string>
+    <string name="challenge_strings_1_1_key">风暴</string>
+    <string name="challenge_strings_1_1_value">2</string>
+
+    <string name="challenge_strings_2">传送带</string>
+    <string name="challenge_strings_2_1_key">传送带</string>
+    <string name="challenge_strings_2_1_value">2</string>
+
+    <string name="challenge_strings_3">砸罐子</string>
+    <string name="challenge_strings_3_1_key">砸罐子</string>
+    <string name="challenge_strings_3_1_value">2</string>
+
+    <string name="challenge_strings_4">砸僵尸</string>
+    <string name="challenge_strings_4_1_key">砸僵尸</string>
+    <string name="challenge_strings_4_1_value">2</string>
+
+    <string name="challenge_strings_5">IZombie</string>
+    <string name="challenge_strings_5_1_key">IZombie</string>
+    <string name="challenge_strings_5_1_value">2</string>
+
+    <string name="challenge_strings_6">老虎机</string>
+    <string name="challenge_strings_6_1_key">老虎机</string>
+    <string name="challenge_strings_6_1_value">2</string>
+
+    <string name="challenge_strings_7">松鼠</string>
+    <string name="challenge_strings_7_1_key">松鼠</string>
+    <string name="challenge_strings_7_1_value">2</string>
+
+    <string name="challenge_strings_8">其他挑战</string>
+    <string name="challenge_strings_8_1_key">雨</string>
+    <string name="challenge_strings_8_1_value">2</string>
+    <string name="challenge_strings_8_2_key">迷阵</string>
+    <string name="challenge_strings_8_2_value">2</string>
+    <string name="challenge_strings_8_3_key">快跑</string>
+    <string name="challenge_strings_8_3_value">2</string>
+    <string name="challenge_strings_8_4_key">传送门</string>
+    <string name="challenge_strings_8_4_value">2</string>
+    <string name="challenge_strings_8_5_key">坚不可摧</string>
+    <string name="challenge_strings_8_5_value">2</string>
+
+    <string name="challenge_strings_9">排山倒海</string>
+    <string name="challenge_strings_9_1_key">排山倒海</string>
+    <string name="challenge_strings_9_1_value">2</string>
+
+    <string name="formation_strings_1">设置卡槽</string>
+    <string name="formation_strings_1_1_key">第几个卡槽</string>
+    <string name="formation_strings_1_1_value">0</string>
+    <string name="formation_strings_1_2_key">要修改成什么类型</string>
+    <string name="formation_strings_1_2_value">0</string>
+    <string name="formation_strings_1_3_key">是否为模仿者</string>
+    <string name="formation_strings_1_3_value">0</string>
+
+    <string name="formation_strings_2">设置场景</string>
+    <string name="formation_strings_2_1_key">设置的场景</string>
+    <string name="formation_strings_2_1_value">0</string>
+
+    <string name="formation_strings_3">随机选卡</string>
+
+    <string name="formation_strings_4">查看草坪</string>
+
+    <string name="formation_strings_5">切换卡组</string>
+    <string name="formation_strings_5_1_key">需要启动的卡组名称</string>
+    <string name="formation_strings_5_1_value">default</string>
+
+    <string name="formation_strings_6">存储卡组</string>
+    <string name="formation_strings_6_1_key">将当前卡组名称保存为</string>
+    <string name="formation_strings_6_1_value">DefaultCardName</string>
+
+    <string name="formation_strings_7">一键布阵</string>
+    <string name="formation_strings_7_1_key">需要布置的阵型名称</string>
+    <string name="formation_strings_7_1_value">DefaultFormationName</string>
+
+    <string name="formation_strings_8">存储阵型</string>
+    <string name="formation_strings_8_1_key">将当前阵型名称保存为</string>
+    <string name="formation_strings_8_1_value">DefaultFormationName</string>
+    <string name="formation_strings_8_2_key">是否存储植物</string>
+    <string name="formation_strings_8_2_value">1</string>
+    <string name="formation_strings_8_3_key">是否存储梯子</string>
+    <string name="formation_strings_8_3_value">1</string>
+    <string name="formation_strings_8_4_key">是否存储罐子</string>
+    <string name="formation_strings_8_4_value">0</string>
+
+    <string name="formation_strings_9">设置道路状况</string>
+    <string name="formation_strings_9_1_key">第几行</string>
+    <string name="formation_strings_9_1_value">1</string>
+    <string name="formation_strings_9_2_key">类型</string>
+    <string name="formation_strings_9_2_value">0</string>
+    <string name="formation_strings_9_3_key">是否同步格子</string>
+    <string name="formation_strings_9_3_value">1</string>
+
+    <string name="formation_strings_10">设置格子类型</string>
+    <string name="formation_strings_10_1_key">第几行</string>
+    <string name="formation_strings_10_1_value">1</string>
+    <string name="formation_strings_10_2_key">第几列</string>
+    <string name="formation_strings_10_2_value">1</string>
+    <string name="formation_strings_10_3_key">类型</string>
+    <string name="formation_strings_10_3_value">1</string>
+
+    <string name="sync_card_label">同步卡组</string>
+    <string name="sync_card_yes">是</string>
+    <string name="sync_card_no">否</string>
+    <string name="sync_card_default">否</string>
+
+    <string name="fun_strings_1">随机罐子</string>
+    <string name="fun_strings_1_1_key">随机罐子{CHECK}</string>
+    <string name="fun_strings_1_1_value">1</string>
+
+    <string name="fun_strings_2">随机卡片</string>
+    <string name="fun_strings_2_1_key">随机卡片{CHECK}</string>
+    <string name="fun_strings_2_1_value">1</string>
+
+    <string name="fun_strings_3">随机卡槽</string>
+    <string name="fun_strings_3_1_key">随机卡槽{CHECK}</string>
+    <string name="fun_strings_3_1_value">1</string>
+
+    <string name="script_strings_1">快捷脚本</string>
+    <string name="script_strings_1_0_key">请输入脚本名称</string>
+    <string name="script_strings_1_0_value">example</string>
+    <string name="script_strings_1_1_key">参数{1}</string>
+    <string name="script_strings_1_1_value">0</string>
+    <string name="script_strings_1_2_key">参数{2}</string>
+    <string name="script_strings_1_2_value">0</string>
+    <string name="script_strings_1_3_key">参数{3}</string>
+    <string name="script_strings_1_3_value">0</string>
+    <string name="script_strings_1_4_key">参数{4}</string>
+    <string name="script_strings_1_4_value">0</string>
+    <string name="script_strings_1_5_key">参数{5}</string>
+    <string name="script_strings_1_5_value">0</string>
+    <string name="script_strings_1_6_key">参数{6}</string>
+    <string name="script_strings_1_6_value">0</string>
+    <string name="script_strings_1_7_key">参数{7}</string>
+    <string name="script_strings_1_7_value">0</string>
+    <string name="script_strings_1_8_key">参数{8}</string>
+    <string name="script_strings_1_8_value">0</string>
+</resources>

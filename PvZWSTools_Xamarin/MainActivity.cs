@@ -19,6 +19,7 @@ using static PvZWSTools_Shared.Sharedstring;
 
 namespace PvZWSTools_Xamarin;
 
+[Obsolete("PvZWSTools_Xamarin 已弃用（Deprecated）：其原生 Android UI 已整体移植到 PvZWSTools_Avalonia（net10.0-android）。请使用 PvZWSTools_Avalonia 项目。")]
 [Activity(Name = "net.pvz.pvzwstools.MainActivity",
           Label = "@string/app_name",
           Theme = "@style/AppTheme.NoActionBar",

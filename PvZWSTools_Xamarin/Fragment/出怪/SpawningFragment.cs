@@ -9,6 +9,10 @@ public class SpawningFragment:BaseFragment
 {
     private static readonly string mSpawningPath = "出怪";
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override string FragmentPath => mSpawningPath;
 
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>

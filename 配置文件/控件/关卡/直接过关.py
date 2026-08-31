@@ -1,3 +1,4 @@
+#直接过关
 #跳过本关
 
 from Lawn import *

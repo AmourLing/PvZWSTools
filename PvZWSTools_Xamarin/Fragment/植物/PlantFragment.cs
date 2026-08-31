@@ -11,6 +11,10 @@ public class PlantFragment:BaseFragment
 
     protected override string FragmentPath => mPlantPath;
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>
     {
         [Resource.String.plant_strings_1_1_key] = "开关1",

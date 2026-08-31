@@ -17,6 +17,8 @@ public abstract class BaseFragment:AndroidX.Fragment.App.Fragment
 
     protected abstract Dictionary<int, string> OptionFileMappings { get; }
 
+    public abstract void RefreshAllButtons();
+
     public override void OnCreate(Bundle savedInstanceState)
     {
         base.OnCreate(savedInstanceState);

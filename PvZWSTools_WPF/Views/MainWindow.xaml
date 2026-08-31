@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:PvZWSTools_WPF.Models"
-    xmlns:viewModels="clr-namespace:PvZWSTools_WPF.ViewModels"
+    xmlns:models="clr-namespace:PvZWSTools_Shared.Models"
+    xmlns:viewModels="clr-namespace:PvZWSTools_Shared.ViewModels"
     Title="PvZWSTools_Windows"
     Width="{Binding CurrentWidth, Mode=TwoWay}"
     Height="600"
@@ -63,7 +63,7 @@
 
                 <!--  主选项卡  -->
                 <Grid Grid.Row="1">
-                    <TabControl x:Name="MainTabControl">
+                    <TabControl x:Name="MainTabControl" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
                         <!--  杂项  -->
                         <TabItem Header="杂项">
                             <Grid DataContext="{Binding Others}">

@@ -1,4 +1,4 @@
-#一键冰封
+#一键冰封效果
 #2025.08.01
 
 ALLOW_MINDCTRL = {MIND_CHECK}
@@ -21,7 +21,7 @@ else:
             result = check_func()
             zombie.mMindControlled = orig_state
             return result
-        return check_func()   
+        return check_func()
     for z in board.mZombies:
         if ALLOW_MINDCTRL != 1 and z.mMindControlled:
             continue
@@ -38,7 +38,7 @@ else:
                 z.mIceTrapCounter = TodCommon.RandRangeInt(300, 400)
             else:
                 z.mIceTrapCounter = TodCommon.RandRangeInt(400, 600)
-            
+
             z.StopZombieSound()
             if z.mZombieType == ZombieType.Balloon:
                 z.BalloonPropellerHatSpin(False)

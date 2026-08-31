@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ⚠ PvZWSTools_Xamarin 已弃用（DEPRECATED）
+  ---------------------------------------------------------------------
+  · 原因: VS2026 已弃用经典 Xamarin，无法移植到 .NET 10/11。
+  · 现状: 其原生 Android UI（MainActivity/Fragments/布局）已整体移植到
+         PvZWSTools_Avalonia（net10.0-android）。
+  · 本项目仅保留作参考，请勿继续开发/新增功能；后续版本将移除。
+  · 构建需 VS 2022 MSBuild.exe（不能用 dotnet build）。
+-->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -154,5 +163,10 @@
     <ItemGroup>
       <Compile Include="$(BuildInfoFile)" />
     </ItemGroup>
+  </Target>
+
+  <!-- 构建本项目时输出弃用警告（仅提示，不阻断构建） -->
+  <Target Name="DeprecatedProjectWarning" BeforeTargets="Build">
+    <Warning Text="⚠ PvZWSTools_Xamarin 已弃用（Deprecated）：请改用 PvZWSTools_Avalonia（net10.0-android 原生 Android UI）。本项目的原生 UI 已整体移植过去，仅保留作参考，后续版本将移除。" />
   </Target>
 </Project>

@@ -10,6 +10,10 @@ public class LevelFragment:BaseFragment
     private static readonly string mLevelPath = "关卡";
     protected override string FragmentPath => mLevelPath;
 
+    public override void RefreshAllButtons()
+    {
+    }
+
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>
     {
         [Resource.String.level_strings_4_1_key] = "模式"   // 映射到“模式.json”
