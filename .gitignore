@@ -9,8 +9,11 @@ PvZWSTools_Xamarin/Assets/need.zip
 update
 .editorconfig
 .gitattributes
-.gitignore
 pyrightconfig.json
 *.user
 .zip
 .pubxml
+.fake
+.vscode
+global.json
+*.keystore

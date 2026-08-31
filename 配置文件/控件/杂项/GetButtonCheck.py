@@ -1,17 +1,20 @@
-#检查按钮状态，仅win端
+#检查按钮状态
 
 Check_button_list = [\
-    "INVINCPLANT_CHECK",\
-    "COBCD_CHECK",\
-    "INVINCZOMBIE_CHECK",\
-    "NO_CRATER_CHECK",\
-    "NOEXPLODE_CHECK",\
-    "NO_ICETRAP_CHECK",\
-    "ONLY_BUTTYER_CHECK",\
-    "STOP_SPAWN_CHECK",\
-    "STOP_WALK_CHECK",\
-    "WAKEUP_CHECK",\
+    "AUTO_FERTILIZER_BUGSPRAY_CHECK", #补充肥料杀虫剂
+    "CLEARVASE_CHECK", #罐子透视
+    "RUNWHILELOCKED_CHECK", #后台运行
+    "CLEARFOG_CHECK", #清除迷雾
+    "NO_CD_PLANTING_CHECK", #取消冷却
+    "NO_COST_PLANTING_CHECK", #取消阳光
+    "IS_REMOVE_COVERLAYER", #去除遮挡
+    "BIGSUN_CHECK", #阳光增值
+    "AUTO_WATERING_CHECK", #自动浇水
+    "AUTO_COLLECT_CHECK", #自动收集
+
 ]
+ButtonCheckString = "开始检查按钮状态\n"
 for ButtonCheck in Check_button_list:
     if ButtonCheck in globals():
-        print(f"{ButtonCheck} => {globals()[ButtonCheck] == 1}")
+        ButtonCheckString += f"{ButtonCheck} => {globals()[ButtonCheck] == 1}\n"
+print(f"{ButtonCheckString}检查按钮状态完成")

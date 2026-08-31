@@ -12,6 +12,51 @@
     <Compile Include="$(MSBuildThisFileDirectory)Sharedstring.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WSEvents.cs" />
   </ItemGroup>
+  <!--
+    以下业务共享代码（ViewModels/Helpers/Services/Models/Commands/Platform）
+    编译到 WPF 与 Avalonia；Xamarin 项目因自带同名类（AppSettings/NameOption/Log 等）
+    且已被弃用，故通过条件排除，避免重复类定义。
+  -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'PvZWSTools_Xamarin'">
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ButtonHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CompileTime.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Enums.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Log.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Platform\IUserNotifier.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Platform\IUiThreadInvoker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\AppSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SettingAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\NameOption.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ScriptParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ConnectionService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IConnectionService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IDialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IMessageProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IScriptExecutionService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ISettingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\MessageProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\OptionsLoader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\ScriptExecutionService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\SettingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BoardViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ChallengeViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\FormationViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\FunViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\GardenDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\GardenViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LevelViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\OthersViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\PlantsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\QModViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ResourcesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SpawnViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ZombiesViewModel.cs" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GardenChangeText.py" />
     <None Include="$(MSBuildThisFileDirectory)PvZWSTools_Shared.projitems" />

@@ -1,3 +1,5 @@
+#切换卡组
+
 import clr
 clr.AddReference("System")
 clr.AddReference("Newtonsoft.Json")

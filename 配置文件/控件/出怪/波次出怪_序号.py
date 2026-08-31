@@ -1,3 +1,4 @@
+#波次出怪_序号
 # 僵尸出怪列表 (按序号输出)
 # 2025.07.05
 #2026.06.13
@@ -49,7 +50,7 @@ def load_zombie_names():
             value_str = str(value_token)
             try:
                 zombie_enum = getattr(ZombieType, value_str)
-                enum_id = int(zombie_enum)  
+                enum_id = int(zombie_enum)
             except:
                 continue
             name = str(item["Name"])

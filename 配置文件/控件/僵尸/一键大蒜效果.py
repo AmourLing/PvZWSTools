@@ -1,4 +1,4 @@
-#一键大蒜
+#一键大蒜效果
 #2025.07.31
 
 ALLOW_MINDCTRL = {MIND_CHECK}

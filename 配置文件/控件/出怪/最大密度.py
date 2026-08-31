@@ -1,4 +1,5 @@
-#使出怪密度变大
+#最大密度
+#使出怪密度变大，ZombiePoints
 #2025.07.08
 
 MAXPOINT_CHECK={CHECK}
@@ -31,10 +32,10 @@ def Board_PickZombieWaves(orig, self):
         GameMode.ChallengeInvisighoul \
     ]:
         self.mNumWaves = 20
-    elif (self.mApp.IsStormyNightLevel() or self.mApp.IsLittleTroubleLevel() or 
-          self.mApp.IsBungeeBlitzLevel() or self.mApp.mGameMode == GameMode.ChallengeColumn or 
-          self.mApp.IsShovelLevel() or self.mApp.mGameMode == GameMode.ChallengeWarAndPeas2 or 
-          self.mApp.mGameMode == GameMode.ChallengeWallnutBowling2 or 
+    elif (self.mApp.IsStormyNightLevel() or self.mApp.IsLittleTroubleLevel() or
+          self.mApp.IsBungeeBlitzLevel() or self.mApp.mGameMode == GameMode.ChallengeColumn or
+          self.mApp.IsShovelLevel() or self.mApp.mGameMode == GameMode.ChallengeWarAndPeas2 or
+          self.mApp.mGameMode == GameMode.ChallengeWallnutBowling2 or
           self.mApp.mGameMode == GameMode.ChallengePogoParty):
         self.mNumWaves = 30
     else:
@@ -83,8 +84,8 @@ def Board_PickZombieWaves(orig, self):
             zombiePicker.mZombiePoints *= 3
         elif self.mApp.IsStormyNightLevel() and (self.mApp.IsAdventureMode() or self.mApp.IsQuickPlayMode()):
             zombiePicker.mZombiePoints *= 3
-        elif (self.mApp.IsShovelLevel() or self.mApp.IsBungeeBlitzLevel() or 
-              self.mApp.mGameMode == GameMode.ChallengePortalCombat or 
+        elif (self.mApp.IsShovelLevel() or self.mApp.IsBungeeBlitzLevel() or
+              self.mApp.mGameMode == GameMode.ChallengePortalCombat or
               self.mApp.mGameMode == GameMode.ChallengeInvisighoul):
             zombiePicker.mZombiePoints *= 2
 
@@ -123,7 +124,7 @@ def Board_PickZombieWaves(orig, self):
                     self.PutZombieInWave(ZombieType.Gargantuar, i, zombiePicker)
 
         if MAXPOINT_CHECK:
-            zombiePicker.mZombiePoints = 233333  
+            zombiePicker.mZombiePoints = 233333
         while zombiePicker.mZombiePoints > 0 and zombiePicker.mZombieCount < 50:
             theZombieType = self.PickZombieType(zombiePicker.mZombiePoints, i, zombiePicker)
             self.PutZombieInWave(theZombieType, i, zombiePicker)

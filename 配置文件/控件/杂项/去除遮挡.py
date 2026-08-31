@@ -1,4 +1,5 @@
-#去除遮挡物
+#去除遮挡
+#去除遮挡物，如草丛，电线杆
 
 from Lawn import *
 from Sexy import *

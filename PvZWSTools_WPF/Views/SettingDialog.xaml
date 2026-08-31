@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModels="clr-namespace:PvZWSTools_WPF.ViewModels"
-    Title="环境"
+    xmlns:viewModels="clr-namespace:PvZWSTools_Shared.ViewModels"
+    Title="设置"
     Width="300"
     Height="400"
     ResizeMode="NoResize"
@@ -21,16 +21,19 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <CheckBox
-                    x:Name="chkSetting1"
+                <ItemsControl
                     Grid.Row="0"
-                    Content="{Binding Setting1Label}"
-                    IsChecked="{Binding Setting1}" />
-                <CheckBox
-                    x:Name="chkSetting2"
-                    Grid.Row="1"
-                    Content="{Binding Setting2Label}"
-                    IsChecked="{Binding Setting2}" />
+                    Grid.RowSpan="3"
+                    ItemsSource="{Binding Settings}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox
+                                Margin="0,8,0,0"
+                                Content="{Binding Label}"
+                                IsChecked="{Binding Value}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <StackPanel
                     Grid.Row="3"
                     HorizontalAlignment="Right"

@@ -1,8 +1,9 @@
+#设置场景
 #切换场景
 #2025.07.05
 
 from Lawn import *
-from Sexy import * 
+from Sexy import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
@@ -30,7 +31,7 @@ if IsPGvZVersion:
 
     @M.HookTo(Board.InitCoverLayer)
     def Board_InitCoverLayer(orig,self):
-        try:	
+        try:
             for theRow in range(0,6):
                 aRenderOrder = self.MakeRenderOrder(RenderLayer.CoverLayer, theRow, 0)
                 aX = GameConstants.gCoverInfos[theRow].mX*1.0 + Constants.BOARD_EXTRA_ROOM*1.0
@@ -39,17 +40,17 @@ if IsPGvZVersion:
                 theReanimationType=ReanimationType["None"]
                 if theRow in [0,3]:
                     if self.StageIsNight():
-                        theReanimationType = ReanimationType.NightBushes3 
-                    else: 
+                        theReanimationType = ReanimationType.NightBushes3
+                    else:
                         theReanimationType = ReanimationType.Bushes3
                 elif theRow in [2,5]:
                     if self.StageIsNight():
-                        theReanimationType = ReanimationType.NightBushes4 
-                    else: 
+                        theReanimationType = ReanimationType.NightBushes4
+                    else:
                         theReanimationType = ReanimationType.Bushes4
                 else:
                     if self.StageIsNight():
-                        theReanimationType =  ReanimationType.NightBushes5 
+                        theReanimationType =  ReanimationType.NightBushes5
                     else:
                         theReanimationType = ReanimationType.Bushes5
                     if theRow == 4:
@@ -64,7 +65,7 @@ if IsPGvZVersion:
 
     @M.HookTo(Board.UpdateCoverLayer)
     def Board_UpdateCoverLayer(orig,self):
-        try:	
+        try:
             for i in range(0,len(self.mCoverLayerAnimIDs)):
                 if self.mApp.ReanimationTryToGet(self.mCoverLayerAnimIDs[i])!=None:
                     self.mApp.ReanimationTryToGet(self.mCoverLayerAnimIDs[i]).Update()
@@ -95,5 +96,3 @@ try:
         app.DoDialog(16,True,"ERROR!",repr(e),"OK",3)
 except Exception as e:
     app.DoDialog(16,True,"ERROR!",repr(e),"OK",3)
-
-

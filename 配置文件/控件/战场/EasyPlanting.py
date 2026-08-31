@@ -1,9 +1,10 @@
+#EasyPlantingCheat
 #打开EasyPlantingModde
 #2025.07.05
 
 from Lawn import *
 from Sexy import *
-app=GlobalStaticVars.gLawnApp   
+app=GlobalStaticVars.gLawnApp
 outstr = "EasyPlantingCheat为"
 if app.mEasyPlantingCheat:
     app.mEasyPlantingCheat=False

@@ -1,4 +1,4 @@
-#一键黄油
+#一键黄油效果
 #2025.08.01
 
 ALLOW_MINDCTRL = {MIND_CHECK}
@@ -26,7 +26,7 @@ else:
                 result = False
             zombie.mMindControlled = orig_state
             return result
-        return check_func()  
+        return check_func()
     for z in board.mZombies:
         if ALLOW_MINDCTRL==0 and z.mMindControlled:
             continue

@@ -1,4 +1,4 @@
-#一键魅惑
+#一键魅惑效果
 #2026.01.16
 
 ALLOW_MINDCTRL = {MIND_CHECK}
@@ -11,7 +11,7 @@ from Sexy.TodLib import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-BanZombieToMindControl = {   
+BanZombieToMindControl = {
 	ZombieType.Zamboni,
 	ZombieType.Bungee,
 	ZombieType.Catapult,
@@ -23,7 +23,7 @@ BanZombieToMindControl = {
 
 if board is None:
     app.DoDialog(16, True, "ERROR!", "未找到board进程", "OK", 3)
-else:  
+else:
     for z in board.mZombies:
         if z.mMindControlled:
             continue

@@ -1,3 +1,4 @@
+#其他挑战
 #开启挑战特性
 #2025.07.06
 
@@ -36,10 +37,9 @@ def Challenge_Update(orig,self):
     elif LAST_STAND_CHECK==0:
         ngm.append(GameMode.ChallengeLastStand)
 
-
     if self.mApp.IsStormyNightLevel():
         self.UpdateStormyNight()
-    
+
     if self.mBoard.mPaused:
         if self.mApp.mGameMode == GameMode.ChallengeBeghouledTwist:
             self.mChallengeGridX = -1
@@ -47,20 +47,20 @@ def Challenge_Update(orig,self):
         return
     if GameMode.ChallengeRainingSeeds in gm or self.mApp.IsStormyNightLevel():
         self.UpdateRain()
-    
+
     if self.mApp.mGameScene != GameScenes.Playing:
         return
 
     if self.mBoard.HasConveyorBeltSeedBank():
         self.UpdateConveyorBelt()
-    
+
     if  GameMode.ChallengeBeghouled in gm or \
         GameMode.ChallengeBeghouledTwist in gm:
         self.UpdateBeghouled()
 
     if self.mApp.IsScaryPotterLevel():
         self.ScaryPotterUpdate()
-    
+
     if (self.mApp.IsScaryPotterLevel() or self.mApp.IsWhackAZombieLevel()) and self.mBoard.mSeedBank.mX < 0:
         num = self.mBoard.mSunMoney + self.mBoard.CountSunBeingCollected()
         if num > 0 or self.mBoard.mSeedBank.mX > -self.mBoard.mSeedBank.mWidth:
@@ -76,13 +76,13 @@ def Challenge_Update(orig,self):
 
     if self.mApp.IsSlotMachineLevel():
         self.UpdateSlotMachine()
-    
+
     if GameMode.ChallengeSpeed in gm:
         global speedBoardCounter
         if speedBoardCounter % 3 == 0:
             self.mBoard.UpdateGame()
         speedBoardCounter += 1
-    
+
     if GameMode.ChallengeRainingSeeds in gm:
         self.UpdateRainingSeeds()
 
@@ -91,11 +91,11 @@ def Challenge_Update(orig,self):
 
     if self.mApp.IsSquirrelLevel():
         self.SquirrelUpdate()
-    
+
     if GameMode.ChallengeIce in gm and self.mBoard.mMainCounter == GameConstants.ICE_CHALLANGE_DELAY:
         self.mApp.PlayFoley(FoleyType.Floop)
         self.mApp.PlaySample(Resources.SOUND_LOSEMUSIC)
-    
+
     if GameMode.ChallengeLastStand in gm:
         self.LastStandUpate()
 

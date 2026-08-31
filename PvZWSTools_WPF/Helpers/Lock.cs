@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using PvZWSTools_Shared.Helpers;
 using PvZWSTools_WPF.Views;
 
 namespace PvZWSTools_WPF.Helpers;

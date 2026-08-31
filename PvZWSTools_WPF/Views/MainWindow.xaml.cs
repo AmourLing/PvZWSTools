@@ -1,8 +1,10 @@
 ﻿using System.IO;
 using System.Windows;
-using PvZWSTools_WPF.Helpers;
+using PvZWSTools_Shared.Helpers;
+using PvZWSTools_Shared.Services;
+using PvZWSTools_Shared.ViewModels;
+using PvZWSTools_WPF.Platform;
 using PvZWSTools_WPF.Services;
-using PvZWSTools_WPF.ViewModels;
 using static PvZWSTools_Shared.Sharedstring;
 
 namespace PvZWSTools_WPF.Views;
@@ -25,7 +27,8 @@ public partial class MainWindow:Window
         GardenPage.Visibility = Visibility.Visible;
 #endif
 
-        var connection = new ConnectionService(Dispatcher);
+        var uiThread = new WpfUiThreadInvoker(Dispatcher);
+        var connection = new ConnectionService(uiThread);
         string defaultPath = Directory.GetCurrentDirectory();
         var settingsService = new SettingsService(defaultPath);
         var messageProcessor = new MessageProcessor();
@@ -36,12 +39,14 @@ public partial class MainWindow:Window
             settingsService,
             defaultPath,
             dialogService,
-            messageProcessor
+            messageProcessor,
+            uiThread,
+            new WpfUserNotifier()
         );
 
         _viewModel.ShowSettingsDialog += (s, e) =>
         {
-            var dialog = new SettingDialog(settingsService, "允许自动连接", "取消发送连接提醒")
+            var dialog = new SettingDialog(settingsService)
             {
                 Owner = this
             };

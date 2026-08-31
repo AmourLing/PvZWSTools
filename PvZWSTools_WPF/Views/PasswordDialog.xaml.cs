@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using PvZWSTools_WPF.Helpers;
+using Lock = PvZWSTools_WPF.Helpers.Lock;
 
 namespace PvZWSTools_WPF.Views;
 

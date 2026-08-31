@@ -1,3 +1,5 @@
+#存储阵型
+
 import clr
 clr.AddReference("System.IO")
 clr.AddReference("System")
