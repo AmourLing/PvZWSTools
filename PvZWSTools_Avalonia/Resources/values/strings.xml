@@ -157,6 +157,10 @@
     <string name="plant_strings_12_1_key">植物清醒{CHECK}</string>
     <string name="plant_strings_12_1_value">1</string>
 
+    <string name="plant_strings_13">准备时间显示</string>
+    <string name="plant_strings_13_1_key">准备时间显示{CHECK}</string>
+    <string name="plant_strings_13_1_value">1</string>
+
     <string name="zombie_strings_1">僵尸血量显示</string>
     <string name="zombie_strings_1_1_key">僵尸血量显示{CHECK}</string>
     <string name="zombie_strings_1_1_value">1</string>

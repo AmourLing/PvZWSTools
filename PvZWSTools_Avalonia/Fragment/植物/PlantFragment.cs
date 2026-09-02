@@ -29,6 +29,7 @@ public class PlantFragment:BaseFragment
         [Resource.String.plant_strings_10_1_key] = "开关1",
         [Resource.String.plant_strings_11_1_key] = "开关1",
         [Resource.String.plant_strings_12_1_key] = "开关1",
+        [Resource.String.plant_strings_13_1_key] = "开关1",
     };
 
     protected override void InitializeMap()
@@ -45,6 +46,7 @@ public class PlantFragment:BaseFragment
         Map[GetString(Resource.String.plant_strings_10_1_key)] = GetString(Resource.String.plant_strings_10_1_value);
         Map[GetString(Resource.String.plant_strings_11_1_key)] = GetString(Resource.String.plant_strings_11_1_value);
         Map[GetString(Resource.String.plant_strings_12_1_key)] = GetString(Resource.String.plant_strings_12_1_value);
+        Map[GetString(Resource.String.plant_strings_13_1_key)] = GetString(Resource.String.plant_strings_13_1_value);
     }
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -96,7 +98,7 @@ public class PlantFragment:BaseFragment
         Done(Resource.Id.button10, Resource.String.plant_strings_10_1_key, Resource.String.plant_strings_10);
         Done(Resource.Id.button11, Resource.String.plant_strings_11_1_key, Resource.String.plant_strings_11);
         Done(Resource.Id.button12, Resource.String.plant_strings_12_1_key, Resource.String.plant_strings_12);
-
+        Done(Resource.Id.button13, Resource.String.plant_strings_13_1_key, Resource.String.plant_strings_13);
         return view;
     }
 }
