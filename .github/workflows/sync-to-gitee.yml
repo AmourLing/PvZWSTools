@@ -1,12 +1,10 @@
 name: Sync to Gitee
 
-# 当 push 到 master 时自动触发；也支持在 Actions 页面手动运行
 on:
   push:
     branches: [master]
   workflow_dispatch:
 
-# 让 git 在缺少认证时立即失败，不要卡住等 stdin 输入
 env:
   GIT_TERMINAL_PROMPT: 0
   GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
@@ -14,23 +12,40 @@ env:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 5  # 防止认证失败时卡 6 小时
+    timeout-minutes: 10
     steps:
       - name: Verify GITEE_TOKEN
         run: |
           if [ -z "$GITEE_TOKEN" ]; then
-            echo "::error::GITEE_TOKEN secret 未配置，请到 Settings → Secrets and variables → Actions 添加名为 GITEE_TOKEN 的 Secret，值为 Gitee 私人令牌（projects 权限）"
+            echo "::error::GITEE_TOKEN secret 未配置，请到 Settings → Secrets and variables → Actions 添加"
             exit 1
           fi
           echo "GITEE_TOKEN 已配置（长度 ${#GITEE_TOKEN}）"
 
-      - name: Mirror to Gitee
+      - name: Show GitHub repo size
+        run: |
+          echo "=== GitHub 仓库当前大小 ==="
+          curl -s -H "User-Agent: pvz-sync" https://api.github.com/repos/AmourLing/PvZWSTools | grep -E '"size"|"pushed_at"'
+
+      - name: Clone GitHub mirror
+        timeout-minutes: 3
         run: |
           set -e
-          git clone --mirror https://github.com/AmourLing/PvZWSTools.git pvz-mirror
+          echo "开始 clone..."
+          # --progress 让 CI 输出实时进度，避免静默卡住
+          git clone --mirror --progress https://github.com/AmourLing/PvZWSTools.git pvz-mirror 2>&1
+          echo "clone 完成"
+          du -sh pvz-mirror
+          ls -la pvz-mirror/
+
+      - name: Push to Gitee
+        timeout-minutes: 5
+        run: |
+          set -e
           cd pvz-mirror
           # 注意 Gitee 用户名是 AmourLing0412（GitHub 上仍为 AmourLing）
           git remote set-url --push origin "https://AmourLing0412:${GITEE_TOKEN}@gitee.com/AmourLing0412/PvZWSTools.git"
-          # --mirror 推送所有 refs（branches + tags + notes）
-          # --force 覆盖 Gitee 上可能存在的旧历史（与历史清理后的重写匹配）
-          git push --mirror --force
+          echo "开始 push 到 Gitee..."
+          # --mirror 推送所有 refs（branches + tags + notes），隐含 --force
+          git push --mirror --progress 2>&1
+          echo "push 完成"
