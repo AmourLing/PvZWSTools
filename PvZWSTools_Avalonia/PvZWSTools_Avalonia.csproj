@@ -41,6 +41,11 @@
         <AndroidAsset Include="Assets\need.zip" />
     </ItemGroup>
 
+    <!-- AndroidManifest.xml 若被工具写入重复 UTF-8 BOM 会导致 XAGAP7000 解析错误，构建前自动清理 -->
+    <Target Name="CleanManifestBom" BeforeTargets="BeforeBuild">
+        <Exec Condition="'$(OS)' == 'Windows_NT'" Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$p = '$(ProjectDir)Properties\AndroidManifest.xml'; if (Test-Path $p) { $b = [System.IO.File]::ReadAllBytes($p); $i = 0; while($i + 2 -lt $b.Length -and $b[$i] -eq 0xEF -and $b[$i+1] -eq 0xBB -and $b[$i+2] -eq 0xBF) { $i += 3 }; if($i -gt 0) { $c = New-Object byte[] ($b.Length - $i); [Array]::Copy($b, $i, $c, 0, $c.Length); [System.IO.File]::WriteAllBytes($p, $c); Write-Host ('Manifest BOM cleaned: ' + $i + ' bytes') } }&quot;" IgnoreExitCode="true" />
+    </Target>
+
     <Target Name="CreateResourcesZip" BeforeTargets="BeforeBuild">
         <PropertyGroup>
             <ConfigPath>$(SolutionDir)配置文件</ConfigPath>

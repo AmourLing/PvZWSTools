@@ -15,6 +15,7 @@
     <UseWindowsForms>false</UseWindowsForms>
     <Version>2026.9.2</Version>
     <InformationalVersion>2026.09.02</InformationalVersion>
+    <SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)..\</SolutionDir>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
