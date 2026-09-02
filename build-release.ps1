@@ -144,7 +144,23 @@ foreach($f in $allFiles) {
 # ============ Upload ============
 if($Upload) {
     $token = if($GithubToken) { $GithubToken } else { $env:GITHUB_TOKEN }
-    if(-not $token) { Write-Fail "Upload needs GitHub Token: -GithubToken or `$env:GITHUB_TOKEN" }
+    
+    # 如果没 token，交互式输入（并可选保存到用户环境变量）
+    if(-not $token) {
+        Write-Warn "GITHUB_TOKEN not found."
+        $token = Read-Host "Enter your GitHub Personal Access Token" -AsSecureString
+        $token = [System.Net.NetworkCredential]::new("", $token).Password
+        
+        if(-not $token) { Write-Fail "No token provided, abort upload." }
+        
+        Write-Host "    Save to user environment variable for next time? (Y/N): " -NoNewline
+        $save = Read-Host
+        if($save -match "^[Yy]") {
+            [Environment]::SetEnvironmentVariable("GITHUB_TOKEN", $token, "User")
+            $env:GITHUB_TOKEN = $token  # 当前进程也用上
+            Write-Ok "Saved to user env var. Will be auto-loaded next time."
+        }
+    }
     
     Write-Step "Upload to GitHub Release: $Tag"
     $headers = @{ "Authorization" = "token $token" }
