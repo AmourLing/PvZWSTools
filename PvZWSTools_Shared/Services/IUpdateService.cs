@@ -12,6 +12,12 @@ public interface IUpdateService
     Version CurrentVersion { get; }
 
     /// <summary>
+    /// 当前版本的友好显示字符串（如 "2026.09.02" 或 "2026.09.02-fix1"）。
+    /// 默认实现返回 CurrentVersion.ToString()。
+    /// </summary>
+    string CurrentVersionDisplay { get; }
+
+    /// <summary>
     /// 后台检查最新版本，失败返回 null（不抛异常，由调用方决定如何提示）。
     /// 优先 GitHub Releases，失败回退 Gitee。
     /// </summary>
@@ -23,8 +29,8 @@ public interface IUpdateService
     /// 内部会先尝试主链接，失败再尝试 fallback。
     /// </summary>
     /// <param name="info">由 <see cref="CheckForUpdatesAsync"/> 返回的版本信息。</param>
-    /// <param name="progress">可选进度回调（0-100）。</param>
-    Task<string?> DownloadUpdateAsync(UpdateInfo info, IProgress<int>? progress = null, CancellationToken ct = default);
+    /// <param name="progress">可选进度回调（bytes/total/speed 完整信息）。</param>
+    Task<string?> DownloadUpdateAsync(UpdateInfo info, IProgress<DownloadProgress>? progress = null, CancellationToken ct = default);
 
     /// <summary>
     /// 应用更新（替换 exe/apk 并重启）。

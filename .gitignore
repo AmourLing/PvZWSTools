@@ -9,6 +9,7 @@
 .vs
 PvZWSTools_WPF/Properties
 PvZWSTools_Xamarin/Assets/need.zip
+PvZWSTools_Avalonia/Assets/need.zip
 update
 .editorconfig
 .gitattributes

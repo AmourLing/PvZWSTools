@@ -8,7 +8,6 @@ using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 
 namespace PvZWSTools_Shared.ViewModels;
-
 public class MainWindowViewModel:ViewModelBase
 {
     private readonly List<string> _addressList = new List<string>
@@ -39,6 +38,14 @@ public class MainWindowViewModel:ViewModelBase
     private string _sizeText = "100%";
     private bool _stopAutoConnect;
     private bool _suppressConnectionMessage;
+
+    // ---------- 自动更新进度 UI 状态 ----------
+    private bool _isUpdating;
+    private double _updateProgress;       // 0-100
+    private string _updateStatusText = "";
+    private string _updateDownloadedMB = "";
+    private string _updateTotalMB = "";
+    private string _updateSpeed = "";
 
     private string _wsAddress = "ws://localhost:8080/Py";
 
@@ -114,7 +121,63 @@ public class MainWindowViewModel:ViewModelBase
 
     public event EventHandler ShowSettingsDialog;
 
+    /// <summary>
+    /// 发现新版本时触发（包括启动自动检查和手动点击），让 View 层打开 UpdateWindow。
+    /// 参数为 UpdateInfo；启动自动检查时设 isAuto=true，View 层可用 Show() 非阻塞弹出。
+    /// </summary>
+    public event EventHandler<UpdateInfoEventArgs>? ShowUpdateWindowRequested;
+
+    public class UpdateInfoEventArgs(UpdateInfo info, bool isAuto) : EventArgs
+    {
+        public UpdateInfo Info { get; } = info;
+        public bool IsAuto { get; } = isAuto;
+    }
+
     public bool AllowAutoUpdateButtonStatus { get; private set; }
+
+    // ---------- 自动更新进度 UI 可绑定属性 ----------
+
+    /// <summary>更新流程是否正在进行（决定底部进度条面板 Visibility）。</summary>
+    public bool IsUpdating
+    {
+        get => _isUpdating;
+        private set => SetProperty(ref _isUpdating, value);
+    }
+
+    /// <summary>进度百分比 0-100；服务器未提供 Content-Length 时为 0（进度条 indeterminate）。</summary>
+    public double UpdateProgress
+    {
+        get => _updateProgress;
+        private set => SetProperty(ref _updateProgress, value);
+    }
+
+    /// <summary>状态描述：正在下载 / 正在校验 / 正在应用 / 完成 / 失败。</summary>
+    public string UpdateStatusText
+    {
+        get => _updateStatusText;
+        private set => SetProperty(ref _updateStatusText, value);
+    }
+
+    /// <summary>已下载 MB 文本，如 "32.5"。</summary>
+    public string UpdateDownloadedMB
+    {
+        get => _updateDownloadedMB;
+        private set => SetProperty(ref _updateDownloadedMB, value);
+    }
+
+    /// <summary>总 MB 文本，如 "60.6"；未知时为空。</summary>
+    public string UpdateTotalMB
+    {
+        get => _updateTotalMB;
+        private set => SetProperty(ref _updateTotalMB, value);
+    }
+
+    /// <summary>速度文本，如 "2.3 MB/s"；无速度信息时为空。</summary>
+    public string UpdateSpeed
+    {
+        get => _updateSpeed;
+        private set => SetProperty(ref _updateSpeed, value);
+    }
 
     public bool AutoConnectEnabled
     {
@@ -344,6 +407,8 @@ public class MainWindowViewModel:ViewModelBase
             Log.Error($"打开更新页面失败: {ex.Message}");
         }
 #else
+        // WPF 端：让 View 层打开 UpdateWindow（有渠道选择 UI）
+        // 先触发检查，查到新版本后 raise 事件
         _ = CheckAndApplyUpdateAsync(isManual: true);
 #endif
     }
@@ -364,6 +429,9 @@ public class MainWindowViewModel:ViewModelBase
         // 非手动模式且未开启"启动时自动检查更新"则跳过
         if(!isManual && !_settingsService.Settings.AutoCheckUpdateEnabled)
             return;
+
+        // 防止重复触发
+        if(IsUpdating) return;
 
         UpdateInfo? info = null;
         try
@@ -388,39 +456,87 @@ public class MainWindowViewModel:ViewModelBase
         if(!info.IsNewerThan(_updateService.CurrentVersion))
         {
             if(isManual)
-                _notifier?.Warn("检查更新", $"当前已是最新版本（v{_updateService.CurrentVersion}）。");
+                _notifier?.Warn("检查更新", $"当前已是最新版本（{info.TagName}）。");
             return;
         }
 
-        string versionLine = $"发现新版本 {info.TagName}";
+        // 发现新版本：raise 事件让 View 层打开 UpdateWindow（带渠道选择）
+        // 如果 View 层已订阅，把控制权交给它；否则回退到旧流程（MessageBox）
+        if(ShowUpdateWindowRequested != null)
+        {
+            ShowUpdateWindowRequested(this, new UpdateInfoEventArgs(info, isAuto: !isManual));
+            return;
+        }
+
+        // ---------- 旧流程 fallback（MessageBox + 内联进度条） ----------
+        string currentVerStr = _updateService.CurrentVersionDisplay;
+        string versionLine = $"发现新版本 {info.TagName}  （当前 v{currentVerStr}）";
         string notes = string.IsNullOrWhiteSpace(info.ReleaseNotes) ? "" : $"\n\n{info.ReleaseNotes}";
         bool accept = _notifier?.Confirm("发现新版本", $"{versionLine}{notes}\n\n是否立即下载并更新？") ?? false;
         if(!accept) return;
 
-        // 在 UI 线程提示下载中
-        await _uiThread.InvokeAsync(() =>
+        // ---------- 进入更新流程：内联进度条，替换 MessageBox ----------
+        IsUpdating = true;
+        UpdateProgress = 0;
+        UpdateStatusText = "正在下载更新包...";
+        UpdateDownloadedMB = "0";
+        UpdateTotalMB = info.Size.HasValue ? $"{info.Size.Value / 1048576.0:F1}" : "";
+        UpdateSpeed = "";
+
+        // 用 Progress<T> 把后台进度安全 marshal 到 UI 线程
+        var progress = new Progress<DownloadProgress>(p =>
         {
-            _notifier?.Warn("正在下载", "正在后台下载更新包，下载完成后将自动应用并重启，请勿手动关闭程序。");
+            // Progress<T> 的 Report 默认在捕获的 SynchronizationContext 上执行
+            UpdateProgress = p.Percentage ?? 0;
+            UpdateDownloadedMB = $"{p.BytesDownloaded / 1048576.0:F1}";
+            UpdateTotalMB = p.TotalBytes.HasValue ? $"{p.TotalBytes.Value / 1048576.0:F1}" : "";
+            UpdateSpeed = p.BytesPerSecond.HasValue ? FormatSpeed(p.BytesPerSecond.Value) : "";
+            UpdateStatusText = p.Percentage.HasValue
+                ? $"正在下载... {p.Percentage}%"
+                : "正在下载...";
         });
 
-        string? downloaded = await _updateService.DownloadUpdateAsync(info);
+        string? downloaded = null;
+        try
+        {
+            downloaded = await _updateService.DownloadUpdateAsync(info, progress);
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"下载异常: {ex.Message}");
+        }
+
         if(string.IsNullOrEmpty(downloaded))
         {
-            await _uiThread.InvokeAsync(() =>
-            {
-                _notifier?.Error("更新失败", "下载更新包失败，请稍后重试或前往发布页手动下载。");
-            });
+            UpdateStatusText = "下载失败";
+            _notifier?.Error("更新失败", "下载更新包失败，请稍后重试或前往发布页手动下载。");
+            IsUpdating = false;
             return;
         }
 
+        // 下载完成 → 校验阶段
+        UpdateProgress = 100;
+        UpdateStatusText = "下载完成，正在校验...";
+        UpdateSpeed = "";
+
+        // 应用更新（bat 会等主进程退出后替换并重启）
+        UpdateStatusText = "正在应用更新，即将重启...";
         bool applied = await _updateService.ApplyUpdateAsync(downloaded);
         if(!applied)
         {
-            await _uiThread.InvokeAsync(() =>
-            {
-                _notifier?.Error("更新失败", "应用更新失败，请前往发布页手动下载。");
-            });
+            UpdateStatusText = "应用更新失败";
+            _notifier?.Error("更新失败", "应用更新失败，请前往发布页手动下载。");
+            IsUpdating = false;
         }
-        // 应用成功时主程序已退出，无需提示
+        // 应用成功时主程序已退出，IsUpdating 状态不需要清除
+    }
+
+    private static string FormatSpeed(double bytesPerSecond)
+    {
+        if(bytesPerSecond >= 1048576)
+            return $"{bytesPerSecond / 1048576.0:F2} MB/s";
+        if(bytesPerSecond >= 1024)
+            return $"{bytesPerSecond / 1024.0:F1} KB/s";
+        return $"{bytesPerSecond:F0} B/s";
     }
 }

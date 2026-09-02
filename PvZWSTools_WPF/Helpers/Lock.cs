@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_WPF.Views;
 
@@ -10,7 +10,13 @@ public static class Lock
 
     private const string PASSWORD = "AMOURLING";
 
-    public static bool EnsureAccess()
+    /// <summary>
+    /// 返回值：
+    ///   true  — 有效期内，或密码验证成功 → 完整功能
+    ///   false — 密码失败 + 取消 → 退出
+    ///   null  — 密码失败 + 用户选了"检查更新" → 仅更新模式
+    /// </summary>
+    public static bool? EnsureAccess()
     {
         if(!IsExpired())
         {
@@ -25,6 +31,7 @@ public static class Lock
             $"或{PvZWSTools_Shared.Sharedstring.BaseUpdateQQ}" +
             $"等途径获取新版本");
         Log.Info("具体途径可以参考文件目录下的readme.md文档");
+
         return VerifyPasswordWithRetry();
     }
 
@@ -60,13 +67,20 @@ public static class Lock
         return today >= expiration;
     }
 
-    private static bool VerifyPasswordWithRetry()
+    private static bool? VerifyPasswordWithRetry()
     {
         const int maxRetries = 3;
         for(int attempt = 0;attempt < maxRetries;attempt++)
         {
             var dialog = new PasswordDialog();
             bool? result = dialog.ShowDialog();
+
+            if(dialog.IsCheckUpdateRequested)
+            {
+                // 用户选了"检查更新"——允许启动但仅更新模式
+                Log.Info("用户选择检查更新，进入仅更新模式");
+                return null;
+            }
 
             if(result == true && dialog.IsPasswordCorrect)
             {
