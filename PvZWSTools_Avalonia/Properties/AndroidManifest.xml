@@ -1,11 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.pvz.pvzwstools" android:versionCode="1" android:versionName="1">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.pvz.pvzwstools" android:versionCode="10000" android:versionName="1.0.0">
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-	<application android:label="PvZWSTools" android:icon="@drawable/icon">
+	<!-- 自动更新：安装第三方 APK 必备权限（Android 8+） -->
+	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+	<application android:label="PvZWSTools" android:icon="@drawable/icon" android:requestLegacyExternalStorage="true">
 		<meta-data android:name="asset_encoding" android:value="utf-8" />
+		<!-- 自动更新：通过 FileProvider 暴露下载好的 APK 给系统安装器 -->
+		<provider android:name="androidx.core.content.FileProvider" android:authorities="net.pvz.pvzwstools.fileprovider" android:exported="false" android:grantUriPermissions="true">
+			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+		</provider>
 	</application>
 </manifest>

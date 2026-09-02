@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -30,16 +30,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\SettingAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\NameOption.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ScriptParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UpdateInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ConnectionService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IConnectionService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IDialogService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IMessageProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IScriptExecutionService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ISettingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\IUpdateService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\MessageProcessor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\OptionsLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ScriptExecutionService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\SettingsService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\UpdateService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BoardViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ChallengeViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\FormationViewModel.cs" />

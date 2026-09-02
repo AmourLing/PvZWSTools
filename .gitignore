@@ -2,7 +2,10 @@
 [Oo]bj
 
 .git
-.github
+# .github 默认全部忽略，但放行 workflows（GitHub Actions 才能识别）
+.github/*
+!.github/workflows/
+!.github/workflows/**
 .vs
 PvZWSTools_WPF/Properties
 PvZWSTools_Xamarin/Assets/need.zip
@@ -17,3 +20,7 @@ pyrightconfig.json
 .vscode
 global.json
 *.keystore
+
+# 临时/本地项目，不提交
+.git_backup_*/
+UpdateTest/

@@ -1,4 +1,4 @@
-﻿# PvZWSTools
+# PvZWSTools
 
 ## 联系方式
 
@@ -15,7 +15,8 @@
 
 ## 仓库
 
-* [AmourLing/PvZWSTools](https://github.com/AmourLing/PvZWSTools)
+* GitHub（主仓库）：[AmourLing/PvZWSTools](https://github.com/AmourLing/PvZWSTools)
+* Gitee（镜像仓库，国内访问快）：[AmourLing0412/PvZWSTools](https://gitee.com/AmourLing0412/PvZWSTools)
 
 ---
 

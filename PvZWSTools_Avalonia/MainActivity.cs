@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +14,10 @@ using AndroidX.Core.View;
 using AndroidX.DrawerLayout.Widget;
 using Google.Android.Material.Navigation;
 using PvZWSTools_Shared;
+using PvZWSTools_Shared.Models;
+using PvZWSTools_Shared.Services;
 using PvZWSTools_Avalonia.Helpers;
+using PvZWSTools_Avalonia.Services;
 using static PvZWSTools_Shared.Sharedstring;
 
 namespace PvZWSTools_Avalonia;
@@ -31,6 +34,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     private bool _isConnected = false;
     private IMenuItem _settingsMenuItem;
     private string _settingsPath;
+    private AndroidUpdateService _updateService;
     public static string AppFilesPath { get; private set; }
 
     public static MainActivity Instance { get; private set; }
@@ -101,8 +105,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 return true;
 
             case Resource.Id.nav_updateversion:
-                var uri = Android.Net.Uri.Parse(Sharedstring.BaseUpdateUrl);
-                StartActivity(new Intent(Intent.ActionView, uri));
+                _ = CheckForUpdatesAsync(isManual: true);
                 return true;
         }
 
@@ -214,6 +217,8 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
         _settingsPath = Path.Combine(configPath, "setting.json");
         _appSettings = AppSettings.Load(_settingsPath);
+
+        _updateService = new AndroidUpdateService(this);
 
         ShowExtractDialog();
 
@@ -342,6 +347,12 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 _ = versionItem.SetTitle(title);
             }
 
+            // 启动时自动检查更新（受 AutoCheckUpdateEnabled 控制）
+            if(_updateService != null)
+            {
+                _ = CheckForUpdatesAsync(isManual: false);
+            }
+
             if(SupportFragmentManager.BackStackEntryCount == 0)
             {
                 _ = SupportFragmentManager.BeginTransaction()
@@ -458,6 +469,119 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         _extractDialog.Show();
     }
 
+    // --- 自动更新逻辑 ---
+
+    /// <summary>
+    /// 检查更新：调 GitHub/Gitee Release → 比较 versionName → 弹窗询问 → 下载 → 调起系统安装器。
+    /// <paramref name="isManual"/>=true 时无论是否开启"启动时自动检查更新"都会执行。
+    /// </summary>
+    private async Task CheckForUpdatesAsync(bool isManual)
+    {
+        if(_updateService == null) return;
+
+        // 非手动模式且未开启"启动时自动检查更新"则跳过
+        if(!isManual && (_appSettings == null || !_appSettings.AutoCheckUpdateEnabled))
+            return;
+
+        var info = await _updateService.CheckForUpdatesAsync(Sharedstring.AssetNameAndroid);
+        if(info == null)
+        {
+            if(isManual)
+            {
+                RunOnUiThread(() =>
+                    Toast.MakeText(this, "检查更新失败，请稍后重试", ToastLength.Short).Show());
+            }
+            return;
+        }
+
+        if(!info.IsNewerThan(_updateService.CurrentVersion))
+        {
+            if(isManual)
+            {
+                RunOnUiThread(() =>
+                    Toast.MakeText(this, $"当前已是最新版本（v{_updateService.CurrentVersion}）", ToastLength.Short).Show());
+            }
+            return;
+        }
+
+        // 弹窗询问用户是否下载
+        bool accept = await ShowUpdateConfirmDialogAsync(info);
+        if(!accept) return;
+
+        // 显示下载进度对话框
+        var progress = new Progress<int>(p =>
+        {
+            RunOnUiThread(() =>
+            {
+                if(_extractDialog != null && _extractDialog.IsShowing)
+                {
+                    _extractDialog.SetMessage($"正在下载更新包 {p}%...");
+                }
+            });
+        });
+
+        // 复用 _extractDialog 显示下载进度
+        RunOnUiThread(() =>
+        {
+            var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
+            builder.SetTitle("正在下载更新");
+            builder.SetMessage("正在后台下载更新包，请稍候...");
+            builder.SetCancelable(false);
+            ProgressBar progressBar = new ProgressBar(this) { Indeterminate = true };
+            builder.SetView(progressBar);
+            _extractDialog = builder.Create();
+            _extractDialog.Show();
+        });
+
+        string? downloaded = null;
+        try
+        {
+            downloaded = await _updateService.DownloadUpdateAsync(info, progress);
+        }
+        catch(Exception ex)
+        {
+            Log.Error("下载更新失败", ex);
+        }
+        finally
+        {
+            RunOnUiThread(HideExtractDialog);
+        }
+
+        if(string.IsNullOrEmpty(downloaded))
+        {
+            RunOnUiThread(() =>
+                Toast.MakeText(this, "下载更新包失败，请稍后重试", ToastLength.Long).Show());
+            return;
+        }
+
+        bool applied = await _updateService.ApplyUpdateAsync(downloaded);
+        if(!applied)
+        {
+            RunOnUiThread(() =>
+                Toast.MakeText(this, "应用更新失败，请前往发布页手动下载", ToastLength.Long).Show());
+        }
+        // 应用成功时系统安装器已弹起
+    }
+
+    private Task<bool> ShowUpdateConfirmDialogAsync(UpdateInfo info)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        RunOnUiThread(() =>
+        {
+            var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
+            builder.SetTitle($"发现新版本 {info.TagName}");
+            string msg = string.IsNullOrWhiteSpace(info.ReleaseNotes)
+                ? "是否立即下载并更新？"
+                : $"{info.ReleaseNotes}\n\n是否立即下载并更新？";
+            builder.SetMessage(msg);
+            builder.SetPositiveButton("下载并更新", (s, e) => tcs.TrySetResult(true));
+            builder.SetNegativeButton("取消", (s, e) => tcs.TrySetResult(false));
+            builder.SetCancelable(false);
+            builder.Create().Show();
+        });
+        return tcs.Task;
+    }
+
     private void ShowSettingsDialog()
     {
         var layout = new LinearLayout(this);
@@ -470,6 +594,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         var chkAutoConnect = CreateSettingCheckBox(this, "允许自动连接", _appSettings.AutoConnectEnabled, 30);
         var chkShowNotification = CreateSettingCheckBox(this, "取消连接提醒", _appSettings.SuppressConnectionMessage, 10);
         var chkAutoUpdateButtonStatus = CreateSettingCheckBox(this, "允许自动更新按钮状态", _appSettings.AllowAutoUpdateButtonStatus, 10);
+        var chkAutoCheckUpdate = CreateSettingCheckBox(this, "启动时自动检查更新", _appSettings.AutoCheckUpdateEnabled, 10);
 
         var txtWsAddressLabel = new TextView(this)
         {
@@ -495,6 +620,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         layout.AddView(chkAutoConnect);
         layout.AddView(chkShowNotification);
         layout.AddView(chkAutoUpdateButtonStatus);
+        layout.AddView(chkAutoCheckUpdate);
         layout.AddView(txtWsAddressLabel);
         layout.AddView(txtWsAddress);
 
@@ -507,6 +633,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             _appSettings.AutoConnectEnabled = chkAutoConnect.Checked;
             _appSettings.SuppressConnectionMessage = chkShowNotification.Checked;
             _appSettings.AllowAutoUpdateButtonStatus = chkAutoUpdateButtonStatus.Checked;
+            _appSettings.AutoCheckUpdateEnabled = chkAutoCheckUpdate.Checked;
             var address = txtWsAddress.Text?.Trim();
             if(!string.IsNullOrEmpty(address))
             {
