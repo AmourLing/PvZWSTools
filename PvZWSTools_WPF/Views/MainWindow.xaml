@@ -891,7 +891,22 @@
                                     Height="25"
                                     Command="{Binding NoSquishCommand}"
                                     Content="取消压扁" />
-
+                                <!--  准备时间显示  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding DrawStateCountdown}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding DrawStateCountdownCommand}"
+                                    Content="准备时间显示" />
                                 <!--  土豆准备时间  -->
                                 <TextBox
                                     Grid.Row="2"

@@ -79,7 +79,18 @@ public class PlantsViewModel:ViewModelBase
     private string _wakeUp = Constants.c_Symbol_Off;
 
     private string _wakeUp_Name = "植物清醒";
+    private string _draw_statecountdown = Constants.c_Symbol_Off;
+    private string _draw_statecountdown_Name = "准备时间显示";
 
+    public string DrawStateCountdown
+    {
+        get => _draw_statecountdown;
+        set => SetProperty(ref _draw_statecountdown, value);
+    }
+    public ICommand DrawStateCountdownCommand
+    {
+        get => CreateToggleCommand(() => DrawStateCountdown, v => DrawStateCountdown = v, _draw_statecountdown_Name);
+    }
     public PlantsViewModel(IScriptExecutionService scriptExec, IMessageProcessor messageProcessor)
     {
         _scriptExec = scriptExec;
