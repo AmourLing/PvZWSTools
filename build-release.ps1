@@ -53,13 +53,17 @@ New-Item -ItemType Directory -Path (Join-Path $PublishDir "win-fwdep") | Out-Nul
 
 # ============ WPF self-contained ============
 Write-Step "Build WPF self-contained"
+$ErrorActionPreference = "Continue"
 dotnet publish $WpfCsproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -p:IncludeNativeLibrariesForSelfExtract=true -o "$PublishDir\win-self-contained" 2>&1 | Out-Null
+$ErrorActionPreference = "Stop"
 if($LASTEXITCODE -ne 0) { Write-Fail "WPF self-contained build failed" }
 Write-Ok "WPF self-contained done"
 
 # ============ WPF framework-dependent ============
 Write-Step "Build WPF framework-dependent"
+$ErrorActionPreference = "Continue"
 dotnet publish $WpfCsproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=false -o "$PublishDir\win-fwdep" 2>&1 | Out-Null
+$ErrorActionPreference = "Stop"
 if($LASTEXITCODE -ne 0) { Write-Fail "WPF framework-dependent build failed" }
 Write-Ok "WPF framework-dependent done"
 
@@ -76,7 +80,9 @@ Write-Ok "framework-dependent: $([math]::Round((Get-Item $fdZip).Length/1MB,1)) 
 $apkPath = $null
 if(-not $SkipAndroid) {
     Write-Step "Build Android APK"
+    $ErrorActionPreference = "Continue"
     dotnet publish $AndroidCsproj -c Release -r android-arm64 -p:AndroidPackageFormat=apk 2>&1 | Out-Null
+    $ErrorActionPreference = "Stop"
     if($LASTEXITCODE -ne 0) {
         Write-Warn "Android APK build failed, skip"
     } else {
@@ -111,7 +117,9 @@ if(-not $SkipSetup) {
     } elseif(-not $iss -or -not (Test-Path $iss)) {
         Write-Warn "ISS not found"
     } else {
+        $ErrorActionPreference = "Continue"
         & $iscc $iss "/DMyAppVersion=$InformationalVersion" "/DSourcePath=$PublishDir\win-self-contained" 2>&1 | Out-Null
+        $ErrorActionPreference = "Stop"
         if($LASTEXITCODE -ne 0) {
             Write-Warn "Inno Setup compile failed, skip"
         } else {
