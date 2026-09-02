@@ -25,3 +25,9 @@ global.json
 # 临时/本地项目，不提交
 .git_backup_*/
 UpdateTest/
+VersionTest/
+
+# 发布产物（不在仓库内，走 GitHub Release）
+publish/
+PvZWSTools_WPF/Output/
+*.exe
