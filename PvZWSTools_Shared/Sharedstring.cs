@@ -1,4 +1,4 @@
-﻿namespace PvZWSTools_Shared;
+namespace PvZWSTools_Shared;
 
 public class Sharedstring
 {
@@ -15,6 +15,36 @@ public class Sharedstring
     /// 更新地址
     /// </summary>
     public static readonly string BaseUpdateUrl = "https://pan.baidu.com/s/1UibnjHtCUx6ygEJpO3jbpQ?pwd=LING";
+
+    /// <summary>
+    /// GitHub 仓库所有者
+    /// </summary>
+    public const string GitHubOwner = "AmourLing";
+
+    /// <summary>
+    /// GitHub 仓库名
+    /// </summary>
+    public const string GitHubRepo = "PvZWSTools";
+
+    /// <summary>
+    /// Gitee 仓库所有者（GitHub 上同名，Gitee 上被占用所以加 0412）
+    /// </summary>
+    public const string GiteeOwner = "AmourLing0412";
+
+    /// <summary>
+    /// Gitee 仓库名
+    /// </summary>
+    public const string GiteeRepo = "PvZWSTools";
+
+    /// <summary>
+    /// GitHub Release 资产命名约定：Windows 包
+    /// </summary>
+    public const string AssetNameWindows = "PvZWSTools-win.zip";
+
+    /// <summary>
+    /// GitHub Release 资产命名约定：Android APK
+    /// </summary>
+    public const string AssetNameAndroid = "PvZWSTools-android.apk";
 
     /// <summary>
     /// 花园编辑

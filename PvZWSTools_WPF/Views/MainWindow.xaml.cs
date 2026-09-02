@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
@@ -34,6 +34,9 @@ public partial class MainWindow:Window
         var messageProcessor = new MessageProcessor();
         var dialogService = new DialogService();
 
+        // 自动更新服务（WPF 端实现：bat 重启替换）
+        var updateService = new PvZWSTools_WPF.Services.WpfUpdateService();
+
         _viewModel = new MainWindowViewModel(
             connection,
             settingsService,
@@ -41,8 +44,12 @@ public partial class MainWindow:Window
             dialogService,
             messageProcessor,
             uiThread,
-            new WpfUserNotifier()
+            new WpfUserNotifier(),
+            updateService
         );
+
+        // 启动后异步检查更新（受 AutoCheckUpdateEnabled 控制）
+        _ = _viewModel.CheckAndApplyUpdateAsync(isManual: false);
 
         _viewModel.ShowSettingsDialog += (s, e) =>
         {

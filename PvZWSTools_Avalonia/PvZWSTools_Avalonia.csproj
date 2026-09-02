@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net10.0-android</TargetFramework>
@@ -11,15 +11,12 @@
         <ApplicationId>net.pvz.pvzwstools</ApplicationId>
         <ApplicationTitle>PvZWSTools</ApplicationTitle>
         <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
-        <!-- net10.0-android 默认 API 36 -->
         <AndroidSdkPlatform>36</AndroidSdkPlatform>
         <TargetPlatformVersion>36.0</TargetPlatformVersion>
         <AndroidPackageFormat>apk</AndroidPackageFormat>
         <Configurations>Debug;Release</Configurations>
         <SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)..\</SolutionDir>
-        <!-- 指定本机实际 JDK（JAVA_HOME 指向的 jdk-21 路径已不存在） -->
         <JavaSdkDirectory>C:\Program Files\Java\jdk-17</JavaSdkDirectory>
-        <!-- Android 原生 UI（复用 Xamarin 的 DrawerLayout + Fragment 布局） -->
         <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
         <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
         <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -28,22 +25,7 @@
     
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
-        <!-- 如果有其他调试专用设置，也可以放在这里 -->
     </PropertyGroup>
-    <!-- ============================================================
-         Release 打包体积优化（原 Xamarin APK ~15MB；默认 Release 开启
-         AOT 全量编译导致 APK 达 ~70MB）
-         · 单 ABI arm64-v8a（覆盖主流真机），仅此一项体积减半
-         · 关闭 AOT（RunAOTCompilation / AndroidEnableProfiledAot）
-           → 改用 JIT + 压缩程序集（AndroidUseAssemblyStore=true），
-           与 Xamarin 的 JIT 方案一致，程序集以压缩形式存入 APK
-         · Release 默认已启用：SdkOnly 裁剪、无调试符号、程序集压缩、
-           资源裁剪（AndroidLinkResources）
-         直接生成 APK：
-           dotnet publish -c Release
-           或 VS Code 任务「publish: android」
-         产物: bin\Release\net10.0-android\net.pvz.pvzwstools-Signed.apk
-    ============================================================ -->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
         <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
@@ -53,12 +35,10 @@
         <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     </PropertyGroup>
 
-    <!-- 配置文件 打包为 need.zip (ASCII 资产名, 避免 aapt2 中文路径问题)，运行时解压到应用数据目录 -->
     <ItemGroup>
         <AndroidAsset Include="Assets\need.zip" />
     </ItemGroup>
 
-    <!-- 构建前把 配置文件 压缩为 Assets\need.zip -->
     <Target Name="CreateResourcesZip" BeforeTargets="BeforeBuild">
         <PropertyGroup>
             <ConfigPath>$(SolutionDir)配置文件</ConfigPath>
@@ -66,15 +46,12 @@
         </PropertyGroup>
         <Error Condition="!Exists('$(ConfigPath)')" Text="错误: 配置文件目录不存在: $(ConfigPath)" />
         <MakeDir Directories="$(ProjectDir)Assets" />
-        <!-- 使用 ZipFile.CreateFromDirectory 保证 zip 条目为 '/' 分隔（Compress-Archive 会生成 '\'，
-             导致 Android 端解压成带反斜杠的扁平文件名） -->
         <Exec Condition="'$(OS)' == 'Windows_NT' And Exists('$(ConfigPath)')" Command="powershell -NoProfile -ExecutionPolicy Unrestricted -Command &quot;&amp; { $ErrorActionPreference = 'Stop'; Add-Type -AssemblyName System.IO.Compression.FileSystem; if (Test-Path '$(ResourcesZip)') { Remove-Item '$(ResourcesZip)' -Force }; [System.IO.Compression.ZipFile]::CreateFromDirectory('$(ConfigPath)', '$(ResourcesZip)', [System.IO.Compression.CompressionLevel]::Optimal, $false) }&quot;" IgnoreExitCode="false" />
     </Target>
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="WebSocketSharp.NetCore" Version="1.0.1-alpha.4" />
-        <!-- Android 原生 UI 依赖（复用 Xamarin 的 DrawerLayout/NavigationView/AlertDialog） -->
         <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.4" />
         <PackageReference Include="Xamarin.AndroidX.DrawerLayout" Version="1.2.0.21" />
         <PackageReference Include="Xamarin.AndroidX.SavedState" Version="1.5.0.1" />
@@ -86,6 +63,7 @@
         <AndroidResource Include="Resources\menu\*.xml" />
         <AndroidResource Include="Resources\values\*.xml" />
         <AndroidResource Include="Resources\drawable\*.png" />
+        <AndroidResource Include="Resources\xml\*.xml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -99,7 +77,6 @@
       <Content Include="icon.ico" />
     </ItemGroup>
 
-    <!-- 生成 BuildInfo（编译时间，供 CompileTimeHelper 使用） -->
     <Target Name="GenerateBuildInfo" BeforeTargets="BeforeBuild">
         <PropertyGroup>
             <BuildTime>$([System.DateTime]::UtcNow.ToString('o'))</BuildTime>

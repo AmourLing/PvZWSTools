@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using PvZWSTools_Shared;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
+using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 
 namespace PvZWSTools_Shared.ViewModels;
@@ -27,6 +28,7 @@ public class MainWindowViewModel:ViewModelBase
     private readonly IScriptExecutionService _scriptExec;
     private readonly ISettingsService _settingsService;
     private readonly IUiThreadInvoker _uiThread;
+    private readonly IUpdateService? _updateService;
     private bool _autoConnectEnabled;
     private string _connectionButtonText = "连接";
     private int _currentAddressIndex = 0;
@@ -47,13 +49,15 @@ public class MainWindowViewModel:ViewModelBase
         IDialogService dialogService,
         IMessageProcessor messageProcessor,
         IUiThreadInvoker uiThread,
-        IUserNotifier? notifier = null)
+        IUserNotifier? notifier = null,
+        IUpdateService? updateService = null)
     {
         _connection = connection;
         _defaultPath = defaultPath;
         _settingsService = settingsService;
         _notifier = notifier;
         _uiThread = uiThread;
+        _updateService = updateService;
         _scriptExec = new ScriptExecutionService(connection, defaultPath, notifier);
         _messageProcessor = messageProcessor;
 
@@ -325,6 +329,8 @@ public class MainWindowViewModel:ViewModelBase
     private void UpdateVersion()
     {
 #if ANDROID
+        // Android 端由 MainActivity 的 nav_updateversion 菜单项直接处理，
+        // ViewModel 不参与（AndroidUpdateService 在 MainActivity 内部使用）
         try
         {
             var context = global::Android.App.Application.Context;
@@ -338,7 +344,83 @@ public class MainWindowViewModel:ViewModelBase
             Log.Error($"打开更新页面失败: {ex.Message}");
         }
 #else
-        _ = Process.Start(new ProcessStartInfo(Sharedstring.BaseUpdateUrl) { UseShellExecute = true });
+        _ = CheckAndApplyUpdateAsync(isManual: true);
 #endif
+    }
+
+    /// <summary>
+    /// 启动时由 App 层调用的自动检查入口；用户主动点击"获取更新"按钮时
+    /// <paramref name="isManual"/>=true，无论是否开启"启动时自动检查更新"都会执行。
+    /// </summary>
+    public async Task CheckAndApplyUpdateAsync(bool isManual = false)
+    {
+        if(_updateService == null)
+        {
+            if(isManual)
+                _notifier?.Warn("检查更新", "当前版本未启用自动更新服务，请前往发布页手动下载。");
+            return;
+        }
+
+        // 非手动模式且未开启"启动时自动检查更新"则跳过
+        if(!isManual && !_settingsService.Settings.AutoCheckUpdateEnabled)
+            return;
+
+        UpdateInfo? info = null;
+        try
+        {
+            info = await _updateService.CheckForUpdatesAsync(Sharedstring.AssetNameWindows);
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"检查更新失败: {ex.Message}");
+            if(isManual)
+                _notifier?.Warn("检查更新", $"检查更新失败：{ex.Message}");
+            return;
+        }
+
+        if(info == null)
+        {
+            if(isManual)
+                _notifier?.Warn("检查更新", "检查更新失败，请稍后重试或前往发布页手动下载。");
+            return;
+        }
+
+        if(!info.IsNewerThan(_updateService.CurrentVersion))
+        {
+            if(isManual)
+                _notifier?.Warn("检查更新", $"当前已是最新版本（v{_updateService.CurrentVersion}）。");
+            return;
+        }
+
+        string versionLine = $"发现新版本 {info.TagName}";
+        string notes = string.IsNullOrWhiteSpace(info.ReleaseNotes) ? "" : $"\n\n{info.ReleaseNotes}";
+        bool accept = _notifier?.Confirm("发现新版本", $"{versionLine}{notes}\n\n是否立即下载并更新？") ?? false;
+        if(!accept) return;
+
+        // 在 UI 线程提示下载中
+        await _uiThread.InvokeAsync(() =>
+        {
+            _notifier?.Warn("正在下载", "正在后台下载更新包，下载完成后将自动应用并重启，请勿手动关闭程序。");
+        });
+
+        string? downloaded = await _updateService.DownloadUpdateAsync(info);
+        if(string.IsNullOrEmpty(downloaded))
+        {
+            await _uiThread.InvokeAsync(() =>
+            {
+                _notifier?.Error("更新失败", "下载更新包失败，请稍后重试或前往发布页手动下载。");
+            });
+            return;
+        }
+
+        bool applied = await _updateService.ApplyUpdateAsync(downloaded);
+        if(!applied)
+        {
+            await _uiThread.InvokeAsync(() =>
+            {
+                _notifier?.Error("更新失败", "应用更新失败，请前往发布页手动下载。");
+            });
+        }
+        // 应用成功时主程序已退出，无需提示
     }
 }

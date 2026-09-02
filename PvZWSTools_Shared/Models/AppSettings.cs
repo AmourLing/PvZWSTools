@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Reflection;
 
 namespace PvZWSTools_Shared.Models;
@@ -22,6 +22,12 @@ public class AppSettings
     /// </summary>
     [Setting("允许自动更新按钮状态")]
     public bool AllowAutoUpdateButtonStatus { get; set; }
+
+    /// <summary>
+    /// 启动时自动检查新版本（仅检查并提示，不自动下载）。
+    /// </summary>
+    [Setting("启动时自动检查更新")]
+    public bool AutoCheckUpdateEnabled { get; set; } = true;
 
     /// <summary>
     /// 通过反射自动发现所有带 [Setting] 特性的布尔设置项。

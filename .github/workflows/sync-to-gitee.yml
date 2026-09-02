@@ -1,0 +1,22 @@
+name: Sync to Gitee
+
+# 当 push 到 master 时自动触发；也支持在 Actions 页面手动运行
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror to Gitee
+        run: |
+          set -e
+          git clone --mirror https://github.com/AmourLing/PvZWSTools.git pvz-mirror
+          cd pvz-mirror
+          # 注意 Gitee 用户名是 AmourLing0412（GitHub 上仍为 AmourLing）
+          git remote set-url --push origin "https://AmourLing0412:${{ secrets.GITEE_TOKEN }}@gitee.com/AmourLing0412/PvZWSTools.git"
+          # --mirror 推送所有 refs（branches + tags + notes）
+          # --force 覆盖 Gitee 上可能存在的旧历史（与历史清理后的重写匹配）
+          git push --mirror --force
