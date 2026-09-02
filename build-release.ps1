@@ -37,12 +37,12 @@ $infoVerNode = $wpfXml.Project.PropertyGroup.InformationalVersion | Where-Object
 
 if(-not $verNode) { Write-Fail "No Version in csproj" }
 $Version = "$verNode"
-$InformationalVersion = if($infoVerNode) { "$infoVerNode" } else { $Version }
-$Tag = if($Tag) { $Tag } else { "v$InformationalVersion" }
+if($infoVerNode) { $InformationalVersion = "$infoVerNode" } else { $InformationalVersion = $Version }
+if($Tag) { $ReleaseTag = $Tag } else { $ReleaseTag = "v$InformationalVersion" }
 
 Write-Ok "Version: $Version"
 Write-Ok "InformationalVersion: $InformationalVersion"
-Write-Ok "Release Tag: $Tag"
+Write-Ok "Release Tag: $ReleaseTag"
 
 # ============ Prepare Dirs ============
 Write-Step "Clean and create publish dir"
@@ -77,8 +77,9 @@ $apkPath = $null
 if(-not $SkipAndroid) {
     Write-Step "Build Android APK"
     dotnet publish $AndroidCsproj -c Release -r android-arm64 -p:AndroidPackageFormat=apk 2>&1 | Out-Null
-    if($LASTEXITCODE -ne 0) { Write-Warn "Android APK build failed, skip" }
-    else {
+    if($LASTEXITCODE -ne 0) {
+        Write-Warn "Android APK build failed, skip"
+    } else {
         $apkSrc = Get-ChildItem "$ProjectRoot\PvZWSTools_Avalonia\bin\Release\net10.0-android\android-arm64\publish" -Filter "*Signed.apk" -ErrorAction SilentlyContinue | Select-Object -First 1
         if($apkSrc) {
             $apkPath = Join-Path $PublishDir "PvZWSTools_android.apk"
@@ -97,20 +98,23 @@ $setupExe = $null
 if(-not $SkipSetup) {
     Write-Step "Compile Inno Setup"
     $iscc = "D:\InnoSetup\Inno Setup 6\ISCC.exe"
-    # 直接列 ms 目录下所有 ISS，找名字包含 "PvZWSTools" 的（避开 Filter 的中文编码问题）
     $allIss = Get-ChildItem "D:\InnoSetup\Inno Setup 6\ms\*.iss"
     $iss = $allIss | Where-Object { $_.Name -match "^PvZWSTools" } | Select-Object -First 1 -ExpandProperty FullName
+    
     if(-not $iss) {
         Write-Warn "PvZWSTools ISS not found. All ISS files:"
         $allIss | ForEach-Object { Write-Warn "  $($_.Name)" }
     }
     
-    if(-not (Test-Path $iscc)) { Write-Warn "ISCC not found: $iscc" }
-    elseif(-not (Test-Path $iss)) { Write-Warn "ISS not found: $iss" }
-    else {
+    if(-not (Test-Path $iscc)) {
+        Write-Warn "ISCC not found: $iscc"
+    } elseif(-not $iss -or -not (Test-Path $iss)) {
+        Write-Warn "ISS not found"
+    } else {
         & $iscc $iss "/DMyAppVersion=$InformationalVersion" "/DSourcePath=$PublishDir\win-self-contained" 2>&1 | Out-Null
-        if($LASTEXITCODE -ne 0) { Write-Warn "Inno Setup compile failed, skip" }
-        else {
+        if($LASTEXITCODE -ne 0) {
+            Write-Warn "Inno Setup compile failed, skip"
+        } else {
             $setupDir = Split-Path $iss
             $setupOutput = Join-Path $setupDir "Output"
             $setupSrc = Get-ChildItem $setupOutput -Filter "*.exe" | Select-Object -First 1
@@ -143,13 +147,13 @@ foreach($f in $allFiles) {
 
 # ============ Upload ============
 if($Upload) {
-    $token = if($GithubToken) { $GithubToken } else { $env:GITHUB_TOKEN }
+    $token = $GithubToken
+    if(-not $token) { $token = $env:GITHUB_TOKEN }
     
-    # 如果没 token，交互式输入（并可选保存到用户环境变量）
     if(-not $token) {
         Write-Warn "GITHUB_TOKEN not found."
-        $token = Read-Host "Enter your GitHub Personal Access Token" -AsSecureString
-        $token = [System.Net.NetworkCredential]::new("", $token).Password
+        $secureToken = Read-Host "Enter your GitHub Personal Access Token" -AsSecureString
+        $token = [System.Net.NetworkCredential]::new("", $secureToken).Password
         
         if(-not $token) { Write-Fail "No token provided, abort upload." }
         
@@ -157,34 +161,37 @@ if($Upload) {
         $save = Read-Host
         if($save -match "^[Yy]") {
             [Environment]::SetEnvironmentVariable("GITHUB_TOKEN", $token, "User")
-            $env:GITHUB_TOKEN = $token  # 当前进程也用上
+            $env:GITHUB_TOKEN = $token
             Write-Ok "Saved to user env var. Will be auto-loaded next time."
         }
     }
     
-    Write-Step "Upload to GitHub Release: $Tag"
+    Write-Step "Upload to GitHub Release: $ReleaseTag"
     $headers = @{ "Authorization" = "token $token" }
+    $releaseId = $null
+    $releaseUrl = ""
     
     try {
-        $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/tags/$Tag" -Headers $headers
+        $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/tags/$ReleaseTag" -Headers $headers
         Write-Ok "Release exists: $($release.html_url)"
         $releaseId = $release.id
+        $releaseUrl = $release.html_url
         foreach($a in $release.assets) {
             Write-Warn "Remove old asset: $($a.name)"
             Invoke-RestMethod -Uri $a.url -Method Delete -Headers $headers | Out-Null
         }
-    }
-    catch {
+    } catch {
         Write-Ok "Creating new Release..."
         $body = @{
-            tag_name = $Tag
-            name = "PvZWSTools $Tag"
+            tag_name = $ReleaseTag
+            name = "PvZWSTools $ReleaseTag"
             body = "Release $InformationalVersion"
             draft = $false
             prerelease = $false
         } | ConvertTo-Json
         $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases" -Method Post -Headers $headers -Body $body -ContentType "application/json"
         $releaseId = $release.id
+        $releaseUrl = $release.html_url
     }
     
     $mimeMap = @{
@@ -196,7 +203,11 @@ if($Upload) {
     foreach($f in $allFiles) {
         $name = [System.IO.Path]::GetFileName($f)
         $ext = [System.IO.Path]::GetExtension($f).ToLower()
-        $mime = if($mimeMap.ContainsKey($ext)) { $mimeMap[$ext] } else { "application/octet-stream" }
+        if($mimeMap.ContainsKey($ext)) {
+            $mime = $mimeMap[$ext]
+        } else {
+            $mime = "application/octet-stream"
+        }
         $sizeMB = [math]::Round((Get-Item $f).Length/1MB, 1)
         
         Write-Host "    Uploading $name ($sizeMB MB)..." -NoNewline
@@ -206,7 +217,7 @@ if($Upload) {
         Write-Host " OK" -ForegroundColor Green
     }
     
-    Write-Ok "Release URL: $($release.html_url)"
+    Write-Ok "Release URL: $releaseUrl"
 }
 
 # ============ Done ============
