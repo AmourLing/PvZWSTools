@@ -21,6 +21,8 @@ pyrightconfig.json
 .vscode
 global.json
 *.keystore
+build-release.cmd
+build-release.ps1
 
 # 临时/本地项目，不提交
 .git_backup_*/
