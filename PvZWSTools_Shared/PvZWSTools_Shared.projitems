@@ -31,6 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\NameOption.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ScriptParameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UpdateInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadProgress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ConnectionService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IConnectionService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\IDialogService.cs" />

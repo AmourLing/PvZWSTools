@@ -37,14 +37,35 @@ public class Sharedstring
     public const string GiteeRepo = "PvZWSTools";
 
     /// <summary>
-    /// GitHub Release 资产命名约定：Windows 包
+    /// 百度网盘更新包下载链接（硬编码，不常换）
+    /// </summary>
+    public const string BaiduNetdiskUrl = "https://pan.baidu.com/s/1UibnjHtCUx6ygEJpO3jbpQ";
+
+    /// <summary>
+    /// 百度网盘提取码（4 位）
+    /// </summary>
+    public const string BaiduNetdiskCode = "LING";
+
+    /// <summary>
+    /// GitHub Release 资产命名约定：Windows 包（self-contained，含运行时，~60MB）
     /// </summary>
     public const string AssetNameWindows = "PvZWSTools-win.zip";
+
+    /// <summary>
+    /// GitHub Release 资产命名约定：Windows framework-dependent 小包（不含运行时，几MB）
+    /// 当用户机器已安装 .NET 10 Desktop Runtime 时优先下载这个
+    /// </summary>
+    public const string AssetNameWindowsFwDepend = "PvZWSTools-win-fwdep.zip";
 
     /// <summary>
     /// GitHub Release 资产命名约定：Android APK
     /// </summary>
     public const string AssetNameAndroid = "PvZWSTools-android.apk";
+
+    /// <summary>
+    /// 目标 .NET Desktop Runtime 主版本（用于运行时检测）
+    /// </summary>
+    public const string TargetNetRuntimeMajor = "10";
 
     /// <summary>
     /// 花园编辑

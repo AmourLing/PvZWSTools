@@ -472,8 +472,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     // --- 自动更新逻辑 ---
 
     /// <summary>
-    /// 检查更新：调 GitHub/Gitee Release → 比较 versionName → 弹窗询问 → 下载 → 调起系统安装器。
-    /// <paramref name="isManual"/>=true 时无论是否开启"启动时自动检查更新"都会执行。
+    /// 检查更新：调 GitHub/Gitee Release → 比较版本号 → 弹出更新对话框（带渠道选择）。
     /// </summary>
     private async Task CheckForUpdatesAsync(bool isManual)
     {
@@ -499,28 +498,155 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             if(isManual)
             {
                 RunOnUiThread(() =>
-                    Toast.MakeText(this, $"当前已是最新版本（v{_updateService.CurrentVersion}）", ToastLength.Short).Show());
+                    Toast.MakeText(this, $"当前已是最新版本（{info.TagName}）", ToastLength.Short).Show());
             }
             return;
         }
 
-        // 弹窗询问用户是否下载
-        bool accept = await ShowUpdateConfirmDialogAsync(info);
-        if(!accept) return;
+        // 弹出带渠道选择的更新对话框
+        var choice = await ShowUpdateDialogAsync(info);
+        if(choice == UpdateSource.None) return;
 
+        // 百度网盘：打开浏览器跳转
+        if(choice == UpdateSource.Baidu)
+        {
+            OpenBaiduNetdisk(info);
+            return;
+        }
+
+        // GitHub/Gitee：根据选择调整下载优先级
+        if(choice == UpdateSource.Gitee && !string.IsNullOrEmpty(info.DownloadUrlFallback))
+        {
+            var githubUrl = info.DownloadUrl;
+            info.DownloadUrl = info.DownloadUrlFallback;
+            info.DownloadUrlFallback = githubUrl;
+            info.Source = "gitee";
+        }
+        else
+        {
+            info.Source = "github";
+        }
+
+        await DownloadAndInstallAsync(info);
+    }
+
+    private enum UpdateSource { None, Github, Gitee, Baidu }
+
+    /// <summary>
+    /// 显示带渠道选择的更新对话框。返回用户选择的渠道（None=取消）。
+    /// </summary>
+    private Task<UpdateSource> ShowUpdateDialogAsync(UpdateInfo info)
+    {
+        var tcs = new TaskCompletionSource<UpdateSource>();
+        RunOnUiThread(() =>
+        {
+            var dialogView = LayoutInflater.From(this)!.Inflate(Resource.Layout.update_dialog, null);
+
+            // 填充版本信息
+            var currentVerText = dialogView.FindViewById<TextView>(Resource.Id.current_version_text)!;
+            currentVerText.Text = _updateService!.CurrentVersionDisplay;
+
+            var newTagText = dialogView.FindViewById<TextView>(Resource.Id.new_version_tag)!;
+            newTagText.Text = info.TagName;
+
+            var sizeText = dialogView.FindViewById<TextView>(Resource.Id.new_version_size)!;
+            sizeText.Text = info.Size.HasValue ? $"（{info.Size.Value / 1048576.0:F1} MB）" : "";
+
+            var notesText = dialogView.FindViewById<TextView>(Resource.Id.release_notes)!;
+            notesText.Text = string.IsNullOrWhiteSpace(info.ReleaseNotes) ? "暂无更新说明" : info.ReleaseNotes;
+
+            // 渠道可用性
+            bool hasGithub = !string.IsNullOrEmpty(info.DownloadUrl);
+            bool hasGitee = !string.IsNullOrEmpty(info.DownloadUrlFallback);
+            bool hasBaidu = !string.IsNullOrEmpty(info.DownloadUrlBaidu);
+
+            var radioGithub = dialogView.FindViewById<RadioButton>(Resource.Id.radio_github)!;
+            var radioGitee = dialogView.FindViewById<RadioButton>(Resource.Id.radio_gitee)!;
+            var radioBaidu = dialogView.FindViewById<RadioButton>(Resource.Id.radio_baidu)!;
+
+            radioGithub.Enabled = hasGithub;
+            radioGitee.Enabled = hasGitee;
+            radioBaidu.Enabled = hasBaidu;
+
+            // 默认选有可用的渠道（优先 GitHub → Gitee → 百度网盘）
+            if(hasGithub) radioGithub.Checked = true;
+            else if(hasGitee) radioGitee.Checked = true;
+            else if(hasBaidu) radioBaidu.Checked = true;
+
+            var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
+                .SetTitle("检查更新")
+                .SetView(dialogView)
+                .SetCancelable(true)
+                .SetPositiveButton("下载并更新", (_, _) =>
+                {
+                    UpdateSource choice = UpdateSource.None;
+                    if(radioGithub.Checked && hasGithub) choice = UpdateSource.Github;
+                    else if(radioGitee.Checked && hasGitee) choice = UpdateSource.Gitee;
+                    else if(radioBaidu.Checked && hasBaidu) choice = UpdateSource.Baidu;
+                    tcs.TrySetResult(choice);
+                })
+                .SetNegativeButton("取消", (_, _) => tcs.TrySetResult(UpdateSource.None))
+                .Create();
+
+            dialog.Show();
+        });
+        return tcs.Task;
+    }
+
+    /// <summary>
+    /// 打开百度网盘链接（调起浏览器或百度网盘 App）。
+    /// </summary>
+    private void OpenBaiduNetdisk(UpdateInfo info)
+    {
+        if(string.IsNullOrEmpty(info.DownloadUrlBaidu)) return;
+
+        string codeText = !string.IsNullOrEmpty(info.BaiduExtractCode)
+            ? $"提取码：{info.BaiduExtractCode}\n\n"
+            : "";
+
+        RunOnUiThread(() =>
+        {
+            var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
+                .SetTitle("打开百度网盘")
+                .SetMessage($"{codeText}即将打开浏览器，请手动下载 APK 后安装。\n\n下载完成后，关闭本程序，安装新 APK 即可。")
+                .SetPositiveButton("打开浏览器", (_, _) =>
+                {
+                    try
+                    {
+                        var intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(info.DownloadUrlBaidu));
+                        StartActivity(intent);
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.Error("打开百度网盘失败", ex);
+                        Toast.MakeText(this, "无法打开浏览器，请手动复制链接", ToastLength.Long).Show();
+                    }
+                })
+                .SetNegativeButton("取消", (_, _) => { });
+            builder.Create().Show();
+        });
+    }
+
+    /// <summary>
+    /// 下载并安装 APK（GitHub / Gitee 渠道）。
+    /// </summary>
+    private async Task DownloadAndInstallAsync(UpdateInfo info)
+    {
         // 显示下载进度对话框
-        var progress = new Progress<int>(p =>
+        var progress = new Progress<PvZWSTools_Shared.Models.DownloadProgress>(p =>
         {
             RunOnUiThread(() =>
             {
                 if(_extractDialog != null && _extractDialog.IsShowing)
                 {
-                    _extractDialog.SetMessage($"正在下载更新包 {p}%...");
+                    int pct = p.Percentage ?? 0;
+                    string speedText = p.BytesPerSecond.HasValue ? $"（{FormatSpeed(p.BytesPerSecond.Value)}）" : "";
+                    string totalText = p.TotalBytes.HasValue ? $" / {p.TotalBytes.Value / 1048576.0:F1} MB" : "";
+                    _extractDialog.SetMessage($"正在下载更新包 {pct}%{totalText}{speedText}...");
                 }
             });
         });
 
-        // 复用 _extractDialog 显示下载进度
         RunOnUiThread(() =>
         {
             var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
@@ -536,7 +662,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         string? downloaded = null;
         try
         {
-            downloaded = await _updateService.DownloadUpdateAsync(info, progress);
+            downloaded = await _updateService!.DownloadUpdateAsync(info, progress);
         }
         catch(Exception ex)
         {
@@ -561,25 +687,6 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 Toast.MakeText(this, "应用更新失败，请前往发布页手动下载", ToastLength.Long).Show());
         }
         // 应用成功时系统安装器已弹起
-    }
-
-    private Task<bool> ShowUpdateConfirmDialogAsync(UpdateInfo info)
-    {
-        var tcs = new TaskCompletionSource<bool>();
-        RunOnUiThread(() =>
-        {
-            var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-            builder.SetTitle($"发现新版本 {info.TagName}");
-            string msg = string.IsNullOrWhiteSpace(info.ReleaseNotes)
-                ? "是否立即下载并更新？"
-                : $"{info.ReleaseNotes}\n\n是否立即下载并更新？";
-            builder.SetMessage(msg);
-            builder.SetPositiveButton("下载并更新", (s, e) => tcs.TrySetResult(true));
-            builder.SetNegativeButton("取消", (s, e) => tcs.TrySetResult(false));
-            builder.SetCancelable(false);
-            builder.Create().Show();
-        });
-        return tcs.Task;
     }
 
     private void ShowSettingsDialog()
@@ -665,5 +772,14 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         checkBox.SetTextSize(Android.Util.ComplexUnitType.Sp, 16);
         checkBox.SetPadding(0, 0, 0, bottomPadding);
         return checkBox;
+    }
+
+    private static string FormatSpeed(double bytesPerSecond)
+    {
+        if(bytesPerSecond >= 1048576)
+            return $"{bytesPerSecond / 1048576.0:F1} MB/s";
+        if(bytesPerSecond >= 1024)
+            return $"{bytesPerSecond / 1024.0:F1} KB/s";
+        return $"{bytesPerSecond} B/s";
     }
 }
