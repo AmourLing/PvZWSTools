@@ -5,26 +5,26 @@ from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
 
-#---如果需要修改配方，请修改下方的FusionRecipe--------
+# ---如果需要修改配方，请修改下方的FusionRecipe--------
 FusionRecipe = [
     {
-        "base1": 0,  #or  SeedType.Peashooter
+        "base1": 0,  # or  SeedType.Peashooter
         "base2": SeedType.Repeater,
-        "update": SeedType.Splitpea
+        "update": SeedType.Splitpea,
     },
     # 可继续追加
 ]
-#---如果只需要修改配方，不必继续往下翻--------
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
-#---我是占位符---
+# ---如果只需要修改配方，不必继续往下翻--------
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
+# ---我是占位符---
 _recipe_pairs = []
 
 def _ensure_seedtype(value):

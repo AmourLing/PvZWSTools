@@ -14,10 +14,10 @@ namespace PvZWSTools_Shared.Services;
 /// 自动更新服务基类：实现 HTTP 检查 + 下载的跨平台共用逻辑。
 /// <see cref="ApplyUpdateAsync"/> 由各平台子类实现。
 /// </summary>
-public abstract class UpdateService : IUpdateService
+public abstract class UpdateService:IUpdateService
 {
     private const string GITHUB_API = "https://api.github.com/repos/{0}/{1}/releases?per_page=50";
-    private const string GITEE_API   = "https://gitee.com/api/v5/repos/{0}/{1}/releases?per_page=50";
+    private const string GITEE_API = "https://gitee.com/api/v5/repos/{0}/{1}/releases?per_page=50";
 
     private static readonly HttpClient _httpClient = new(new HttpClientHandler
     {

@@ -8,7 +8,7 @@ from Lawn import *
 from LawnMod import MonoModUtils as M
 
 @M.HookTo(Plant.UpdateChomper)
-def Plant_UpdateChomper(orig,self):
+def Plant_UpdateChomper_No_CD(orig,self):
     if CHOMPER_CD_CHECK:
         if self.mState==PlantState.ChomperDigesting:
             if self.mStateCountdown>0:

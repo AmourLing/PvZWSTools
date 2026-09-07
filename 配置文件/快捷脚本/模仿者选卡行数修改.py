@@ -24,7 +24,6 @@ def SeedPacketsWidget_MouseUp(orig,self,x,y,theClickCount):
     self.mHeight = Constants.SMALL_SEEDPACKET_HEIGHT * self.mRows + (self.mRows - 1) * Constants.SEED_PACKET_VERT_GAP + Constants.SMALL_SEEDPACKET_HEIGHT // 4
     orig(self,x,y,theClickCount)
 
-
 '''@M.HookTo(ScrollWidget.Resize)
 def ScrollWidget_Resize(orig,self,x,y,width,height):
     orig(self,x,y,width,height)'''

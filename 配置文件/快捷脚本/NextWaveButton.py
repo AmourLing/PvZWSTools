@@ -23,8 +23,8 @@ def get_button_state(board):
         menu_y = Constants.UIMenuButtonPosition.Y
         button_height = AtlasResources.IMAGE_BUTTON_LEFT.mHeight
         button_width = 45
-        state.rect.mX = menu_x - 400 
-        state.rect.mY = menu_y 
+        state.rect.mX = menu_x - 400
+        state.rect.mY = menu_y
         state.rect.mWidth = button_width
         state.rect.mHeight = button_height
         _button_states[board] = state
@@ -33,29 +33,29 @@ def get_button_state(board):
 @M.HookTo(Board.DrawTopRightUI)
 def Board_DrawTopRightUI(orig, self, g, theDrawElements):
     orig(self, g, theDrawElements)
-    
+
     if self.mApp.mGameScene != GameScenes.Playing:
         return
-    
+
     state = get_button_state(self)
     if not state.enabled:
         return
-    
+
     is_down = state.is_down and state.is_over
     is_highlight = state.is_over and not state.is_down
     label = ">>>"
-    font = Sexy.Resources.FONT_DWARVENTODCRAFT15 
+    font = Sexy.Resources.FONT_DWARVENTODCRAFT15
     GameButton.DrawStoneButton(g, state.rect.mX, state.rect.mY,
                                state.rect.mWidth, state.rect.mHeight,
                                is_down, is_highlight, label, font, 1.0, False)
-    
+
     cd = self.mZombieCountDown
     if cd > 0:
         small_font = Sexy.Resources.FONT_DWARVENTODCRAFT12
         text = str(cd)
         text_width = small_font.StringWidth(text)
         text_x = state.rect.mX + (state.rect.mWidth - text_width) // 2
-        text_y = state.rect.mY + state.rect.mHeight + 2  
+        text_y = state.rect.mY + state.rect.mHeight + 2
         g.SetFont(small_font)
         g.SetColor(SexyColor.White)
         g.DrawString(text, text_x, text_y + small_font.GetAscent())
@@ -94,7 +94,6 @@ def NextZombieWave(self):
     self.mRiseFromGraveCounter = 10
 
     self.mZombieCountDown = 10
-
 
 @M.HookTo(Board.MouseMove)
 def Board_MouseMove(orig, self, x, y):

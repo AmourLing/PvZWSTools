@@ -18,6 +18,9 @@ public class PlantsViewModel:ViewModelBase
         ["POTATO_CD_CHECK"] = nameof(CD_Potato),
         ["SUNSHROOM_CD_CHECK"] = nameof(CD_Sunshroom),
         ["COBCD_CHECK"] = nameof(CD_Cob),
+        ["SUPER_CHOMPER_CD_CHECK"] = nameof(CD_SuperChomper),
+        ["AGAVE_NO_CD_AND_COST_CHECK"] = nameof(CD_Agave),
+        ["ENDO_NO_CD_AND_COST_CHECK"] = nameof(CD_Endo),
         ["WAKEUP_CHECK"] = nameof(WakeUp),
         ["INVINCPLANT_CHECK"] = nameof(InvincPlant),
         ["DRAW_PLANT_HP_CHECK"] = nameof(DrawPlantHP),
@@ -31,7 +34,15 @@ public class PlantsViewModel:ViewModelBase
     private string _CD_chomper = Constants.c_Symbol_Off;
 
     private string _CD_chomper_Name = "大嘴花准备时间";
+    private string _CD_superchomper = Constants.c_Symbol_Off;
 
+    private string _CD_superchomper_Name = "超级大嘴花准备时间";
+    private string _CD_agave = Constants.c_Symbol_Off;
+
+    private string _CD_agave_Name = "龙舌兰大招";
+    private string _CD_endo = Constants.c_Symbol_Off;
+
+    private string _CD_endo_Name = "火红莲大招";
     private string _CD_cob = Constants.c_Symbol_Off;
 
     private string _CD_cob_Name = "玉米炮准备时间";
@@ -87,10 +98,12 @@ public class PlantsViewModel:ViewModelBase
         get => _draw_statecountdown;
         set => SetProperty(ref _draw_statecountdown, value);
     }
+
     public ICommand DrawStateCountdownCommand
     {
         get => CreateToggleCommand(() => DrawStateCountdown, v => DrawStateCountdown = v, _draw_statecountdown_Name);
     }
+
     public PlantsViewModel(IScriptExecutionService scriptExec, IMessageProcessor messageProcessor)
     {
         _scriptExec = scriptExec;
@@ -106,8 +119,35 @@ public class PlantsViewModel:ViewModelBase
         set => SetProperty(ref _CD_chomper, value);
     }
 
+    public string CD_SuperChomper
+    {
+        get => _CD_superchomper;
+        set => SetProperty(ref _CD_superchomper, value);
+    }
+
+    public string CD_Agave
+    {
+        get => _CD_agave;
+        set => SetProperty(ref _CD_agave, value);
+    }
+
+    public string CD_Endo
+    {
+        get => _CD_endo;
+        set => SetProperty(ref _CD_endo, value);
+    }
+
     public ICommand CD_ChomperCommand =>
         CreateToggleCommand(() => CD_Chomper, v => CD_Chomper = v, _CD_chomper_Name);
+
+    public ICommand CD_SuperChomperCommand =>
+    CreateToggleCommand(() => CD_SuperChomper, v => CD_SuperChomper = v, _CD_superchomper_Name);
+
+    public ICommand CD_AgaveCommand =>
+    CreateToggleCommand(() => CD_Agave, v => CD_Agave = v, _CD_agave_Name);
+
+    public ICommand CD_EndoCommand =>
+    CreateToggleCommand(() => CD_Endo, v => CD_Endo = v, _CD_endo_Name);
 
     public string CD_Cob
     {

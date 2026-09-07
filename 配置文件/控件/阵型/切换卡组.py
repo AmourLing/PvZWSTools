@@ -1,6 +1,7 @@
-#切换卡组
+# 切换卡组
 
 import clr
+
 clr.AddReference("System")
 clr.AddReference("Newtonsoft.Json")
 
@@ -36,8 +37,8 @@ def load_seedpackets_from_json(json_data):
 
         # 确保是 JArray
         if not isinstance(seed_packets_token, JArray):
-             LOG("seedPackets is not an array", 1003)
-             return
+            LOG("seedPackets is not an array", 1003)
+            return
 
         spn = 0
         max_slots = board.mSeedBank.mSeedPackets.Count
@@ -55,7 +56,9 @@ def load_seedpackets_from_json(json_data):
                 it = int(it_token.ToString()) if it_token else 0
 
                 # 设置卡槽
-                board.mSeedBank.mSeedPackets[spn].SetPacketType(SeedType(pt), SeedType(it))
+                board.mSeedBank.mSeedPackets[spn].SetPacketType(
+                    SeedType(pt), SeedType(it)
+                )
                 spn += 1
             except Exception as e:
                 LOG(e, 2005)

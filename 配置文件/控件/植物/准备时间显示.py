@@ -1,6 +1,6 @@
 #准备时间显示
 #绘制植物的mStateCountdown的剩余时间，单位为秒，保留一位小数
-#2026.09.02
+#2026.09.07
 
 DRAW_PLANT_STATECOUNTDOWN_CHECK = {CHECK}
 
@@ -14,7 +14,8 @@ Can_Draw_StateCountdown_List = [SeedType.Potatomine,
                                SeedType.Chomper,
                                SeedType.Sunshroom,
                                SeedType.Magnetshroom,
-                               SeedType.Cobcannon]
+                               SeedType.Cobcannon,
+                               SeedType.SuperChomper]
 
 @M.HookTo(Plant.Draw)
 def Plant_Draw_StateCountdown(orig,self,g):

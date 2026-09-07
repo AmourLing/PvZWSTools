@@ -30,6 +30,9 @@ public class PlantFragment:BaseFragment
         [Resource.String.plant_strings_11_1_key] = "开关1",
         [Resource.String.plant_strings_12_1_key] = "开关1",
         [Resource.String.plant_strings_13_1_key] = "开关1",
+        [Resource.String.plant_strings_14_1_key] = "开关1",
+        [Resource.String.plant_strings_15_1_key] = "开关1",
+        [Resource.String.plant_strings_16_1_key] = "开关1",
     };
 
     protected override void InitializeMap()
@@ -47,6 +50,10 @@ public class PlantFragment:BaseFragment
         Map[GetString(Resource.String.plant_strings_11_1_key)] = GetString(Resource.String.plant_strings_11_1_value);
         Map[GetString(Resource.String.plant_strings_12_1_key)] = GetString(Resource.String.plant_strings_12_1_value);
         Map[GetString(Resource.String.plant_strings_13_1_key)] = GetString(Resource.String.plant_strings_13_1_value);
+        Map[GetString(Resource.String.plant_strings_14_1_key)] = GetString(Resource.String.plant_strings_14_1_value);
+        Map[GetString(Resource.String.plant_strings_15_1_key)] = GetString(Resource.String.plant_strings_15_1_value);
+        Map[GetString(Resource.String.plant_strings_16_1_key)] = GetString(Resource.String.plant_strings_16_1_value);
+
     }
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -99,6 +106,9 @@ public class PlantFragment:BaseFragment
         Done(Resource.Id.button11, Resource.String.plant_strings_11_1_key, Resource.String.plant_strings_11);
         Done(Resource.Id.button12, Resource.String.plant_strings_12_1_key, Resource.String.plant_strings_12);
         Done(Resource.Id.button13, Resource.String.plant_strings_13_1_key, Resource.String.plant_strings_13);
+        Done(Resource.Id.button14, Resource.String.plant_strings_14_1_key, Resource.String.plant_strings_14);
+        Done(Resource.Id.button15, Resource.String.plant_strings_15_1_key, Resource.String.plant_strings_15);
+        Done(Resource.Id.button16, Resource.String.plant_strings_16_1_key, Resource.String.plant_strings_16);
         return view;
     }
 }

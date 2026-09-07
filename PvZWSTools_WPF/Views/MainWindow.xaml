@@ -2,11 +2,11 @@
     x:Class="PvZWSTools_WPF.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:PvZWSTools_WPF.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:PvZWSTools_Shared.Models"
     xmlns:viewModels="clr-namespace:PvZWSTools_Shared.ViewModels"
-    xmlns:converters="clr-namespace:PvZWSTools_WPF.Converters"
     Title="PvZWSTools_Windows"
     Width="{Binding CurrentWidth, Mode=TwoWay}"
     Height="600"
@@ -964,16 +964,16 @@
 
                                 <!--  磁菇准备时间  -->
                                 <TextBox
-                                    Grid.Row="3"
-                                    Grid.Column="0"
+                                    Grid.Row="2"
+                                    Grid.Column="9"
                                     Width="30"
                                     Height="25"
                                     FontSize="16"
                                     IsReadOnly="True"
                                     Text="{Binding CD_Magnet}" />
                                 <Button
-                                    Grid.Row="3"
-                                    Grid.Column="1"
+                                    Grid.Row="2"
+                                    Grid.Column="10"
                                     Width="90"
                                     Height="25"
                                     Command="{Binding CD_MagnetCommand}"
@@ -982,7 +982,7 @@
                                 <!--  炮准备时间  -->
                                 <TextBox
                                     Grid.Row="3"
-                                    Grid.Column="3"
+                                    Grid.Column="0"
                                     Width="30"
                                     Height="25"
                                     FontSize="16"
@@ -990,12 +990,59 @@
                                     Text="{Binding CD_Cob}" />
                                 <Button
                                     Grid.Row="3"
-                                    Grid.Column="4"
+                                    Grid.Column="1"
                                     Width="90"
                                     Height="25"
                                     Command="{Binding CD_CobCommand}"
                                     Content="炮准备时间" />
-
+                                <!--  超嘴准备时间  -->
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_SuperChomper}" />
+                                <Button
+                                    Grid.Row="3"
+                                    Grid.Column="4"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_SuperChomperCommand}"
+                                    Content="超嘴准备时间" />
+                                <!--  龙舌兰大招  -->
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="6"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Agave}" />
+                                <Button
+                                    Grid.Row="3"
+                                    Grid.Column="7"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_AgaveCommand}"
+                                    Content="龙舌兰大招" />
+                                <!--  火红莲大招  -->
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="9"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Endo}" />
+                                <Button
+                                    Grid.Row="3"
+                                    Grid.Column="10"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding CD_EndoCommand}"
+                                    Content="火红莲大招" />
                                 <!--  其他准备时间  -->
                                 <Grid
                                     Grid.Row="4"
@@ -4932,10 +4979,10 @@
                             Grid.Row="1"
                             Height="16"
                             Margin="8,4,8,0"
-                            Minimum="0"
+                            IsIndeterminate="{Binding UpdateProgress, Mode=OneWay, Converter={StaticResource ZeroToBoolConverter}}"
                             Maximum="100"
-                            Value="{Binding UpdateProgress, Mode=OneWay}"
-                            IsIndeterminate="{Binding UpdateProgress, Mode=OneWay, Converter={StaticResource ZeroToBoolConverter}}" />
+                            Minimum="0"
+                            Value="{Binding UpdateProgress, Mode=OneWay}" />
                         <StackPanel
                             Grid.Row="2"
                             Margin="8,2,8,0"

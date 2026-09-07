@@ -17,6 +17,7 @@ public class SettingItem:ViewModelBase
     public PropertyInfo Property { get; set; }
 
     private bool _value;
+
     public bool Value
     {
         get => _value;

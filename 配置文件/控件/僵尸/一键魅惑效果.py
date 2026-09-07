@@ -1,5 +1,5 @@
-#一键魅惑效果
-#2026.01.16
+# 一键魅惑效果
+# 2026.01.16
 
 ALLOW_MINDCTRL = {MIND_CHECK}
 LIMIT_ZOMBIE_GET_DEBUFF = {LIMIT_CHECK}
@@ -12,13 +12,13 @@ app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
 BanZombieToMindControl = {
-	ZombieType.Zamboni,
-	ZombieType.Bungee,
-	ZombieType.Catapult,
-	ZombieType.Gargantuar,
-	ZombieType.SquashHead,
-	ZombieType.RobotTitan,
-	ZombieType.RedeyeRobotTitan,
+    ZombieType.Zamboni,
+    ZombieType.Bungee,
+    ZombieType.Catapult,
+    ZombieType.Gargantuar,
+    ZombieType.SquashHead,
+    ZombieType.RobotTitan,
+    ZombieType.RedeyeRobotTitan,
 }
 
 if board is None:
