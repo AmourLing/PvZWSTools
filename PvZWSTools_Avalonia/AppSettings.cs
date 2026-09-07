@@ -20,7 +20,7 @@ public class AppSettings
     public bool AllowAutoUpdateButtonStatus { get; set; }  // 允许自动更新按钮状态（切换界面时自动发送脚本刷新按钮开关状态）
 
     [Setting("启动时自动检查更新")]
-    public bool AutoCheckUpdateEnabled { get; set; } = true;  // 启动时自动检查新版本（仅检查并提示，不自动下载）
+    public bool AutoCheckUpdateEnabled { get; set; }  // 启动时自动检查新版本（仅检查并提示，不自动下载）
 
     public string LastWebSocketAddress { get; set; }  // 上次连接成功的WebSocket地址
 

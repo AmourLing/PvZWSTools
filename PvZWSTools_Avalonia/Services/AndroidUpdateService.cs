@@ -12,7 +12,7 @@ namespace PvZWSTools_Avalonia.Services;
 /// 下载 apk 到 external files dir/updates/ → 通过 FileProvider 暴露 content URI →
 /// 触发系统 APK 安装器（由用户在系统安装界面确认）。
 /// </summary>
-public class AndroidUpdateService : UpdateService
+public class AndroidUpdateService:UpdateService
 {
     private const string FileProviderAuthority = "net.pvz.pvzwstools.fileprovider";
     private const string UpdatesSubdir = "updates";

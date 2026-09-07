@@ -17,6 +17,6 @@ def Board_TryToSaveGame(orig,self):
 @M.HookTo(SexyAppBase.EraseFile)
 def SexyAppBase_EraseFile(orig,self,theFileName):
     if BAN_SAVEGAME_CHECK:
-        return False  
+        return False
     else:
         return orig(self,theFileName)

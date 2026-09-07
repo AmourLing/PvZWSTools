@@ -8,6 +8,7 @@ using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 
 namespace PvZWSTools_Shared.ViewModels;
+
 public class MainWindowViewModel:ViewModelBase
 {
     private readonly List<string> _addressList = new List<string>
@@ -41,6 +42,7 @@ public class MainWindowViewModel:ViewModelBase
 
     // ---------- 自动更新进度 UI 状态 ----------
     private bool _isUpdating;
+
     private double _updateProgress;       // 0-100
     private string _updateStatusText = "";
     private string _updateDownloadedMB = "";
@@ -127,7 +129,7 @@ public class MainWindowViewModel:ViewModelBase
     /// </summary>
     public event EventHandler<UpdateInfoEventArgs>? ShowUpdateWindowRequested;
 
-    public class UpdateInfoEventArgs(UpdateInfo info, bool isAuto) : EventArgs
+    public class UpdateInfoEventArgs(UpdateInfo info, bool isAuto):EventArgs
     {
         public UpdateInfo Info { get; } = info;
         public bool IsAuto { get; } = isAuto;

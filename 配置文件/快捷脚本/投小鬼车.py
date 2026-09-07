@@ -26,13 +26,13 @@ def Zombie_ZombieCatapultFire(orig, self, thePlant):
     aZombieImp.mVariant = False
     aZombieImp.mRenderOrder = self.mRenderOrder + 1
     aZombieImp.mZombiePhase = ZombiePhase.ImpGettingThrown
-    aZombieImp.mAltitude = 88.0 
+    aZombieImp.mAltitude = 88.0
 
     vx = 3.0
     aZombieImp.mVelX = vx
 
     t = distance / abs(vx)
-    g = GameConstants.THOWN_ZOMBIE_GRAVITY 
+    g = GameConstants.THOWN_ZOMBIE_GRAVITY
 
     vy = 0.5 * g * t - aZombieImp.mAltitude / t
     aZombieImp.mVelZ = vy

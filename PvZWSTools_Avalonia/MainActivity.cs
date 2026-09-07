@@ -41,6 +41,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
     // 自动重连相关
     private Timer _reconnectTimer;
+
     private readonly object _reconnectLock = new object();
 
     private DateTime _lastReconnectAttempt = DateTime.MinValue;

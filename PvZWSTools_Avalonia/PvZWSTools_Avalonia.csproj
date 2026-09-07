@@ -1,8 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CleanManifestBom">
 
     <PropertyGroup>
-        <Version>2026.9.2.1</Version>
-        <InformationalVersion>2026.09.02-fix1</InformationalVersion>
+        <Version>2026.9.7.0</Version>
+        <InformationalVersion>2026.09.07</InformationalVersion>
+        <AndroidKeyStore>true</AndroidKeyStore>
+        <AndroidSigningKeyStore>PvZWSTools.keystore</AndroidSigningKeyStore>
+        <AndroidSigningKeyAlias>PvZWSTools</AndroidSigningKeyAlias>
+        <AndroidSigningStorePass>env:ANDROID_STORE_PASS</AndroidSigningStorePass>
+        <AndroidSigningKeyPass>env:ANDROID_KEY_PASS</AndroidSigningKeyPass>
         <TargetFramework>net10.0-android</TargetFramework>
         <OutputType>Exe</OutputType>
         <Nullable>enable</Nullable>
@@ -30,7 +35,6 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
-        <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
         <RunAOTCompilation>false</RunAOTCompilation>
         <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
         <AndroidUseAssemblyStore>true</AndroidUseAssemblyStore>
@@ -41,8 +45,7 @@
         <AndroidAsset Include="Assets\need.zip" />
     </ItemGroup>
 
-    <!-- AndroidManifest.xml 若被工具写入重复 UTF-8 BOM 会导致 XAGAP7000 解析错误，构建前自动清理 -->
-    <Target Name="CleanManifestBom" BeforeTargets="BeforeBuild">
+    <Target Name="CleanManifestBom">
         <Exec Condition="'$(OS)' == 'Windows_NT'" Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;$p = '$(ProjectDir)Properties\AndroidManifest.xml'; if (Test-Path $p) { $b = [System.IO.File]::ReadAllBytes($p); $i = 0; while($i + 2 -lt $b.Length -and $b[$i] -eq 0xEF -and $b[$i+1] -eq 0xBB -and $b[$i+2] -eq 0xBF) { $i += 3 }; if($i -gt 0) { $c = New-Object byte[] ($b.Length - $i); [Array]::Copy($b, $i, $c, 0, $c.Length); [System.IO.File]::WriteAllBytes($p, $c); Write-Host ('Manifest BOM cleaned: ' + $i + ' bytes') } }&quot;" IgnoreExitCode="true" />
     </Target>
 

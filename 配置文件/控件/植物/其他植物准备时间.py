@@ -5,7 +5,7 @@ from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
 
-seed = SeedType({SEEDTYPE})
+seed = SeedType.{SEEDTYPE}
 
 app = GlobalStaticVars.gLawnApp
 board=app.mBoard
@@ -15,7 +15,7 @@ if "PGvZ" in AppVersionNumber:
     try:
         if seed == SeedType.SuperChomper:
             @M.HookTo(Plant.UpdateSuperChomper)
-            def Plant_UpdateSuperChomper(orig,self):
+            def Plant_UpdateSuperChomper_Chomper_No_CD(orig,self):
                 if self.mState==PlantState.ChomperDigesting:
                     if self.mStateCountdown>0:
                         self.mStateCountdown=0
@@ -23,14 +23,14 @@ if "PGvZ" in AppVersionNumber:
             print("超级大嘴花无冷却已开启")
         elif seed == SeedType.Agave:
             @M.HookTo(Board.UpdateGame)
-            def Board_UpdateGame(orig,self):
+            def Board_UpdateGame_Agave_No_CD(orig,self):
                 if self.mAgavePowerfulCountdown>0:
                     self.mAgavePowerfulCountdown=0
                 orig(self)
             print("龙舌兰无冷却已开启")
         elif seed == SeedType.Endoflame:
             @M.HookTo(Board.UpdateGame)
-            def Board_UpdateGame(orig,self):
+            def Board_UpdateGame_ENdo_No_CD(orig,self):
                 if self.mEndoflamePowerfulCountdown>0:
                     self.mEndoflamePowerfulCountdown=0
                 orig(self)

@@ -23,6 +23,10 @@ global.json
 *.keystore
 build-release.cmd
 build-release.ps1
+typings/
+copytypings.bat
+PythonApplication1/
+IronPythonEditor/
 
 # 临时/本地项目，不提交
 .git_backup_*/
@@ -33,3 +37,8 @@ VersionTest/
 publish/
 PvZWSTools_WPF/Output/
 *.exe
+# VS Python 项目本地存根镜像（源在 typings/，同步命令：xcopy /E /Y typings PythonApplication1\typings\）
+PythonApplication1/typings/
+
+# Python 编译缓存
+__pycache__/

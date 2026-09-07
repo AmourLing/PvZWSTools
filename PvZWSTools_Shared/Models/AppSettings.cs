@@ -27,7 +27,7 @@ public class AppSettings
     /// 启动时自动检查新版本（仅检查并提示，不自动下载）。
     /// </summary>
     [Setting("启动时自动检查更新")]
-    public bool AutoCheckUpdateEnabled { get; set; } = true;
+    public bool AutoCheckUpdateEnabled { get; set; }
 
     /// <summary>
     /// 通过反射自动发现所有带 [Setting] 特性的布尔设置项。

@@ -14,6 +14,7 @@ public class WSEvents
         {
             eventtype = "execution";
         }
+
         public ExecutionEventResult statuscode;
         public object result;
         public string errortype;
@@ -25,9 +26,11 @@ public class WSEvents
         {
             eventtype = "output";
         }
+
         public string name;
         public string msg;
     }
+
     public enum ExecutionEventResult
     {
         error = -1,

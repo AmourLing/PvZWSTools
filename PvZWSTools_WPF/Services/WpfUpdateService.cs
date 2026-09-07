@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 using PvZWSTools_Shared;
 using PvZWSTools_Shared.Helpers;
@@ -20,7 +19,7 @@ namespace PvZWSTools_WPF.Services;
 /// - 如果有，优先查 framework-dependent 小包（PvZWSTools-win-fwdep.zip，几MB）
 /// - 如果小包不存在或无 runtime，查 self-contained 大包（PvZWSTools-win.zip，~60MB）
 /// </summary>
-public class WpfUpdateService : UpdateService
+public class WpfUpdateService:UpdateService
 {
     /// <summary>
     /// 检查本机是否已安装指定主版本的 .NET Desktop Runtime。
@@ -80,6 +79,7 @@ public class WpfUpdateService : UpdateService
 
         return await base.CheckForUpdatesAsync(Sharedstring.AssetNameWindows, ct);
     }
+
     /// <inheritdoc />
     public override Version CurrentVersion
     {

@@ -1,6 +1,6 @@
-#自由种植
-#允许自由种植
-#2025.07.05
+# 自由种植
+# 允许自由种植
+# 2025.07.05
 
 FREEPLANT_CHECK = {CHECK}
 
@@ -12,16 +12,19 @@ app = GlobalStaticVars.gLawnApp
 AppVersionNumber = app.AppVersionNumber
 
 if "PGvZ" in AppVersionNumber:
+
     @M.HookTo(Board.CanPlantAt)
-    def Board_CanPlantAt(orig,self,x,y,t,aIsMovePlant):
+    def Board_CanPlantAt(orig, self, x, y, t, aIsMovePlant):
         if FREEPLANT_CHECK:
             return PlantingReason.Ok
         else:
-            return orig(self,x,y,t,aIsMovePlant)
+            return orig(self, x, y, t, aIsMovePlant)
+
 else:
+
     @M.HookTo(Board.CanPlantAt)
-    def Board_CanPlantAt(orig,self,x,y,t):
+    def Board_CanPlantAt(orig, self, x, y, t):
         if FREEPLANT_CHECK:
             return PlantingReason.Ok
         else:
-            return orig(self,x,y,t)
+            return orig(self, x, y, t)

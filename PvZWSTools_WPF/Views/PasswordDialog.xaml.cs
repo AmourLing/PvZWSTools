@@ -1,15 +1,16 @@
 using System.Windows;
 using System.Windows.Input;
-using PvZWSTools_WPF.Helpers;
 using Lock = PvZWSTools_WPF.Helpers.Lock;
 
 namespace PvZWSTools_WPF.Views;
 
-public partial class PasswordDialog : Window
+public partial class PasswordDialog:Window
 {
     public bool IsPasswordCorrect { get; private set; }
+
     /// <summary>用户点击了"检查更新"按钮——允许启动但仅能更新。</summary>
     public bool IsCheckUpdateRequested { get; private set; }
+
     private int _attemptCount;
 
     public PasswordDialog()
