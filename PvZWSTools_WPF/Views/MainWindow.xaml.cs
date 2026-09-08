@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using PvZWSTools_Shared.Helpers;
@@ -33,6 +34,7 @@ public partial class MainWindow:Window
         var connection = new ConnectionService(uiThread);
         string defaultPath = Directory.GetCurrentDirectory();
         var settingsService = new SettingsService(defaultPath);
+        var buttonStateService = new ButtonStateService(defaultPath);
         var messageProcessor = new MessageProcessor();
         var dialogService = new DialogService();
 
@@ -47,7 +49,8 @@ public partial class MainWindow:Window
             messageProcessor,
             uiThread,
             new WpfUserNotifier(),
-            _updateService
+            _updateService,
+            buttonStateService
         );
 
         // 启动后异步检查更新（受 AutoCheckUpdateEnabled 控制）
@@ -62,6 +65,28 @@ public partial class MainWindow:Window
             if(dialog.ShowDialog() == true)
             {
                 _viewModel.ReloadSettingsFromService();
+            }
+        };
+
+        // 用户点击"状态管理"按钮 → 打开 StateWindow（保存/加载多组状态预设）
+        _viewModel.ShowStateManagerRequested += (s, e) =>
+        {
+            try
+            {
+                var win = new StateWindow(
+                    _viewModel.GetCurrentButtonStates,
+                    _viewModel.LoadLastButtonStates,
+                    _viewModel.GetDefaultButtonStates,
+                    states => _viewModel.ApplyButtonStates(states))
+                {
+                    Owner = this
+                };
+                win.ShowDialog();
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"打开状态管理窗口失败: {ex}");
+                MessageBox.Show($"打开状态管理窗口失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         };
 
@@ -133,5 +158,12 @@ public partial class MainWindow:Window
         {
             _isResizing = false;
         }
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        // 窗口关闭时保存按钮状态
+        try { _viewModel.SaveButtonStates(); } catch { }
+        base.OnClosing(e);
     }
 }

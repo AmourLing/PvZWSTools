@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
@@ -285,8 +285,9 @@ public class PlantsViewModel:ViewModelBase
             var current = stateGetter();
             var newState = ButtonHelper.ToggleCheck(current);
             stateSetter(newState);
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Plants, scriptName,
-                new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(newState) });
+            if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Plants, scriptName,
+                new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(newState) }))
+                stateSetter(current);
         });
     }
 

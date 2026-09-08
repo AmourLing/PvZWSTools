@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -190,7 +190,8 @@ public class CreateInputDialog
         Dictionary<string, string> fieldLabels,
         Dictionary<string, string> map,
         Dictionary<string, Dictionary<string, string>> dropdownOptions,
-        Action<string[]> onConfirm)
+        Action<string[]> onConfirm,
+        Dictionary<string, string> defaultOverrides = null)
     {
         var (scrollView, layout) = CreateDialogBody(Activity);
 
@@ -201,9 +202,14 @@ public class CreateInputDialog
         {
             layout.AddView(CreateLabel(Activity, fieldLabel.Key));
 
-            string savedValue = map.ContainsKey(fieldLabel.Key) ?
-                               map[fieldLabel.Key] :
-                               fieldLabel.Value;
+            // 弹框显示默认值：defaultOverrides 优先（开关类固定为"开"），其次为已保存的 Map 值
+            string savedValue;
+            if(defaultOverrides != null && defaultOverrides.ContainsKey(fieldLabel.Key))
+                savedValue = defaultOverrides[fieldLabel.Key];
+            else if(map.ContainsKey(fieldLabel.Key))
+                savedValue = map[fieldLabel.Key];
+            else
+                savedValue = fieldLabel.Value;
 
             if(dropdownOptions != null && dropdownOptions.ContainsKey(fieldLabel.Key))
             {
@@ -339,10 +345,20 @@ public class CreateInputDialog
         Dictionary<string, Dictionary<string, string>> dropdownOptions,
         Action<string[]> onAfterConfirm = null)
     {
+        // 开关类按钮（replaceDict 含 {CHECK} 占位符）：弹框里的开关选项默认选中"开"，
+        // 与主界面按钮状态（Map，默认关）分离——用户点确认即可开启，无需每次手动切换。
+        Dictionary<string, string> defaultOverrides = null;
+        if(replaceDict != null && replaceDict.ContainsKey("{CHECK}"))
+        {
+            defaultOverrides = new Dictionary<string, string>();
+            foreach(var fl in fieldLabels.Keys)
+                defaultOverrides[fl] = "1";
+        }
+
         Opt3(Activity, title, fieldLabels, map, dropdownOptions, values =>
         {
             Done(path, filename, replaceDict, values);
             onAfterConfirm?.Invoke(values);
-        });
+        }, defaultOverrides);
     }
 }

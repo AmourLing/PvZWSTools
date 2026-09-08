@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
@@ -213,9 +213,11 @@ public class BoardViewModel:ViewModelBase
 
     public ICommand BanSaveGameCommand => new RelayCommand(async _ =>
     {
+        var __old = BanSaveGame;
         BanSaveGame = ButtonHelper.ToggleCheck(BanSaveGame);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "禁止存档",
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(BanSaveGame) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "禁止存档",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(BanSaveGame) }))
+            BanSaveGame = __old;
     });
 
     public bool BoardColDropdownToggleIsChecked
@@ -336,9 +338,11 @@ public class BoardViewModel:ViewModelBase
 
     public ICommand FreePlantCommand => new RelayCommand(async _ =>
     {
+        var __old = FreePlant;
         FreePlant = ButtonHelper.ToggleCheck(FreePlant);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "自由种植",
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(FreePlant) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "自由种植",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(FreePlant) }))
+            FreePlant = __old;
     });
 
     public string Imitater

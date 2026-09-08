@@ -13,35 +13,35 @@
 
     <string name="others_strings_1">自动收集</string>
     <string name="others_strings_1_1_key">自动收集{CHECK}</string>
-    <string name="others_strings_1_1_value">1</string>
+    <string name="others_strings_1_1_value">0</string>
 
     <string name="others_strings_2">自动浇水</string>
     <string name="others_strings_2_1_key">自动浇水{CHECK}</string>
-    <string name="others_strings_2_1_value">1</string>
+    <string name="others_strings_2_1_value">0</string>
 
     <string name="others_strings_3">阳光增值</string>
     <string name="others_strings_3_1_key">阳光增值{CHECK}</string>
-    <string name="others_strings_3_1_value">1</string>
+    <string name="others_strings_3_1_value">0</string>
 
-    <string name="others_strings_4">清除浓雾</string>
-    <string name="others_strings_4_1_key">清除浓雾{CHECK}</string>
-    <string name="others_strings_4_1_value">1</string>
+    <string name="others_strings_4">清除迷雾</string>
+    <string name="others_strings_4_1_key">清除迷雾{CHECK}</string>
+    <string name="others_strings_4_1_value">0</string>
 
     <string name="others_strings_5">罐子透视</string>
     <string name="others_strings_5_1_key">罐子透视{CHECK}</string>
-    <string name="others_strings_5_1_value">1</string>
+    <string name="others_strings_5_1_value">0</string>
 
     <string name="others_strings_6">取消冷却</string>
     <string name="others_strings_6_1_key">取消冷却{CHECK}</string>
-    <string name="others_strings_6_1_value">1</string>
+    <string name="others_strings_6_1_value">0</string>
 
     <string name="others_strings_7">取消阳光</string>
     <string name="others_strings_7_1_key">取消阳光{CHECK}</string>
-    <string name="others_strings_7_1_value">1</string>
+    <string name="others_strings_7_1_value">0</string>
 
     <string name="others_strings_8">后台运行</string>
     <string name="others_strings_8_1_key">后台运行{CHECK}</string>
-    <string name="others_strings_8_1_value">1</string>
+    <string name="others_strings_8_1_value">0</string>
 
     <string name="others_strings_9">智慧树高度</string>
     <string name="others_strings_9_1_key">输入树的高度</string>
@@ -49,11 +49,11 @@
 
     <string name="others_strings_10">去除遮挡</string>
     <string name="others_strings_10_1_key">去除遮挡{CHECK}</string>
-    <string name="others_strings_10_1_value">1</string>
+    <string name="others_strings_10_1_value">0</string>
 
     <string name="others_strings_11">补充肥料杀虫剂</string>
     <string name="others_strings_11_1_key">补充肥料杀虫剂{CHECK}</string>
-    <string name="others_strings_11_1_value">1</string>
+    <string name="others_strings_11_1_value">0</string>
 
     <string name="level_strings_1">EnterNewLevel</string>
 
@@ -111,15 +111,15 @@
 
     <string name="plant_strings_1">大嘴花准备时间</string>
     <string name="plant_strings_1_1_key">大嘴花{CHECK}</string>
-    <string name="plant_strings_1_1_value">1</string>
+    <string name="plant_strings_1_1_value">0</string>
 
     <string name="plant_strings_2">玉米炮准备时间</string>
     <string name="plant_strings_2_1_key">玉米炮{CHECK}</string>
-    <string name="plant_strings_2_1_value">1</string>
+    <string name="plant_strings_2_1_value">0</string>
 
     <string name="plant_strings_3">磁力菇准备时间</string>
     <string name="plant_strings_3_1_key">磁力菇{CHECK}</string>
-    <string name="plant_strings_3_1_value">1</string>
+    <string name="plant_strings_3_1_value">0</string>
 
     <string name="plant_strings_4">其他植物准备时间</string>
     <string name="plant_strings_4_1_key">其他植物{SEEDTYPE}</string>
@@ -127,75 +127,75 @@
 
     <string name="plant_strings_5">土豆雷准备时间</string>
     <string name="plant_strings_5_1_key">土豆雷{CHECK}</string>
-    <string name="plant_strings_5_1_value">1</string>
+    <string name="plant_strings_5_1_value">0</string>
 
     <string name="plant_strings_6">阳光菇准备时间</string>
     <string name="plant_strings_6_1_key">阳光菇{CHECK}</string>
-    <string name="plant_strings_6_1_value">1</string>
+    <string name="plant_strings_6_1_value">0</string>
 
     <string name="plant_strings_7">植物血量显示</string>
     <string name="plant_strings_7_1_key">植物血量显示{CHECK}</string>
-    <string name="plant_strings_7_1_value">1</string>
+    <string name="plant_strings_7_1_value">0</string>
 
     <string name="plant_strings_8">植物无敌</string>
     <string name="plant_strings_8_1_key">植物无敌{CHECK}</string>
-    <string name="plant_strings_8_1_value">1</string>
+    <string name="plant_strings_8_1_value">0</string>
 
     <string name="plant_strings_9">核弹无坑</string>
     <string name="plant_strings_9_1_key">核弹无坑{CHECK}</string>
-    <string name="plant_strings_9_1_value">1</string>
+    <string name="plant_strings_9_1_value">0</string>
 
     <string name="plant_strings_10">取消压扁</string>
     <string name="plant_strings_10_1_key">取消压扁{CHECK}</string>
-    <string name="plant_strings_10_1_value">1</string>
+    <string name="plant_strings_10_1_value">0</string>
 
     <string name="plant_strings_11">只投黄油</string>
     <string name="plant_strings_11_1_key">只投黄油{CHECK}</string>
-    <string name="plant_strings_11_1_value">1</string>
+    <string name="plant_strings_11_1_value">0</string>
 
     <string name="plant_strings_12">植物清醒</string>
     <string name="plant_strings_12_1_key">植物清醒{CHECK}</string>
-    <string name="plant_strings_12_1_value">1</string>
+    <string name="plant_strings_12_1_value">0</string>
 
     <string name="plant_strings_13">准备时间显示</string>
     <string name="plant_strings_13_1_key">准备时间显示{CHECK}</string>
-    <string name="plant_strings_13_1_value">1</string>
+    <string name="plant_strings_13_1_value">0</string>
 
     <string name="plant_strings_14">超级大嘴花准备时间</string>
     <string name="plant_strings_14_1_key">超级大嘴花{CHECK}</string>
-    <string name="plant_strings_14_1_value">1</string>
+    <string name="plant_strings_14_1_value">0</string>
 
     <string name="plant_strings_15">龙舌兰大招</string>
     <string name="plant_strings_15_1_key">龙舌兰{CHECK}</string>
-    <string name="plant_strings_15_1_value">1</string>
+    <string name="plant_strings_15_1_value">0</string>
 
     <string name="plant_strings_16">火红莲大招</string>
     <string name="plant_strings_16_1_key">火红莲{CHECK}</string>
-    <string name="plant_strings_16_1_value">1</string>
+    <string name="plant_strings_16_1_value">0</string>
 
     <string name="zombie_strings_1">僵尸血量显示</string>
     <string name="zombie_strings_1_1_key">僵尸血量显示{CHECK}</string>
-    <string name="zombie_strings_1_1_value">1</string>
+    <string name="zombie_strings_1_1_value">0</string>
 
     <string name="zombie_strings_2">僵尸掉落卡片</string>
     <string name="zombie_strings_2_1_key">僵尸掉落卡片{CHECK}</string>
-    <string name="zombie_strings_2_1_value">1</string>
+    <string name="zombie_strings_2_1_value">0</string>
 
     <string name="zombie_strings_3">僵尸无敌</string>
     <string name="zombie_strings_3_1_key">僵尸无敌{CHECK}</string>
-    <string name="zombie_strings_3_1_value">1</string>
+    <string name="zombie_strings_3_1_value">0</string>
 
     <string name="zombie_strings_4">丑椒不爆</string>
     <string name="zombie_strings_4_1_key">丑椒不爆{CHECK}</string>
-    <string name="zombie_strings_4_1_value">1</string>
+    <string name="zombie_strings_4_1_value">0</string>
 
     <string name="zombie_strings_5">冰车无痕</string>
     <string name="zombie_strings_5_1_key">冰车无痕{CHECK}</string>
-    <string name="zombie_strings_5_1_value">1</string>
+    <string name="zombie_strings_5_1_value">0</string>
 
     <string name="zombie_strings_6">小偷不偷</string>
     <string name="zombie_strings_6_1_key">小偷不偷{CHECK}</string>
-    <string name="zombie_strings_6_1_value">1</string>
+    <string name="zombie_strings_6_1_value">0</string>
 
     <string name="zombie_strings_7">一键黄油效果</string>
     <string name="zombie_strings_7_1_key">黄油效果魅惑有效</string>
@@ -223,7 +223,7 @@
 
     <string name="zombie_strings_11">停滞不前</string>
     <string name="zombie_strings_11_1_key">停滞不前{CHECK}</string>
-    <string name="zombie_strings_11_1_value">1</string>
+    <string name="zombie_strings_11_1_value">0</string>
 
     <string name="spawning_strings_1">蹦极红眼处理</string>
     <string name="spawning_strings_1_1_key">蹦极</string>
@@ -318,11 +318,11 @@
 
     <string name="spawning_strings_4">最大密度</string>
     <string name="spawning_strings_4_1_key">{CHECK}</string>
-    <string name="spawning_strings_4_1_value">1</string>
+    <string name="spawning_strings_4_1_value">0</string>
 
     <string name="spawning_strings_5">暂停出怪</string>
     <string name="spawning_strings_5_1_key">{CHECK}</string>
-    <string name="spawning_strings_5_1_value">1</string>
+    <string name="spawning_strings_5_1_value">0</string>
 
     <string name="spawning_strings_6">波次出怪_数量</string>
     <string name="spawning_strings_7">载入json</string>
@@ -414,7 +414,7 @@
 
     <string name="board_strings_10">一键搭梯</string>
     <string name="board_strings_10_1_key">是否限定植物类型</string>
-    <string name="board_strings_10_1_value">1</string>
+    <string name="board_strings_10_1_value">0</string>
 
     <string name="board_strings_11">EasyPlanting</string>
 
@@ -426,7 +426,7 @@
 
     <string name="board_strings_14">禁止存档</string>
     <string name="board_strings_14_1_key">禁止存档{CHECK}</string>
-    <string name="board_strings_14_1_value">1</string>
+    <string name="board_strings_14_1_value">0</string>
 
     <string name="board_strings_15">立即回档</string>
 
@@ -539,11 +539,11 @@
 
     <string name="fun_strings_2">随机卡片</string>
     <string name="fun_strings_2_1_key">随机卡片{CHECK}</string>
-    <string name="fun_strings_2_1_value">1</string>
+    <string name="fun_strings_2_1_value">0</string>
 
     <string name="fun_strings_3">随机卡槽</string>
     <string name="fun_strings_3_1_key">随机卡槽{CHECK}</string>
-    <string name="fun_strings_3_1_value">1</string>
+    <string name="fun_strings_3_1_value">0</string>
 
     <string name="script_strings_1">快捷脚本</string>
     <string name="script_strings_1_0_key">请输入脚本名称</string>

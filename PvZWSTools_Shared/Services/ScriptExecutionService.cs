@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text.Json;
 using PvZWSTools_Shared.Helpers;
 
@@ -17,13 +17,16 @@ public class ScriptExecutionService:IScriptExecutionService
         _notifier = notifier;
     }
 
-    public async Task ExecuteAsync(string subFolder, string scriptName, Dictionary<string, string> parameters = null, string outputMessage = null)
+    /// <inheritdoc />
+    public bool SilentMode { get; set; }
+
+    public async Task<bool> ExecuteAsync(string subFolder, string scriptName, Dictionary<string, string>? parameters = null, string? outputMessage = null)
     {
         if(!_connection.IsConnected)
         {
-            _notifier?.Warn("错误", "WebSocket未连接");
+            if(!SilentMode) _notifier?.Warn("错误", "WebSocket未连接");
             Log.Error("WebSocket未连接");
-            return;
+            return false;
         }
 
         string targetDir = Path.Combine(_basePath, Constants.Folder_Need, Constants.Folder_Buttons, subFolder);
@@ -33,9 +36,9 @@ public class ScriptExecutionService:IScriptExecutionService
         string scriptPath = Path.Combine(targetDir, scriptName + ".py");
         if(!File.Exists(scriptPath))
         {
-            _notifier?.Error("错误", $"脚本文件不存在：{scriptPath}");
+            if(!SilentMode) _notifier?.Error("错误", $"脚本文件不存在：{scriptPath}");
             Log.Error($"脚本文件不存在：{scriptPath}");
-            return;
+            return false;
         }
 
         try
@@ -50,11 +53,13 @@ public class ScriptExecutionService:IScriptExecutionService
             await _connection.SendAsync(scriptContent);
             if(!string.IsNullOrEmpty(outputMessage))
                 System.Diagnostics.Debug.WriteLine(outputMessage);
+            return true;
         }
         catch(Exception ex)
         {
-            _notifier?.Error("错误", $"执行脚本失败：{ex.Message}");
+            if(!SilentMode) _notifier?.Error("错误", $"执行脚本失败：{ex.Message}");
             Log.Error($"执行脚本失败：{ex.Message}");
+            return false;
         }
     }
 

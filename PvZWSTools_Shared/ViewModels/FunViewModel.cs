@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
@@ -62,22 +62,28 @@ public class FunViewModel:ViewModelBase
 
     public ICommand RandomVaseCommand => new RelayCommand(async _ =>
     {
+        var __old = RandomVase;
         RandomVase = ButtonHelper.ToggleCheck(RandomVase);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "随机罐子",
-            new Dictionary<string, string> { [Constants.Placeholders.RandomVaseCheck] = ButtonHelper.GetCheckValue(RandomVase) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "随机罐子",
+            new Dictionary<string, string> { [Constants.Placeholders.RandomVaseCheck] = ButtonHelper.GetCheckValue(RandomVase) }))
+            RandomVase = __old;
     });
 
     public ICommand RandomCardCommand => new RelayCommand(async _ =>
     {
+        var __old = RandomCard;
         RandomCard = ButtonHelper.ToggleCheck(RandomCard);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "随机卡片",
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RandomCard) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "随机卡片",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RandomCard) }))
+            RandomCard = __old;
     });
 
     public ICommand RandomPacketCommand => new RelayCommand(async _ =>
     {
+        var __old = RandomPacket;
         RandomPacket = ButtonHelper.ToggleCheck(RandomPacket);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "随机卡槽",
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RandomPacket) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "随机卡槽",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RandomPacket) }))
+            RandomPacket = __old;
     });
 }

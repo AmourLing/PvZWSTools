@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
@@ -71,9 +71,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand AutoCollectCommand => new RelayCommand(async _ =>
     {
+        var __old = AutoCollect;
         AutoCollect = ButtonHelper.ToggleCheck(AutoCollect);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoCollectName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoCollect) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoCollectName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoCollect) }))
+            AutoCollect = __old;
     });
 
     public string AutoFertilizerBugSpray
@@ -84,9 +86,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand AutoFertilizerBugSprayCommand => new RelayCommand(async _ =>
     {
+        var __old = AutoFertilizerBugSpray;
         AutoFertilizerBugSpray = ButtonHelper.ToggleCheck(AutoFertilizerBugSpray);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoFertilizerBugSprayName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoFertilizerBugSpray) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoFertilizerBugSprayName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoFertilizerBugSpray) }))
+            AutoFertilizerBugSpray = __old;
     });
 
     public string AutoWatering
@@ -97,9 +101,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand AutoWateringCommand => new RelayCommand(async _ =>
     {
+        var __old = AutoWatering;
         AutoWatering = ButtonHelper.ToggleCheck(AutoWatering);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoWateringName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoWatering) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _autoWateringName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoWatering) }))
+            AutoWatering = __old;
     });
 
     public string BigSun
@@ -110,9 +116,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand BigSunCommand => new RelayCommand(async _ =>
     {
+        var __old = BigSun;
         BigSun = ButtonHelper.ToggleCheck(BigSun);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _bigSunName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(BigSun) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _bigSunName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(BigSun) }))
+            BigSun = __old;
     });
 
     public string ClearFog
@@ -123,9 +131,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand ClearFogCommand => new RelayCommand(async _ =>
     {
+        var __old = ClearFog;
         ClearFog = ButtonHelper.ToggleCheck(ClearFog);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _clearFogName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(ClearFog) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _clearFogName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(ClearFog) }))
+            ClearFog = __old;
     });
 
     public string ClearVase
@@ -136,9 +146,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand ClearVaseCommand => new RelayCommand(async _ =>
     {
+        var __old = ClearVase;
         ClearVase = ButtonHelper.ToggleCheck(ClearVase);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _clearVaseName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(ClearVase) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _clearVaseName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(ClearVase) }))
+            ClearVase = __old;
     });
 
     public string NoCDPlanting
@@ -149,9 +161,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand NoCDPlantingCommand => new RelayCommand(async _ =>
     {
+        var __old = NoCDPlanting;
         NoCDPlanting = ButtonHelper.ToggleCheck(NoCDPlanting);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _noCDPlantingName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(NoCDPlanting) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _noCDPlantingName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(NoCDPlanting) }))
+            NoCDPlanting = __old;
     });
 
     public string NoCostPlanting
@@ -162,9 +176,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand NoCostPlantingCommand => new RelayCommand(async _ =>
     {
+        var __old = NoCostPlanting;
         NoCostPlanting = ButtonHelper.ToggleCheck(NoCostPlanting);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _noCostPlantingName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(NoCostPlanting) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _noCostPlantingName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(NoCostPlanting) }))
+            NoCostPlanting = __old;
     });
 
     public string RemoveCoverLayer
@@ -175,9 +191,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand RemoveCoverLayerCommand => new RelayCommand(async _ =>
     {
+        var __old = RemoveCoverLayer;
         RemoveCoverLayer = ButtonHelper.ToggleCheck(RemoveCoverLayer);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _removeCoverLayerName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RemoveCoverLayer) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _removeCoverLayerName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RemoveCoverLayer) }))
+            RemoveCoverLayer = __old;
     });
 
     public string RunWhileLocked
@@ -188,9 +206,11 @@ public class OthersViewModel:ViewModelBase
 
     public ICommand RunWhileLockedCommand => new RelayCommand(async _ =>
     {
+        var __old = RunWhileLocked;
         RunWhileLocked = ButtonHelper.ToggleCheck(RunWhileLocked);
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _runWhileLockedName,
-            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RunWhileLocked) });
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _runWhileLockedName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RunWhileLocked) }))
+            RunWhileLocked = __old;
     });
 
     public string SetTreeHeight

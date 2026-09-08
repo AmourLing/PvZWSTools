@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
@@ -175,13 +175,14 @@ public class ZombiesViewModel:ViewModelBase
     {
         return new RelayCommand(async _ =>
         {
-            var current = stateGetter();
-            var newState = ButtonHelper.ToggleCheck(current);
+            var oldVal = stateGetter();
+            var newState = ButtonHelper.ToggleCheck(oldVal);
             stateSetter(newState);
             if(IsSendSync)
             {
-                await _scriptExec.ExecuteAsync(Constants.SubFolders.Zombies, scriptName,
+                bool sent = await _scriptExec.ExecuteAsync(Constants.SubFolders.Zombies, scriptName,
                     new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(newState) });
+                if(!sent) stateSetter(oldVal);
             }
         });
     }

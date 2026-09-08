@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Android.OS;
@@ -45,6 +45,23 @@ public abstract class BaseFragment:AndroidX.Fragment.App.Fragment
         }
 
         LoadOptionsInternal();
+
+        // 状态管理：创建时应用存储的当前状态（无存储则记录初始快照）
+        Helpers.AndroidStateService.Instance?.OnFragmentCreated(this);
+    }
+
+    public override void OnPause()
+    {
+        base.OnPause();
+        // 状态管理：暂停时把最新 Map 写回当前状态存储
+        Helpers.AndroidStateService.Instance?.OnFragmentStateDirty(this);
+    }
+
+    public override void OnDestroy()
+    {
+        // 状态管理：销毁时把最新 Map 写回当前状态存储
+        Helpers.AndroidStateService.Instance?.OnFragmentStateDirty(this);
+        base.OnDestroy();
     }
 
     public override void OnSaveInstanceState(Bundle outState)
@@ -60,6 +77,38 @@ public abstract class BaseFragment:AndroidX.Fragment.App.Fragment
     /// 子类必须实现此方法来初始化默认值
     /// </summary>
     protected abstract void InitializeMap();
+
+    /// <summary>
+    /// 隐藏 Fragment.GetString：Fragment 未附加 Activity 时（如状态服务采集默认值）回退到应用级 Context。
+    /// 子类中的 GetString 调用在编译期绑定到此方法，行为与原实现一致（附加时走 Activity）。
+    /// </summary>
+    protected new string GetString(int resId) =>
+        Activity?.GetString(resId) ?? Android.App.Application.Context.GetString(resId);
+
+    /// <summary>
+    /// 重置为默认状态（供 AndroidStateService 在未附加 Activity 时采集初始状态）。
+    /// </summary>
+    public void ResetToDefaults()
+    {
+        Map.Clear();
+        InitializeMap();
+    }
+
+    /// <summary>当前界面对应的控件子目录（FragmentPath 的公开只读访问）。</summary>
+    public string StateSection => FragmentPath;
+
+    /// <summary>获取当前 Map 快照（状态管理公开访问）。</summary>
+    public Dictionary<string, string> GetStateSnapshot() => new Dictionary<string, string>(Map);
+
+    /// <summary>把存储状态覆盖到当前 Map（只覆盖已有键；状态管理公开访问）。</summary>
+    public void ApplyStateSnapshot(Dictionary<string, string> states)
+    {
+        foreach(var kv in states)
+        {
+            if(Map.ContainsKey(kv.Key))
+                Map[kv.Key] = kv.Value;
+        }
+    }
 
     private void InitializeMapInternal()
     {

@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
 using PvZWSTools_Shared;
 using PvZWSTools_Shared.Commands;
@@ -21,6 +23,7 @@ public class MainWindowViewModel:ViewModelBase
     };
 
     private readonly IDispatcherTimer _autoConnectTimer;
+    private readonly IButtonStateService? _buttonStateService;
     private readonly IConnectionService _connection;
     private readonly string _defaultPath;
     private readonly IMessageProcessor _messageProcessor;
@@ -51,6 +54,18 @@ public class MainWindowViewModel:ViewModelBase
 
     private string _wsAddress = "ws://localhost:8080/Py";
 
+    /// <summary>
+    /// 最近一次应用（启动恢复或加载预设）的完整状态。
+    /// 连接游戏成功后，据此把"开启"的开关脚本同步发送到游戏。
+    /// </summary>
+    private Dictionary<string, Dictionary<string, string>>? _lastAppliedStates;
+
+    /// <summary>
+    /// 默认状态基线（各子 ViewModel 构造后、恢复前的状态）。
+    /// 用于 StateWindow 详细信息面板对比，只显示与默认不同的项。
+    /// </summary>
+    private readonly Dictionary<string, Dictionary<string, string>> _defaultStates;
+
     public MainWindowViewModel(
         IConnectionService connection,
         ISettingsService settingsService,
@@ -59,7 +74,8 @@ public class MainWindowViewModel:ViewModelBase
         IMessageProcessor messageProcessor,
         IUiThreadInvoker uiThread,
         IUserNotifier? notifier = null,
-        IUpdateService? updateService = null)
+        IUpdateService? updateService = null,
+        IButtonStateService? buttonStateService = null)
     {
         _connection = connection;
         _defaultPath = defaultPath;
@@ -67,6 +83,7 @@ public class MainWindowViewModel:ViewModelBase
         _notifier = notifier;
         _uiThread = uiThread;
         _updateService = updateService;
+        _buttonStateService = buttonStateService;
         _scriptExec = new ScriptExecutionService(connection, defaultPath, notifier);
         _messageProcessor = messageProcessor;
 
@@ -85,6 +102,9 @@ public class MainWindowViewModel:ViewModelBase
         Garden = new GardenViewModel(_scriptExec, _connection, dialogService, _messageProcessor);
 
         LoadSettings();
+        // 在恢复前导出默认状态作为对比基线
+        _defaultStates = GetCurrentButtonStates();
+        LoadButtonStates();
 
         _connection.ConnectionStateChanged += (s, connected) =>
         {
@@ -94,6 +114,8 @@ public class MainWindowViewModel:ViewModelBase
                 _failCount = 0;
                 _ = _connection.SendAsync(Sharedstring.GetLogoDisplayString(!SuppressConnectionMessage));
                 Log.Info($"已成功连接到{WsAddress}");
+                // 连接成功后，把已恢复状态中"开启"的开关同步发送到游戏
+                SyncLastStatesToGame();
             }
         };
 
@@ -117,11 +139,17 @@ public class MainWindowViewModel:ViewModelBase
         OpenPathCommand = new RelayCommand(_ => OpenPath());
         UpdateVersionCommand = new RelayCommand(_ => UpdateVersion());
         SettingCommand = new RelayCommand(_ => OpenSettings());
+        StateManagerCommand = new RelayCommand(_ => OpenStateManager());
         SizeUpCommand = new RelayCommand(_ => ChangeSize(true));
         SizeDownCommand = new RelayCommand(_ => ChangeSize(false));
     }
 
     public event EventHandler ShowSettingsDialog;
+
+    /// <summary>
+    /// 用户点击"状态管理"按钮时触发，让 View 层打开 StateWindow。
+    /// </summary>
+    public event EventHandler? ShowStateManagerRequested;
 
     /// <summary>
     /// 发现新版本时触发（包括启动自动检查和手动点击），让 View 层打开 UpdateWindow。
@@ -272,6 +300,8 @@ public class MainWindowViewModel:ViewModelBase
 
     public ICommand SettingCommand { get; }
 
+    public ICommand StateManagerCommand { get; }
+
     public ICommand SizeDownCommand { get; }
 
     public string SizeText
@@ -305,6 +335,176 @@ public class MainWindowViewModel:ViewModelBase
     public void SaveSettings()
     {
         _settingsService.Save();
+    }
+
+    /// <summary>
+    /// 从持久化存储加载按钮状态并应用到各子 ViewModel。
+    /// 仅当设置中勾选了"自动应用上次配置"才在启动时自动恢复。
+    /// 仅恢复 UI 显示状态，不主动发送脚本到游戏。
+    /// 连接游戏后可通过"允许自动更新按钮状态"从游戏同步实际状态。
+    /// </summary>
+    private void LoadButtonStates()
+    {
+        if(_buttonStateService == null) return;
+        try
+        {
+            if(!_settingsService.Settings.AutoApplyLastState)
+            {
+                Log.Info("未开启自动应用上次配置，跳过状态恢复");
+                return;
+            }
+
+            var allStates = _buttonStateService.Load();
+            if(allStates.Count == 0) return;
+
+            ApplyButtonStates(allStates, persist: false);
+            Log.Info($"按钮状态恢复完成：{allStates.Sum(kv => kv.Value.Count)} 项");
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"按钮状态恢复失败: {ex}");
+        }
+    }
+
+    /// <summary>
+    /// 收集所有子 ViewModel 的按钮状态并保存到持久化存储。
+    /// 由 View 层在窗口关闭时调用。
+    /// </summary>
+    public void SaveButtonStates()
+    {
+        if(_buttonStateService == null) return;
+        try
+        {
+            var allStates = new Dictionary<string, Dictionary<string, string>>();
+            foreach(var prop in GetType().GetProperties())
+            {
+                if(typeof(ViewModelBase).IsAssignableFrom(prop.PropertyType))
+                {
+                    var subVm = prop.GetValue(this) as ViewModelBase;
+                    if(subVm != null)
+                    {
+                        var states = subVm.ExportButtonStates();
+                        if(states.Count > 0)
+                            allStates[prop.Name] = states;
+                    }
+                }
+            }
+            _buttonStateService.Save(allStates);
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"按钮状态保存失败: {ex}");
+        }
+    }
+
+    /// <summary>
+    /// 按属性名获取子 ViewModel 实例（用于恢复状态）。
+    /// </summary>
+    private ViewModelBase? GetSubViewModelByName(string name)
+    {
+        var prop = GetType().GetProperty(name);
+        return prop?.GetValue(this) as ViewModelBase;
+    }
+
+    /// <summary>
+    /// 收集当前所有子 ViewModel 的状态（供 StateWindow 保存预设）。
+    /// </summary>
+    public Dictionary<string, Dictionary<string, string>> GetCurrentButtonStates()
+    {
+        var allStates = new Dictionary<string, Dictionary<string, string>>();
+        foreach(var prop in GetType().GetProperties())
+        {
+            if(typeof(ViewModelBase).IsAssignableFrom(prop.PropertyType))
+            {
+                var subVm = prop.GetValue(this) as ViewModelBase;
+                if(subVm != null)
+                {
+                    var states = subVm.ExportButtonStates();
+                    if(states.Count > 0)
+                        allStates[prop.Name] = states;
+                }
+            }
+        }
+        return allStates;
+    }
+
+    /// <summary>
+    /// 把指定状态应用到各子 ViewModel（启动恢复或 StateWindow 加载预设）。
+    /// 先恢复 UI 显示；若当前已连接游戏，则立即把"开启"的开关脚本同步发送到游戏，
+    /// 否则记录状态，待连接成功后由 <see cref="SyncLastStatesToGame"/> 发送。
+    /// </summary>
+    /// <param name="persist">是否同时写回"上次状态"文件；启动自动恢复时为 false。</param>
+    public void ApplyButtonStates(Dictionary<string, Dictionary<string, string>> states, bool persist = true)
+    {
+        foreach(var kvp in states)
+        {
+            var subVm = GetSubViewModelByName(kvp.Key);
+            if(subVm != null && kvp.Value.Count > 0)
+                subVm.ImportButtonStates(kvp.Value);
+        }
+
+        _lastAppliedStates = states;
+
+        if(persist)
+            _buttonStateService?.Save(states);
+
+        // 已连接则立即同步开关到游戏；未连接则等连接成功事件
+        if(_connection.IsConnected)
+            SyncLastStatesToGame();
+    }
+
+    /// <summary>
+    /// 把最近应用状态中所有"开启"的开关脚本发送到游戏（仅 Checkbox）。
+    /// 在连接成功后或加载预设时（已连接）调用。
+    /// 批量发送期间开启静默模式：脚本缺失/失败只记日志，不弹模态框打断流程。
+    /// </summary>
+    private void SyncLastStatesToGame()
+    {
+        if(_lastAppliedStates == null) return;
+        bool previousSilent = _scriptExec.SilentMode;
+        _scriptExec.SilentMode = true;
+        try
+        {
+            int sent = 0;
+            foreach(var kvp in _lastAppliedStates)
+            {
+                var subVm = GetSubViewModelByName(kvp.Key);
+                if(subVm == null) continue;
+                sent += subVm.SyncToggleStatesToGame(kvp.Value);
+            }
+            if(sent > 0)
+                Log.Info($"已将 {sent} 个开启状态同步到游戏");
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"同步开关状态到游戏失败: {ex}");
+        }
+        finally
+        {
+            _scriptExec.SilentMode = previousSilent;
+        }
+    }
+
+    /// <summary>
+    /// 读取上次关闭时自动保存的状态（供 StateWindow 中固定的"上次状态"条目加载）。
+    /// </summary>
+    public Dictionary<string, Dictionary<string, string>> LoadLastButtonStates()
+    {
+        return _buttonStateService?.Load() ?? new Dictionary<string, Dictionary<string, string>>();
+    }
+
+    /// <summary>
+    /// 返回默认状态基线（供 StateWindow 详细信息面板对比差异）。
+    /// </summary>
+    public Dictionary<string, Dictionary<string, string>> GetDefaultButtonStates()
+    {
+        return _defaultStates ?? new Dictionary<string, Dictionary<string, string>>();
+    }
+
+    private void OpenStateManager()
+    {
+        Log.Info("打开状态管理窗口");
+        ShowStateManagerRequested?.Invoke(this, EventArgs.Empty);
     }
 
     public void UpdateSize(double width)

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
@@ -44,6 +44,9 @@
     </group>
     <item android:title="更多功能">
         <menu>
+            <item
+                android:id="@+id/nav_statemanage"
+                android:title="状态管理" />
             <item
                 android:id="@+id/nav_settings"
                 android:title="设置" />

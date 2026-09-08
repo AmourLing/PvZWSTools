@@ -30,6 +30,13 @@ public class AppSettings
     public bool AutoCheckUpdateEnabled { get; set; }
 
     /// <summary>
+    /// 启动时自动应用上次关闭前保存的按钮/输入框/下拉框状态。
+    /// 关闭时始终保存"上次状态"，但仅在勾选此项时才在下次启动自动恢复。
+    /// </summary>
+    [Setting("自动应用上次配置")]
+    public bool AutoApplyLastState { get; set; }
+
+    /// <summary>
     /// 通过反射自动发现所有带 [Setting] 特性的布尔设置项。
     /// 新增设置项时无需手动修改日志与设置对话框代码（自动注册）。
     /// </summary>

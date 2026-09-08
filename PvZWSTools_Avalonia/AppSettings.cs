@@ -22,6 +22,9 @@ public class AppSettings
     [Setting("启动时自动检查更新")]
     public bool AutoCheckUpdateEnabled { get; set; }  // 启动时自动检查新版本（仅检查并提示，不自动下载）
 
+    [Setting("自动应用上次配置")]
+    public bool AutoApplyLastState { get; set; }  // 启动时自动应用上次关闭前保存的状态（关闭时始终保存"上次状态"）
+
     public string LastWebSocketAddress { get; set; }  // 上次连接成功的WebSocket地址
 
     // 保存设置到文件

@@ -5027,6 +5027,12 @@
                         Command="{Binding OpenPathCommand}"
                         Content="打开文件目录" />
                     <Button
+                        Width="90"
+                        Height="25"
+                        Margin="-130,0,0,5"
+                        Command="{Binding StateManagerCommand}"
+                        Content="状态管理" />
+                    <Button
                         Width="30"
                         Height="25"
                         Margin="365,0,0,5"

@@ -37,6 +37,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     private AndroidUpdateService _updateService;
     public static string AppFilesPath { get; private set; }
 
+    /// <summary>当前显示的 Fragment（用于状态应用后同步刷新）。</summary>
+    public AndroidX.Fragment.App.Fragment CurrentFragment =>
+        SupportFragmentManager?.FindFragmentById(Resource.Id.content_frame);
+
     public static MainActivity Instance { get; private set; }
 
     // 自动重连相关
@@ -78,12 +82,39 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
         if(drawer.IsDrawerOpen(GravityCompat.Start))
         {
+            // 抽屉打开时，返回键先关闭抽屉
             drawer.CloseDrawer(GravityCompat.Start);
+            return;
         }
-        else
+
+        // 抽屉关闭时，弹出退出确认，避免误触直接退出
+        new AndroidX.AppCompat.App.AlertDialog.Builder(this)
+            .SetTitle("退出应用")
+            .SetMessage("确定要退出吗？当前设置已自动保存。")
+            .SetPositiveButton("退出", (sender, e) => SafeExit())
+            .SetNegativeButton("取消", (IDialogInterfaceOnClickListener)null)
+            .Show();
+    }
+
+    /// <summary>
+    /// 安全退出：显式保存"上次状态" → 断开连接 → 结束 Activity。
+    /// </summary>
+    private void SafeExit()
+    {
+        try
         {
-            base.OnBackPressed();
+            Log.Info("用户确认退出，执行安全退出");
+            StopReconnectTimer();
+            StopStateSaveTimer();
+            AndroidStateService.Instance?.CaptureActiveFragment();
+            AndroidStateService.Instance?.PersistLastStates();
+            ws?.Dispose();
         }
+        catch(Exception ex)
+        {
+            Log.Error($"安全退出时发生异常: {ex.Message}");
+        }
+        Finish();
     }
 
     public override bool OnCreateOptionsMenu(IMenu menu)
@@ -103,6 +134,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         {
             case Resource.Id.nav_settings:
                 ShowSettingsDialog();
+                return true;
+
+            case Resource.Id.nav_statemanage:
+                StateManageDialog.Show(this);
                 return true;
 
             case Resource.Id.nav_updateversion:
@@ -175,6 +210,12 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         _isConnected = isConnected;
 
+        // 状态管理：连接成功后把开启的开关脚本批量同步到游戏（后台执行，避免阻塞 UI）
+        if(isConnected && AndroidStateService.Instance is { } stateService && stateService.StatesApplied)
+        {
+            _ = Task.Run(stateService.SyncTogglesToGame);
+        }
+
         RunOnUiThread(() =>
         {
             if(_settingsMenuItem != null)
@@ -219,6 +260,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         _settingsPath = Path.Combine(configPath, "setting.json");
         _appSettings = AppSettings.Load(_settingsPath);
 
+        // 状态管理：采集默认状态 → 加载上次状态 → 按设置自动应用
+        AndroidStateService.Initialize(this, _appSettings);
+        StartStateSaveTimer();
+
         _updateService = new AndroidUpdateService(this);
 
         ShowExtractDialog();
@@ -247,13 +292,30 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         });
     }
 
+    protected override void OnStop()
+    {
+        base.OnStop();
+
+        // 状态管理：退后台/关闭时把当前状态保存为"上次状态"。
+        // 放在 OnStop（而非仅 OnDestroy）：从最近任务划掉应用时 OnDestroy 可能不触发，
+        // 导致磁盘上的上次状态永远不更新。
+        AndroidStateService.Instance?.CaptureActiveFragment();
+        AndroidStateService.Instance?.PersistLastStates();
+    }
+
     protected override void OnDestroy()
     {
         Log.Info("MainActivity 销毁");
-        Instance = null;
 
-        // 停止重连定时器
+        // 停止重连定时器和状态保存定时器
         StopReconnectTimer();
+        StopStateSaveTimer();
+
+        // 状态管理：把当前状态保存为"上次状态"（OnStop 已保存过，此处兜底）
+        AndroidStateService.Instance?.CaptureActiveFragment();
+        AndroidStateService.Instance?.PersistLastStates();
+
+        Instance = null;
 
         // 先断开 WebSocket
         ws?.Dispose();
@@ -393,6 +455,48 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             Log.Info("[MainActivity] 启动自动重连定时器");
             _reconnectTimer = new Timer(ReconnectCallback, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000));
         }
+    }
+
+    // --- 状态定时保存 ---
+
+    /// <summary>状态定时保存周期（毫秒）。</summary>
+    private const int StateSaveIntervalMs = 15000;
+    private Timer? _stateSaveTimer;
+
+    /// <summary>
+    /// 启动状态定时保存：强杀进程（多任务清理/force-stop）不触发 OnStop/OnDestroy，
+    /// 周期性保存保证改动最多丢失一个周期。
+    /// </summary>
+    private void StartStateSaveTimer()
+    {
+        if(_stateSaveTimer == null)
+        {
+            Log.Info("[MainActivity] 启动状态定时保存（每 15 秒）");
+            _stateSaveTimer = new Timer(StateSaveCallback, null, StateSaveIntervalMs, StateSaveIntervalMs);
+        }
+    }
+
+    private void StopStateSaveTimer()
+    {
+        _stateSaveTimer?.Dispose();
+        _stateSaveTimer = null;
+    }
+
+    private void StateSaveCallback(object state)
+    {
+        // 切回主线程执行，避免与 UI 线程并发读写 fragment.Map
+        RunOnUiThread(() =>
+        {
+            try
+            {
+                AndroidStateService.Instance?.CaptureActiveFragment();
+                AndroidStateService.Instance?.PersistLastStates();
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"状态定时保存失败: {ex.Message}");
+            }
+        });
     }
 
     private void StopReconnectTimer()
@@ -703,6 +807,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         var chkShowNotification = CreateSettingCheckBox(this, "取消连接提醒", _appSettings.SuppressConnectionMessage, 10);
         var chkAutoUpdateButtonStatus = CreateSettingCheckBox(this, "允许自动更新按钮状态", _appSettings.AllowAutoUpdateButtonStatus, 10);
         var chkAutoCheckUpdate = CreateSettingCheckBox(this, "启动时自动检查更新", _appSettings.AutoCheckUpdateEnabled, 10);
+        var chkAutoApplyLastState = CreateSettingCheckBox(this, "自动应用上次配置", _appSettings.AutoApplyLastState, 10);
 
         var txtWsAddressLabel = new TextView(this)
         {
@@ -729,6 +834,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         layout.AddView(chkShowNotification);
         layout.AddView(chkAutoUpdateButtonStatus);
         layout.AddView(chkAutoCheckUpdate);
+        layout.AddView(chkAutoApplyLastState);
         layout.AddView(txtWsAddressLabel);
         layout.AddView(txtWsAddress);
 
@@ -742,6 +848,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             _appSettings.SuppressConnectionMessage = chkShowNotification.Checked;
             _appSettings.AllowAutoUpdateButtonStatus = chkAutoUpdateButtonStatus.Checked;
             _appSettings.AutoCheckUpdateEnabled = chkAutoCheckUpdate.Checked;
+            _appSettings.AutoApplyLastState = chkAutoApplyLastState.Checked;
             var address = txtWsAddress.Text?.Trim();
             if(!string.IsNullOrEmpty(address))
             {
