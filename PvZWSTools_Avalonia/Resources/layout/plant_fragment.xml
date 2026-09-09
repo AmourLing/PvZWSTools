@@ -72,20 +72,25 @@
             android:layout_height="wrap_content"
             android:text="@string/plant_strings_13" />
         <Button
-    android:id="@+id/button14"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/plant_strings_14" />
+            android:id="@+id/button14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/plant_strings_14" />
         <Button
-    android:id="@+id/button15"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/plant_strings_15" />
+            android:id="@+id/button15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/plant_strings_15" />
         <Button
-    android:id="@+id/button16"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/plant_strings_16" />
+            android:id="@+id/button16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/plant_strings_16" />
+        <Button
+            android:id="@+id/button17"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/plant_strings_17" />
     </TableLayout>
 </ScrollView>
 

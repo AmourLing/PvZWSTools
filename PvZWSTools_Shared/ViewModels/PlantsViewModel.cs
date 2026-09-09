@@ -93,6 +93,19 @@ public class PlantsViewModel:ViewModelBase
     private string _draw_statecountdown = Constants.c_Symbol_Off;
     private string _draw_statecountdown_Name = "准备时间显示";
 
+    private string _plantern_always_henshin = Constants.c_Symbol_Off;
+    private string _plantern_always_henshin_Name = "路灯花觉醒";
+
+    public string PlanternAlwaysHenshin
+    {
+        get => _plantern_always_henshin;
+        set => SetProperty(ref _plantern_always_henshin, value);
+    }
+    public ICommand PlanternAlwaysHenshinCommand
+    {
+        get => CreateToggleCommand(() => PlanternAlwaysHenshin, v => PlanternAlwaysHenshin = v, _plantern_always_henshin_Name);
+    }
+
     public string DrawStateCountdown
     {
         get => _draw_statecountdown;

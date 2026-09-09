@@ -45,7 +45,8 @@ def GardenAwakenPlantern(plant):
 
 @M.HookTo(Plant.UpdatePlantern)
 def Plant_UpdatePlantern_Plantern_Always_Henshin(orig, self):
-    if (self.mSeedType == SeedType.Plantern) and \
+    if PLANTERN_ALWAYS_HENSHIN and \
+       (self.mSeedType == SeedType.Plantern) and \
        (self.mState not in [PlantState.PlanternHenshinBegin, PlantState.PlanternHenshinOver]):
         self.PlayBodyReanim(HENSIN_TRACK, ReanimLoopType.PlayOnceAndHold, 20, HENSIN_ANIM_RATE)
         self.mState = PlantState.PlanternHenshinBegin
@@ -55,4 +56,5 @@ def Plant_UpdatePlantern_Plantern_Always_Henshin(orig, self):
 @M.HookTo(ZenGarden.PottedPlantUpdate)
 def ZenGarden_PottedPlantUpdate_Plantern_Always_Henshin(orig, self, thePlant):
     orig(self, thePlant)
-    GardenAwakenPlantern(thePlant)
+    if PLANTERN_ALWAYS_HENSHIN:
+        GardenAwakenPlantern(thePlant)

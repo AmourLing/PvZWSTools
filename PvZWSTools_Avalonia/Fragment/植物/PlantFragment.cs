@@ -33,6 +33,7 @@ public class PlantFragment:BaseFragment
         [Resource.String.plant_strings_14_1_key] = "开关1",
         [Resource.String.plant_strings_15_1_key] = "开关1",
         [Resource.String.plant_strings_16_1_key] = "开关1",
+        [Resource.String.plant_strings_17_1_key] = "开关1",
     };
 
     protected override void InitializeMap()
@@ -53,6 +54,7 @@ public class PlantFragment:BaseFragment
         Map[GetString(Resource.String.plant_strings_14_1_key)] = GetString(Resource.String.plant_strings_14_1_value);
         Map[GetString(Resource.String.plant_strings_15_1_key)] = GetString(Resource.String.plant_strings_15_1_value);
         Map[GetString(Resource.String.plant_strings_16_1_key)] = GetString(Resource.String.plant_strings_16_1_value);
+        Map[GetString(Resource.String.plant_strings_17_1_key)] = GetString(Resource.String.plant_strings_17_1_value);
 
     }
 
@@ -109,6 +111,7 @@ public class PlantFragment:BaseFragment
         Done(Resource.Id.button14, Resource.String.plant_strings_14_1_key, Resource.String.plant_strings_14);
         Done(Resource.Id.button15, Resource.String.plant_strings_15_1_key, Resource.String.plant_strings_15);
         Done(Resource.Id.button16, Resource.String.plant_strings_16_1_key, Resource.String.plant_strings_16);
+        Done(Resource.Id.button17, Resource.String.plant_strings_17_1_key, Resource.String.plant_strings_17);
         return view;
     }
 }

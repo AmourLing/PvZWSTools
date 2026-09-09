@@ -911,6 +911,22 @@
                                     Height="25"
                                     Command="{Binding DrawStateCountdownCommand}"
                                     Content="准备时间显示" />
+                                <!--  路灯花觉醒  -->
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="9"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding PlanternAlwaysHenshin}" />
+                                <Button
+                                    Grid.Row="1"
+                                    Grid.Column="10"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding PlanternAlwaysHenshinCommand}"
+                                    Content="路灯花觉醒" />
                                 <!--  土豆准备时间  -->
                                 <TextBox
                                     Grid.Row="2"

@@ -173,6 +173,10 @@
     <string name="plant_strings_16_1_key">火红莲{CHECK}</string>
     <string name="plant_strings_16_1_value">0</string>
 
+    <string name="plant_strings_17">路灯花觉醒</string>
+    <string name="plant_strings_17_1_key">路灯花觉醒{CHECK}</string>
+    <string name="plant_strings_17_1_value">0</string>
+
     <string name="zombie_strings_1">僵尸血量显示</string>
     <string name="zombie_strings_1_1_key">僵尸血量显示{CHECK}</string>
     <string name="zombie_strings_1_1_value">0</string>
