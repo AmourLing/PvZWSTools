@@ -7,6 +7,7 @@
 !.github/workflows/
 !.github/workflows/**
 .vs
+.workbuddy
 PvZWSTools_WPF/Properties
 PvZWSTools_Xamarin/Assets/need.zip
 PvZWSTools_Avalonia/Assets/need.zip

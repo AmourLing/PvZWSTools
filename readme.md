@@ -39,7 +39,7 @@
 | 文件                                         | 说明       | 
 | -------------------------------------------- | -----------|
 | `PvZWSTools_windows_setup.exe`               | 电脑下这个 | 
-| `PvZWSTools_android.APK`                     | 手机下这个 |
+| `PvZWSTools_android.apk`                     | 手机下这个 |
 | `PvZWSTools_windows_self-contained.zip`      | 不用管     | 
 | `PvZWSTools_windows_framework-dependent.zip` | 不用管     | 
 
