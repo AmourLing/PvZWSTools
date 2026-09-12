@@ -8,6 +8,9 @@
     xmlns:models="clr-namespace:PvZWSTools_Shared.Models"
     xmlns:viewModels="clr-namespace:PvZWSTools_Shared.ViewModels"
     Title="PvZWSTools_Windows"
+    Background="{StaticResource BgRootBrush}"
+    FontFamily="Microsoft YaHei UI"
+    FontSize="13"
     Width="{Binding CurrentWidth, Mode=TwoWay}"
     Height="600"
     Icon="../Resources/icon.ico"
@@ -18,26 +21,15 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <converters:ZeroToBoolConverter x:Key="ZeroToBoolConverter" />
-        <Style TargetType="TabItem">
-            <Setter Property="HeaderTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <TextBlock
-                            Margin="5"
-                            FontSize="14"
-                            Text="{Binding}" />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Padding" Value="0" />
-        </Style>
-        <Style TargetType="TabControl">
-            <Setter Property="Margin" Value="5" />
-        </Style>
     </Window.Resources>
 
     <Viewbox Stretch="Fill" StretchDirection="Both">
-        <Border Width="640" Height="400">
+        <Border
+            Width="780"
+            Height="430"
+            Background="{StaticResource BgPanelBrush}"
+            CornerRadius="12"
+            Padding="10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -60,14 +52,18 @@
                         Text="{Binding WsAddress, UpdateSourceTrigger=PropertyChanged}" />
                     <Button
                         Grid.Column="1"
-                        Width="50"
+                        Width="64"
                         Command="{Binding ConnectCommand}"
-                        Content="{Binding ConnectionButtonText}" />
+                        Content="{Binding ConnectionButtonText}"
+                        Style="{StaticResource AccentButtonStyle}" />
                 </Grid>
 
                 <!--  主选项卡  -->
                 <Grid Grid.Row="1">
-                    <TabControl x:Name="MainTabControl" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+                    <TabControl
+                        x:Name="MainTabControl"
+                        TabStripPlacement="Left"
+                        SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
                         <!--  杂项  -->
                         <TabItem Header="杂项">
                             <Grid DataContext="{Binding Others}">

@@ -21,6 +21,9 @@ public partial class App:Application
 
     public App()
     {
+        // 加载 App.xaml（含合并的主题资源字典）；此前从未调用，导致 Application.Resources 为空
+        InitializeComponent();
+
         string welcomeMessage = "欢迎使用PvZWSTools，";
         welcomeMessage += CompileTime.GetCompileTime()?.ToString("yyyy-MM-dd HH:mm:ss");
         if(IsBetaVersion)
