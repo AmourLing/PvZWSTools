@@ -2820,7 +2820,7 @@
 
                                 <!--  清除所有  -->
                                 <Grid
-                                    Margin="315,125,0,0"
+                                    Margin="345,125,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
@@ -4076,9 +4076,13 @@
                             Header="花园"
                             Visibility="Hidden">
                             <Grid DataContext="{Binding Garden}">
-                                <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+                                <TabControl
+                                    Height="260"
+                                    HorizontalAlignment="Left"
+                                    Width="640"
+                                    SelectedIndex="{Binding SelectedTabIndex}">
                                     <TabItem x:Name="MainPage" Header="主花园1">
-                                        <Grid>
+                                        <Grid Width="670" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Image Source="/Resources/Background_Main.png" Stretch="Fill" />
                                             <Button
                                                 Width="50"
@@ -4307,7 +4311,7 @@
                                         </Grid>
                                     </TabItem>
                                     <TabItem x:Name="Main2Page" Header="主花园2">
-                                        <Grid>
+                                        <Grid Width="670" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Image Source="/Resources/Background_Main.png" Stretch="Fill" />
                                             <Button
                                                 Width="50"
@@ -4536,7 +4540,7 @@
                                         </Grid>
                                     </TabItem>
                                     <TabItem x:Name="NightPage" Header="主花园(夜)">
-                                        <Grid>
+                                        <Grid Width="670" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Image Source="/Resources/Background_Night.png" Stretch="Fill" />
                                             <Button
                                                 Width="50"
@@ -4770,7 +4774,7 @@
                                         </Grid>
                                     </TabItem>
                                     <TabItem x:Name="MushroomPage" Header="蘑菇园1">
-                                        <Grid>
+                                        <Grid Width="670" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Image Source="/Resources/Background_Mushroom.png" Stretch="Fill" />
                                             <Button
                                                 Width="50"
@@ -4831,7 +4835,7 @@
                                         </Grid>
                                     </TabItem>
                                     <TabItem x:Name="Mushroom2Page" Header="蘑菇园2">
-                                        <Grid>
+                                        <Grid Width="670" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Image Source="/Resources/Background_Mushroom.png" Stretch="Fill" />
                                             <Button
                                                 Width="50"
@@ -4892,7 +4896,7 @@
                                         </Grid>
                                     </TabItem>
                                     <TabItem x:Name="AquariumPage" Header="水族馆">
-                                        <Grid>
+                                        <Grid Width="670" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top">
                                             <Image Source="/Resources/Background_Aquarium.png" Stretch="Fill" />
                                             <Button
                                                 Width="50"

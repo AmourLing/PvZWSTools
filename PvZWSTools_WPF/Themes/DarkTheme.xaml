@@ -76,7 +76,7 @@
         <Setter Property="Background" Value="{StaticResource BgControlBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="Padding" Value="2,2" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
@@ -116,7 +116,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource BorderLineBrush}" />
         <Setter Property="CaretBrush" Value="{StaticResource AccentBrush}" />
         <Setter Property="SelectionBrush" Value="{StaticResource AccentBrush}" />
-        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="Padding" Value="2,0" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
