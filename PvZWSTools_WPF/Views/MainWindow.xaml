@@ -332,8 +332,8 @@
                                         PlacementTarget="{Binding ElementName=ModeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ModeListBox"
@@ -374,10 +374,11 @@
                                     x:Name="EnterNewLevelBtn"
                                     Grid.Row="0"
                                     Grid.Column="2"
-                                    Width="90"
+                                    HorizontalAlignment="Left"
+                                    MinWidth="90"
                                     Height="25"
                                     Command="{Binding EnterNewLevelCommand}"
-                                    Content="EnterNewLevel" />
+                                    Content="进入关卡" />
 
                                 <!--  直接过关  -->
                                 <Button
@@ -552,8 +553,8 @@
                                         PlacementTarget="{Binding ElementName=ValueDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ValueListBox"
@@ -615,8 +616,8 @@
                                         PlacementTarget="{Binding ElementName=DamageDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="DamageListBox"
@@ -678,8 +679,8 @@
                                         PlacementTarget="{Binding ElementName=HealthDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="HealthListBox"
@@ -741,8 +742,8 @@
                                         PlacementTarget="{Binding ElementName=TimeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="TimeListBox"
@@ -1081,8 +1082,8 @@
                                         PlacementTarget="{Binding ElementName=OtherCDPlantDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 MaxHeight="150"
@@ -2366,8 +2367,8 @@
                                         PlacementTarget="{Binding ElementName=BoardRowDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoardRowListBox"
@@ -2407,8 +2408,8 @@
                                         PlacementTarget="{Binding ElementName=BoardColDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoardColListBox"
@@ -2453,8 +2454,8 @@
                                         PlacementTarget="{Binding ElementName=BoarddeltamYDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoarddeltamYListBox"
@@ -2499,8 +2500,8 @@
                                         PlacementTarget="{Binding ElementName=BoarddeltamXDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoarddeltamXListBox"
@@ -2594,8 +2595,8 @@
                                         PlacementTarget="{Binding ElementName=PlantDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="PlantListBox"
@@ -2676,8 +2677,8 @@
                                         PlacementTarget="{Binding ElementName=ZombieDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ZombieListBox"
@@ -2727,8 +2728,8 @@
                                         PlacementTarget="{Binding ElementName=CoinDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="CoinListBox"
@@ -2804,8 +2805,8 @@
                                         PlacementTarget="{Binding ElementName=ItemDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ItemListBox"
@@ -2856,8 +2857,8 @@
                                         PlacementTarget="{Binding ElementName=ClearDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ClearListBox"
@@ -2918,19 +2919,19 @@
                                 <!--  限定植物  -->
                                 <TextBox
                                     x:Name="LimitSeedInput"
-                                    Width="30"
+                                    Width="55"
                                     Height="25"
                                     Margin="225,125,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    FontSize="16"
+                                    FontSize="12"
                                     IsReadOnly="True"
                                     Text="{Binding LimitSeed}" />
                                 <Button
                                     x:Name="LimitSeedBtn"
                                     Width="55"
                                     Height="25"
-                                    Margin="255,125,0,0"
+                                    Margin="282,125,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding LimitSeedCommand}"
@@ -3372,8 +3373,8 @@
                                         PlacementTarget="{Binding ElementName=SPInput1DropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="SPInput1ListBox"
@@ -3409,8 +3410,8 @@
                                         PlacementTarget="{Binding ElementName=SlotDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="SlotListBox"
@@ -3470,8 +3471,8 @@
                                         PlacementTarget="{Binding ElementName=BgDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BgListBox"
@@ -3545,8 +3546,8 @@
                                         PlacementTarget="{Binding ElementName=seedPacketsDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="seedPacketsListBox"
@@ -3609,8 +3610,8 @@
                                         PlacementTarget="{Binding ElementName=FormationDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="FormationListBox"
@@ -3737,8 +3738,8 @@
                                         PlacementTarget="{Binding ElementName=FormationRowDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="FormationRowListBox"
@@ -3772,8 +3773,8 @@
                                         PlacementTarget="{Binding ElementName=PlantRowTypeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="PlantRowTypeListBox"
@@ -3830,8 +3831,8 @@
                                         PlacementTarget="{Binding ElementName=FormationColDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="FormationColListBox"
@@ -3865,8 +3866,8 @@
                                         PlacementTarget="{Binding ElementName=GridSquareTypeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="GridSquareTypeListBox"
@@ -3987,8 +3988,8 @@
                                         PlacementTarget="{Binding ElementName=QModDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{StaticResource BgControlBrush}"
+                                            BorderBrush="{StaticResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="QModListBox"
@@ -4039,7 +4040,7 @@
                                             <DataTemplate>
                                                 <Border
                                                     Padding="0,5"
-                                                    BorderBrush="LightGray"
+                                                    BorderBrush="{StaticResource BorderLineBrush}"
                                                     BorderThickness="0,0,0,1">
                                                     <StackPanel>
                                                         <TextBlock
@@ -4962,8 +4963,8 @@
                     Grid.Row="3"
                     Height="58"
                     Margin="0,0,0,0"
-                    Background="#F0F0F0"
-                    BorderBrush="#CCCCCC"
+                    Background="{StaticResource BgPanelBrush}"
+                    BorderBrush="{StaticResource BorderLineBrush}"
                     BorderThickness="0,1,0,0"
                     Visibility="{Binding IsUpdating, Converter={StaticResource BoolToVis}}">
                     <Grid>
@@ -4976,7 +4977,7 @@
                             Grid.Row="0"
                             Margin="8,4,8,0"
                             FontSize="12"
-                            Foreground="#333333"
+                            Foreground="{StaticResource TextPrimaryBrush}"
                             Text="{Binding UpdateStatusText}" />
                         <ProgressBar
                             Grid.Row="1"
@@ -4992,23 +4993,23 @@
                             Orientation="Horizontal">
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#666666"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="{Binding UpdateDownloadedMB}" />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#666666"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text=" / " />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#666666"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="{Binding UpdateTotalMB}" />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#888888"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="  " />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#0078D4"
+                                Foreground="{StaticResource AccentBrush}"
                                 Text="{Binding UpdateSpeed}" />
                         </StackPanel>
                     </Grid>
@@ -5049,14 +5050,14 @@
                         Content="-" />
                     <TextBlock
                         Name="SizeText"
-                        Width="33"
+                        Width="46"
                         Height="15"
-                        Margin="300,0,0,5"
+                        Margin="288,0,0,5"
                         Text="{Binding SizeText}" />
                     <Button
-                        Width="30"
+                        Width="46"
                         Height="25"
-                        Margin="495,0,0,5"
+                        Margin="490,0,0,5"
                         Command="{Binding SettingCommand}"
                         Content="环境" />
                 </Grid>
