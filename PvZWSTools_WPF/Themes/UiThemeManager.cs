@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using PvZWSTools_Shared.Helpers;
 using System.Windows.Media;
 
 namespace PvZWSTools_WPF.Themes;
@@ -30,10 +31,11 @@ public static class UiThemeManager
                 IsDark = parts.Length < 2 || parts[1] != "light";
             }
         }
-        catch
+        catch(Exception ex)
         {
-            // 配置读取失败按默认处理
+            Log.Error("UI 配置读取失败: " + ex);
         }
+        Log.Info(string.Format("UI 模式: UseNewUi={0}, IsDark={1}", UseNewUi, IsDark));
         Apply();
     }
 
@@ -58,17 +60,17 @@ public static class UiThemeManager
         }
     }
 
-    /// <summary>按当前选择应用主题资源：NewUI 合并黑夜/白天地图，经典合并原生覆写。</summary>
+    /// <summary>按当前选择应用主题资源：
+    /// NewUI = 黑夜/白天地图；经典 = 白天用原生覆写、夜间直接复用黑夜主题
+    /// （master 布局 + 深色控件样式，与新 UI 黑夜观感一致）。</summary>
     public static void Apply()
     {
         var merged = Application.Current.Resources.MergedDictionaries;
         merged.Clear();
-        merged.Add(new ResourceDictionary
-        {
-            Source = new Uri(UseNewUi
-                ? (IsDark ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml")
-                : "Themes/ClassicOverrides.xaml", UriKind.Relative)
-        });
+        string source = UseNewUi
+            ? (IsDark ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml")
+            : (IsDark ? "Themes/DarkTheme.xaml" : "Themes/ClassicOverrides.xaml");
+        merged.Add(new ResourceDictionary { Source = new Uri(source, UriKind.Relative) });
     }
 
     /// <summary>窗口字体/颜色随模式刷新：NewUI 用主题画刷与雅黑；经典用系统默认字体。</summary>
@@ -79,6 +81,13 @@ public static class UiThemeManager
             window.FontFamily = new FontFamily("Microsoft YaHei UI");
             window.SetResourceReference(Window.BackgroundProperty, "BgRootBrush");
             window.SetResourceReference(Window.ForegroundProperty, "TextPrimaryBrush");
+        }
+        else if (IsDark)
+        {
+            // 经典 UI + 夜间：窗口底色/文字显式深色，默认模板控件由 ThemeMode.Dark 负责变暗
+            window.FontFamily = SystemFonts.MessageFontFamily;
+            window.Background = new SolidColorBrush(Color.FromRgb(0x1B, 0x1E, 0x24));
+            window.Foreground = new SolidColorBrush(Color.FromRgb(0xE8, 0xEA, 0xED));
         }
         else
         {

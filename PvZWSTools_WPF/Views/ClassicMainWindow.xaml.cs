@@ -22,6 +22,7 @@ public partial class ClassicMainWindow:Window
     public ClassicMainWindow()
     {
         InitializeComponent();
+        Themes.UiThemeManager.RefreshWindowChrome(this); // 夜间模式配色（经典 UI）
 
         Title = Title + "_" + CompileTime.GetCompileTime()?.ToString("yyyyMMdd");
         if(IsBetaVersion)
