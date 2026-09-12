@@ -1,6 +1,6 @@
 ﻿<Window
     x:Class="PvZWSTools_WPF.Views.GardenDialog"
-    Background="{StaticResource BgRootBrush}"
+    Background="{DynamicResource BgRootBrush}"
     FontFamily="Microsoft YaHei UI"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -65,8 +65,8 @@
                     PlacementTarget="{Binding ElementName=SeedTypeDropdownToggle}"
                     StaysOpen="False">
                     <Border
-                        Background="{StaticResource BgControlBrush}"
-                        BorderBrush="{StaticResource BorderLineBrush}"
+                        Background="{DynamicResource BgControlBrush}"
+                        BorderBrush="{DynamicResource BorderLineBrush}"
                         BorderThickness="1">
                         <ListBox
                             x:Name="SeedTypeListBox"
@@ -112,8 +112,8 @@
                     PlacementTarget="{Binding ElementName=FacingDropdownToggle}"
                     StaysOpen="False">
                     <Border
-                        Background="{StaticResource BgControlBrush}"
-                        BorderBrush="{StaticResource BorderLineBrush}"
+                        Background="{DynamicResource BgControlBrush}"
+                        BorderBrush="{DynamicResource BorderLineBrush}"
                         BorderThickness="1">
                         <ListBox
                             x:Name="FacingListBox"
@@ -159,8 +159,8 @@
                     PlacementTarget="{Binding ElementName=AgeDropdownToggle}"
                     StaysOpen="False">
                     <Border
-                        Background="{StaticResource BgControlBrush}"
-                        BorderBrush="{StaticResource BorderLineBrush}"
+                        Background="{DynamicResource BgControlBrush}"
+                        BorderBrush="{DynamicResource BorderLineBrush}"
                         BorderThickness="1">
                         <ListBox
                             x:Name="AgeListBox"

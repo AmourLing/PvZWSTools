@@ -5,6 +5,7 @@ using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.ViewModels;
 using PvZWSTools_WPF.Platform;
+using PvZWSTools_WPF.Themes;
 using PvZWSTools_WPF.Services;
 using static PvZWSTools_Shared.Sharedstring;
 
@@ -16,16 +17,10 @@ public partial class MainWindow:Window
     private bool _isResizing = false;
     private readonly IUpdateService _updateService;
     private bool _isUpdateOnlyMode; // 过期后进入"仅更新模式"，防止自动检查重复弹 UpdateWindow
-    private bool _isDarkTheme = true;
-
-    // 白天/黑夜主题切换：替换 App 合并字典中的主题资源
-    private void ToggleUiTheme_Click(object sender, RoutedEventArgs e)
+    // 打开 UI 选择界面（经典 UI / NewUI、黑夜 / 白天）
+    private void UiButton_Click(object sender, RoutedEventArgs e)
     {
-        _isDarkTheme = !_isDarkTheme;
-        Application.Current.Resources.MergedDictionaries[0] = new ResourceDictionary
-        {
-            Source = new Uri(_isDarkTheme ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml", UriKind.Relative)
-        };
+        new UiSelectWindow { Owner = this }.ShowDialog();
     }
 
     public MainWindow()

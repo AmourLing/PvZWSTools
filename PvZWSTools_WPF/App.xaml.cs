@@ -38,6 +38,7 @@ public partial class App:Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        Themes.UiThemeManager.LoadAndApply(); // 按上次选择应用 UI 风格与主题
         try
         {
             var mainWindow = new MainWindow();

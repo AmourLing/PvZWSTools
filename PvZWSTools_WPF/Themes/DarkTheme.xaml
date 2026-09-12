@@ -152,7 +152,7 @@
     </Style>
 
     <!--  顶部标签导航：TabControl  -->
-    <Style TargetType="TabControl">
+    <Style x:Key="PillTabControlStyle" TargetType="TabControl">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ItemsPanel">
@@ -192,6 +192,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="TabControl" BasedOn="{StaticResource PillTabControlStyle}" />
 
     <Style TargetType="TabItem">
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
@@ -233,6 +235,15 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!--  单选/复选：仅前景色，保持默认模板  -->
+    <Style TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    </Style>
+
+    <Style TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
     </Style>
 
     <!--  列表  -->
