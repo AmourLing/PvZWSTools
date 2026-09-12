@@ -10,7 +10,6 @@
     Title="PvZWSTools_Windows"
     Background="{StaticResource BgRootBrush}"
     FontFamily="Microsoft YaHei UI"
-    FontSize="13"
     Width="{Binding CurrentWidth, Mode=TwoWay}"
     Height="600"
     Icon="../Resources/icon.ico"
@@ -24,12 +23,7 @@
     </Window.Resources>
 
     <Viewbox Stretch="Fill" StretchDirection="Both">
-        <Border
-            Width="780"
-            Height="430"
-            Background="{StaticResource BgPanelBrush}"
-            CornerRadius="12"
-            Padding="10">
+        <Border Width="640" Height="400">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -60,10 +54,7 @@
 
                 <!--  主选项卡  -->
                 <Grid Grid.Row="1">
-                    <TabControl
-                        x:Name="MainTabControl"
-                        TabStripPlacement="Left"
-                        SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+                    <TabControl x:Name="MainTabControl" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
                         <!--  杂项  -->
                         <TabItem Header="杂项">
                             <Grid DataContext="{Binding Others}">
