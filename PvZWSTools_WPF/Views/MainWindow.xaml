@@ -8,7 +8,7 @@
     xmlns:models="clr-namespace:PvZWSTools_Shared.Models"
     xmlns:viewModels="clr-namespace:PvZWSTools_Shared.ViewModels"
     Title="PvZWSTools_Windows"
-    Background="{StaticResource BgRootBrush}"
+    Background="{DynamicResource BgRootBrush}"
     FontFamily="Microsoft YaHei UI"
     Width="{Binding CurrentWidth, Mode=TwoWay}"
     Height="600"
@@ -49,7 +49,7 @@
                         Width="64"
                         Command="{Binding ConnectCommand}"
                         Content="{Binding ConnectionButtonText}"
-                        Style="{StaticResource AccentButtonStyle}" />
+                        Style="{DynamicResource AccentButtonStyle}" />
                 </Grid>
 
                 <!--  主选项卡  -->
@@ -5056,13 +5056,15 @@
                     <Button
                         Width="30"
                         Height="25"
-                        Margin="365,0,0,5"
+                        Margin="340,0,0,5"
+                        HorizontalAlignment="Left"
                         Command="{Binding SizeUpCommand}"
                         Content="+" />
                     <Button
                         Width="30"
                         Height="25"
-                        Margin="430,0,0,5"
+                        Margin="378,0,0,5"
+                        HorizontalAlignment="Left"
                         Command="{Binding SizeDownCommand}"
                         Content="-" />
                     <TextBlock
@@ -5070,13 +5072,22 @@
                         Width="46"
                         Height="15"
                         Margin="288,0,0,5"
+                        HorizontalAlignment="Left"
                         Text="{Binding SizeText}" />
                     <Button
                         Width="46"
                         Height="25"
-                        Margin="490,0,0,5"
+                        Margin="416,0,0,5"
+                        HorizontalAlignment="Left"
                         Command="{Binding SettingCommand}"
                         Content="环境" />
+                    <Button
+                        Width="46"
+                        Height="25"
+                        Margin="468,0,0,5"
+                        HorizontalAlignment="Left"
+                        Click="ToggleUiTheme_Click"
+                        Content="UI" />
                 </Grid>
             </Grid>
         </Border>

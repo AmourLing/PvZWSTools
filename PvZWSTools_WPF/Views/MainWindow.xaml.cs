@@ -16,6 +16,17 @@ public partial class MainWindow:Window
     private bool _isResizing = false;
     private readonly IUpdateService _updateService;
     private bool _isUpdateOnlyMode; // 过期后进入"仅更新模式"，防止自动检查重复弹 UpdateWindow
+    private bool _isDarkTheme = true;
+
+    // 白天/黑夜主题切换：替换 App 合并字典中的主题资源
+    private void ToggleUiTheme_Click(object sender, RoutedEventArgs e)
+    {
+        _isDarkTheme = !_isDarkTheme;
+        Application.Current.Resources.MergedDictionaries[0] = new ResourceDictionary
+        {
+            Source = new Uri(_isDarkTheme ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml", UriKind.Relative)
+        };
+    }
 
     public MainWindow()
     {
