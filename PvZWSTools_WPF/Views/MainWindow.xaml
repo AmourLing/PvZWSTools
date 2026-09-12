@@ -95,7 +95,7 @@
                                     Grid.Column="0"
                                     Width="90"
                                     Height="25"
-                                    FontSize="16"
+                                    FontSize="12"
                                     Text="{Binding SetTreeHeight}" />
                                 <Button
                                     Grid.Row="1"
@@ -304,7 +304,7 @@
                                     <TextBox
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding ModeInput}" TextAlignment="Center" />
                                     <ToggleButton
@@ -318,7 +318,7 @@
                                         Grid.Column="2"
                                         Width="71"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding AdventureInput}" />
                                     <Button
                                         x:Name="SetModeBtn"
@@ -358,7 +358,7 @@
                                         Grid.Column="2"
                                         Width="100"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding EndlessFlag}" />
                                     <Button
                                         x:Name="SetEndlessFlagBtn"
@@ -524,7 +524,7 @@
                                         Grid.Column="1"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding ValueInput}" />
                                     <ToggleButton
                                         x:Name="ValueDropdownToggle"
@@ -539,7 +539,7 @@
                                         Grid.Column="3"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding ValueInput2}" />
                                     <Button
                                         Grid.Column="4"
@@ -587,7 +587,7 @@
                                         Grid.Column="1"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding DamageInput}" />
                                     <ToggleButton
                                         x:Name="DamageDropdownToggle"
@@ -602,7 +602,7 @@
                                         Grid.Column="3"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding DamageInput2}" />
                                     <Button
                                         Grid.Column="4"
@@ -650,7 +650,7 @@
                                         Grid.Column="1"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding HealthInput}" />
                                     <ToggleButton
                                         x:Name="HealthDropdownToggle"
@@ -665,7 +665,7 @@
                                         Grid.Column="3"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding HealthInput2}" />
                                     <Button
                                         Grid.Column="4"
@@ -713,7 +713,7 @@
                                         Grid.Column="1"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding TimeInput}" />
                                     <ToggleButton
                                         x:Name="TimeDropdownToggle"
@@ -728,7 +728,7 @@
                                         Grid.Column="3"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding TimeInput2}" />
                                     <Button
                                         Grid.Column="4"
@@ -1061,7 +1061,7 @@
                                         Grid.Column="0"
                                         Width="145"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding CD_OtherInput}" />
                                     <ToggleButton
                                         x:Name="OtherCDPlantDropdownToggle"
@@ -2313,7 +2313,7 @@
                                     Margin="200,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    FontSize="16"
+                                    FontSize="12"
                                     Text="{Binding ZombieHealthMin}" />
                                 <TextBox
                                     x:Name="ZombieHealthToNextWaveMaxInput"
@@ -2322,7 +2322,7 @@
                                     Margin="240,275,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    FontSize="16"
+                                    FontSize="12"
                                     Text="{Binding ZombieHealthMax}" />
                                 <Button
                                     x:Name="Btn_ZombieHealthToNextWave"
@@ -2352,7 +2352,7 @@
                                         x:Name="RowInput"
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding RowInput}" />
                                     <ToggleButton
                                         x:Name="BoardRowDropdownToggle"
@@ -2393,7 +2393,7 @@
                                         x:Name="ColInput"
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding ColInput}" />
                                     <ToggleButton
                                         x:Name="BoardColDropdownToggle"
@@ -2433,13 +2433,13 @@
                                     <TextBlock
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text=" Y" />
                                     <TextBox
                                         x:Name="DeltamYInput"
                                         Grid.Column="1"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding DeltamYInput}" />
                                     <ToggleButton
                                         x:Name="BoarddeltamYDropdownToggle"
@@ -2479,13 +2479,13 @@
                                     <TextBlock
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text=" X" />
                                     <TextBox
                                         x:Name="DeltamXInput"
                                         Grid.Column="1"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding DeltamXInput}" />
                                     <ToggleButton
                                         x:Name="BoarddeltamXDropdownToggle"
@@ -2533,7 +2533,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding STInput}" />
                                     <ToggleButton
                                         x:Name="PlantDropdownToggle"
@@ -2554,7 +2554,7 @@
                                         x:Name="Imitater"
                                         Grid.Column="3"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding Imitater}" TextAlignment="Center" />
                                     <Button
@@ -2567,7 +2567,7 @@
                                         x:Name="LimitPlantingInput"
                                         Grid.Column="5"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding LimitPlantingInput}" TextAlignment="Center" />
                                     <Button
@@ -2580,7 +2580,7 @@
                                         x:Name="IsSleepingInput"
                                         Grid.Column="7"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding IsSleepingInput}" TextAlignment="Center" />
                                     <Button
@@ -2627,7 +2627,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding ZTInput}" />
                                     <ToggleButton
                                         x:Name="ZombieDropdownToggle"
@@ -2649,7 +2649,7 @@
                                         Grid.Column="3"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding ZXPermit}" TextAlignment="Center" />
                                     <Button
@@ -2662,7 +2662,7 @@
                                         x:Name="MindCtrlInput"
                                         Grid.Column="5"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding MindCtrl}" TextAlignment="Center" />
                                     <Button
@@ -2705,7 +2705,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding CTInput}" />
                                     <ToggleButton
                                         x:Name="CoinDropdownToggle"
@@ -2760,7 +2760,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding ItemInput}" />
                                     <ToggleButton
                                         x:Name="ItemDropdownToggle"
@@ -2781,7 +2781,7 @@
                                         x:Name="VASETYPEInput"
                                         Grid.Column="3"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding VaseTypeInput}" />
                                     <Button
                                         Grid.Column="4"
@@ -2792,7 +2792,7 @@
                                         x:Name="VASESTATEInput"
                                         Grid.Column="5"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding VaseStateInput}" />
                                     <Button
                                         Grid.Column="6"
@@ -2833,7 +2833,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding ClearInput}" TextAlignment="Center" />
                                     <ToggleButton
@@ -2875,7 +2875,7 @@
                                     Margin="0,125,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    FontSize="16"
+                                    FontSize="12"
                                     Text="小推车" />
                                 <Button
                                     x:Name="RunMowerBtn"
@@ -3358,7 +3358,7 @@
                                         x:Name="SPInput1"
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding SpInput1}" />
                                     <ToggleButton
                                         x:Name="SPInput1DropdownToggle"
@@ -3389,7 +3389,7 @@
                                         Grid.Column="2"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding SpInput2}" />
                                     <ToggleButton
                                         x:Name="SlotDropdownToggle"
@@ -3425,7 +3425,7 @@
                                         x:Name="SPInput3"
                                         Grid.Column="5"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding SpInput3}" TextAlignment="Center" />
                                     <Button
@@ -3448,7 +3448,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding BgInput}" />
                                     <ToggleButton
                                         x:Name="BgDropdownToggle"
@@ -3518,7 +3518,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding SeedPacketsInput}" />
                                     <ToggleButton
                                         x:Name="seedPacketsDropdownToggle"
@@ -3582,7 +3582,7 @@
                                         Grid.Column="0"
                                         Height="25"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding FormationInput}" />
                                     <ToggleButton
                                         x:Name="FormationDropdownToggle"
@@ -3626,17 +3626,17 @@
                                     x:Name="Formation_Sync_Card_Input"
                                     Width="30"
                                     Height="25"
-                                    Margin="355,95,0,0"
+                                    Margin="320,95,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     HorizontalContentAlignment="Center"
-                                    FontSize="16"
+                                    FontSize="12"
                                     Text="{Binding Formation_Sync_CardInput}" />
                                 <Button
                                     x:Name="Formation_Sync_CardBtn"
                                     Width="60"
                                     Height="25"
-                                    Margin="385,95,0,0"
+                                    Margin="350,95,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     HorizontalContentAlignment="Center"
@@ -3658,7 +3658,7 @@
                                         x:Name="Formation_Name_Input"
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding FormationNameInput}" />
                                     <Button
                                         x:Name="AddFormationBtn"
@@ -3670,7 +3670,7 @@
                                         x:Name="Formation_Plant_Input"
                                         Grid.Column="2"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding FormationPlant}" TextAlignment="Center" />
                                     <Button
@@ -3683,7 +3683,7 @@
                                         x:Name="Formation_Ladder_Input"
                                         Grid.Column="4"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding FormationLadder}" TextAlignment="Center" />
                                     <Button
@@ -3697,7 +3697,7 @@
                                         x:Name="Formation_Vase_Input"
                                         Grid.Column="6"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         IsReadOnly="True"
                                         Text="{Binding FormationVase}" TextAlignment="Center" />
                                     <Button
@@ -3723,7 +3723,7 @@
                                         x:Name="Formation_Row_Input"
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding FormationRowInput}" />
                                     <ToggleButton
                                         x:Name="FormationRowDropdownToggle"
@@ -3753,7 +3753,7 @@
                                         x:Name="PlantRowTypeInput"
                                         Grid.Column="2"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding PlantRowTypeInput}" />
                                     <ToggleButton
                                         x:Name="PlantRowTypeDropdownToggle"
@@ -3816,7 +3816,7 @@
                                         x:Name="Formation_Col_Input"
                                         Grid.Column="0"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding FormationColInput}" />
                                     <ToggleButton
                                         x:Name="FormationColDropdownToggle"
@@ -3846,7 +3846,7 @@
                                         x:Name="GridSquareTypeInput"
                                         Grid.Column="2"
                                         Height="25"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding GridSquareTypeInput}" />
                                     <ToggleButton
                                         x:Name="GridSquareTypeDropdownToggle"
@@ -3973,7 +3973,7 @@
                                         Height="25"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
-                                        FontSize="16"
+                                        FontSize="12"
                                         Text="{Binding QMod}" />
                                     <ToggleButton
                                         x:Name="QModDropdownToggle"

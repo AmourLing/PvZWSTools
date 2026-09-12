@@ -130,6 +130,7 @@
                         CornerRadius="6">
                         <ScrollViewer
                             x:Name="PART_ContentHost"
+                            VerticalAlignment="Center"
                             Margin="{TemplateBinding Padding}"
                             HorizontalScrollBarVisibility="Hidden"
                             VerticalScrollBarVisibility="Hidden" />
