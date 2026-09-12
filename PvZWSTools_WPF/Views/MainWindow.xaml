@@ -113,7 +113,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ClearFog}" />
+                                    Text="{Binding ClearFog}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="4"
@@ -130,7 +130,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ClearVase}" />
+                                    Text="{Binding ClearVase}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="4"
@@ -147,7 +147,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding BigSun}" />
+                                    Text="{Binding BigSun}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="2"
                                     Grid.Column="4"
@@ -164,7 +164,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding AutoCollect}" />
+                                    Text="{Binding AutoCollect}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="7"
@@ -181,7 +181,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding NoCDPlanting}" />
+                                    Text="{Binding NoCDPlanting}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="7"
@@ -198,7 +198,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding AutoWatering}" />
+                                    Text="{Binding AutoWatering}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="2"
                                     Grid.Column="7"
@@ -215,7 +215,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding NoCostPlanting}" />
+                                    Text="{Binding NoCostPlanting}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="10"
@@ -232,7 +232,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding RunWhileLocked}" />
+                                    Text="{Binding RunWhileLocked}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="10"
@@ -249,7 +249,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding RemoveCoverLayer}" />
+                                    Text="{Binding RemoveCoverLayer}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="2"
                                     Grid.Column="10"
@@ -266,7 +266,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding AutoFertilizerBugSpray}" />
+                                    Text="{Binding AutoFertilizerBugSpray}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="3"
                                     Grid.Column="7"
@@ -306,7 +306,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding ModeInput}" />
+                                        Text="{Binding ModeInput}" TextAlignment="Center" />
                                     <ToggleButton
                                         x:Name="ModeDropdownToggle"
                                         Grid.Column="1"
@@ -790,7 +790,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding InvincPlant}" />
+                                    Text="{Binding InvincPlant}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="1"
@@ -807,7 +807,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding OnlyButter}" />
+                                    Text="{Binding OnlyButter}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="4"
@@ -824,7 +824,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding WakeUp}" />
+                                    Text="{Binding WakeUp}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="7"
@@ -841,7 +841,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding NoCrater}" />
+                                    Text="{Binding NoCrater}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="10"
@@ -858,7 +858,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding DrawPlantHP}" />
+                                    Text="{Binding DrawPlantHP}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="1"
@@ -875,7 +875,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding NoSquish}" />
+                                    Text="{Binding NoSquish}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="4"
@@ -891,7 +891,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding DrawStateCountdown}" />
+                                    Text="{Binding DrawStateCountdown}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="7"
@@ -907,7 +907,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding PlanternAlwaysHenshin}" />
+                                    Text="{Binding PlanternAlwaysHenshin}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="10"
@@ -923,7 +923,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Potato}" />
+                                    Text="{Binding CD_Potato}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="2"
                                     Grid.Column="1"
@@ -940,7 +940,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Chomper}" />
+                                    Text="{Binding CD_Chomper}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="2"
                                     Grid.Column="4"
@@ -957,7 +957,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Sunshroom}" />
+                                    Text="{Binding CD_Sunshroom}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="2"
                                     Grid.Column="7"
@@ -974,7 +974,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Magnet}" />
+                                    Text="{Binding CD_Magnet}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="2"
                                     Grid.Column="10"
@@ -991,7 +991,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Cob}" />
+                                    Text="{Binding CD_Cob}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="3"
                                     Grid.Column="1"
@@ -1007,7 +1007,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_SuperChomper}" />
+                                    Text="{Binding CD_SuperChomper}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="3"
                                     Grid.Column="4"
@@ -1023,7 +1023,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Agave}" />
+                                    Text="{Binding CD_Agave}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="3"
                                     Grid.Column="7"
@@ -1039,7 +1039,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Endo}" />
+                                    Text="{Binding CD_Endo}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="3"
                                     Grid.Column="10"
@@ -1128,7 +1128,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding InvincZombie}" />
+                                    Text="{Binding InvincZombie}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="1"
@@ -1145,7 +1145,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding StopWalk}" />
+                                    Text="{Binding StopWalk}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="4"
@@ -1162,7 +1162,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding NoIceTrap}" />
+                                    Text="{Binding NoIceTrap}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="7"
@@ -1179,7 +1179,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding NoExplode}" />
+                                    Text="{Binding NoExplode}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="0"
                                     Grid.Column="10"
@@ -1196,7 +1196,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding DrawZombieHP}" />
+                                    Text="{Binding DrawZombieHP}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="1"
@@ -1213,7 +1213,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding DropPacket}" />
+                                    Text="{Binding DropPacket}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="4"
@@ -1230,7 +1230,7 @@
                                     Height="25"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding NoSteal}" />
+                                    Text="{Binding NoSteal}" TextAlignment="Center" />
                                 <Button
                                     Grid.Row="1"
                                     Grid.Column="7"
@@ -1264,7 +1264,7 @@
                                         Height="25"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding AllowMindCtrl}" />
+                                        Text="{Binding AllowMindCtrl}" TextAlignment="Center" />
                                     <Button
                                         Grid.Column="1"
                                         Width="60"
@@ -1279,7 +1279,7 @@
                                         Height="25"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding LimitZombieGetDebuff}" />
+                                        Text="{Binding LimitZombieGetDebuff}" TextAlignment="Center" />
                                     <Button
                                         Grid.Column="4"
                                         Width="60"
@@ -1336,7 +1336,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieNormal}" />
+                                    Text="{Binding ZombieNormal}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieNormal_Btn"
                                     Width="40"
@@ -1356,7 +1356,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieFlag}" />
+                                    Text="{Binding ZombieFlag}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieFlag_Btn"
                                     Width="40"
@@ -1376,7 +1376,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieTrafficCone}" />
+                                    Text="{Binding ZombieTrafficCone}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieTrafficCone_Btn"
                                     Width="40"
@@ -1396,7 +1396,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombiePolevaulter}" />
+                                    Text="{Binding ZombiePolevaulter}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombiePolevaulter_Btn"
                                     Width="40"
@@ -1416,7 +1416,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombiePail}" />
+                                    Text="{Binding ZombiePail}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombiePail_Btn"
                                     Width="40"
@@ -1437,7 +1437,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieNewspaper}" />
+                                    Text="{Binding ZombieNewspaper}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieNewspaper_Btn"
                                     Width="40"
@@ -1457,7 +1457,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieDoor}" />
+                                    Text="{Binding ZombieDoor}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieDoor_Btn"
                                     Width="40"
@@ -1477,7 +1477,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieFootball}" />
+                                    Text="{Binding ZombieFootball}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieFootball_Btn"
                                     Width="40"
@@ -1497,7 +1497,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieDancer}" />
+                                    Text="{Binding ZombieDancer}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieDancer_Btn"
                                     Width="40"
@@ -1517,7 +1517,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieBackupDancer}" />
+                                    Text="{Binding ZombieBackupDancer}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieBackupDancer_Btn"
                                     Width="40"
@@ -1538,7 +1538,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieDuckyTube}" />
+                                    Text="{Binding ZombieDuckyTube}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieDuckyTube_Btn"
                                     Width="40"
@@ -1558,7 +1558,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieSnorkel}" />
+                                    Text="{Binding ZombieSnorkel}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieSnorkel_Btn"
                                     Width="40"
@@ -1578,7 +1578,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieZamboni}" />
+                                    Text="{Binding ZombieZamboni}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieZamboni_Btn"
                                     Width="40"
@@ -1598,7 +1598,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieBobsled}" />
+                                    Text="{Binding ZombieBobsled}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieBobsled_Btn"
                                     Width="40"
@@ -1618,7 +1618,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieDolphinRider}" />
+                                    Text="{Binding ZombieDolphinRider}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieDolphinRider_Btn"
                                     Width="40"
@@ -1639,7 +1639,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieJackInTheBox}" />
+                                    Text="{Binding ZombieJackInTheBox}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieJackInTheBox_Btn"
                                     Width="40"
@@ -1659,7 +1659,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieBalloon}" />
+                                    Text="{Binding ZombieBalloon}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieBalloon_Btn"
                                     Width="40"
@@ -1679,7 +1679,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieDigger}" />
+                                    Text="{Binding ZombieDigger}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieDigger_Btn"
                                     Width="40"
@@ -1699,7 +1699,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombiePogo}" />
+                                    Text="{Binding ZombiePogo}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombiePogo_Btn"
                                     Width="40"
@@ -1719,7 +1719,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieYeti}" />
+                                    Text="{Binding ZombieYeti}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieYeti_Btn"
                                     Width="40"
@@ -1740,7 +1740,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieBungee}" />
+                                    Text="{Binding ZombieBungee}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieBungee_Btn"
                                     Width="40"
@@ -1760,7 +1760,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieLadder}" />
+                                    Text="{Binding ZombieLadder}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieLadder_Btn"
                                     Width="40"
@@ -1780,7 +1780,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieCatapult}" />
+                                    Text="{Binding ZombieCatapult}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieCatapult_Btn"
                                     Width="40"
@@ -1800,7 +1800,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieGargantuar}" />
+                                    Text="{Binding ZombieGargantuar}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieGargantuar_Btn"
                                     Width="40"
@@ -1820,7 +1820,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieImp}" />
+                                    Text="{Binding ZombieImp}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieImp_Btn"
                                     Width="40"
@@ -1841,7 +1841,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieBoss}" />
+                                    Text="{Binding ZombieBoss}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieBoss_Btn"
                                     Width="40"
@@ -1861,7 +1861,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombiePeaHead}" />
+                                    Text="{Binding ZombiePeaHead}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombiePeaHead_Btn"
                                     Width="40"
@@ -1881,7 +1881,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieWallnutHead}" />
+                                    Text="{Binding ZombieWallnutHead}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieWallnutHead_Btn"
                                     Width="40"
@@ -1901,7 +1901,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieJalapenoHead}" />
+                                    Text="{Binding ZombieJalapenoHead}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieJalapenoHead_Btn"
                                     Width="40"
@@ -1921,7 +1921,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieGatlingHead}" />
+                                    Text="{Binding ZombieGatlingHead}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieGatlingHead_Btn"
                                     Width="40"
@@ -1942,7 +1942,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieSquashHead}" />
+                                    Text="{Binding ZombieSquashHead}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieSquashHead_Btn"
                                     Width="40"
@@ -1962,7 +1962,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieTallnutHead}" />
+                                    Text="{Binding ZombieTallnutHead}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieTallnutHead_Btn"
                                     Width="40"
@@ -1982,7 +1982,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieRedeyeGargantuar}" />
+                                    Text="{Binding ZombieRedeyeGargantuar}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieRedeyeGargantuar_Btn"
                                     Width="40"
@@ -2002,7 +2002,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieRobotTitan}" />
+                                    Text="{Binding ZombieRobotTitan}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieRobotTitan_Btn"
                                     Width="40"
@@ -2022,7 +2022,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieRedeyeRobotTitan}" />
+                                    Text="{Binding ZombieRedeyeRobotTitan}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieRedeyeRobotTitan_Btn"
                                     Width="40"
@@ -2043,7 +2043,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieMonk}" />
+                                    Text="{Binding ZombieMonk}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieMonk_Btn"
                                     Width="40"
@@ -2063,7 +2063,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieFootballPremium}" />
+                                    Text="{Binding ZombieFootballPremium}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieFootballPremium_Btn"
                                     Width="40"
@@ -2083,7 +2083,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieNinja}" />
+                                    Text="{Binding ZombieNinja}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieNinja_Btn"
                                     Width="40"
@@ -2103,7 +2103,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombieTalisman}" />
+                                    Text="{Binding ZombieTalisman}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombieTalisman_Btn"
                                     Width="40"
@@ -2123,7 +2123,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding ZombiePropeller}" />
+                                    Text="{Binding ZombiePropeller}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Spawn_ZombiePropeller_Btn"
                                     Width="40"
@@ -2144,7 +2144,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding StopSpawn}" />
+                                    Text="{Binding StopSpawn}" TextAlignment="Center" />
                                 <Button
                                     x:Name="StopSpawnBtn"
                                     Width="60"
@@ -2165,7 +2165,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding MaxPoint}" />
+                                    Text="{Binding MaxPoint}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Btn_MaxPoint"
                                     Width="60"
@@ -2186,7 +2186,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding BungeeCheck}" />
+                                    Text="{Binding BungeeCheck}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Btn_Bungee"
                                     Width="60"
@@ -2207,7 +2207,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding RedeyeCheck}" />
+                                    Text="{Binding RedeyeCheck}" TextAlignment="Center" />
                                 <Button
                                     x:Name="Btn_Redeye"
                                     Width="60"
@@ -2283,7 +2283,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding JsonEditZombiesInWave}" />
+                                    Text="{Binding JsonEditZombiesInWave}" TextAlignment="Center" />
                                 <Button
                                     x:Name="JsonEditZombiesInWave_Btn"
                                     Width="60"
@@ -2556,7 +2556,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding Imitater}" />
+                                        Text="{Binding Imitater}" TextAlignment="Center" />
                                     <Button
                                         x:Name="SetPlantImitaterBtn"
                                         Grid.Column="4"
@@ -2569,7 +2569,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding LimitPlantingInput}" />
+                                        Text="{Binding LimitPlantingInput}" TextAlignment="Center" />
                                     <Button
                                         x:Name="LimitPlantingBtn"
                                         Grid.Column="6"
@@ -2582,7 +2582,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding IsSleepingInput}" />
+                                        Text="{Binding IsSleepingInput}" TextAlignment="Center" />
                                     <Button
                                         x:Name="IsSleepingBtn"
                                         Grid.Column="8"
@@ -2651,7 +2651,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding ZXPermit}" />
+                                        Text="{Binding ZXPermit}" TextAlignment="Center" />
                                     <Button
                                         x:Name="SetZXBtn"
                                         Grid.Column="4"
@@ -2664,7 +2664,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding MindCtrl}" />
+                                        Text="{Binding MindCtrl}" TextAlignment="Center" />
                                     <Button
                                         x:Name="MindCtrlBtn"
                                         Grid.Column="6"
@@ -2820,7 +2820,7 @@
 
                                 <!--  清除所有  -->
                                 <Grid
-                                    Margin="372,125,0,0"
+                                    Margin="315,125,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
@@ -2835,7 +2835,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding ClearInput}" />
+                                        Text="{Binding ClearInput}" TextAlignment="Center" />
                                     <ToggleButton
                                         x:Name="ClearDropdownToggle"
                                         Grid.Column="1"
@@ -2919,19 +2919,19 @@
                                 <!--  限定植物  -->
                                 <TextBox
                                     x:Name="LimitSeedInput"
-                                    Width="82"
+                                    Width="30"
                                     Height="25"
                                     Margin="225,125,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding LimitSeed}" />
+                                    Text="{Binding LimitSeed}" TextAlignment="Center" />
                                 <Button
                                     x:Name="LimitSeedBtn"
                                     Width="55"
                                     Height="25"
-                                    Margin="309,125,0,0"
+                                    Margin="255,125,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding LimitSeedCommand}"
@@ -2958,7 +2958,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding FreePlant}" />
+                                    Text="{Binding FreePlant}" TextAlignment="Center" />
                                 <Button
                                     x:Name="FreePlantBtn"
                                     Width="90"
@@ -3001,7 +3001,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding BanSaveGame}" />
+                                    Text="{Binding BanSaveGame}" TextAlignment="Center" />
                                 <Button
                                     x:Name="BanSaveGameBtn"
                                     Width="90"
@@ -3049,7 +3049,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding StormyNight}" />
+                                        Text="{Binding StormyNight}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_StormyNight"
                                         Grid.Row="0"
@@ -3072,7 +3072,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding ConveyorBelt}" />
+                                        Text="{Binding ConveyorBelt}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_ConveyorBelt"
                                         Grid.Row="0"
@@ -3095,7 +3095,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding ScaryPotter}" />
+                                        Text="{Binding ScaryPotter}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_ScaryPotter"
                                         Grid.Row="0"
@@ -3118,7 +3118,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding WhackAZombie}" />
+                                        Text="{Binding WhackAZombie}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_WhackAZombie"
                                         Grid.Row="0"
@@ -3141,7 +3141,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding IZombie}" />
+                                        Text="{Binding IZombie}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_IZombie"
                                         Grid.Row="1"
@@ -3164,7 +3164,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding SlotMachine}" />
+                                        Text="{Binding SlotMachine}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_SlotMachine"
                                         Grid.Row="1"
@@ -3187,7 +3187,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding Squirrel}" />
+                                        Text="{Binding Squirrel}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_Squirrel"
                                         Grid.Row="1"
@@ -3210,7 +3210,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding Rain}" />
+                                        Text="{Binding Rain}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_Rain"
                                         Grid.Row="1"
@@ -3233,7 +3233,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding Beghouled}" />
+                                        Text="{Binding Beghouled}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_Beghouled"
                                         Grid.Row="2"
@@ -3256,7 +3256,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding Speed}" />
+                                        Text="{Binding Speed}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_Speed"
                                         Grid.Row="2"
@@ -3279,7 +3279,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding Portal}" />
+                                        Text="{Binding Portal}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_Portal"
                                         Grid.Row="2"
@@ -3302,7 +3302,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding LastStand}" />
+                                        Text="{Binding LastStand}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_LastStand"
                                         Grid.Row="2"
@@ -3325,7 +3325,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding Column}" />
+                                        Text="{Binding Column}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Btn_Column"
                                         Grid.Row="3"
@@ -3427,7 +3427,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding SpInput3}" />
+                                        Text="{Binding SpInput3}" TextAlignment="Center" />
                                     <Button
                                         x:Name="SetSPImitaterBtn"
                                         Grid.Column="6"
@@ -3672,7 +3672,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding FormationPlant}" />
+                                        Text="{Binding FormationPlant}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Formation_Plant_Btn"
                                         Grid.Column="3"
@@ -3685,7 +3685,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding FormationLadder}" />
+                                        Text="{Binding FormationLadder}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Formation_Ladder_Btn"
                                         Grid.Column="5"
@@ -3699,7 +3699,7 @@
                                         Height="25"
                                         FontSize="16"
                                         IsReadOnly="True"
-                                        Text="{Binding FormationVase}" />
+                                        Text="{Binding FormationVase}" TextAlignment="Center" />
                                     <Button
                                         x:Name="Formation_Vase_Btn"
                                         Grid.Column="7"
@@ -3792,7 +3792,7 @@
                                         VerticalAlignment="Top"
                                         FontSize="12"
                                         IsReadOnly="True"
-                                        Text="{Binding GridSquareTogetInput}" />
+                                        Text="{Binding GridSquareTogetInput}" TextAlignment="Center" />
                                     <Button
                                         x:Name="GridSquareTogetBtn"
                                         Grid.Column="6"
@@ -3894,7 +3894,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding RandomVase}" />
+                                    Text="{Binding RandomVase}" TextAlignment="Center" />
                                 <Button
                                     x:Name="RandomVaseBtn"
                                     Width="90"
@@ -3915,7 +3915,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding RandomCard}" />
+                                    Text="{Binding RandomCard}" TextAlignment="Center" />
                                 <Button
                                     x:Name="RandomCardBtn"
                                     Width="90"
@@ -3936,7 +3936,7 @@
                                     VerticalAlignment="Top"
                                     FontSize="12"
                                     IsReadOnly="True"
-                                    Text="{Binding RandomPacket}" />
+                                    Text="{Binding RandomPacket}" TextAlignment="Center" />
                                 <Button
                                     x:Name="RandomPacketBtn"
                                     Width="90"
@@ -4078,6 +4078,7 @@
                             <Grid DataContext="{Binding Garden}">
                                 <TabControl
                                     Height="260"
+                                    VerticalAlignment="Top"
                                     HorizontalAlignment="Left"
                                     Width="640"
                                     SelectedIndex="{Binding SelectedTabIndex}">
