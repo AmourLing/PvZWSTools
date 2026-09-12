@@ -18,10 +18,12 @@
             Text="UI 风格" />
         <RadioButton
             x:Name="RbClassic"
+            GroupName="ui"
             Margin="4,6,0,2"
             Content="经典 UI" />
         <RadioButton
             x:Name="RbNewUi"
+            GroupName="ui"
             Margin="4,2,0,0"
             Content="NewUI"
             IsChecked="True" />
@@ -32,11 +34,13 @@
             Text="主题（仅 NewUI 生效）" />
         <RadioButton
             x:Name="RbDark"
+            GroupName="theme"
             Margin="4,6,0,2"
             Content="黑夜"
             IsChecked="True" />
         <RadioButton
             x:Name="RbLight"
+            GroupName="theme"
             Margin="4,2,0,0"
             Content="白天" />
 

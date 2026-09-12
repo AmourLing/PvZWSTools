@@ -18,6 +18,7 @@
     <InformationalVersion>2026.09.02</InformationalVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)..\</SolutionDir>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

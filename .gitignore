@@ -43,3 +43,6 @@ PythonApplication1/typings/
 
 # Python 编译缓存
 __pycache__/
+# 应用运行时状态（按钮勾选状态）
+配置文件/button_states.json
+
