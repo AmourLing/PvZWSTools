@@ -21,6 +21,7 @@ public partial class MainWindow:Window
     private void UiButton_Click(object sender, RoutedEventArgs e)
     {
         new UiSelectWindow { Owner = this }.ShowDialog();
+        UiThemeManager.RefreshWindowChrome(this);
     }
 
     public MainWindow()

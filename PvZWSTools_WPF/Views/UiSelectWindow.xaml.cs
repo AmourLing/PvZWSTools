@@ -8,6 +8,8 @@ public partial class UiSelectWindow:Window
     public UiSelectWindow()
     {
         InitializeComponent();
+        // 经典 UI 下主题资源不存在，显式用系统标准色，避免黑底黑字
+        UiThemeManager.RefreshWindowChrome(this);
         Loaded += (_, _) =>
         {
             RbClassic.IsChecked = !UiThemeManager.UseNewUi;

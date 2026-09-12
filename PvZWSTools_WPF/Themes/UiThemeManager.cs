@@ -57,6 +57,22 @@ public static class UiThemeManager
         }
     }
 
+    /// <summary>窗口配色随模式刷新：NewUI 用主题画刷；经典 UI 资源不存在，用系统标准色兜底
+    /// （否则窗口回退到系统深色默认值，出现黑底黑字）。</summary>
+    public static void RefreshWindowChrome(Window window)
+    {
+        if (UseNewUi)
+        {
+            window.SetResourceReference(Window.BackgroundProperty, "BgRootBrush");
+            window.SetResourceReference(Window.ForegroundProperty, "TextPrimaryBrush");
+        }
+        else
+        {
+            window.Background = SystemColors.WindowBrush;
+            window.Foreground = SystemColors.ControlTextBrush;
+        }
+    }
+
     /// <summary>按当前选择应用主题（经典 UI = 清空主题字典，系统默认外观）。</summary>
     public static void Apply()
     {
