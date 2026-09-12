@@ -5,29 +5,23 @@ using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.ViewModels;
 using PvZWSTools_WPF.Platform;
-using PvZWSTools_WPF.Themes;
 using PvZWSTools_WPF.Services;
 using static PvZWSTools_Shared.Sharedstring;
 
+using PvZWSTools_WPF.Themes;
+
 namespace PvZWSTools_WPF.Views;
 
-public partial class MainWindow:Window
+public partial class ClassicMainWindow:Window
 {
     private readonly MainWindowViewModel _viewModel;
     private bool _isResizing = false;
     private readonly IUpdateService _updateService;
     private bool _isUpdateOnlyMode; // 过期后进入"仅更新模式"，防止自动检查重复弹 UpdateWindow
-    // 打开 UI 选择界面（经典 UI / NewUI、黑夜 / 白天）
-    private void UiButton_Click(object sender, RoutedEventArgs e)
-    {
-        new UiSelectWindow { Owner = this }.ShowDialog();
-        UiThemeManager.RefreshWindowChrome(this);
-    }
 
-    public MainWindow()
+    public ClassicMainWindow()
     {
         InitializeComponent();
-        Themes.UiThemeManager.RefreshWindowChrome(this); // 按模式设置字体/底色（经典=系统默认）
 
         Title = Title + "_" + CompileTime.GetCompileTime()?.ToString("yyyyMMdd");
         if(IsBetaVersion)
@@ -173,5 +167,13 @@ public partial class MainWindow:Window
         // 窗口关闭时保存按钮状态
         try { _viewModel.SaveButtonStates(); } catch { }
         base.OnClosing(e);
+    }
+
+    // 打开 UI 选择界面（经典 UI / NewUI、黑夜 / 白天）
+    private void UiButton_Click(object sender, RoutedEventArgs e)
+    {
+        new UiSelectWindow { Owner = this }.ShowDialog();
+        UiThemeManager.Apply();
+        UiThemeManager.RefreshWindowChrome(this);
     }
 }

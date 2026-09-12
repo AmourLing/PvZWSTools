@@ -41,7 +41,10 @@ public partial class App:Application
         Themes.UiThemeManager.LoadAndApply(); // 按上次选择应用 UI 风格与主题
         try
         {
-            var mainWindow = new MainWindow();
+            // 按用户选择实例化：NewUI = 主题化窗口；经典 UI = master 原生窗口
+            Window mainWindow = Themes.UiThemeManager.UseNewUi
+                ? new MainWindow()
+                : new Views.ClassicMainWindow();
             bool? accessResult = true;
             if(IsBetaVersion)
             {
@@ -56,7 +59,8 @@ public partial class App:Application
             mainWindow.Show();
             if(accessResult == null)
             {
-                mainWindow.EnterUpdateOnlyMode();
+                if(mainWindow is MainWindow m1) m1.EnterUpdateOnlyMode();
+                else if(mainWindow is Views.ClassicMainWindow m2) m2.EnterUpdateOnlyMode();
             }
         }
         catch(Exception ex)

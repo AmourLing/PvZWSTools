@@ -2,10 +2,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 
 namespace PvZWSTools_WPF.Themes;
 
-/// <summary>UI 风格与主题的运行时管理：经典 UI = 不加载主题字典（系统默认外观）。</summary>
+/// <summary>UI 风格与主题的运行时管理：经典 UI = master 分支的原生外观（仅覆写标签样式）。</summary>
 public static class UiThemeManager
 {
     private static readonly string ConfigPath =
@@ -36,7 +37,7 @@ public static class UiThemeManager
         Apply();
     }
 
-    /// <summary>保存选择并重启应用使其生效（避免 WPF 运行时换字典的渲染残留问题）。</summary>
+    /// <summary>保存选择并重启应用使其生效（主题字典整体重载，渲染零残留）。</summary>
     public static void SaveAndRestart(bool useNewUi, bool isDark)
     {
         UseNewUi = useNewUi;
@@ -57,34 +58,33 @@ public static class UiThemeManager
         }
     }
 
-    /// <summary>窗口配色随模式刷新：NewUI 用主题画刷；经典 UI 资源不存在，用系统标准色兜底
-    /// （否则窗口回退到系统深色默认值，出现黑底黑字）。</summary>
+    /// <summary>按当前选择应用主题资源：NewUI 合并黑夜/白天地图，经典合并原生覆写。</summary>
+    public static void Apply()
+    {
+        var merged = Application.Current.Resources.MergedDictionaries;
+        merged.Clear();
+        merged.Add(new ResourceDictionary
+        {
+            Source = new Uri(UseNewUi
+                ? (IsDark ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml")
+                : "Themes/ClassicOverrides.xaml", UriKind.Relative)
+        });
+    }
+
+    /// <summary>窗口字体/颜色随模式刷新：NewUI 用主题画刷与雅黑；经典用系统默认字体。</summary>
     public static void RefreshWindowChrome(Window window)
     {
         if (UseNewUi)
         {
+            window.FontFamily = new FontFamily("Microsoft YaHei UI");
             window.SetResourceReference(Window.BackgroundProperty, "BgRootBrush");
             window.SetResourceReference(Window.ForegroundProperty, "TextPrimaryBrush");
         }
         else
         {
+            window.FontFamily = SystemFonts.MessageFontFamily;
             window.Background = SystemColors.WindowBrush;
             window.Foreground = SystemColors.ControlTextBrush;
         }
-    }
-
-    /// <summary>按当前选择应用主题（经典 UI = 清空主题字典，系统默认外观）。</summary>
-    public static void Apply()
-    {
-        var merged = Application.Current.Resources.MergedDictionaries;
-        merged.Clear();
-        if (!UseNewUi)
-        {
-            return;
-        }
-        merged.Add(new ResourceDictionary
-        {
-            Source = new Uri(IsDark ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml", UriKind.Relative)
-        });
     }
 }

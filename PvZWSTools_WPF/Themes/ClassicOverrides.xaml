@@ -1,0 +1,29 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        经典 UI 覆写字典：经典模式下合并，让窗口呈现 master 分支的原生外观
+        （与 master 的 MainWindow.Resources 中两个本地样式一致）。
+        其余控件不提供样式 = WPF 默认外观，与 master 相同。
+    -->
+
+    <Style TargetType="TabItem">
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock
+                        Margin="5"
+                        FontSize="14"
+                        Text="{Binding}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style TargetType="TabControl">
+        <Setter Property="Margin" Value="5" />
+    </Style>
+
+</ResourceDictionary>
