@@ -1,0 +1,189 @@
+from Lawn import *
+from LawnMod import MonoModUtils as M
+from System import Random
+
+DAVE_PICK_NUM = {0}
+
+def weighted_pick(weights, rng):
+    """从权重表中按权重随机选取一个种子类型。"""
+    items = [(st, w) for st, w in weights.items() if w > 0]
+    if not items:
+        return None
+    total = sum(w for _, w in items)
+    r = rng.Next(total)
+    cum = 0
+    for st, w in items:
+        cum += w
+        if r < cum:
+            return st
+    return items[-1][0]
+
+
+def enable_upgrades(self, st, weights, base_weight):
+    """挑战随机模式：选了基础植物后启用对应升级版（与 C# 一致）。"""
+    try:
+        if st == int(SeedType.Sunflower) and self.mApp.HasSeedType(SeedType.Twinsunflower):
+            if 41 in weights: weights[41] = base_weight
+        elif st == int(SeedType.Repeater) and self.mApp.HasSeedType(SeedType.Gatlingpea):
+            if 40 in weights: weights[40] = base_weight
+        elif st == int(SeedType.Fumeshroom) and self.mApp.HasSeedType(SeedType.Gloomshroom):
+            if 42 in weights: weights[42] = base_weight
+        elif st == int(SeedType.Lilypad) and self.mApp.HasSeedType(SeedType.Cattail):
+            if 43 in weights: weights[43] = base_weight
+        elif st == int(SeedType.Melonpult) and self.mApp.HasSeedType(SeedType.Wintermelon):
+            if 44 in weights: weights[44] = base_weight
+        elif st == int(SeedType.Spikeweed) and self.mApp.HasSeedType(SeedType.Spikerock):
+            if 46 in weights: weights[46] = base_weight
+        elif st == int(SeedType.Kernelpult) and self.mApp.HasSeedType(SeedType.Cobcannon):
+            if 47 in weights: weights[47] = base_weight
+        elif st == int(SeedType.Chomper) and self.mApp.HasSeedType(SeedType.SuperChomper):
+            if 48 in weights: weights[48] = base_weight
+    except:
+        pass
+
+
+
+@M.HookTo(SeedChooserScreen.CrazyDavePickSeeds)
+def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
+    # 先调用原生选卡：挑战随机选 8 张，其余选 3 张
+    orig(self)
+
+    native_num = 8 if self.mApp.mGameMode == GameMode.ChallengeStageRandom else 3
+
+    # DAVE_PICK_NUM <= 0：全部取消戴夫选卡
+    if DAVE_PICK_NUM <= 0:
+        for j in range(54):
+            obj = self.mChosenSeeds[j]
+            if obj is not None and obj.mCrazyDavePicked:
+                obj.mCrazyDavePicked = False
+        return
+
+    # DAVE_PICK_NUM <= native_num：保留前 DAVE_PICK_NUM 张，其余取消锁定
+    if DAVE_PICK_NUM <= native_num:
+        for j in range(54):
+            obj = self.mChosenSeeds[j]
+            if obj is not None and obj.mCrazyDavePicked:
+                if obj.mSeedIndexInBank >= DAVE_PICK_NUM:
+                    obj.mCrazyDavePicked = False
+        return
+
+    # ===== DAVE_PICK_NUM > native_num：在原生选卡之后补充选卡 =====
+    # 以下逻辑参考 SeedChooserScreen.CrazyDavePickSeeds 的权重构建
+
+    is_random = (self.mApp.mGameMode == GameMode.ChallengeStageRandom)
+    base_weight = 100 if is_random else 1
+
+    # 构建权重表（逐项过滤，不用 try/except 吞异常）
+    # 移除 SeedNotRecommendedToPick/SeedNotAllowedToPick（返回 uint，IronPython 下比较不可靠）
+    weights = {}
+    for st in range(int(SeedType.Peashooter), int(SeedType.ExplodeONut)):
+        if st == int(SeedType.Imitater) or st == int(SeedType.Umbrella) or st == int(SeedType.Blover):
+            continue
+        try:
+            if not self.mApp.HasSeedType(st):
+                continue
+        except:
+            continue
+        try:
+            if Plant.IsUpgrade(st):
+                continue
+        except:
+            pass  # 宽容：IsUpgrade 不可调用时不排除
+        obj = self.mChosenSeeds[st]
+        if obj is not None and obj.mSeedState == ChosenSeedState.SEED_IN_BANK:
+            continue
+        weights[st] = base_weight
+
+    # 特殊权重调整（与 C# 一致）
+    try:
+        # 香蒲(37)：蹦极/气球僵尸时启用
+        if self.mBoard.mZombieAllowed[22] or self.mBoard.mZombieAllowed[20]:
+            if 37 in weights:
+                weights[37] = base_weight
+        # 路灯花(27)：矿工/浓雾时启用
+        if self.mBoard.mZombieAllowed[16] or self.mBoard.StageHasFog():
+            if 27 in weights:
+                weights[27] = base_weight
+        # 火炬(22)：屋顶禁用
+        if self.mBoard.StageHasRoof():
+            if 22 in weights:
+                weights[22] = 0
+    except:
+        pass
+
+    # 挑战随机模式的额外调整
+    if is_random:
+        for idx in [38, 1, 9, 8, 33, 16]:
+            if idx in weights:
+                weights[idx] = 0
+        try:
+            if self.mBoard.StageHasRoof():
+                if 0 in weights: weights[0] = 30
+                if 5 in weights: weights[5] = 30
+                if 7 in weights: weights[7] = 30
+                if 18 in weights: weights[18] = 30
+                if 28 in weights: weights[28] = 5
+        except:
+            pass
+
+    # 不超过卡槽上限
+    max_packets = self.mBoard.mSeedBank.mNumPackets
+    need = min(DAVE_PICK_NUM, max_packets) - self.mSeedsInBank
+    if need <= 0:
+        return
+
+    rng = Random()
+    for _ in range(need):
+        st = weighted_pick(weights, rng)
+        if st is None:
+            break
+
+        # 从候选池移除
+        weights[st] = 0
+
+        # 放入卡槽（与 C# 放置逻辑一致）
+        obj = self.mChosenSeeds[st]
+        if obj is None:
+            continue
+        j = self.mSeedsInBank
+        obj.mY = self.mBoard.GetSeedPacketPositionY(j)
+        obj.mX = 0
+        obj.mEndX = obj.mX
+        obj.mEndY = obj.mY
+        obj.mStartX = obj.mX
+        obj.mStartY = obj.mY
+        obj.mSeedState = ChosenSeedState.SEED_IN_BANK
+        obj.mSeedIndexInBank = j
+        obj.mCrazyDavePicked = True
+        self.mSeedsInBank += 1
+
+        # 挑战随机模式：选了基础植物后启用升级版
+        if is_random:
+            enable_upgrades(self, st, weights, base_weight)
+            # 屋顶：豌豆系减权
+            try:
+                if self.mBoard.StageHasRoof() and st in (
+                        int(SeedType.Peashooter), int(SeedType.Repeater),
+                        int(SeedType.Threepeater), int(SeedType.Splitpea),
+                        int(SeedType.Snowpea)):
+                    for k in [0, 5, 7, 18, 28]:
+                        if k in weights and weights[k] > 0:
+                            weights[k] //= 2
+            except:
+                pass
+            # 豌豆系选了后：如果卡槽无火炬，启用火炬
+            if st in (int(SeedType.Peashooter), int(SeedType.Repeater),
+                      int(SeedType.Threepeater), int(SeedType.Splitpea),
+                      int(SeedType.Gatlingpea)):
+                try:
+                    has_torch = False
+                    for k in range(10):
+                        if self.FindSeedInBank(k) == SeedType.Torchwood:
+                            has_torch = True
+                            break
+                    if not has_torch and 22 in weights:
+                        weights[22] = base_weight
+                except:
+                    pass
+
+
