@@ -1,8 +1,11 @@
 from Lawn import *
 from LawnMod import MonoModUtils as M
+from Sexy import Debug
 from System import Random
 
 DAVE_PICK_NUM = {0}
+
+LOG_PREFIX = "[戴夫选卡]"
 
 def weighted_pick(weights, rng):
     """从权重表中按权重随机选取一个种子类型。"""
@@ -50,6 +53,8 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
 
     native_num = 8 if self.mApp.mGameMode == GameMode.ChallengeStageRandom else 3
 
+    Debug.Log(LOG_PREFIX + " DAVE_PICK_NUM=" + str(DAVE_PICK_NUM) + " native_num=" + str(native_num) + " mSeedsInBank=" + str(self.mSeedsInBank))
+
     # DAVE_PICK_NUM <= 0：全部取消戴夫选卡
     if DAVE_PICK_NUM <= 0:
         for j in range(54):
@@ -94,6 +99,11 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
             continue
         weights[st] = base_weight
 
+    Debug.Log(LOG_PREFIX + " 候选数=" + str(len(weights)) + " base_weight=" + str(base_weight))
+    if len(weights) > 0:
+        ks = sorted(weights.keys())
+        Debug.Log(LOG_PREFIX + " 候选列表=" + str(ks))
+
     # 特殊权重调整（与 C# 一致）
     try:
         # 香蒲(37)：蹦极/气球僵尸时启用
@@ -129,14 +139,21 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
     # 不超过卡槽上限
     max_packets = self.mBoard.mSeedBank.mNumPackets
     need = min(DAVE_PICK_NUM, max_packets) - self.mSeedsInBank
+    Debug.Log(LOG_PREFIX + " max_packets=" + str(max_packets) + " need=" + str(need) + " (DAVE_PICK_NUM=" + str(DAVE_PICK_NUM) + " - mSeedsInBank=" + str(self.mSeedsInBank) + ")")
     if need <= 0:
+        Debug.Log(LOG_PREFIX + " need<=0，无需补充选卡")
         return
 
     rng = Random()
-    for _ in range(need):
+    for i in range(need):
+        remaining = [st for st, w in weights.items() if w > 0]
+        Debug.Log(LOG_PREFIX + " 迭代 " + str(i) + " 剩余候选=" + str(len(remaining)))
         st = weighted_pick(weights, rng)
         if st is None:
+            Debug.Log(LOG_PREFIX + " 无候选可选，提前结束")
             break
+
+        Debug.Log(LOG_PREFIX + " 选中 st=" + str(st))
 
         # 从候选池移除
         weights[st] = 0
@@ -144,6 +161,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
         # 放入卡槽（与 C# 放置逻辑一致）
         obj = self.mChosenSeeds[st]
         if obj is None:
+            Debug.Log(LOG_PREFIX + " obj is None for st=" + str(st) + "，跳过")
             continue
         j = self.mSeedsInBank
         obj.mY = self.mBoard.GetSeedPacketPositionY(j)
@@ -156,6 +174,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
         obj.mSeedIndexInBank = j
         obj.mCrazyDavePicked = True
         self.mSeedsInBank += 1
+        Debug.Log(LOG_PREFIX + " 放入卡槽 j=" + str(j) + " mSeedsInBank=" + str(self.mSeedsInBank))
 
         # 挑战随机模式：选了基础植物后启用升级版
         if is_random:
