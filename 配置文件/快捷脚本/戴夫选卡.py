@@ -81,21 +81,28 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
     # 构建权重表（逐项过滤，不用 try/except 吞异常）
     # 移除 SeedNotRecommendedToPick/SeedNotAllowedToPick（返回 uint，IronPython 下比较不可靠）
     weights = {}
+    filtered_reasons = []
     for st in range(int(SeedType.Peashooter), int(SeedType.ExplodeONut)):
         if st == int(SeedType.Imitater) or st == int(SeedType.Umbrella) or st == int(SeedType.Blover):
+            filtered_reasons.append(str(st) + ":blacklist")
             continue
         try:
             if not self.mApp.HasSeedType(st):
+                filtered_reasons.append(str(st) + ":HasSeedType=False")
                 continue
-        except:
+        except Exception as e:
+            filtered_reasons.append(str(st) + ":HasSeedType_ERR(" + str(e) + ")")
             continue
         try:
             if Plant.IsUpgrade(st):
+                filtered_reasons.append(str(st) + ":IsUpgrade")
                 continue
-        except:
+        except Exception as e:
+            filtered_reasons.append(str(st) + ":IsUpgrade_ERR(" + str(e) + ")")
             pass  # 宽容：IsUpgrade 不可调用时不排除
         obj = self.mChosenSeeds[st]
         if obj is not None and obj.mSeedState == ChosenSeedState.SEED_IN_BANK:
+            filtered_reasons.append(str(st) + ":IN_BANK")
             continue
         weights[st] = base_weight
 
@@ -103,6 +110,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
     if len(weights) > 0:
         ks = sorted(weights.keys())
         Debug.Log(LOG_PREFIX + " 候选列表=" + str(ks))
+    Debug.Log(LOG_PREFIX + " 过滤详情=" + str(filtered_reasons))
 
     # 特殊权重调整（与 C# 一致）
     try:
