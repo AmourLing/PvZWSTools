@@ -177,6 +177,10 @@
     <string name="plant_strings_17_1_key">路灯花觉醒{CHECK}</string>
     <string name="plant_strings_17_1_value">0</string>
 
+    <string name="plant_strings_18">伞弹车常驻</string>
+    <string name="plant_strings_18_1_key">伞弹车常驻{CHECK}</string>
+    <string name="plant_strings_18_1_value">0</string>
+
     <string name="zombie_strings_1">僵尸血量显示</string>
     <string name="zombie_strings_1_1_key">僵尸血量显示{CHECK}</string>
     <string name="zombie_strings_1_1_value">0</string>
@@ -532,6 +536,10 @@
     <string name="formation_strings_10_3_key">类型</string>
     <string name="formation_strings_10_3_value">1</string>
 
+    <string name="formation_strings_11">戴夫选卡</string>
+    <string name="formation_strings_11_1_key">戴夫选卡数量</string>
+    <string name="formation_strings_11_1_value">0</string>
+
     <string name="sync_card_label">同步卡组</string>
     <string name="sync_card_yes">是</string>
     <string name="sync_card_no">否</string>
@@ -548,6 +556,18 @@
     <string name="fun_strings_3">随机卡槽</string>
     <string name="fun_strings_3_1_key">随机卡槽{CHECK}</string>
     <string name="fun_strings_3_1_value">0</string>
+
+    <string name="fun_strings_4">手套常驻</string>
+    <string name="fun_strings_4_1_key">手套常驻{CHECK}</string>
+    <string name="fun_strings_4_1_value">0</string>
+
+    <string name="fun_strings_5">融合常驻</string>
+    <string name="fun_strings_5_1_key">融合常驻{CHECK}</string>
+    <string name="fun_strings_5_1_value">0</string>
+
+    <string name="fun_strings_6">垃圾桶常驻</string>
+    <string name="fun_strings_6_1_key">垃圾桶常驻{CHECK}</string>
+    <string name="fun_strings_6_1_value">0</string>
 
     <string name="script_strings_1">快捷脚本</string>
     <string name="script_strings_1_0_key">请输入脚本名称</string>

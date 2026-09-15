@@ -47,6 +47,8 @@ public static class Constants
     public const string JsonValueFile = "价值.json";
     public const string JsonZombieFile = "僵尸.json";
 
+    public const string JsonDavePickNumFile = "戴夫选卡数量.json";
+
     #endregion 选项文件名
 
     public const string JsonSettingFile = "setting.json";

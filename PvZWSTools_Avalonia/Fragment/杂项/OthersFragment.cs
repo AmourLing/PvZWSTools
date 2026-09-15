@@ -8,6 +8,7 @@ namespace PvZWSTools_Avalonia;
 public class OthersFragment:BaseFragment
 {
     private static readonly string mOthersPath = "杂项";
+
     private static readonly string OptionFileNameSwitch1 = "开关1";
 
     private readonly Dictionary<int, int> _buttonKeyMap = new Dictionary<int, int>

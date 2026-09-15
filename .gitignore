@@ -28,6 +28,7 @@ typings/
 copytypings.bat
 PythonApplication1/
 IronPythonEditor/
+button_states.json
 
 # 临时/本地项目，不提交
 .git_backup_*/

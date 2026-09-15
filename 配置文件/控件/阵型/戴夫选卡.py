@@ -3,7 +3,7 @@ from LawnMod import MonoModUtils as M
 from Sexy import Debug
 from System import Random
 
-DAVE_PICK_NUM = {0}
+DAVE_PICK_NUM = {DAVEPICKNUM}
 
 LOG_PREFIX = "[戴夫选卡]"
 

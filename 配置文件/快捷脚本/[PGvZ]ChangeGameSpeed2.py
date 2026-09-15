@@ -1,26 +1,114 @@
-#2026.02.19
-#修改植物娘运行倍速，支持步长
+# [PGvZ]ChangeGameSpeed2 (fixed 2026.09.15)
 
 from Lawn import *
+from Sexy import *
 from LawnMod import MonoModUtils as M
 
-MaxGameRunSpeed = 6          # 最大倍速
-ChangeGameRunStep = 1        # 步长，每次加速/减速的变化量
+GameSpeedList = [0.1, 0.5, 1, 2, 3, 5, 10]
+ChangeGameRunStep = 1                       
+LOOP_SPEED_LIST = True
 
-def GetNewGameRunSpeed(current, step, increase):
+def Log(msg):
+    Debug.Log(str(msg))
+
+def decimal_to_fraction(decimal_num, tolerance=1e-6, max_denominator=114514):
+    sign = 1
+    if decimal_num < 0:
+        sign = -1
+        decimal_num = abs(decimal_num)
+
+    if abs(decimal_num - round(decimal_num)) < tolerance:
+        return (sign * int(round(decimal_num)), 1)
+
+    numerator = 1
+    denominator = 0
+    prev_numerator = 0
+    prev_denominator = 1
+
+    x = decimal_num
+    while True:
+        integer_part = int(x)
+        new_numerator = integer_part * numerator + prev_numerator
+        new_denominator = integer_part * denominator + prev_denominator
+
+        if new_denominator > max_denominator:
+            break
+
+        prev_numerator, numerator = numerator, new_numerator
+        prev_denominator, denominator = denominator, new_denominator
+
+        if abs(decimal_num - numerator / denominator) < tolerance:
+            break
+
+        fractional_part = x - integer_part
+        if fractional_part < tolerance:
+            break
+        x = 1.0 / fractional_part
+
+    numerator = sign * numerator
+    return (numerator, denominator)
+
+
+GameSpeedFractions = [decimal_to_fraction(s) for s in GameSpeedList]
+Log("GameSpeedFractions = {}".format(GameSpeedFractions))
+
+def FindSpeedIndex(current_speed):
+    """找当前实际倍率最接近 GameSpeedList 中的哪一项"""
+    best_index = 0
+    best_delta = abs(current_speed - GameSpeedList[0])
+    for i, speed in enumerate(GameSpeedList):
+        delta = abs(current_speed - speed)
+        if delta < best_delta:
+            best_delta = delta
+            best_index = i
+    return best_index
+
+
+def ApplyNextSpeed(board, current_speed, increase):
+    """根据 current_speed 在 GameSpeedList 中定位，按方向移动到下一项"""
+    idx = FindSpeedIndex(current_speed)
+    n = len(GameSpeedList)
+
     if increase:
-        return ((current - 1 + step) % MaxGameRunSpeed) + 1
+        new_idx = idx + ChangeGameRunStep
+        if LOOP_SPEED_LIST:
+            new_idx %= n
+        else:
+            new_idx = min(n - 1, new_idx)
     else:
-        return ((current - 1 - step) % MaxGameRunSpeed) + 1
+        new_idx = idx - ChangeGameRunStep
+        if LOOP_SPEED_LIST:
+            new_idx %= n
+        else:
+            new_idx = max(0, new_idx)
 
-@M.HookTo(Board.AccelerationIncrease)
-def Board_AccelerationIncrease(orig, self):
-    self.mAccelerationNumerator = GetNewGameRunSpeed(self.mAccelerationNumerator, ChangeGameRunStep, True)
-    self.mAccelerationDenominator = 1
-    self.mAccelerationFrameIndex = 0
+    num, den = GameSpeedFractions[new_idx]
+    board.mAccelerationNumerator = num
+    board.mAccelerationDenominator = den
+    board.mAccelerationFrameIndex = 0
 
-@M.HookTo(Board.AccelerationDecrease)
-def Board_AccelerationDecrease(orig, self):
-    self.mAccelerationNumerator = GetNewGameRunSpeed(self.mAccelerationNumerator, ChangeGameRunStep, False)
-    self.mAccelerationDenominator = 1
-    self.mAccelerationFrameIndex = 0
+    Log("Speed {} -> {}  (num={}, den={})".format(
+        GameSpeedList[idx], GameSpeedList[new_idx], num, den))
+
+@M.HookTo(Board.MouseUpInternal)
+def Board_MouseUpInternal_CGS(orig, self, x, y, theClickCount, isTouch):
+    before_num = self.mAccelerationNumerator
+    before_den = self.mAccelerationDenominator or 1
+    before_speed = before_num / before_den
+
+    orig(self, x, y, theClickCount, isTouch)
+
+    after_num = self.mAccelerationNumerator
+
+    if before_num == after_num:
+        return
+    delta = (after_num - before_num) % 3
+    if delta == 1:
+        increase = True
+    elif delta == 2:
+        increase = False
+    else:
+        Log("Unexpected delta={} before={} after={}".format(
+            delta, before_num, after_num))
+        return
+    ApplyNextSpeed(self, before_speed, increase)

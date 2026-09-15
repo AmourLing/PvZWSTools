@@ -27,7 +27,6 @@ public class FormationFragment:BaseFragment
 
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>
     {
-        // 固定选项文件映射
         [Resource.String.formation_strings_1_1_key] = "卡槽序",
         [Resource.String.formation_strings_1_2_key] = "卡槽",
         [Resource.String.formation_strings_1_3_key] = "开关1",
@@ -41,6 +40,7 @@ public class FormationFragment:BaseFragment
         [Resource.String.formation_strings_9_1_key] = "行",
         [Resource.String.formation_strings_9_2_key] = "道路状况",
         [Resource.String.formation_strings_9_3_key] = "开关1",
+        [Resource.String.formation_strings_11_1_key] = "戴夫选卡数量",
     };
 
     protected override void InitializeMap()
@@ -62,6 +62,9 @@ public class FormationFragment:BaseFragment
         Map[GetString(Resource.String.formation_strings_10_1_key)] = GetString(Resource.String.formation_strings_10_1_value);
         Map[GetString(Resource.String.formation_strings_10_2_key)] = GetString(Resource.String.formation_strings_10_2_value);
         Map[GetString(Resource.String.formation_strings_10_3_key)] = GetString(Resource.String.formation_strings_10_3_value);
+
+        Map[GetString(Resource.String.formation_strings_11_1_key)] = GetString(Resource.String.formation_strings_11_1_value);
+
     }
 
     // -------- 生命周期 --------
@@ -192,6 +195,22 @@ public class FormationFragment:BaseFragment
                 },
                 Map,
                 BuildDropdownOptions(key1, key2, key3) // 仅 key3 有下拉选项
+            );
+        };
+
+        // 按钮11：
+        view.FindViewById<Button>(Resource.Id.button11).Click += (sender, e) =>
+        {
+            string key = GetString(Resource.String.formation_strings_11_1_key);
+            CreateInputDialog.OptAndDone3(
+                Activity,
+                GetString(Resource.String.formation_strings_11),
+                BuildInitialData(key),
+                FragmentPath,
+                GetString(Resource.String.formation_strings_11),
+                new Dictionary<string, string> { ["{DAVEPICKNUM}"] = "0" },
+                Map,
+                BuildDropdownOptions(key)
             );
         };
 

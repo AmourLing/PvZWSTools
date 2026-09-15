@@ -96,6 +96,19 @@ public class PlantsViewModel:ViewModelBase
     private string _plantern_always_henshin = Constants.c_Symbol_Off;
     private string _plantern_always_henshin_Name = "路灯花觉醒";
 
+    private string _umbrellatriggerRV = Constants.c_Symbol_Off;
+
+    private string _umbrellatriggerRV_name = "伞弹车常驻";
+
+    public string UmbrellaTriggerRV
+    {
+        get => _umbrellatriggerRV;
+        set => SetProperty(ref _umbrellatriggerRV, value);
+    }
+    public ICommand UmbrellaTriggerRVCommand
+    {
+        get => CreateToggleCommand(() => UmbrellaTriggerRV, v => UmbrellaTriggerRV = v, _umbrellatriggerRV_name);
+    }
     public string PlanternAlwaysHenshin
     {
         get => _plantern_always_henshin;

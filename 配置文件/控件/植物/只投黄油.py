@@ -8,7 +8,7 @@ from Lawn import *
 from LawnMod import MonoModUtils as M
 
 @M.HookTo(Plant.Fire)
-def Plant_Fire(orig,self,theTargetZombie,theRow,thePlantWeapon):
+def Plant_Fire_Only_Butter(orig,self,theTargetZombie,theRow,thePlantWeapon):
     if ONLY_BUTTER_CHECK:
         if self.mSeedType==SeedType.Kernelpult:
             thePlantWeapon = PlantWeapon.Secondary

@@ -21,5 +21,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/fun_strings_3" />
+        <Button
+    android:id="@+id/button4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/fun_strings_4" />
+        <Button
+    android:id="@+id/button5"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/fun_strings_5" />
+        <Button
+    android:id="@+id/button6"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/fun_strings_6" />
     </TableLayout>
 </ScrollView>
