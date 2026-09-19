@@ -12,7 +12,8 @@ env:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Gitee 对 GitHub runner 的跨境写入实测只有 ~10 KiB/s，整包推送要十几分钟
+    timeout-minutes: 45
     steps:
       - name: Verify GITEE_TOKEN
         run: |
@@ -39,7 +40,7 @@ jobs:
           ls -la pvz-mirror/
 
       - name: Push to Gitee
-        timeout-minutes: 5
+        timeout-minutes: 35
         run: |
           set -e
           cd pvz-mirror
