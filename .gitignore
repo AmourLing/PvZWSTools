@@ -34,6 +34,7 @@ button_states.json
 .git_backup_*/
 UpdateTest/
 VersionTest/
+SkillVerify/
 
 # 发布产物（不在仓库内，走 GitHub Release）
 publish/

@@ -65,6 +65,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="4dp" />
 
+    <!-- 渠道选择：网盘渠道由代码按 Sharedstring/NetdiskChannel 配置动态追加到此组 -->
     <RadioGroup
         android:id="@+id/source_radio_group"
         android:layout_width="match_parent"
@@ -84,15 +85,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Gitee（国内高速，推荐）"
-            android:textSize="13sp"
-            android:layout_marginTop="2dp"
-            android:enabled="false" />
-
-        <RadioButton
-            android:id="@+id/radio_baidu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="百度网盘（国内备用，需提取码）"
             android:textSize="13sp"
             android:layout_marginTop="2dp"
             android:enabled="false" />

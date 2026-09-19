@@ -11,6 +11,7 @@ using Android.Widget;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PvZWSTools_Avalonia.Helpers;
+using Constants = PvZWSTools_Shared.Helpers.Constants;
 
 namespace PvZWSTools_Avalonia;
 
@@ -513,7 +514,7 @@ public class FormationFragment:BaseFragment
                     {
                         string content = ExtractMsgFromWebSocketMessage(msg);
                         messageList.Add(content);
-                        if(content.Contains("SEEDPACKET_JSON_END"))
+                        if(content.Contains(Constants.Markers.SeedPacketJsonEnd))
                         {
                             ws.MessageReceived -= handler;
                             tcs.TrySetResult(messageList);
@@ -532,8 +533,8 @@ public class FormationFragment:BaseFragment
 
                     var allMessages = await tcs.Task;
                     string fullOutput = string.Join("", allMessages);
-                    const string startMarker = "SEEDPACKET_JSON_START";
-                    const string endMarker = "SEEDPACKET_JSON_END";
+                    string startMarker = Constants.Markers.SeedPacketJsonStart;
+                    string endMarker = Constants.Markers.SeedPacketJsonEnd;
                     int si = fullOutput.IndexOf(startMarker);
                     int ei = fullOutput.IndexOf(endMarker);
                     if(si == -1 || ei == -1 || ei <= si)
@@ -668,7 +669,7 @@ public class FormationFragment:BaseFragment
                     {
                         string content = ExtractMsgFromWebSocketMessage(msg);
                         messageList.Add(content);
-                        if(content.Contains("FORMATION_JSON_END"))
+                        if(content.Contains(Constants.Markers.FormationJsonEnd))
                         {
                             ws.MessageReceived -= handler;
                             tcs.TrySetResult(messageList);
@@ -687,8 +688,8 @@ public class FormationFragment:BaseFragment
 
                     var allMessages = await tcs.Task;
                     string fullOutput = string.Join("", allMessages);
-                    const string fStart = "FORMATION_JSON_START";
-                    const string fEnd = "FORMATION_JSON_END";
+                    string fStart = Constants.Markers.FormationJsonStart;
+                    string fEnd = Constants.Markers.FormationJsonEnd;
                     int si = fullOutput.IndexOf(fStart);
                     int ei = fullOutput.IndexOf(fEnd);
                     if(si == -1 || ei == -1 || ei <= si)

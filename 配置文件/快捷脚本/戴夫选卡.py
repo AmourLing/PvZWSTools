@@ -7,6 +7,22 @@ DAVE_PICK_NUM = {0}
 
 LOG_PREFIX = "[戴夫选卡]"
 
+
+def DavePick_refresh_start_button(self):
+    """按卡槽是否填满刷一次"开始"按钮。
+
+    原生只在玩家点卡（ClickedSeedInBank）和预选（PreChooseSeed）两条路径上调
+    EnableStartButton，CrazyDavePickSeeds 自己从不调——原生最多选 8/3 张，永远填不满
+    卡槽，所以靠玩家最后那一下点卡把按钮点亮。本脚本把卡槽补到满以后没有任何人会再
+    调它，按钮就一直停在初始的禁用态（SeedChooserScreen.cs:129）。
+    """
+    try:
+        self.EnableStartButton(self.mSeedsInBank == self.mBoard.mSeedBank.mNumPackets)
+        self.UpdateImitaterButton()
+    except Exception as e:
+        Debug.Log(LOG_PREFIX + " EnableStartButton 失败: " + repr(e))
+
+
 def weighted_pick(weights, rng):
     """从权重表中按权重随机选取一个种子类型。"""
     items = [(st, w) for st, w in weights.items() if w > 0]
@@ -61,6 +77,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
             obj = self.mChosenSeeds[j]
             if obj is not None and obj.mCrazyDavePicked:
                 obj.mCrazyDavePicked = False
+        DavePick_refresh_start_button(self)
         return
 
     # DAVE_PICK_NUM <= native_num：保留前 DAVE_PICK_NUM 张，其余取消锁定
@@ -70,6 +87,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
             if obj is not None and obj.mCrazyDavePicked:
                 if obj.mSeedIndexInBank >= DAVE_PICK_NUM:
                     obj.mCrazyDavePicked = False
+        DavePick_refresh_start_button(self)
         return
 
     # ===== DAVE_PICK_NUM > native_num：在原生选卡之后补充选卡 =====
@@ -136,6 +154,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
     #Debug.Log(LOG_PREFIX + " max_packets=" + str(max_packets) + " need=" + str(need) + " (DAVE_PICK_NUM=" + str(DAVE_PICK_NUM) + " - mSeedsInBank=" + str(self.mSeedsInBank) + ")")
     if need <= 0:
         Debug.Log(LOG_PREFIX + " need<=0，无需补充选卡")
+        DavePick_refresh_start_button(self)
         return
 
     rng = Random()
@@ -198,5 +217,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
                         weights[22] = base_weight
                 except:
                     pass
+
+    DavePick_refresh_start_button(self)
 
 

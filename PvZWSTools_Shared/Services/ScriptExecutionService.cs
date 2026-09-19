@@ -121,7 +121,7 @@ public class ScriptExecutionService:IScriptExecutionService
                 if(string.IsNullOrEmpty(trimmedLine)) continue;
 
                 lines.Add(trimmedLine);
-                if(trimmedLine.Contains("===END==="))
+                if(trimmedLine.Contains(Constants.Markers.ScriptEnd))
                 {
                     _ = tcs.TrySetResult(true);
                 }

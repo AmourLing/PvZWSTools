@@ -1,0 +1,15 @@
+{
+    "name": "NextWaveButton.py",
+    "infoall": "这是一个示例Python脚本，展示了如何使用配置文件来设置脚本的参数。",
+    "author": "Author Name",
+
+    "replace": {
+        "{0}": {
+            "info": "是否可见",
+            "value": [
+                0,1
+            ],
+            "default": 1
+        }
+    }
+}

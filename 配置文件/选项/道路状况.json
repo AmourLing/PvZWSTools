@@ -14,5 +14,9 @@
     {
         "Name": "高地",
         "Value": "HighGround"
+    },
+    {
+        "Name": "Shallow",
+        "Value": "Shallow"
     }
 ]

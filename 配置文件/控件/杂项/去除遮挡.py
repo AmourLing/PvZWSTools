@@ -27,5 +27,6 @@ def Board_UpdateCoverLayer_Remove_CoverLayer(orig, self):
     if IS_REMOVE_COVERLAYER:
         return
     orig(self)
-
-board.PickBackground()
+                
+if board is not None:
+    board.InitCoverLayer()

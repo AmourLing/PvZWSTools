@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -39,6 +39,7 @@ public class OthersFragment:BaseFragment
         [Resource.String.others_strings_8_1_key] = OptionFileNameSwitch1,
         [Resource.String.others_strings_10_1_key] = OptionFileNameSwitch1,
         [Resource.String.others_strings_11_1_key] = OptionFileNameSwitch1,
+        [Resource.String.others_strings_12_1_key] = "游戏速度",
     };
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -86,7 +87,19 @@ public class OthersFragment:BaseFragment
         };
         SetupButton(Resource.Id.button10, Resource.String.others_strings_10, Resource.String.others_strings_10_1_key, "{CHECK}", "0");
         SetupButton(Resource.Id.button11, Resource.String.others_strings_11, Resource.String.others_strings_11_1_key, "{CHECK}", "0");
-
+        view.FindViewById<Button>(Resource.Id.button12).Click += (sender, e) =>
+        {
+            string key1 = GetString(Resource.String.others_strings_12_1_key);
+            CreateInputDialog.OptAndDone3(
+                Activity,
+                GetString(Resource.String.others_strings_12),
+                BuildInitialData(key1),
+                FragmentPath,
+                GetString(Resource.String.others_strings_12),
+                new Dictionary<string, string> { ["{GAME_RUN_SPEED}"] = "0" },
+                Map,
+                BuildDropdownOptions(key1));
+        };
         RefreshAllButtons();
 
         return view;
@@ -119,6 +132,7 @@ public class OthersFragment:BaseFragment
         Map[GetString(Resource.String.others_strings_9_1_key)] = GetString(Resource.String.others_strings_9_1_value);
         Map[GetString(Resource.String.others_strings_10_1_key)] = GetString(Resource.String.others_strings_10_1_value);
         Map[GetString(Resource.String.others_strings_11_1_key)] = GetString(Resource.String.others_strings_11_1_value);
+        Map[GetString(Resource.String.others_strings_12_1_key)] = GetString(Resource.String.others_strings_12_1_value);
     }
 
     private int GetButtonTitleResId(int buttonId)

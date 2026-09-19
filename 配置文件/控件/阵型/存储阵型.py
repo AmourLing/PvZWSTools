@@ -1,11 +1,9 @@
 #存储阵型
 
 import clr
-clr.AddReference("System.IO")
 clr.AddReference("System")
 clr.AddReference("Newtonsoft.Json")
 
-from System.IO import Path, File, Directory
 from System import Convert, String
 from System.Text import Encoding
 from Newtonsoft.Json import JsonConvert
@@ -127,10 +125,12 @@ try:
 
     output_payload = "FORMATION_JSON_START\n" + base64_str + "\nFORMATION_JSON_END"
 
-    print(output_payload)
+    print(output_payload + "\n===END===")
 
 except Exception as e:
     LOG(e, 1004)
+    # 失败也要收口，否则 WPF 端 ExecuteWithResultAsync 白等满 3 秒且看不到原因
+    print("[ErrorCode 1004] {}\n===END===".format(repr(e) if e else "Unknown Error"))
 
 # --- 5. 刷新输出流 ---
 try:

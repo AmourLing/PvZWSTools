@@ -118,7 +118,53 @@
                                     Command="{Binding SetTreeHeightCommand}"
                                     Content="设置树的高度" />
 
-                                <!--  清除浓雾  -->
+                                <!--  游戏速度  -->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="65" />
+                                        <ColumnDefinition Width="25" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding GameRunSpeedInput}" />
+                                    <ToggleButton
+                                        x:Name="GameRunSpeedDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding GameRunSpeedDropdownToggleIsChecked, Mode=TwoWay}" />
+
+                                    <Popup
+                                        IsOpen="{Binding GameRunSpeedDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=GameRunSpeedDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="GameRunSpeedListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding GameRunSpeedOptions}"
+                                                SelectedItem="{Binding GameRunSpeedSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                                <Button
+                                    x:Name="GameRunSpeedBtn"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Height="25"
+                                    Command="{Binding GameRunSpeedCommand}"
+                                    Content="游戏速度" />
+
+                                <!--  清除迷雾  -->
                                 <TextBox
                                     Grid.Row="0"
                                     Grid.Column="3"
@@ -133,9 +179,9 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding ClearFogCommand}"
-                                    Content="清除浓雾" />
+                                    Content="清除迷雾" />
 
-                                <!--  透明花瓶  -->
+                                <!--  罐子透视  -->
                                 <TextBox
                                     Grid.Row="1"
                                     Grid.Column="3"
@@ -150,7 +196,7 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding ClearVaseCommand}"
-                                    Content="透明花瓶" />
+                                    Content="罐子透视" />
 
                                 <!--  阳光增值  -->
                                 <TextBox
@@ -186,7 +232,7 @@
                                     Command="{Binding AutoCollectCommand}"
                                     Content="自动收集" />
 
-                                <!--  无冷却种植  -->
+                                <!--  取消冷却  -->
                                 <TextBox
                                     Grid.Row="1"
                                     Grid.Column="6"
@@ -201,7 +247,7 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding NoCDPlantingCommand}"
-                                    Content="无冷却种植" />
+                                    Content="取消冷却" />
 
                                 <!--  自动浇水  -->
                                 <TextBox
@@ -220,7 +266,7 @@
                                     Command="{Binding AutoWateringCommand}"
                                     Content="自动浇水" />
 
-                                <!--  0花费种植  -->
+                                <!--  取消阳光  -->
                                 <TextBox
                                     Grid.Row="0"
                                     Grid.Column="9"
@@ -235,7 +281,7 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding NoCostPlantingCommand}"
-                                    Content="0花费种植" />
+                                    Content="取消阳光" />
 
                                 <!--  后台运行  -->
                                 <TextBox
@@ -2246,6 +2292,27 @@
                                     VerticalAlignment="Top"
                                     Command="{Binding RedeyeHandleCommand}"
                                     Content="红眼处理" />
+
+                                <!--  下一波  -->
+                                <TextBox
+                                    x:Name="NextWaveInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="400,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NextWave}" />
+                                <Button
+                                    x:Name="NextWaveButton"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="430,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding NextWaveCommand}"
+                                    Content="下一波" />
 
                                 <!--  极限出怪测试  -->
                                 <Button

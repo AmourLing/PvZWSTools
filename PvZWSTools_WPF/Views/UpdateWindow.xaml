@@ -52,22 +52,19 @@
 
             <!-- 更新渠道选择 -->
             <TextBlock Margin="0,8,0,4" FontSize="12" Foreground="#555" Text="下载渠道：" />
-            <StackPanel>
-                <RadioButton
-                    Content="GitHub （海外高速，国内可能较慢）"
-                    IsChecked="{Binding SourceIsGithub}"
-                    IsEnabled="{Binding HasGithub}" />
-                <RadioButton
-                    Content="Gitee （国内高速，推荐）"
-                    Margin="0,2,0,0"
-                    IsChecked="{Binding SourceIsGitee}"
-                    IsEnabled="{Binding HasGitee}" />
-                <RadioButton
-                    Content="百度网盘 （国内备用，需提取码）"
-                    Margin="0,2,0,0"
-                    IsChecked="{Binding SourceIsBaidu}"
-                    IsEnabled="{Binding HasBaidu}" />
-            </StackPanel>
+            <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Channels}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton
+                                Margin="0,2,0,2"
+                                Content="{Binding Display}"
+                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                IsEnabled="{Binding IsEnabled}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </StackPanel>
 
         <!-- 更新说明 -->

@@ -3,83 +3,22 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Windows;
-using PvZWSTools_Shared;
+using Newtonsoft.Json.Linq;
 using PvZWSTools_Shared.Helpers;
-using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 
 namespace PvZWSTools_WPF.Services;
 
 /// <summary>
 /// WPF 端自动更新实现：
-/// 下载 zip → 解压到临时目录 → 生成 .bat 等待主进程退出 → 替换 exe 与同目录文件 → 重启。
+/// 下载 zip → 解压到临时目录 → 生成 PowerShell 脚本等待主进程退出 → 覆盖文件 → 重启。
 ///
-/// 资产选择策略：
-/// - 先检查本机是否有 .NET 10 Desktop Runtime
-/// - 如果有，优先查 framework-dependent 小包（PvZWSTools-win-fwdep.zip，几MB）
-/// - 如果小包不存在或无 runtime，查 self-contained 大包（PvZWSTools-win.zip，~60MB）
+/// Windows 端只取 framework-dependent 小包（几 MB）：用户能启动程序、能进更新界面，
+/// 就说明运行时一定可用（要么共享安装，要么 setup.exe 自带），无需探测 dotnet CLI，
+/// 也不必下 ~60MB 的大包。覆盖 self-contained 安装时保留其宿主文件，见 <see cref="ApplyUpdateAsync"/>。
 /// </summary>
 public class WpfUpdateService:UpdateService
 {
-    /// <summary>
-    /// 检查本机是否已安装指定主版本的 .NET Desktop Runtime。
-    /// 用 dotnet CLI 检测，失败时兜底返回 false（保守策略让用户下大包）。
-    /// </summary>
-    public static bool HasDesktopRuntime(string majorVersion)
-    {
-        try
-        {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "dotnet",
-                Arguments = "--list-runtimes",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using var proc = Process.Start(psi);
-            if(proc == null) return false;
-            proc.WaitForExit(5000);
-            if(proc.ExitCode != 0) return false;
-
-            string output = proc.StandardOutput.ReadToEnd();
-            // 匹配 "Microsoft.WindowsDesktop.App 10.x.x" 或 "Microsoft.WindowsDesktop.App runtime 10.x.x"
-            return System.Text.RegularExpressions.Regex.IsMatch(output,
-                @"Microsoft\.WindowsDesktop\.App(?:\.Framework)?[^\d]*" + System.Text.RegularExpressions.Regex.Escape(majorVersion) + @"\.",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        }
-        catch(Exception ex)
-        {
-            Log.Warning($"检测 .NET Runtime 失败: {ex.Message}");
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// 重写检查更新：优先查 framework-dependent 小包（如果本机有运行时）。
-    /// 没找到小包再回退到大包。
-    /// </summary>
-    public override async Task<UpdateInfo?> CheckForUpdatesAsync(string assetName, CancellationToken ct = default)
-    {
-        bool hasRuntime = HasDesktopRuntime(Sharedstring.TargetNetRuntimeMajor);
-        Log.Info($"本机 .NET {Sharedstring.TargetNetRuntimeMajor} Desktop Runtime: {(hasRuntime ? "已安装" : "未安装")}");
-
-        if(hasRuntime)
-        {
-            // 先查 framework-dependent 小包
-            var fwdep = await base.CheckForUpdatesAsync(Sharedstring.AssetNameWindowsFwDepend, ct);
-            if(fwdep != null)
-            {
-                Log.Info("使用 framework-dependent 小包（几MB）");
-                return fwdep;
-            }
-            Log.Info("未找到 framework-dependent 资产，回退到 self-contained 大包");
-        }
-
-        return await base.CheckForUpdatesAsync(Sharedstring.AssetNameWindows, ct);
-    }
-
     /// <inheritdoc />
     public override Version CurrentVersion
     {
@@ -216,21 +155,64 @@ public class WpfUpdateService:UpdateService
             string currentExe = Process.GetCurrentProcess().MainModule?.FileName
                 ?? Path.Combine(baseDir, exeName);
 
+            // 安装形态决定能不能覆盖宿主文件：self-contained 安装（setup.exe 装的这种）自带运行时，
+            // 换上小包的 runtimeconfig/deps 后宿主会改去找共享运行时，
+            // 没装过的机器更新完直接启动不了（实测报 "You must install or update .NET"）。
+            var installed = ReadHostInfo(baseDir);
+            var package = ReadHostInfo(extractDir);
+
+            if(installed.RuntimeMajor > 0 && package.RuntimeMajor > 0 && installed.RuntimeMajor != package.RuntimeMajor)
+            {
+                Log.Error($"更新包要求 .NET {package.RuntimeMajor}，当前安装是 .NET {installed.RuntimeMajor}，请改用安装包更新");
+                return false;
+            }
+
+            bool keepHostFiles = installed.SelfContained;
+            Log.Info($"安装形态: {(keepHostFiles ? "self-contained（保留 runtimeconfig/deps）" : "framework-dependent")}");
+
             // 用 PowerShell 脚本代替 bat：
             // 1. 完美支持中文路径 + UTF-8
             // 2. Copy-Item -Force 无条件覆盖（robocopy 默认跳过时间戳旧的文件）
             // 3. 自带重试循环应对文件占用
             string psPath = Path.Combine(updateRoot, $"pvzwstools_apply_{Guid.NewGuid():N}.ps1");
-            string escapedExtractDir = extractDir.Replace("'", "''");
-            string escapedBaseDir = baseDir.Replace("'", "''");
-            string escapedCurrentExe = currentExe.Replace("'", "''");
+            File.WriteAllText(psPath, BuildApplyScript(Environment.ProcessId, extractDir, baseDir, currentExe, keepHostFiles));
 
-            // 用纯 verbatim 字符串（不是插值），避免 C# 把 PS 的 $变量 当成插值
-            string ps = @"$ErrorActionPreference = 'Continue'
+            Log.Info($"启动应用脚本: {psPath}");
+            var psi = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"{psPath}\"",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+            _ = Process.Start(psi);
+
+            // 给 bat 一点启动时间，然后退出主程序
+            await Task.Delay(500);
+            Application.Current?.Shutdown();
+            return true;
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"应用更新失败: {ex}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 生成覆盖脚本。keepHostFiles 为 true 时跳过 *.runtimeconfig.json 与 *.deps.json，
+    /// 让 self-contained 安装继续用自己目录里的运行时。
+    /// </summary>
+    private static string BuildApplyScript(int mainPid, string extractDir, string baseDir, string currentExe, bool keepHostFiles)
+    {
+        // 用纯 verbatim 字符串（不是插值），避免 C# 把 PS 的 $变量 当成插值
+        string ps = @"$ErrorActionPreference = 'Continue'
 $mainPid = __MAIN_PID__
 $src = '__SRC__'
 $dst = '__DST__'
 $exe = '__EXE__'
+$keepHost = __KEEP_HOST_FILES__
 
 # 统一尾部反斜杠，避免 Substring/Join-Path 拼错
 $src = $src.TrimEnd('\')
@@ -246,6 +228,10 @@ $maxRetries = 5
 $retryDelay = 200
 Get-ChildItem -Path $src -Recurse -File | ForEach-Object {
     $relative = $_.FullName.Substring($src.Length + 1)  # 跳过 src 后面的反斜杠
+    if ($keepHost -and ($_.Name -like '*.runtimeconfig.json' -or $_.Name -like '*.deps.json')) {
+        Write-Host ""保留宿主文件: $relative""
+        return
+    }
     $destPath = Join-Path $dst $relative
     $destDir = Split-Path $destPath -Parent
     if (-not (Test-Path $destDir)) {
@@ -273,33 +259,38 @@ Start-Process -FilePath $exe
 Start-Sleep -Seconds 2
 Remove-Item -Path (Join-Path $dst 'update') -Recurse -Force -ErrorAction SilentlyContinue
 ";
-            ps = ps.Replace("__MAIN_PID__", Environment.ProcessId.ToString())
-                   .Replace("__SRC__", escapedExtractDir)
-                   .Replace("__DST__", escapedBaseDir)
-                   .Replace("__EXE__", escapedCurrentExe);
 
-            File.WriteAllText(psPath, ps);
+        return ps.Replace("__MAIN_PID__", mainPid.ToString())
+                 .Replace("__SRC__", extractDir.Replace("'", "''"))
+                 .Replace("__DST__", baseDir.Replace("'", "''"))
+                 .Replace("__EXE__", currentExe.Replace("'", "''"))
+                 .Replace("__KEEP_HOST_FILES__", keepHostFiles ? "$true" : "$false");
+    }
 
-            Log.Info($"启动应用脚本: {psPath}");
-            var psi = new ProcessStartInfo
-            {
-                FileName = "powershell.exe",
-                Arguments = $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"{psPath}\"",
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
-            _ = Process.Start(psi);
+    /// <summary>
+    /// 读目录里的 *.runtimeconfig.json，判断安装形态与运行时主版本。
+    /// 有 includedFrameworks 即 self-contained（运行时在程序目录里），frameworks 则是共享运行时。
+    /// 读不到时返回 (false, 0)，调用方按"可覆盖全部文件、不做版本比对"处理。
+    /// </summary>
+    private static (bool SelfContained, int RuntimeMajor) ReadHostInfo(string dir)
+    {
+        try
+        {
+            string? cfg = Directory.GetFiles(dir, "*.runtimeconfig.json").FirstOrDefault();
+            if(cfg == null) return (false, 0);
 
-            // 给 bat 一点启动时间，然后退出主程序
-            await Task.Delay(500);
-            Application.Current?.Shutdown();
-            return true;
+            var options = JObject.Parse(File.ReadAllText(cfg))["runtimeOptions"] as JObject;
+            var included = options?["includedFrameworks"] as JArray;
+            var frameworks = included ?? options?["frameworks"] as JArray;
+            string? version = frameworks?.OfType<JObject>().FirstOrDefault()?.Value<string>("version");
+
+            if(version == null || !int.TryParse(version.Split('.')[0], out int major)) return (false, 0);
+            return (included != null, major);
         }
         catch(Exception ex)
         {
-            Log.Error($"应用更新失败: {ex}");
-            return false;
+            Log.Warning($"读取 {dir} 的 runtimeconfig 失败: {ex.Message}");
+            return (false, 0);
         }
     }
 

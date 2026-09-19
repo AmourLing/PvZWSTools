@@ -609,40 +609,31 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         }
 
         // 弹出带渠道选择的更新对话框
-        var choice = await ShowUpdateDialogAsync(info);
+        var (choice, netdisk) = await ShowUpdateDialogAsync(info);
         if(choice == UpdateSource.None) return;
 
-        // 百度网盘：打开浏览器跳转
-        if(choice == UpdateSource.Baidu)
+        // 网盘渠道：打开浏览器跳转，用户手动下载 APK 后安装
+        if(choice == UpdateSource.Netdisk && netdisk != null)
         {
-            OpenBaiduNetdisk(info);
+            OpenNetdiskPage(netdisk);
             return;
         }
 
-        // GitHub/Gitee：根据选择调整下载优先级
-        if(choice == UpdateSource.Gitee && !string.IsNullOrEmpty(info.DownloadUrlFallback))
-        {
-            var githubUrl = info.DownloadUrl;
-            info.DownloadUrl = info.DownloadUrlFallback;
-            info.DownloadUrlFallback = githubUrl;
-            info.Source = "gitee";
-        }
-        else
-        {
-            info.Source = "github";
-        }
+        // GitHub/Gitee：DownloadUpdateAsync 按 Source 排的渠道优先、另一源兜底
+        info.Source = choice == UpdateSource.Gitee ? "gitee" : "github";
 
         await DownloadAndInstallAsync(info);
     }
 
-    private enum UpdateSource { None, Github, Gitee, Baidu }
+    private enum UpdateSource { None, Github, Gitee, Netdisk }
 
     /// <summary>
-    /// 显示带渠道选择的更新对话框。返回用户选择的渠道（None=取消）。
+    /// 显示带渠道选择的更新对话框。返回用户选择的渠道（None=取消）；
+    /// 网盘渠道时同时返回对应的分享链接。
     /// </summary>
-    private Task<UpdateSource> ShowUpdateDialogAsync(UpdateInfo info)
+    private Task<(UpdateSource Source, NetdiskChannel? Netdisk)> ShowUpdateDialogAsync(UpdateInfo info)
     {
-        var tcs = new TaskCompletionSource<UpdateSource>();
+        var tcs = new TaskCompletionSource<(UpdateSource, NetdiskChannel?)>();
         RunOnUiThread(() =>
         {
             var dialogView = LayoutInflater.From(this)!.Inflate(Resource.Layout.update_dialog, null);
@@ -661,22 +652,33 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             notesText.Text = string.IsNullOrWhiteSpace(info.ReleaseNotes) ? "暂无更新说明" : info.ReleaseNotes;
 
             // 渠道可用性
-            bool hasGithub = !string.IsNullOrEmpty(info.DownloadUrl);
-            bool hasGitee = !string.IsNullOrEmpty(info.DownloadUrlFallback);
-            bool hasBaidu = !string.IsNullOrEmpty(info.DownloadUrlBaidu);
+            bool hasGithub = !string.IsNullOrEmpty(info.GithubUrl);
+            bool hasGitee = !string.IsNullOrEmpty(info.GiteeUrl);
 
+            var radioGroup = dialogView.FindViewById<RadioGroup>(Resource.Id.source_radio_group)!;
             var radioGithub = dialogView.FindViewById<RadioButton>(Resource.Id.radio_github)!;
             var radioGitee = dialogView.FindViewById<RadioButton>(Resource.Id.radio_gitee)!;
-            var radioBaidu = dialogView.FindViewById<RadioButton>(Resource.Id.radio_baidu)!;
 
             radioGithub.Enabled = hasGithub;
             radioGitee.Enabled = hasGitee;
-            radioBaidu.Enabled = hasBaidu;
 
-            // 默认选有可用的渠道（优先 GitHub → Gitee → 百度网盘）
+            // 网盘渠道不进 Release，是固定分享链接，逐个追加到同一个 RadioGroup
+            var netdiskRadios = new List<(NetdiskChannel Channel, RadioButton Radio)>();
+            foreach(var channel in NetdiskChannel.All)
+            {
+                var radio = new RadioButton(this)
+                {
+                    Text = channel.Display,
+                    TextSize = 13f
+                };
+                netdiskRadios.Add((channel, radio));
+                radioGroup.AddView(radio);
+            }
+
+            // 默认选有可用的渠道（优先 GitHub → Gitee → 网盘）
             if(hasGithub) radioGithub.Checked = true;
             else if(hasGitee) radioGitee.Checked = true;
-            else if(hasBaidu) radioBaidu.Checked = true;
+            else netdiskRadios[0].Radio.Checked = true;
 
             var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
                 .SetTitle("检查更新")
@@ -684,13 +686,27 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 .SetCancelable(true)
                 .SetPositiveButton("下载并更新", (_, _) =>
                 {
-                    UpdateSource choice = UpdateSource.None;
-                    if(radioGithub.Checked && hasGithub) choice = UpdateSource.Github;
-                    else if(radioGitee.Checked && hasGitee) choice = UpdateSource.Gitee;
-                    else if(radioBaidu.Checked && hasBaidu) choice = UpdateSource.Baidu;
-                    tcs.TrySetResult(choice);
+                    if(radioGithub.Checked && hasGithub)
+                    {
+                        tcs.TrySetResult((UpdateSource.Github, null));
+                        return;
+                    }
+                    if(radioGitee.Checked && hasGitee)
+                    {
+                        tcs.TrySetResult((UpdateSource.Gitee, null));
+                        return;
+                    }
+                    foreach(var (channel, radio) in netdiskRadios)
+                    {
+                        if(radio.Checked)
+                        {
+                            tcs.TrySetResult((UpdateSource.Netdisk, channel));
+                            return;
+                        }
+                    }
+                    tcs.TrySetResult((UpdateSource.None, null));
                 })
-                .SetNegativeButton("取消", (_, _) => tcs.TrySetResult(UpdateSource.None))
+                .SetNegativeButton("取消", (_, _) => tcs.TrySetResult((UpdateSource.None, null)))
                 .Create();
 
             dialog.Show();
@@ -699,31 +715,29 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     }
 
     /// <summary>
-    /// 打开百度网盘链接（调起浏览器或百度网盘 App）。
+    /// 打开网盘分享链接（调起浏览器或对应网盘 App）。
     /// </summary>
-    private void OpenBaiduNetdisk(UpdateInfo info)
+    private void OpenNetdiskPage(NetdiskChannel netdisk)
     {
-        if(string.IsNullOrEmpty(info.DownloadUrlBaidu)) return;
-
-        string codeText = !string.IsNullOrEmpty(info.BaiduExtractCode)
-            ? $"提取码：{info.BaiduExtractCode}\n\n"
+        string codeText = !string.IsNullOrEmpty(netdisk.ExtractCode)
+            ? $"提取码：{netdisk.ExtractCode}\n\n"
             : "";
 
         RunOnUiThread(() =>
         {
             var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
-                .SetTitle("打开百度网盘")
+                .SetTitle($"打开{netdisk.Name}")
                 .SetMessage($"{codeText}即将打开浏览器，请手动下载 APK 后安装。\n\n下载完成后，关闭本程序，安装新 APK 即可。")
                 .SetPositiveButton("打开浏览器", (_, _) =>
                 {
                     try
                     {
-                        var intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(info.DownloadUrlBaidu));
+                        var intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(netdisk.Url));
                         StartActivity(intent);
                     }
                     catch(Exception ex)
                     {
-                        Log.Error("打开百度网盘失败", ex);
+                        Log.Error($"打开{netdisk.Name}失败", ex);
                         Toast.MakeText(this, "无法打开浏览器，请手动复制链接", ToastLength.Long).Show();
                     }
                 })

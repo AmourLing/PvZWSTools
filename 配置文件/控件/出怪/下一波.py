@@ -1,7 +1,7 @@
 # NextWaveButton.py
+# 2026.09.17
 # 在棋盘菜单按钮左侧添加一个"下一波"按钮，点击后立即推进到下一波僵尸。
 # 可见性由全局 NEXT_WAVE_BUTTON_CHECK(int 1/0) 与 ButtonState.visible 共同控制。
-# 点击始终响应：大波横幅在播时收尾横幅，否则把倒计时压到 1 让游戏自然刷波。
 # 跨平台：Windows 走 MouseDown/Up/Move/Drag，Android 走 TouchBegan/Ended/Moved，
 # 两套钩子共用 _on_down/_on_up/_on_move 逻辑。
 
@@ -11,7 +11,7 @@ from LawnMod import MonoModUtils as M
 from Sexy import *
 from System import *
 
-NEXT_WAVE_BUTTON_CHECK = {0}
+NEXT_WAVE_BUTTON_CHECK = {CHECK}
 
 _BUTTON_WIDTH = 45
 _BUTTON_GAP = 4

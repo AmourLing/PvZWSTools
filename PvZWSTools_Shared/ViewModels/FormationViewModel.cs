@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
@@ -172,7 +171,7 @@ public class FormationViewModel:ViewModelBase
                 }
             );
 
-            string jsonBase64 = ExtractJsonFromOutput(output, "FORMATION_JSON_START", "FORMATION_JSON_END");
+            string jsonBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.FormationJsonStart, Constants.Markers.FormationJsonEnd);
 
             if(string.IsNullOrEmpty(jsonBase64))
             {
@@ -258,7 +257,7 @@ public class FormationViewModel:ViewModelBase
                 new Dictionary<string, string> { ["{NAME}"] = SeedPacketsInput }
             );
 
-            string jsonBase64 = ExtractJsonFromOutput(output, "SEEDPACKET_JSON_START", "SEEDPACKET_JSON_END");
+            string jsonBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.SeedPacketJsonStart, Constants.Markers.SeedPacketJsonEnd);
 
             if(string.IsNullOrEmpty(jsonBase64))
             {
@@ -415,48 +414,6 @@ public class FormationViewModel:ViewModelBase
     public ICommand ToggleImitaterSlotCommand => new RelayCommand(_ => ImitaterSlot = ButtonHelper.ToggleCheck(ImitaterSlot));
     public ICommand ToggleSpImitaterCommand => new RelayCommand(_ => SpInput3 = ButtonHelper.ToggleCheck(SpInput3));
 
-    /// <summary>
-    /// 从脚本输出中提取 JSON 数据（支持 Base64 或纯 JSON）
-    /// </summary>
-    private string ExtractJsonFromOutput(string output, string startMarker, string endMarker)
-    {
-        if(string.IsNullOrEmpty(output)) return null;
-
-        if(!string.IsNullOrEmpty(startMarker) && !string.IsNullOrEmpty(endMarker))
-        {
-            int startIdx = output.IndexOf(startMarker);
-            int endIdx = output.IndexOf(endMarker);
-
-            if(startIdx != -1 && endIdx != -1 && endIdx > startIdx)
-            {
-                string content = output.Substring(startIdx + startMarker.Length, endIdx - startIdx - startMarker.Length).Trim();
-                if(!string.IsNullOrEmpty(content))
-                {
-                    return Regex.Replace(content, @"\s+", "");
-                }
-            }
-        }
-
-        int braceStart = output.LastIndexOf('{');
-        int braceEnd = output.LastIndexOf('}');
-
-        if(braceStart != -1 && braceEnd != -1 && braceEnd > braceStart)
-        {
-            string potentialJson = output.Substring(braceStart, braceEnd - braceStart + 1);
-            if(potentialJson.StartsWith("{") && potentialJson.EndsWith("}"))
-            {
-                return potentialJson;
-            }
-        }
-
-        if(!output.Contains("{") && Regex.IsMatch(output.Trim(), @"^[A-Za-z0-9+/=]+$"))
-        {
-            return output.Trim();
-        }
-
-        return null;
-    }
-
     private async Task SaveSeedPacketsAsync(string name)
     {
         string output = await _scriptExec.ExecuteWithResultAsync(
@@ -465,7 +422,7 @@ public class FormationViewModel:ViewModelBase
             new Dictionary<string, string> { ["{NAME}"] = name }
         );
 
-        string jsonBase64 = ExtractJsonFromOutput(output, "SEEDPACKET_JSON_START", "SEEDPACKET_JSON_END");
+        string jsonBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.SeedPacketJsonStart, Constants.Markers.SeedPacketJsonEnd);
 
         if(string.IsNullOrEmpty(jsonBase64))
         {

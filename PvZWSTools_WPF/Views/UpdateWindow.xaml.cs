@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -15,7 +16,14 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
     // ---------- 绑定属性 ----------
     public string CurrentVersionDisplay { get; set; } = "";
 
-    public string StatusText { get; set; } = "点击按钮检查是否有新版本";
+    private string _statusText = "点击按钮检查是否有新版本";
+
+    public string StatusText
+    {
+        get => _statusText;
+        set { _statusText = value; OnPropertyChanged(); }
+    }
+
     private UpdateInfo? _updateInfo;
 
     public UpdateInfo? UpdateInfo
@@ -28,10 +36,8 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
             OnPropertyChanged(nameof(UpdateFoundVisibility));
             OnPropertyChanged(nameof(NewVersionTagName));
             OnPropertyChanged(nameof(UpdateSizeText));
-            OnPropertyChanged(nameof(HasGithub));
-            OnPropertyChanged(nameof(HasGitee));
-            OnPropertyChanged(nameof(HasBaidu));
             OnPropertyChanged(nameof(CanDownload));
+            RefreshDirectChannelAvailability();
         }
     }
 
@@ -39,39 +45,7 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
     public string NewVersionTagName => UpdateInfo?.TagName ?? "";
     public string UpdateSizeText => UpdateInfo?.Size.HasValue == true ? $"({UpdateInfo.Size.Value / 1048576.0:F1} MB)" : "";
 
-    // 渠道选择
-    public bool HasGithub => !string.IsNullOrEmpty(UpdateInfo?.DownloadUrl);
-
-    public bool HasGitee => !string.IsNullOrEmpty(UpdateInfo?.DownloadUrlFallback);
-    public bool HasBaidu => !string.IsNullOrEmpty(UpdateInfo?.DownloadUrlBaidu);
-
-    private bool _sourceIsGithub = true;
-
-    public bool SourceIsGithub
-    {
-        get => _sourceIsGithub;
-        set { _sourceIsGithub = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanDownload)); }
-    }
-
-    private bool _sourceIsGitee;
-
-    public bool SourceIsGitee
-    {
-        get => _sourceIsGitee;
-        set { _sourceIsGitee = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanDownload)); }
-    }
-
-    private bool _sourceIsBaidu;
-
-    public bool SourceIsBaidu
-    {
-        get => _sourceIsBaidu;
-        set { _sourceIsBaidu = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanDownload)); }
-    }
-
-    public bool CanDownload => UpdateInfo != null && !IsDownloading && (SourceIsGithub || SourceIsGitee || SourceIsBaidu);
-
-    // 下载进度
+    // ---------- 下载进度 ----------
     private bool _isDownloading;
 
     public bool IsDownloading
@@ -96,21 +70,109 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
         CurrentVersionDisplay = updateService.CurrentVersionDisplay;
         DataContext = this;
 
+        _githubChannel = new ChannelOption { Display = "GitHub （海外高速，国内可能较慢）", Kind = ChannelKind.Github };
+        _giteeChannel = new ChannelOption { Display = "Gitee （国内高速，推荐）", Kind = ChannelKind.Gitee };
+
+        Channels.Add(_githubChannel);
+        Channels.Add(_giteeChannel);
+        foreach(var netdisk in NetdiskChannel.All)
+            Channels.Add(new ChannelOption { Display = netdisk.Display, Kind = ChannelKind.Netdisk, Netdisk = netdisk });
+
+        foreach(var channel in Channels)
+            channel.PropertyChanged += Channel_PropertyChanged;
+
         if(preFetchedInfo != null)
         {
             // ViewModel 已经查过了，直接展示（启动时自动检查的场景）
             UpdateInfo = preFetchedInfo;
+            SelectChannel(FirstAvailableChannel());
             StatusText = $"发现新版本 {preFetchedInfo.TagName}！请选择下载渠道";
-            // 默认选有可用的渠道（优先 GitHub，若无则 Gitee）
-            SourceIsGithub = HasGithub;
-            SourceIsGitee = !HasGithub && HasGitee;
-            SourceIsBaidu = !HasGithub && !HasGitee && HasBaidu;
         }
         else
         {
             // 手动触发：自动检查
             Loaded += async (_, _) => await CheckForUpdatesAsync();
         }
+    }
+
+    // ---------- 渠道选择 ----------
+    public enum ChannelKind { Github, Gitee, Netdisk }
+
+    public sealed class ChannelOption:INotifyPropertyChanged
+    {
+        public ChannelKind Kind { get; init; }
+
+        /// <summary>网盘渠道对应的分享链接；GitHub / Gitee 直链为 null。</summary>
+        public NetdiskChannel? Netdisk { get; init; }
+
+        public string Display { get; init; } = "";
+
+        private bool _isEnabled = true;
+
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set { _isEnabled = value; OnPropertyChanged(); }
+        }
+
+        private bool _isSelected;
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set { _isSelected = value; OnPropertyChanged(); }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    public ObservableCollection<ChannelOption> Channels { get; } = [];
+
+    private readonly ChannelOption _githubChannel;
+    private readonly ChannelOption _giteeChannel;
+    private ChannelOption? _selectedChannel;
+    private bool _applyingSelection;
+
+    public bool CanDownload => UpdateInfo != null && !IsDownloading && _selectedChannel != null;
+
+    private void RefreshDirectChannelAvailability()
+    {
+        _githubChannel.IsEnabled = !string.IsNullOrEmpty(UpdateInfo?.GithubUrl);
+        _giteeChannel.IsEnabled = !string.IsNullOrEmpty(UpdateInfo?.GiteeUrl);
+    }
+
+    private ChannelOption? FirstAvailableChannel() =>
+        Channels.FirstOrDefault(c => c.Kind == ChannelKind.Github && c.IsEnabled)
+        ?? Channels.FirstOrDefault(c => c.Kind == ChannelKind.Gitee && c.IsEnabled)
+        ?? Channels.FirstOrDefault(c => c.Kind == ChannelKind.Netdisk && c.IsEnabled);
+
+    private void SelectChannel(ChannelOption? selected)
+    {
+        if(_applyingSelection) return;
+
+        _applyingSelection = true;
+        try
+        {
+            _selectedChannel = selected?.IsEnabled == true ? selected : null;
+            foreach(var channel in Channels)
+                channel.IsSelected = ReferenceEquals(channel, _selectedChannel);
+        }
+        finally
+        {
+            _applyingSelection = false;
+        }
+
+        OnPropertyChanged(nameof(CanDownload));
+    }
+
+    private void Channel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if(e.PropertyName != nameof(ChannelOption.IsSelected) || _applyingSelection) return;
+        if(sender is ChannelOption { IsSelected: true } selected)
+            SelectChannel(selected);
     }
 
     // ---------- 检查更新 ----------
@@ -126,11 +188,7 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
             CheckButton.IsEnabled = false;
             StatusText = "正在检查更新...";
             UpdateInfo = null;
-            OnPropertyChanged(nameof(UpdateFoundVisibility));
-            OnPropertyChanged(nameof(HasGithub));
-            OnPropertyChanged(nameof(HasGitee));
-            OnPropertyChanged(nameof(HasBaidu));
-            OnPropertyChanged(nameof(CanDownload));
+            SelectChannel(null);
 
             var info = await _updateService.CheckForUpdatesAsync(AssetNameWindows);
 
@@ -147,18 +205,8 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
             }
 
             UpdateInfo = info;
-            // 默认选有可用的渠道（优先 GitHub，若无则 Gitee，再无则百度网盘）
-            SourceIsGithub = HasGithub;
-            SourceIsGitee = !HasGithub && HasGitee;
-            SourceIsBaidu = !HasGithub && !HasGitee && HasBaidu;
-
+            SelectChannel(FirstAvailableChannel());
             StatusText = $"发现新版本 {info.TagName}！请选择下载渠道";
-            OnPropertyChanged(nameof(UpdateFoundVisibility));
-            OnPropertyChanged(nameof(HasGithub));
-            OnPropertyChanged(nameof(HasGitee));
-            OnPropertyChanged(nameof(HasBaidu));
-            OnPropertyChanged(nameof(UpdateSizeText));
-            OnPropertyChanged(nameof(CanDownload));
         }
         catch(Exception ex)
         {
@@ -173,46 +221,38 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
     // ---------- 下载更新 ----------
     private async void DownloadButton_Click(object sender, RoutedEventArgs e)
     {
-        if(UpdateInfo == null) return;
+        if(UpdateInfo == null || _selectedChannel == null) return;
 
-        // 百度网盘：打开浏览器跳转，让用户手动下载后手动覆盖
-        // 百度网盘直链下载需要复杂的 API 鉴权，不适合自动更新场景
-        if(SourceIsBaidu && HasBaidu)
+        // 网盘渠道：直链下载要各自鉴权，只能跳浏览器让用户手动下载后覆盖
+        if(_selectedChannel.Netdisk is { } netdisk)
         {
-            string codeText = !string.IsNullOrEmpty(UpdateInfo.BaiduExtractCode)
-                ? $"（提取码：{UpdateInfo.BaiduExtractCode}）"
-                : "";
-            var result = MessageBox.Show(this,
-                $"即将打开浏览器跳转到百度网盘{codeText}。\n\n下载完成后，请关闭程序，将解压后的文件覆盖到程序安装目录，再重新启动。",
-                "百度网盘下载",
-                MessageBoxButton.OKCancel, MessageBoxImage.Information);
-            if(result != MessageBoxResult.OK) return;
-
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = UpdateInfo.DownloadUrlBaidu,
-                UseShellExecute = true
-            });
+            OpenNetdiskPage(netdisk);
             return;
         }
 
-        // 让 UpdateInfo 使用用户选的渠道
-        // DownloadUpdateAsync 会按顺序尝试 DownloadUrl → DownloadUrlFallback
-        // 所以我们根据用户选择，把选中的 URL 放到 DownloadUrl 上
-        if(SourceIsGitee && HasGitee)
-        {
-            // 用户选 Gitee：把 Gitee URL 放到 DownloadUrl 首位
-            var githubUrl = UpdateInfo.DownloadUrl;
-            UpdateInfo.DownloadUrl = UpdateInfo.DownloadUrlFallback;
-            UpdateInfo.DownloadUrlFallback = githubUrl;
-            UpdateInfo.Source = "gitee";
-        }
-        else
-        {
-            UpdateInfo.Source = "github";
-        }
+        // DownloadUpdateAsync 按 Source 排的渠道优先、另一源兜底
+        UpdateInfo.Source = _selectedChannel.Kind == ChannelKind.Gitee ? "gitee" : "github";
 
         await DownloadAndApplyAsync();
+    }
+
+    private void OpenNetdiskPage(NetdiskChannel netdisk)
+    {
+        string codeText = string.IsNullOrEmpty(netdisk.ExtractCode)
+            ? ""
+            : $"（提取码：{netdisk.ExtractCode}）";
+
+        var result = MessageBox.Show(this,
+            $"即将打开浏览器跳转到{netdisk.Name}{codeText}。\n\n下载完成后，请关闭程序，将解压后的文件覆盖到程序安装目录，再重新启动。",
+            $"{netdisk.Name}下载",
+            MessageBoxButton.OKCancel, MessageBoxImage.Information);
+        if(result != MessageBoxResult.OK) return;
+
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = netdisk.Url,
+            UseShellExecute = true
+        });
     }
 
     private async Task DownloadAndApplyAsync()

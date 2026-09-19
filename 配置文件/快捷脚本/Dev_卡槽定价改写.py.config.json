@@ -1,0 +1,24 @@
+{
+    "name": "",
+    "infoall": "卡槽定价改写：把 COST_OVERRIDES 里的植物改成固定阳光花费，并可选豁免升级植物的递增定价（Board.cs:12657 里每多一株同类 +50）。两个开关替换为整数 1/0，按真值判断。",
+    "author": "AmourLing",
+
+    "replace": {
+        "{ENABLE_CHECK}": {
+            "info": "总开关（关闭则完全走原生花费）",
+            "value": [
+                1,
+                0
+            ],
+            "default": 1
+        },
+        "{EXEMPT_CHECK}": {
+            "info": "豁免升级植物递增定价（回到 Plant.GetCost 基础价）",
+            "value": [
+                1,
+                0
+            ],
+            "default": 0
+        }
+    }
+}

@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
+using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 
 namespace PvZWSTools_Shared.ViewModels;
@@ -61,6 +63,7 @@ public class OthersViewModel:ViewModelBase
         _messageProcessor = messageProcessor;
         if(_messageProcessor != null)
             _messageProcessor.ButtonStatusUpdated += OnButtonStatusUpdated;
+        GameRunSpeedOptions = OptionsLoader.Load(Helpers.Constants.JsonGameRunSpeedFile);
     }
 
     public string AutoCollect
@@ -107,7 +110,41 @@ public class OthersViewModel:ViewModelBase
             new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AutoWatering) }))
             AutoWatering = __old;
     });
+    private bool _gameRunSpeedDropdownToggleIsChecked;
+    public bool GameRunSpeedDropdownToggleIsChecked
+    {
+        get => _gameRunSpeedDropdownToggleIsChecked;
+        set => SetProperty(ref _gameRunSpeedDropdownToggleIsChecked, value);
+    }
 
+    public ObservableCollection<NameOption> GameRunSpeedOptions { get; }
+    private NameOption _gameRunSpeedSelected;
+    public string GameRunSpeedInput
+    {
+        get => _gameRunSpeedInput;
+        set => SetProperty(ref _gameRunSpeedInput, value);
+    }
+    private string _gameRunSpeedInput = "1";
+    public NameOption GameRunSpeedSelected
+    {
+        get => _gameRunSpeedSelected;
+        set
+        {
+            _gameRunSpeedSelected = value;
+            if(value != null) GameRunSpeedInput = value.Name;
+            GameRunSpeedDropdownToggleIsChecked = false;
+            OnPropertyChanged();
+        }
+    }
+    public ICommand GameRunSpeedCommand => new RelayCommand(async _ =>
+    {
+        string Value = NameOption.GetValue(GameRunSpeedInput, GameRunSpeedOptions);
+        _ = await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, "游戏速度",
+            new Dictionary<string, string>
+            {
+                [Constants.Placeholders.GameRunSpeed] = Value,
+            });
+    });
     public string BigSun
     {
         get => _bigSun;

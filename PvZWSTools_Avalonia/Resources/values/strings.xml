@@ -55,6 +55,10 @@
     <string name="others_strings_11_1_key">补充肥料杀虫剂{CHECK}</string>
     <string name="others_strings_11_1_value">0</string>
 
+    <string name="others_strings_12">游戏速度</string>
+    <string name="others_strings_12_1_key">选择游戏速度</string>
+    <string name="others_strings_12_1_value">1</string>
+
     <string name="level_strings_1">EnterNewLevel</string>
 
     <string name="level_strings_2">直接过关</string>
@@ -333,6 +337,9 @@
     <string name="spawning_strings_5_1_value">0</string>
 
     <string name="spawning_strings_6">波次出怪_数量</string>
+    <!-- 后缀数字是按钮 id、不是显示顺序：本条对应 layout 里的 button10，排在波次出怪_数量后面。
+         这些文案同时被当作脚本文件名用，所以不要为了排序去改编号。 -->
+    <string name="spawning_strings_10">波次出怪_序号</string>
     <string name="spawning_strings_7">载入json</string>
 
     <string name="spawning_strings_8">刷新血量</string>
@@ -340,6 +347,10 @@
     <string name="spawning_strings_8_1_value">0.5</string>
     <string name="spawning_strings_8_2_key">出怪血量最大比例</string>
     <string name="spawning_strings_8_2_value">0.65</string>
+
+    <string name="spawning_strings_9">下一波</string>
+    <string name="spawning_strings_9_1_key">下一波{CHECK}</string>
+    <string name="spawning_strings_9_1_value">0</string>
 
     <string name="board_strings_1">放置植物</string>
     <string name="board_strings_1_1_key">植物行</string>
