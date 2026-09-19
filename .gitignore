@@ -16,8 +16,8 @@ update
 .gitattributes
 pyrightconfig.json
 *.user
-.zip
-.pubxml
+*.zip
+*.pubxml
 .fake
 .vscode
 global.json
