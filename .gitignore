@@ -40,6 +40,9 @@ SkillVerify/
 publish/
 PvZWSTools_WPF/Output/
 *.exe
+# 手册 PDF 由 文档/_build/gen_manual.py 生成，走 Release 附件与群文件，不占仓库历史
+文档/*.pdf
+文档/_build/*.pdf
 # VS Python 项目本地存根镜像（源在 typings/，同步命令：xcopy /E /Y typings PythonApplication1\typings\）
 PythonApplication1/typings/
 
