@@ -12,6 +12,9 @@ namespace PvZWSTools_Avalonia.Platform;
 /// 而且两边各自缓存，改设置后谁的值是真的说不清。
 ///
 /// Settings 每次现取，所以设置界面改完之后 ReloadSettingsFromService() 拿得到新值。
+/// 代价是返回的是投影副本：改它的字段不会回写、也不会被 Save() 持久化。
+/// 目前共享层对 Settings 只读不写（MainWindowViewModel 里两处读），所以安全；
+/// 真要往设置里写，得改成缓存同一个投影对象并在 Save() 里拷回 _local。
 /// </summary>
 public sealed class AndroidSettingsService:ISettingsService
 {
