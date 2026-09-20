@@ -62,7 +62,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     /// </summary>
     private static readonly Dictionary<int, (Func<AndroidX.Fragment.App.Fragment> Factory, string SubFolder)> NavFragmentMap = new()
     {
-        { Resource.Id.nav_others, (() => new OthersFragment(), "杂项") },
+        { Resource.Id.nav_others, (() => new CatalogFragment("杂项"), null) },
         { Resource.Id.nav_level, (() => new LevelFragment(), null) },
         { Resource.Id.nav_resources, (() => new ResourcesFragment(), null) },
         { Resource.Id.nav_plant, (() => new PlantFragment(), "植物") },
@@ -390,6 +390,9 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         try
         {
+            // 共享 ViewModel 图 + 功能清单；必须在 配置文件 解压完之后，否则读不到 setting.json
+            Platform.AppServices.Initialize(this, AppFilesPath);
+
             AndroidX.AppCompat.Widget.Toolbar toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
 
