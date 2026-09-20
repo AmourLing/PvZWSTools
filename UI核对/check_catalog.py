@@ -3,16 +3,21 @@
 四件事：
   1. 清单里写的每条绑定路径，在 ViewModel 上真实存在；
   2. 开关/三态单元的命令可达（同名 <状态>Command，或在清单里显式给出）；
-  3. legacy_units.json 里 167 个旧功能单元，一个都不能从界面上消失；
-  4. legacy_bindings.txt 里旧 XAML 用到的 427 个绑定目标，除显式豁免外都要被覆盖。
+  3. legacy_units.json 里的旧功能单元，一个都不能从界面上消失；
+  4. legacy_bindings.txt 里旧 XAML 用到的绑定目标，除显式豁免外都要被覆盖。
 
-基准数据（legacy_*）是从重构前的 MainWindow.xaml 抽出来的快照，
+外加一项跟 master 的对账：ClassicMainWindow.xaml 必须等于 master 原生窗口套上 sync_classic
+的那三处差异。少了这一项，从 master 同步时很容易只改了清单、忘了改经典界面。
+
+基准数据（legacy_*）是从 master 的原生 MainWindow.xaml 抽出来的快照，
 用 gen_baseline.py 可以从任意一份旧 XAML 重新生成。
 """
 import io, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+sys.path.insert(0, HERE)
+import sync_classic  # noqa: E402
 VM_DIR = os.path.join(ROOT, 'PvZWSTools_Shared', 'ViewModels')
 CATALOG = os.path.join(ROOT, 'PvZWSTools_WPF', 'UiModel', 'UnitCatalog.cs')
 SOURCES = [
@@ -93,7 +98,7 @@ def main():
         elif cls in props and state + 'Command' not in props[cls]:
             bad.append(f'  {kind}("{label}"): {cls} 既无 {state}Command 也未显式给命令')
 
-    print(f'[1/2] 清单路径 {len(names)} 条 -> 解析失败 {len(bad)} 条')
+    print(f'[1/4] 清单路径 {len(names)} 条 -> 解析失败 {len(bad)} 条')
     print('\n'.join(bad))
 
     # 旧功能单元不得丢失
@@ -114,7 +119,7 @@ def main():
         keys = {(pre, u['cmd']), (pre, u['state'] or ''), (pre, u['cmd'][:-len('Command')])}
         if not (keys & used):
             missing.append(f"  {u['tab']} | {u['kind']:7} | {u['label']} | {pre}+\"{u['cmd']}\"")
-    print(f'[2/2] 旧功能单元 {len(units)} 个 -> 缺失 {len(missing)} 个')
+    print(f'[2/4] 旧功能单元 {len(units)} 个 -> 缺失 {len(missing)} 个')
     print('\n'.join(missing))
 
     # 旧 XAML 的绑定目标不得静默消失
@@ -126,13 +131,43 @@ def main():
               if l.strip()]
     dropped = {p for p in legacy if p.endswith('DropdownToggleIsChecked')} | DROP | CHILD_VM
     uncovered = sorted(set(legacy) - dropped - covered)
-    print(f'[3/3] 旧绑定目标 {len(legacy)} 个（豁免 {len(dropped)}）-> 未覆盖 {len(uncovered)} 个')
+    print(f'[3/4] 旧绑定目标 {len(legacy)} 个（豁免 {len(dropped)}）-> 未覆盖 {len(uncovered)} 个')
     for m in uncovered:
         print('  ', m)
 
-    ok = not bad and not missing and not uncovered
+    drift = check_classic_sync()
+
+    ok = not bad and not missing and not uncovered and drift is not False
     print('\n' + ('通过：清单与旧 UI 等价。' if ok else '未通过，见上面的条目。'))
     return 0 if ok else 1
+
+
+def check_classic_sync():
+    """ClassicMainWindow 是否跟得上 master。True=一致，False=落后，None=无从判断。"""
+    master = sync_classic.from_git()
+    if master is None:
+        print('[4/4] 跳过：本地没有 origin/master 的原生窗口可对照')
+        return None
+    if sync_classic.is_new_ui_shell(master):
+        print('[4/4] 跳过：master 的 MainWindow 已经是 NewUI 外壳，没有原生布局可对照')
+        return None
+    try:
+        expected = sync_classic.transform(master)
+    except ValueError as ex:
+        print(f'[4/4] 未通过：{ex}')
+        return False
+    with io.open(sync_classic.CLASSIC, encoding='utf-8', newline='') as f:
+        actual = f.read()
+    if actual == expected:
+        print('[4/4] 经典窗口与 master 原生布局一致')
+        return True
+    diff = [i for i, (a, b) in enumerate(zip(actual.splitlines(), expected.splitlines()))
+            if a != b]
+    print(f'[4/4] 未通过：经典窗口落后 master，首个差异在第 {diff[0] + 1 if diff else min(len(actual), len(expected))} 行'
+          f'（共 {len(diff)} 行不同）')
+    print('     跑：git show origin/master:PvZWSTools_WPF/Views/MainWindow.xaml > 旧版.xaml'
+          ' && python UI核对/sync_classic.py 旧版.xaml PvZWSTools_WPF/Views/ClassicMainWindow.xaml')
+    return False
 
 
 if __name__ == '__main__':

@@ -1,6 +1,9 @@
 """把 master 的原生 MainWindow.xaml 同步成 ClassicMainWindow.xaml.
 
-    python UI核对/sync_classic.py <master MainWindow.xaml 路径>
+    python UI核对/sync_classic.py <master MainWindow.xaml 路径> [输出路径]
+
+不带输出路径时只做到内存里并报告是否与现有 ClassicMainWindow 一致，
+check_catalog.py 的第 4 项就是这么用的。
 
 ClassicMainWindow 与 master 的原生窗口只有三处刻意的差异：
   1. x:Class 改名；
@@ -10,10 +13,15 @@ ClassicMainWindow 与 master 的原生窗口只有三处刻意的差异：
 除此之外应当逐字相同，所以整文件重写而不是打补丁。
 """
 import io
+import os
 import re
 import sys
 
-SRC_ENCODING = 'utf-8'
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+CLASSIC = os.path.join(ROOT, 'PvZWSTools_WPF', 'Views', 'ClassicMainWindow.xaml')
+MASTER_XAML = 'PvZWSTools_WPF/Views/MainWindow.xaml'
+
 HEADER_STYLE_BLOCK = re.compile(
     r'[ \t]*<Style TargetType="TabItem">.*?</Style>\r?\n'
     r'[ \t]*<Style TargetType="TabControl">.*?</Style>\r?\n',
@@ -27,39 +35,70 @@ UI_BUTTON = """                    <Button
                         Content="UI" />
 """
 
+# master 的原生窗口里有页签样式和 Viewbox；NewUI 外壳没有。用它判断 master 是否已经换过实现。
+SHELL_MARKERS = ('NavList', 'UnitCatalog', 'PageScroll')
 
-def main(src_path, dst_path):
-    with io.open(src_path, encoding=SRC_ENCODING, newline='') as f:
-        text = f.read()
 
-    text = text.replace('x:Class="PvZWSTools_WPF.Views.MainWindow"',
-                        'x:Class="PvZWSTools_WPF.Views.ClassicMainWindow"', 1)
+def is_new_ui_shell(text):
+    return any(m in text for m in SHELL_MARKERS)
 
-    text, n = HEADER_STYLE_BLOCK.subn('', text)
+
+def transform(text):
+    """master 原生 MainWindow.xaml 的文本 -> ClassicMainWindow.xaml 的文本（CRLF）。"""
+    out = text.replace('x:Class="PvZWSTools_WPF.Views.MainWindow"',
+                       'x:Class="PvZWSTools_WPF.Views.ClassicMainWindow"', 1)
+
+    out, n = HEADER_STYLE_BLOCK.subn('', out)
     if n != 1:
-        print(f'FAIL: 页签样式块匹配到 {n} 处，预期 1 处')
-        return 2
+        raise ValueError(f'页签样式块匹配到 {n} 处，预期 1 处')
 
     anchor = 'Command="{Binding SettingCommand}"\n'
-    i = text.find(anchor)
+    i = out.find(anchor)
     if i < 0:
-        print('FAIL: 找不到 "环境" 按钮锚点')
-        return 2
-    end = text.find('/>', i)
+        raise ValueError('找不到 "环境" 按钮锚点')
+    end = out.find('/>', i)
     if end < 0:
-        print('FAIL: 环境按钮自闭合标签未找到')
-        return 2
-    line_end = text.find('\n', end)
-    text = text[:line_end + 1] + UI_BUTTON + text[line_end + 1:]
+        raise ValueError('环境按钮的自闭合标签没找到')
+    line_end = out.find('\n', end)
+    out = out[:line_end + 1] + UI_BUTTON + out[line_end + 1:]
 
     # master 用 LF，工作区用 CRLF
-    text = text.replace('\r\n', '\n').replace('\n', '\r\n')
+    return out.replace('\r\n', '\n').replace('\n', '\r\n')
 
-    with io.open(dst_path, 'w', encoding=SRC_ENCODING, newline='') as f:
-        f.write(text)
-    print(f'OK -> {dst_path}（{text.count(chr(10))} 行）')
+
+def from_git(ref='origin/master'):
+    """从 git 里取 master 那份原生 XAML；取不到返回 None。"""
+    import subprocess
+    r = subprocess.run(['git', '-C', ROOT, 'show', f'{ref}:{MASTER_XAML}'],
+                       capture_output=True)
+    if r.returncode != 0:
+        return None
+    return r.stdout.decode('utf-8')
+
+
+def main(argv):
+    if len(argv) < 2:
+        print(__doc__)
+        return 2
+    with io.open(argv[1], encoding='utf-8', newline='') as f:
+        text = f.read()
+    try:
+        out = transform(text)
+    except ValueError as ex:
+        print(f'FAIL: {ex}')
+        return 2
+
+    if len(argv) < 3:
+        with io.open(CLASSIC, encoding='utf-8', newline='') as f:
+            same = f.read() == out
+        print('一致' if same else '不一致：需要重新同步')
+        return 0 if same else 1
+
+    with io.open(argv[2], 'w', encoding='utf-8', newline='') as f:
+        f.write(out)
+    print(f'OK -> {argv[2]}（{out.count(chr(10))} 行）')
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1], sys.argv[2]))
+    sys.exit(main(sys.argv))
