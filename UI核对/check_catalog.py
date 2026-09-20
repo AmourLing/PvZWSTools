@@ -19,14 +19,14 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import sync_classic  # noqa: E402
 VM_DIR = os.path.join(ROOT, 'PvZWSTools_Shared', 'ViewModels')
-CATALOG = os.path.join(ROOT, 'PvZWSTools_WPF', 'UiModel', 'UnitCatalog.cs')
+CATALOG = os.path.join(ROOT, 'PvZWSTools_Shared', 'UiModel', 'UnitCatalog.cs')
 SOURCES = [
     CATALOG,
+    os.path.join(ROOT, 'PvZWSTools_Shared', 'UiModel', 'UnitDescriptor.cs'),
     os.path.join(ROOT, 'PvZWSTools_WPF', 'Themes', 'UnitTemplates.xaml'),
     os.path.join(ROOT, 'PvZWSTools_WPF', 'Views', 'MainWindow.xaml'),
     os.path.join(ROOT, 'PvZWSTools_WPF', 'Views', 'GardenPanel.xaml'),
     os.path.join(ROOT, 'PvZWSTools_WPF', 'ViewModels', 'ShellViewModel.cs'),
-    os.path.join(ROOT, 'PvZWSTools_WPF', 'UiModel', 'UnitDescriptor.cs'),
 ]
 
 # 清单里 "o + \"ClearFog\"" 的短前缀 -> ViewModel 类名前缀

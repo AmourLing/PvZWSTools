@@ -67,6 +67,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SpawnViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ZombiesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UiModel\UnitCatalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UiModel\UnitDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GardenChangeText.py" />

@@ -124,7 +124,7 @@
                     Content="{Binding ActiveView}"
                     ContentTemplateSelector="{StaticResource ActiveViewSelector}">
                     <ContentControl.LayoutTransform>
-                        <Binding Path="ZoomTransform" />
+                        <ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}" />
                     </ContentControl.LayoutTransform>
                 </ContentControl>
             </ScrollViewer>

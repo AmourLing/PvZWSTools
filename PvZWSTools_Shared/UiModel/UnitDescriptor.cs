@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-namespace PvZWSTools_WPF.UiModel;
+namespace PvZWSTools_Shared.UiModel;
 
 public enum UnitKind
 {
@@ -27,7 +27,8 @@ public enum UnitKind
 }
 
 /// <summary>反射读写根 DataContext 上的一条属性（形如 "Others.ClearFog"），
-/// 并把源对象的 PropertyChanged 转发给自己，使模板能实时刷新。</summary>
+/// 并把源对象的 PropertyChanged 转发给自己，使模板能实时刷新。
+/// 开 AOT 或 trimming 前必须先换掉这里的反射，否则属性路径会静默解析不到。</summary>
 internal sealed class PropRef : INotifyPropertyChanged
 {
     private static readonly BindingFlags Flags = BindingFlags.Public | BindingFlags.Instance;

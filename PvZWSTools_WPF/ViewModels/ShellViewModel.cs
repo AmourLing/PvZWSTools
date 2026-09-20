@@ -4,11 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Windows.Media;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.ViewModels;
-using PvZWSTools_WPF.UiModel;
+using PvZWSTools_Shared.UiModel;
 
 namespace PvZWSTools_WPF.ViewModels;
 
@@ -63,7 +62,6 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         private set
         {
             _zoom = value;
-            ZoomTransform.ScaleX = ZoomTransform.ScaleY = value;
             Raise();
             Raise(nameof(ZoomText));
         }
@@ -77,8 +75,6 @@ public sealed class ShellViewModel : INotifyPropertyChanged
 
     /// <summary>外壳自己挂到 Window.DataContext 上，连接栏等原有绑定走这里。</summary>
     public MainWindowViewModel Root { get; }
-
-    public ScaleTransform ZoomTransform { get; } = new();
 
     public ShellViewModel(MainWindowViewModel root)
     {

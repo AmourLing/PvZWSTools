@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
-using PvZWSTools_WPF.UiModel;
+using PvZWSTools_Shared.UiModel;
 using PvZWSTools_WPF.ViewModels;
 
 namespace PvZWSTools_WPF.Controls;

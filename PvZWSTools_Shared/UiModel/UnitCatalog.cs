@@ -1,4 +1,4 @@
-namespace PvZWSTools_WPF.UiModel;
+namespace PvZWSTools_Shared.UiModel;
 
 /// <summary>全部功能单元的声明。一行一个单元：标签 + 它自己消费的绑定路径。
 /// 页签名称与顺序跟经典 UI 完全一致，单元也留在各自原来的页签里，不跨页重排。
