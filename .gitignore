@@ -22,10 +22,6 @@ update/
 # 发布配置不入库（*.pubxml 里带本机路径与账号）
 *.pubxml
 
-# ── GitHub 目录：整目录忽略，只放行 workflows ──
-.github/*
-!.github/workflows/
-
 # ── 本机发布脚本与 SDK 锁定，不入库 ──
 build-release.ps1
 build-release.cmd
