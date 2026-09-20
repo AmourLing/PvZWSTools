@@ -9,7 +9,7 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-def LOG(e, code=0):
+def LOG_FmConv(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     try:
         if app is not None:
@@ -149,4 +149,4 @@ try:
     except:
         print("阵型已成功放置！")
 except Exception as e:
-    LOG(e, 2001)
+    LOG_FmConv(e, 2001)

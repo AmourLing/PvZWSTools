@@ -13,7 +13,7 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-def LOG(e, code=0):
+def LOG_LoadJson(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     try:
         if app is not None:
@@ -26,7 +26,7 @@ def load_zombies_data():
     # 宿主整份文本替换占位符；未替换说明还没导出过波次数据
     payload = r"{WAVE_JSON_B64}"
     if not payload or payload.startswith("{"):
-        LOG(Exception("未收到出怪数据，请先执行波次出怪(数量)导出"), 1001)
+        LOG_LoadJson(Exception("未收到出怪数据，请先执行波次出怪(数量)导出"), 1001)
         return 0, []
 
     try:
@@ -64,11 +64,11 @@ def load_zombies_data():
         return 0, []
 
 if board is None:
-    LOG(Exception("未找到board进程"), 2001)
+    LOG_LoadJson(Exception("未找到board进程"), 2001)
 else:
     num_waves, waves = load_zombies_data()
     if num_waves <= 0:
-        LOG(Exception("加载的出怪数据无效或波数为0"), 2002)
+        LOG_LoadJson(Exception("加载的出怪数据无效或波数为0"), 2002)
     else:
         try:
             board.mNumWaves = num_waves
@@ -86,4 +86,4 @@ else:
                 board.mZombiesInWave[i, num] = ZombieType(-1)
             print("出怪列表加载成功！")
         except Exception as e:
-            LOG(e, 2003)
+            LOG_LoadJson(e, 2003)

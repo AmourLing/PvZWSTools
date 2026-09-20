@@ -583,20 +583,4 @@
     <string name="script_strings_1">快捷脚本</string>
     <string name="script_strings_1_0_key">请输入脚本名称</string>
     <string name="script_strings_1_0_value">example</string>
-    <string name="script_strings_1_1_key">参数{1}</string>
-    <string name="script_strings_1_1_value">0</string>
-    <string name="script_strings_1_2_key">参数{2}</string>
-    <string name="script_strings_1_2_value">0</string>
-    <string name="script_strings_1_3_key">参数{3}</string>
-    <string name="script_strings_1_3_value">0</string>
-    <string name="script_strings_1_4_key">参数{4}</string>
-    <string name="script_strings_1_4_value">0</string>
-    <string name="script_strings_1_5_key">参数{5}</string>
-    <string name="script_strings_1_5_value">0</string>
-    <string name="script_strings_1_6_key">参数{6}</string>
-    <string name="script_strings_1_6_value">0</string>
-    <string name="script_strings_1_7_key">参数{7}</string>
-    <string name="script_strings_1_7_value">0</string>
-    <string name="script_strings_1_8_key">参数{8}</string>
-    <string name="script_strings_1_8_value">0</string>
 </resources>

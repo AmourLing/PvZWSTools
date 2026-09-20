@@ -19,12 +19,12 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-def LOG(e, code=0):
+def LOG_WaveNum(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
     print(msg)
 
-def safe_int(value, default=0, error_code=5000):
+def safe_int_WaveNum(value, default=0, error_code=5000):
     """安全转换为整数，支持枚举、JValue、字符串等"""
     try:
         return int(value)
@@ -35,10 +35,10 @@ def safe_int(value, default=0, error_code=5000):
                 return default
             return int(s)
         except:
-            LOG(Exception(f"safe_int failed: value={value!r} type={type(value)} original={e}"), error_code)
+            LOG_WaveNum(Exception(f"safe_int_WaveNum failed: value={value!r} type={type(value)} original={e}"), error_code)
             return default
 
-def load_zombie_names():
+def load_zombie_names_WaveNum():
     # 宿主整份文本替换占位符；未替换时这里仍是花括号字面量，退化为只显示枚举名
     payload = r"{ZOMBIE_JSON_B64}"
     if not payload or payload.startswith("{"):
@@ -58,25 +58,25 @@ def load_zombie_names():
             result[enum_id] = name
         return result
     except Exception as e:
-        LOG(e, 1002)
+        LOG_WaveNum(e, 1002)
         return {}
 
 ALLOW_JSON_ZOMBIES_IN_WAVE = "{CHECK}"
 
 if board is None:
-    LOG(Exception("未找到board进程"), 2001)
+    LOG_WaveNum(Exception("未找到board进程"), 2001)
     print("===END===")
 elif ALLOW_JSON_ZOMBIES_IN_WAVE != "1":
     # 逐条 print 会被输出缓冲的刷新边界切成多条消息，一整波一行有被劈开的风险；攒进列表一次输出。
-    zombie_names = load_zombie_names()
-    max_zombie_type = safe_int(ZombieType.RedeyeGargantuar, error_code=2002)
+    zombie_names = load_zombie_names_WaveNum()
+    max_zombie_type = safe_int_WaveNum(ZombieType.RedeyeGargantuar, error_code=2002)
     out_lines = []
     for i in range(0, board.mNumWaves):
         line = "第{}波:".format(i+1)
         z_dic = {}
         for j in range(0, 50):
             z_raw = board.mZombiesInWave[i, j]
-            z = safe_int(z_raw, default=-1, error_code=2003)
+            z = safe_int_WaveNum(z_raw, default=-1, error_code=2003)
             if z == -1:
                 break
             z_dic[z] = z_dic.get(z, 0) + 1
@@ -95,12 +95,12 @@ else:
     try:
         combined_data = JObject()
         combined_data["NumWaves"] = board.mNumWaves
-        max_zombie_type = safe_int(ZombieType.RedeyeGargantuar, error_code=3001)
+        max_zombie_type = safe_int_WaveNum(ZombieType.RedeyeGargantuar, error_code=3001)
         for i in range(0, board.mNumWaves):
             z_dic = {}
             for j in range(0, 50):
                 z_raw = board.mZombiesInWave[i, j]
-                z = safe_int(z_raw, default=-1, error_code=3002)
+                z = safe_int_WaveNum(z_raw, default=-1, error_code=3002)
                 if z == -1:
                     break
                 z_dic[z] = z_dic.get(z, 0) + 1

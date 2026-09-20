@@ -22,8 +22,9 @@
         android:textColor="#333333"
         android:layout_marginTop="2dp" />
 
-    <!-- 发现新版本提示 -->
+    <!-- 发现新版本提示（文案由代码按检查状态动态设置：检查中/发现新版本/已是最新/检查失败） -->
     <TextView
+        android:id="@+id/update_status_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="发现新版本！"
@@ -65,7 +66,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="4dp" />
 
-    <!-- 渠道选择：网盘渠道由代码按 Sharedstring/NetdiskChannel 配置动态追加到此组 -->
+    <!-- 渠道选择：网盘渠道由代码按 readme「下载」一节的顺序动态插入到 GitHub/Gitee 之前 -->
     <RadioGroup
         android:id="@+id/source_radio_group"
         android:layout_width="match_parent"

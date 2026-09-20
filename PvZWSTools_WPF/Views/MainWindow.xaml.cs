@@ -90,7 +90,17 @@ public partial class MainWindow:Window
             }
         };
 
-        // 用户点击"获取更新"或启动时自动检查发现新版本 → 打开 UpdateWindow（专门的更新窗口，支持渠道选择）
+        // 用户点击"获取更新"→ 直接打开 UpdateWindow，检查在窗口内进行（失败也有常驻网盘入口）
+        _viewModel.OpenUpdateWindowRequested += (s, e) =>
+        {
+            var win = new UpdateWindow(_updateService)
+            {
+                Owner = this
+            };
+            win.ShowDialog();
+        };
+
+        // 启动时自动检查发现新版本 → 打开 UpdateWindow（专门的更新窗口，支持渠道选择）
         _viewModel.ShowUpdateWindowRequested += (s, e) =>
         {
             // 过期"仅更新模式"下，自动检查的 UpdateWindow 已由 Loaded 事件弹出，这里跳过

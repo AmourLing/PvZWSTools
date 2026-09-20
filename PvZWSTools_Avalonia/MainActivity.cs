@@ -51,6 +51,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     private DateTime _lastReconnectAttempt = DateTime.MinValue;
     private const int RECONNECT_INTERVAL_MS = 3000;
     private bool _isReconnecting = false;
+    // 用户手动断开后置位：暂停自动重连，直到下次手动连接（对齐 WPF 端 _stopAutoConnect 语义）
+    private volatile bool _manualDisconnected = false;
+    // 手动连接握手进行中：自动重连定时器避让，避免掐断进行中的连接
+    private volatile bool _manualConnectInProgress = false;
 
     /// <summary>
     /// 导航项 → (Fragment 工厂, 自动刷新按钮状态对应的控件子目录；null 表示切换时不自动刷新)。
@@ -511,7 +515,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
     private void ReconnectCallback(object state)
     {
-        if(!_appSettings.AutoConnectEnabled || _isReconnecting || _isConnected || ws == null)
+        if(!_appSettings.AutoConnectEnabled || _manualDisconnected || _manualConnectInProgress || _isReconnecting || _isConnected || ws == null)
             return;
 
         string address = GetLastWebSocketAddress();
@@ -548,6 +552,32 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         });
     }
 
+    /// <summary>
+    /// 用户手动断开：暂停自动重连，直到下次手动连接（否则定时器会在 3 秒内把连接抢回来）。
+    /// 由 ConnectionFragment 调用。
+    /// </summary>
+    public void OnManualDisconnect()
+    {
+        _manualDisconnected = true;
+        Log.Info("[MainActivity] 用户手动断开，自动重连暂停");
+    }
+
+    /// <summary>
+    /// 用户手动发起连接：解除"手动断开"暂停，并让自动重连定时器避让本次握手。
+    /// 由 ConnectionFragment 调用，握手结束后须配对调用 <see cref="OnManualConnectFinished"/>。
+    /// </summary>
+    public void OnManualConnect()
+    {
+        _manualDisconnected = false;
+        _manualConnectInProgress = true;
+    }
+
+    /// <summary>手动连接结束（无论成败），恢复自动重连调度。由 ConnectionFragment 调用。</summary>
+    public void OnManualConnectFinished()
+    {
+        _manualConnectInProgress = false;
+    }
+
     // --- 对话框逻辑 ---
 
     private void HideExtractDialog()
@@ -577,7 +607,9 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     // --- 自动更新逻辑 ---
 
     /// <summary>
-    /// 检查更新：调 GitHub/Gitee Release → 比较版本号 → 弹出更新对话框（带渠道选择）。
+    /// 检查更新入口。手动触发时先弹更新对话框（网盘渠道常驻可跳），检查在对话框内进行：
+    /// 查到新版本填充版本信息，失败/无更新则在对话框内提示；
+    /// 启动自动检查仍是查到新版本才弹窗，静默失败。
     /// </summary>
     private async Task CheckForUpdatesAsync(bool isManual)
     {
@@ -587,29 +619,16 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         if(!isManual && (_appSettings == null || !_appSettings.AutoCheckUpdateEnabled))
             return;
 
-        var info = await _updateService.CheckForUpdatesAsync(Sharedstring.AssetNameAndroid);
-        if(info == null)
+        UpdateInfo? preFetched = null;
+        if(!isManual)
         {
-            if(isManual)
-            {
-                RunOnUiThread(() =>
-                    Toast.MakeText(this, "检查更新失败，请稍后重试", ToastLength.Short).Show());
-            }
-            return;
+            // 启动自动检查：查到新版本才弹窗，否则静默
+            preFetched = await _updateService.CheckForUpdatesAsync(Sharedstring.AssetNameAndroid);
+            if(preFetched == null || !preFetched.IsNewerThan(_updateService.CurrentVersion))
+                return;
         }
 
-        if(!info.IsNewerThan(_updateService.CurrentVersion))
-        {
-            if(isManual)
-            {
-                RunOnUiThread(() =>
-                    Toast.MakeText(this, $"当前已是最新版本（{info.TagName}）", ToastLength.Short).Show());
-            }
-            return;
-        }
-
-        // 弹出带渠道选择的更新对话框
-        var (choice, netdisk) = await ShowUpdateDialogAsync(info);
+        var (choice, netdisk, info) = await ShowUpdateDialogAsync(preFetched);
         if(choice == UpdateSource.None) return;
 
         // 网盘渠道：打开浏览器跳转，用户手动下载 APK 后安装
@@ -620,7 +639,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         }
 
         // GitHub/Gitee：DownloadUpdateAsync 按 Source 排的渠道优先、另一源兜底
-        info.Source = choice == UpdateSource.Gitee ? "gitee" : "github";
+        info!.Source = choice == UpdateSource.Gitee ? "gitee" : "github";
 
         await DownloadAndInstallAsync(info);
     }
@@ -628,41 +647,31 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     private enum UpdateSource { None, Github, Gitee, Netdisk }
 
     /// <summary>
-    /// 显示带渠道选择的更新对话框。返回用户选择的渠道（None=取消）；
-    /// 网盘渠道时同时返回对应的分享链接。
+    /// 显示带渠道选择的更新对话框。info 为 null（手动入口）时先弹窗、由对话框内继续检查：
+    /// 查到新版本填充版本信息，否则在对话框内提示"已是最新/检查失败"；
+    /// 无论检查结果如何，网盘渠道都常驻可跳。返回用户选择的渠道（None=取消）、
+    /// 网盘渠道对应的分享链接，以及检查到的版本信息（GitHub/Gitee 下载用）。
     /// </summary>
-    private Task<(UpdateSource Source, NetdiskChannel? Netdisk)> ShowUpdateDialogAsync(UpdateInfo info)
+    private Task<(UpdateSource Source, NetdiskChannel? Netdisk, UpdateInfo? Info)> ShowUpdateDialogAsync(UpdateInfo? info)
     {
-        var tcs = new TaskCompletionSource<(UpdateSource, NetdiskChannel?)>();
+        var tcs = new TaskCompletionSource<(UpdateSource, NetdiskChannel?, UpdateInfo?)>();
         RunOnUiThread(() =>
         {
             var dialogView = LayoutInflater.From(this)!.Inflate(Resource.Layout.update_dialog, null);
 
-            // 填充版本信息
             var currentVerText = dialogView.FindViewById<TextView>(Resource.Id.current_version_text)!;
             currentVerText.Text = _updateService!.CurrentVersionDisplay;
 
             var newTagText = dialogView.FindViewById<TextView>(Resource.Id.new_version_tag)!;
-            newTagText.Text = info.TagName;
-
             var sizeText = dialogView.FindViewById<TextView>(Resource.Id.new_version_size)!;
-            sizeText.Text = info.Size.HasValue ? $"（{info.Size.Value / 1048576.0:F1} MB）" : "";
-
             var notesText = dialogView.FindViewById<TextView>(Resource.Id.release_notes)!;
-            notesText.Text = string.IsNullOrWhiteSpace(info.ReleaseNotes) ? "暂无更新说明" : info.ReleaseNotes;
-
-            // 渠道可用性
-            bool hasGithub = !string.IsNullOrEmpty(info.GithubUrl);
-            bool hasGitee = !string.IsNullOrEmpty(info.GiteeUrl);
+            var statusTitle = dialogView.FindViewById<TextView>(Resource.Id.update_status_title)!;
 
             var radioGroup = dialogView.FindViewById<RadioGroup>(Resource.Id.source_radio_group)!;
             var radioGithub = dialogView.FindViewById<RadioButton>(Resource.Id.radio_github)!;
             var radioGitee = dialogView.FindViewById<RadioButton>(Resource.Id.radio_gitee)!;
 
-            radioGithub.Enabled = hasGithub;
-            radioGitee.Enabled = hasGitee;
-
-            // 网盘渠道不进 Release，是固定分享链接，逐个追加到同一个 RadioGroup
+            // 网盘渠道不进 Release，是固定分享链接；按 readme「下载」一节的顺序插到 GitHub/Gitee 前面
             var netdiskRadios = new List<(NetdiskChannel Channel, RadioButton Radio)>();
             foreach(var channel in NetdiskChannel.All)
             {
@@ -671,14 +680,64 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                     Text = channel.Display,
                     TextSize = 13f
                 };
+                // 按已插入数量定位下标（0,1,2…），逐个排在 GitHub/Gitee 之前
+                radioGroup.AddView(radio, netdiskRadios.Count);
                 netdiskRadios.Add((channel, radio));
-                radioGroup.AddView(radio);
             }
 
-            // 默认选有可用的渠道（优先 GitHub → Gitee → 网盘）
-            if(hasGithub) radioGithub.Checked = true;
-            else if(hasGitee) radioGitee.Checked = true;
-            else netdiskRadios[0].Radio.Checked = true;
+            // 检查结果填充对话框；GitHub/Gitee 直链到手才启用对应单选钮
+            UpdateInfo? found = info;
+            void ApplyInfo(UpdateInfo i)
+            {
+                found = i;
+                statusTitle.Text = "发现新版本！";
+                statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#2E7D32"));
+                newTagText.Text = i.TagName;
+                sizeText.Text = i.Size.HasValue ? $"（{i.Size.Value / 1048576.0:F1} MB）" : "";
+                notesText.Text = string.IsNullOrWhiteSpace(i.ReleaseNotes) ? "暂无更新说明" : i.ReleaseNotes;
+                radioGithub.Enabled = !string.IsNullOrEmpty(i.GithubUrl);
+                radioGitee.Enabled = !string.IsNullOrEmpty(i.GiteeUrl);
+            }
+
+            if(found != null)
+            {
+                ApplyInfo(found);
+            }
+            else
+            {
+                statusTitle.Text = "正在检查更新...";
+                statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#555555"));
+                notesText.Text = "正在从 GitHub / Gitee 检查新版本，请稍候。\n\n无论检查结果如何，都可以随时通过下方网盘渠道手动下载。";
+
+                _ = CheckInBackgroundAsync();
+                async Task CheckInBackgroundAsync()
+                {
+                    var result = await _updateService!.CheckForUpdatesAsync(Sharedstring.AssetNameAndroid);
+                    RunOnUiThread(() =>
+                    {
+                        if(result == null)
+                        {
+                            statusTitle.Text = "检查更新失败";
+                            statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#C62828"));
+                            notesText.Text = "无法从 GitHub / Gitee 获取版本信息，请稍后重试，或通过下方网盘渠道手动下载查看。";
+                        }
+                        else if(!result.IsNewerThan(_updateService!.CurrentVersion))
+                        {
+                            statusTitle.Text = "当前已是最新版本";
+                            statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#2E7D32"));
+                            newTagText.Text = result.TagName;
+                            notesText.Text = "服务器最新版本如上，仍可通过下方网盘渠道手动查看。";
+                        }
+                        else
+                        {
+                            ApplyInfo(result);
+                        }
+                    });
+                }
+            }
+
+            // 默认选夸克网盘（网盘列表首位，固定分享链接恒可用）；GitHub/Gitee 仍可手动选
+            netdiskRadios[0].Radio.Checked = true;
 
             var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
                 .SetTitle("检查更新")
@@ -686,27 +745,27 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 .SetCancelable(true)
                 .SetPositiveButton("下载并更新", (_, _) =>
                 {
-                    if(radioGithub.Checked && hasGithub)
+                    if(radioGithub.Checked && radioGithub.Enabled)
                     {
-                        tcs.TrySetResult((UpdateSource.Github, null));
+                        tcs.TrySetResult((UpdateSource.Github, null, found));
                         return;
                     }
-                    if(radioGitee.Checked && hasGitee)
+                    if(radioGitee.Checked && radioGitee.Enabled)
                     {
-                        tcs.TrySetResult((UpdateSource.Gitee, null));
+                        tcs.TrySetResult((UpdateSource.Gitee, null, found));
                         return;
                     }
                     foreach(var (channel, radio) in netdiskRadios)
                     {
                         if(radio.Checked)
                         {
-                            tcs.TrySetResult((UpdateSource.Netdisk, channel));
+                            tcs.TrySetResult((UpdateSource.Netdisk, channel, found));
                             return;
                         }
                     }
-                    tcs.TrySetResult((UpdateSource.None, null));
+                    tcs.TrySetResult((UpdateSource.None, null, found));
                 })
-                .SetNegativeButton("取消", (_, _) => tcs.TrySetResult((UpdateSource.None, null)))
+                .SetNegativeButton("取消", (_, _) => tcs.TrySetResult((UpdateSource.None, null, found)))
                 .Create();
 
             dialog.Show();

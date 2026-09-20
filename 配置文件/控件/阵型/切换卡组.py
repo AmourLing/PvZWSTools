@@ -14,7 +14,7 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard if app else None
 
-def LOG(e, code=0):
+def LOG_DeckSwitch(e, code=0):
     msg = "[ErrorCode {}] {}".format(code, repr(e) if e else "Unknown Error")
     try:
         if app is not None:
@@ -24,7 +24,7 @@ def LOG(e, code=0):
 
 def load_seedpackets_from_json(json_data):
     if not board or not board.mSeedBank:
-        LOG("Board or SeedBank is null", 9998)
+        LOG_DeckSwitch("Board or SeedBank is null", 9998)
         return
 
     try:
@@ -32,12 +32,12 @@ def load_seedpackets_from_json(json_data):
         seed_packets_token = data["seedPackets"]
 
         if seed_packets_token is None:
-            LOG("No seedPackets found in JSON", 1002)
+            LOG_DeckSwitch("No seedPackets found in JSON", 1002)
             return
 
         # 确保是 JArray
         if not isinstance(seed_packets_token, JArray):
-            LOG("seedPackets is not an array", 1003)
+            LOG_DeckSwitch("seedPackets is not an array", 1003)
             return
 
         spn = 0
@@ -61,10 +61,10 @@ def load_seedpackets_from_json(json_data):
                 )
                 spn += 1
             except Exception as e:
-                LOG(e, 2005)
+                LOG_DeckSwitch(e, 2005)
 
     except Exception as e:
-        LOG(e, 1001)
+        LOG_DeckSwitch(e, 1001)
 
 # 主执行
 base64_data = "{JSON_BASE64}"
@@ -77,4 +77,4 @@ try:
         # 兼容旧版直接传入 JSON 字符串的情况（虽然主要走 Base64）
         load_seedpackets_from_json(base64_data)
 except Exception as e:
-    LOG(e, 9999)
+    LOG_DeckSwitch(e, 9999)

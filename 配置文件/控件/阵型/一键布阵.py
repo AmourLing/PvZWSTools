@@ -13,7 +13,7 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard if app else None
 
-def LOG(e, code=0):
+def LOG_FmApply(e, code=0):
     msg = "[ErrorCode {}] {}".format(code, repr(e) if e else "Unknown Error")
     try:
         if app is not None:
@@ -103,10 +103,10 @@ def get_vase_data(item):
 
 def load_formation_from_json(json_data):
     if not board:
-        LOG("Board is null", 9998)
+        LOG_FmApply("Board is null", 9998)
         return
 
-    LOG("开始布阵", 0)
+    LOG_FmApply("开始布阵", 0)
 
     # 清除现有植物和梯子/花瓶
     try:
@@ -119,13 +119,13 @@ def load_formation_from_json(json_data):
             if item and (item.mGridItemType == GridItemType.Ladder or item.mGridItemType == GridItemType.ScaryPot):
                 item.Die()
     except Exception as e:
-        LOG(e, 2001)
+        LOG_FmApply(e, 2001)
 
     # 解析 JSON
     try:
         data = JObject.Parse(json_data)
     except Exception as e:
-        LOG(e, 1000)
+        LOG_FmApply(e, 1000)
         return
 
     plants = data["plants"]
@@ -136,9 +136,9 @@ def load_formation_from_json(json_data):
     if ladders is None: ladders = JArray()
     if vases is None: vases = JArray()
 
-    LOG("植物数量: " + str(plants.Count), 0)
-    LOG("梯子数量: " + str(ladders.Count), 0)
-    LOG("花瓶数量: " + str(vases.Count), 0)
+    LOG_FmApply("植物数量: " + str(plants.Count), 0)
+    LOG_FmApply("梯子数量: " + str(ladders.Count), 0)
+    LOG_FmApply("花瓶数量: " + str(vases.Count), 0)
 
     # 布置植物
     for item in plants:
@@ -164,7 +164,7 @@ def load_formation_from_json(json_data):
                 plant_obj.mX = x
                 plant_obj.mY = y
         except Exception as e:
-            LOG(e, 2004)
+            LOG_FmApply(e, 2004)
 
     # 布置梯子
     for item in ladders:
@@ -172,7 +172,7 @@ def load_formation_from_json(json_data):
             x, y = get_ladder_data(item)
             board.AddALadder(x, y)
         except Exception as e:
-            LOG(e, 2003)
+            LOG_FmApply(e, 2003)
 
     # 布置花瓶
     for item in vases:
@@ -182,9 +182,9 @@ def load_formation_from_json(json_data):
             # 这里假设标准签名
             board.AddAScaryPot(x, y, state, SeedType(seed_type), ZombieType(zombie_type), pot_type)
         except Exception as e:
-            LOG(e, 2006)
+            LOG_FmApply(e, 2006)
 
-    LOG("布阵完成", 0)
+    LOG_FmApply("布阵完成", 0)
 
 # 主执行
 base64_data = "{JSON_BASE64}"
@@ -196,4 +196,4 @@ try:
     else:
         load_formation_from_json(base64_data)
 except Exception as e:
-    LOG(e, 9999)
+    LOG_FmApply(e, 9999)

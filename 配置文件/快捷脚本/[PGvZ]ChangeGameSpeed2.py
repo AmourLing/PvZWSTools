@@ -11,7 +11,7 @@ LOOP_SPEED_LIST = True
 def Log(msg):
     Debug.Log(str(msg))
 
-def decimal_to_fraction(decimal_num, tolerance=1e-6, max_denominator=114514):
+def decimal_to_fraction_CGS2(decimal_num, tolerance=1e-6, max_denominator=114514):
     sign = 1
     if decimal_num < 0:
         sign = -1
@@ -49,10 +49,10 @@ def decimal_to_fraction(decimal_num, tolerance=1e-6, max_denominator=114514):
     return (numerator, denominator)
 
 
-GameSpeedFractions = [decimal_to_fraction(s) for s in GameSpeedList]
+GameSpeedFractions = [decimal_to_fraction_CGS2(s) for s in GameSpeedList]
 Log("GameSpeedFractions = {}".format(GameSpeedFractions))
 
-def FindSpeedIndex(current_speed):
+def FindSpeedIndex_CGS2(current_speed):
     """找当前实际倍率最接近 GameSpeedList 中的哪一项"""
     best_index = 0
     best_delta = abs(current_speed - GameSpeedList[0])
@@ -66,7 +66,7 @@ def FindSpeedIndex(current_speed):
 
 def ApplyNextSpeed(board, current_speed, increase):
     """根据 current_speed 在 GameSpeedList 中定位，按方向移动到下一项"""
-    idx = FindSpeedIndex(current_speed)
+    idx = FindSpeedIndex_CGS2(current_speed)
     n = len(GameSpeedList)
 
     if increase:

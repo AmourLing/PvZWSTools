@@ -164,6 +164,9 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
             isActionInProgress = true;
             RefreshUi(); // 立即更新 UI 为 "断开中..."
 
+            // 先暂停自动重连，避免断开后定时器立刻把连接抢回来
+            mainActivity?.OnManualDisconnect();
+
             try
             {
                 await Task.Run(() =>
@@ -190,6 +193,9 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
             isActionInProgress = true;
             RefreshUi(); // 立即更新 UI 为 "连接中..."
 
+            // 解除"手动断开"暂停，并让自动重连定时器避让本次握手
+            mainActivity?.OnManualConnect();
+
             _ = Task.Run(() =>
             {
                 try
@@ -210,6 +216,11 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
                         StartCooldown(); // 连接异常也进入冷却
                         Toast.MakeText(Activity, $"连接错误: {ex.Message}", ToastLength.Long).Show();
                     });
+                }
+                finally
+                {
+                    // 握手已出结果（成功或失败），恢复自动重连调度
+                    mainActivity?.OnManualConnectFinished();
                 }
             });
         }

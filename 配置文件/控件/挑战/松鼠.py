@@ -1,4 +1,5 @@
 #松鼠
+#三态开关：1=强制开启 0=强制关闭 2=不干预（跟随原版）
 #2025.07.06
 
 SQUIRREL_CHECK = {CHECK}
@@ -11,6 +12,6 @@ def LawnApp_IsSquirrelLevel(orig,self):
     result = orig(self)
     if SQUIRREL_CHECK==1:
         return True
-    elif SQUIRREL_CHECK==2:
+    elif SQUIRREL_CHECK==0:
         return False
     return result

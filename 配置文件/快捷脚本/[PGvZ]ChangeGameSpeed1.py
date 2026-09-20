@@ -8,7 +8,7 @@ from Sexy import GlobalStaticVars as G
 app = G.gLawnApp
 board = app.mBoard
 
-def decimal_to_fraction(decimal_num, tolerance=1e-6, max_denominator=114514):
+def decimal_to_fraction_CGS1(decimal_num, tolerance=1e-6, max_denominator=114514):
     #使用辗转相除法将小数转换为分数形式
     #处理符号（?不会真有人用负倍率吧）
     sign = 1
@@ -78,21 +78,21 @@ def performance_test():
     start_time = time.time()
     for val in test_values:
         for _ in range(1000):  # 重复多次以获得可测量的时间
-            num, den = decimal_to_fraction(val, tolerance=1e-6)
+            num, den = decimal_to_fraction_CGS1(val, tolerance=1e-6)
     end_time = time.time()
     
     print("处理 {} 次转换用时: {:.6f} 秒".format(len(test_values) * 1000, end_time - start_time))
     
     # 显示转换结果
     for val in test_values:
-        num, den = decimal_to_fraction(val, tolerance=1e-6)
+        num, den = decimal_to_fraction_CGS1(val, tolerance=1e-6)
         print("{:.6f} = {}/{} (误差: {:.2e})".format(
             val, num, den, abs(val - num/den)))
 
 if __name__ == "__main__":
     performance_test()
 
-a,b = decimal_to_fraction(10)
+a,b = decimal_to_fraction_CGS1(10)
 board.mAccelerationNumerator = a
 board.mAccelerationDenominator = b
 

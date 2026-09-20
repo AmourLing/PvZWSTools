@@ -7,6 +7,9 @@ using Android.Content;
 using Android.Views;
 using Android.Widget;
 using AndroidX.Fragment.App;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PvZWSTools_Shared.ViewModels;
 
 namespace PvZWSTools_Avalonia;
 
@@ -22,11 +25,6 @@ public class CreateInputDialog
         }
         var configPath = Path.Combine(externalFilesDir.AbsolutePath, "配置文件");
         var filepath = Path.Combine(configPath, "控件", path, filename + ".py");
-        if(path == "快捷脚本" && filename == string.Empty)
-        {
-            filename = values[0];
-            filepath = Path.Combine(configPath, path, filename + ".py");
-        }
         var ws = MainActivity.ws;
         try
         {
@@ -360,5 +358,167 @@ public class CreateInputDialog
             Done(path, filename, replaceDict, values);
             onAfterConfirm?.Invoke(values);
         }, defaultOverrides);
+    }
+
+    /// <summary>
+    /// 快捷脚本执行入口，与 WPF 端 QModViewModel 行为一致：
+    /// 读取 配置文件/快捷脚本/&lt;脚本名&gt;.py.config.json，无参数定义时确认即原样发送；
+    /// 有参数定义时弹出动态参数框（value 为数组→下拉，其余→文本框，default 为默认值），
+    /// 确认后按占位符替换并原样发送。
+    /// </summary>
+    public static void RunQuickScript(FragmentActivity activity, string scriptName)
+    {
+        if(string.IsNullOrWhiteSpace(scriptName))
+        {
+            Toast.MakeText(activity, "请先选择一个快捷脚本", ToastLength.Long).Show();
+            return;
+        }
+        var externalFilesDir = Android.App.Application.Context.GetExternalFilesDir(null);
+        if(externalFilesDir == null)
+        {
+            Toast.MakeText(Application.Context, "无法访问外部存储", ToastLength.Long).Show();
+            return;
+        }
+        var scriptPath = Path.Combine(externalFilesDir.AbsolutePath, "配置文件", "快捷脚本", scriptName + ".py");
+        if(!File.Exists(scriptPath))
+        {
+            Toast.MakeText(Application.Context, $"读取文件失败: 找不到脚本 {scriptName}.py", ToastLength.Long).Show();
+            return;
+        }
+
+        var config = LoadScriptConfig(scriptPath + ".config.json");
+        if(config == null || config.Replace == null || config.Replace.Count == 0)
+        {
+            SendQuickScript(activity, File.ReadAllText(scriptPath));
+            return;
+        }
+        ShowQuickScriptDialog(activity, scriptName, scriptPath, config);
+    }
+
+    private static ScriptConfig? LoadScriptConfig(string configPath)
+    {
+        if(!File.Exists(configPath))
+        {
+            return null;
+        }
+        try
+        {
+            return JsonConvert.DeserializeObject<ScriptConfig>(File.ReadAllText(configPath));
+        }
+        catch(Exception ex)
+        {
+            // 与 WPF 一致按无参数处理（原样发送），仅提示配置解析失败
+            Toast.MakeText(Application.Context, $"解析脚本配置失败: {ex.Message}", ToastLength.Long).Show();
+            return null;
+        }
+    }
+
+    private static void ShowQuickScriptDialog(FragmentActivity activity, string scriptName, string scriptPath, ScriptConfig config)
+    {
+        var (scrollView, layout) = CreateDialogBody(activity);
+
+        // 功能说明与作者，与 WPF 端 InfoAll / "QMod作者: " 文案一致
+        if(!string.IsNullOrEmpty(config.InfoAll))
+        {
+            var info = new TextView(activity) { Text = config.InfoAll, TextSize = 14 };
+            info.SetTextColor(Android.Graphics.Color.Gray);
+            layout.AddView(info);
+        }
+        if(!string.IsNullOrEmpty(config.Author))
+        {
+            var author = new TextView(activity) { Text = $"QMod作者: {config.Author}", TextSize = 14 };
+            author.SetTextColor(Android.Graphics.Color.Gray);
+            layout.AddView(author);
+        }
+
+        var selectedValues = new Dictionary<string, string>();
+        var editTexts = new Dictionary<string, EditText>();
+        foreach(var kv in config.Replace)
+        {
+            var options = new List<string>();
+            var isDropdown = kv.Value?.Value is JArray;
+            if(isDropdown && kv.Value?.Value is JArray arr)
+            {
+                options = arr.Select(t => t.ToString()).ToList();
+            }
+
+            string defaultValue = string.Empty;
+            if(kv.Value?.Default != null)
+            {
+                defaultValue = kv.Value.Default.ToString();
+            }
+            else if(isDropdown && options.Any())
+            {
+                defaultValue = options.First();
+            }
+
+            layout.AddView(CreateLabel(activity, $"{kv.Value?.Info}（占位符:{kv.Key}）"));
+
+            if(isDropdown)
+            {
+                selectedValues[kv.Key] = defaultValue;
+                var spinner = new Spinner(activity);
+                var adapter = new ArrayAdapter<string>(
+                    activity,
+                    Android.Resource.Layout.SimpleSpinnerItem,
+                    options);
+                adapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
+                spinner.Adapter = adapter;
+                int position = adapter.GetPosition(defaultValue);
+                if(position >= 0)
+                {
+                    spinner.SetSelection(position);
+                }
+                spinner.ItemSelected += (sender, e) =>
+                {
+                    selectedValues[kv.Key] = spinner.GetItemAtPosition(e.Position)?.ToString() ?? string.Empty;
+                };
+                layout.AddView(spinner);
+            }
+            else
+            {
+                var editText = CreateEditText(activity, text: defaultValue);
+                editTexts[kv.Key] = editText;
+                layout.AddView(editText);
+            }
+        }
+
+        _ = new AlertDialog.Builder(activity)
+            .SetTitle($"快捷脚本 - {scriptName}")
+            .SetView(scrollView)
+            .SetPositiveButton("确认", (dialog, which) =>
+            {
+                try
+                {
+                    string content = File.ReadAllText(scriptPath);
+                    foreach(var kv in config.Replace)
+                    {
+                        var value = editTexts.ContainsKey(kv.Key)
+                            ? editTexts[kv.Key].Text
+                            : selectedValues.TryGetValue(kv.Key, out var selected) ? selected : string.Empty;
+                        content = content.Replace(kv.Key, value);
+                    }
+                    SendQuickScript(activity, content);
+                }
+                catch(Exception ex)
+                {
+                    Toast.MakeText(activity, $"读取文件失败: {ex.Message}", ToastLength.Long).Show();
+                }
+            })
+            .SetNegativeButton("取消", (IDialogInterfaceOnClickListener)null)
+            .Show();
+    }
+
+    private static void SendQuickScript(Context context, string content)
+    {
+        var ws = MainActivity.ws;
+        if(ws != null && ws.IsConnected)
+        {
+            ws.Send(content);
+        }
+        else
+        {
+            Toast.MakeText(context, "ws未连接", ToastLength.Long).Show();
+        }
     }
 }

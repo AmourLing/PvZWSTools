@@ -11,7 +11,7 @@ ChangeGameRunStep = 1                         # 每次加速/减速跨越几个�
 LOOP_SPEED_LIST = True                        # True: 到边界后循环；False: 到边界后停住
 
 
-def decimal_to_fraction(decimal_num, tolerance=1e-6, max_denominator=114514):
+def decimal_to_fraction_CGS3(decimal_num, tolerance=1e-6, max_denominator=114514):
     # 使用辗转相除法将小数转换为分数形式
     sign = 1
     if decimal_num < 0:
@@ -55,28 +55,28 @@ def decimal_to_fraction(decimal_num, tolerance=1e-6, max_denominator=114514):
 
 
 # 预先计算每个倍率对应的分数，避免每次 Hook 都重新算
-GameSpeedFractions = [decimal_to_fraction(speed) for speed in GameSpeedList]
+GameSpeedFractions = [decimal_to_fraction_CGS3(speed) for speed in GameSpeedList]
 Debug.Log("GameSpeedFractions = {}".format(GameSpeedFractions))
 
-def FindSpeedIndex(current_speed):
+def FindSpeedIndex_CGS3(current_speed):
     # 找当前实际倍率最接近 GameSpeedList 中的哪一项
     best_index = 0
     best_delta = abs(current_speed - GameSpeedList[0])
 
     for i, speed in enumerate(GameSpeedList):
         delta = abs(current_speed - speed)
-        Debug.Log("FindSpeedIndex: current_speed={}, compare speed={}, delta={}".format(
+        Debug.Log("FindSpeedIndex_CGS3: current_speed={}, compare speed={}, delta={}".format(
             current_speed, speed, delta))
         if delta < best_delta:
             best_delta = delta
             best_index = i
 
-    Debug.Log("FindSpeedIndex: result index={}, best_delta={}".format(best_index, best_delta))
+    Debug.Log("FindSpeedIndex_CGS3: result index={}, best_delta={}".format(best_index, best_delta))
     return best_index
 
 
 def GetNewGameSpeedIndex(current_speed, step, increase):
-    index = FindSpeedIndex(current_speed)
+    index = FindSpeedIndex_CGS3(current_speed)
 
     if increase:
         new_index = index + step

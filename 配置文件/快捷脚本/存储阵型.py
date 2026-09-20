@@ -14,7 +14,7 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-def LOG(e, code=0):
+def LOG_FmStore(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     try:
         if app is not None:
@@ -44,7 +44,7 @@ if 1 != 0:
                     "y": aPlant.mY
                 })
     except Exception as e:
-        LOG(e, 1001)
+        LOG_FmStore(e, 1001)
 
 ladder = []
 #if {LADDER} != 0:
@@ -59,7 +59,7 @@ if 1 != 0:
                     "y": gridItem.mGridY
                 })
     except Exception as e:
-        LOG(e, 1002)
+        LOG_FmStore(e, 1002)
 
 vase = []
 #if {VASE} != 0:
@@ -78,7 +78,7 @@ if 1 != 0:
                     "potType": int(gridItem.mScaryPotType)
                 })
     except Exception as e:
-        LOG(e, 1003)
+        LOG_FmStore(e, 1003)
 
 try:
     combined_data = JObject()
@@ -94,13 +94,13 @@ try:
 
     print(output_payload)
 except Exception as e:
-    LOG(e, 1004)
+    LOG_FmStore(e, 1004)
 
 try:
     import sys
     sys.stdout.flush()
 except Exception as e:
-    LOG(e, 1005)
+    LOG_FmStore(e, 1005)
 
 _the_formation_name = "{NAME}"
 app.DoDialog(64, True, "阵型提取完成", f"数据已准备，将由 PvZWSTools 保存为{_the_formation_name}", "OK", 3)

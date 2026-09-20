@@ -18,12 +18,12 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-def LOG(e, code=0):
+def LOG_WaveIdx(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
     print(msg)
 
-def safe_int(value, default=0, error_code=5000):
+def safe_int_WaveIdx(value, default=0, error_code=5000):
     try:
         return int(value)
     except Exception as e:
@@ -33,10 +33,10 @@ def safe_int(value, default=0, error_code=5000):
                 return default
             return int(s)
         except:
-            LOG(Exception(f"safe_int failed: value={value!r} type={type(value)} original={e}"), error_code)
+            LOG_WaveIdx(Exception(f"safe_int_WaveIdx failed: value={value!r} type={type(value)} original={e}"), error_code)
             return default
 
-def load_zombie_names():
+def load_zombie_names_WaveIdx():
     # 宿主整份文本替换占位符；未替换时这里仍是花括号字面量，退化为只显示枚举名
     payload = r"{ZOMBIE_JSON_B64}"
     if not payload or payload.startswith("{"):
@@ -59,23 +59,23 @@ def load_zombie_names():
             result[enum_id] = name
         return result
     except Exception as e:
-        LOG(e, 1003)
+        LOG_WaveIdx(e, 1003)
         return {}
 
 ALLOW_JSON_ZOMBIES_IN_WAVE = "{CHECK}"
 
 if board is None:
-    LOG(Exception("未找到board进程"), 2001)
+    LOG_WaveIdx(Exception("未找到board进程"), 2001)
     print("===END===")
 else:
     # 逐条 print 会被输出缓冲的刷新边界切成多条消息，一整波一行有被劈开的风险；攒进列表一次输出。
-    zombie_names = load_zombie_names()
+    zombie_names = load_zombie_names_WaveIdx()
     out_lines = []
     for i in range(0, board.mNumWaves):
         line = "第{}波:".format(i+1)
         for j in range(0, 50):
             z_raw = board.mZombiesInWave[i, j]
-            z = safe_int(z_raw, default=-1, error_code=2002)
+            z = safe_int_WaveIdx(z_raw, default=-1, error_code=2002)
             if z == -1:
                 break
             name = zombie_names.get(z, ZombieType(z))

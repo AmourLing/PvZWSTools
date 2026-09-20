@@ -15,7 +15,7 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard if app else None
 
-def LOG(e, code=0):
+def LOG_FmStore(e, code=0):
     msg = "[ErrorCode {}] {}".format(code, repr(e) if e else "Unknown Error")
     try:
         if app is not None:
@@ -54,7 +54,7 @@ if plant_switch != "Off":
                     p_obj["y"] = aPlant.mY
                     plant_list.append(p_obj)
     except Exception as e:
-        LOG(e, 1001)
+        LOG_FmStore(e, 1001)
 
 # --- 2. 提取梯子数据 ---
 ladder_switch = "{LADDER}"
@@ -70,7 +70,7 @@ if ladder_switch != "Off":
                     l_obj["y"] = gridItem.mGridY
                     ladder_list.append(l_obj)
     except Exception as e:
-        LOG(e, 1002)
+        LOG_FmStore(e, 1002)
 
 # --- 3. 提取花瓶数据 ---
 vase_switch = "{VASE}"
@@ -90,7 +90,7 @@ if vase_switch != "Off":
                     v_obj["potType"] = int(gridItem.mScaryPotType)
                     vase_list.append(v_obj)
     except Exception as e:
-        LOG(e, 1003)
+        LOG_FmStore(e, 1003)
 
 # --- 4. 构建 JSON 并输出 ---
 try:
@@ -128,7 +128,7 @@ try:
     print(output_payload + "\n===END===")
 
 except Exception as e:
-    LOG(e, 1004)
+    LOG_FmStore(e, 1004)
     # 失败也要收口，否则 WPF 端 ExecuteWithResultAsync 白等满 3 秒且看不到原因
     print("[ErrorCode 1004] {}\n===END===".format(repr(e) if e else "Unknown Error"))
 
@@ -137,7 +137,7 @@ try:
     import sys
     sys.stdout.flush()
 except Exception as e:
-    LOG(e, 1005)
+    LOG_FmStore(e, 1005)
 
 # --- 6. 提示用户 ---
 formation_name = "{NAME}"

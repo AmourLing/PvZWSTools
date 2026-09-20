@@ -73,10 +73,11 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
         _githubChannel = new ChannelOption { Display = "GitHub （海外高速，国内可能较慢）", Kind = ChannelKind.Github };
         _giteeChannel = new ChannelOption { Display = "Gitee （国内高速，推荐）", Kind = ChannelKind.Gitee };
 
-        Channels.Add(_githubChannel);
-        Channels.Add(_giteeChannel);
+        // 展示顺序与 readme.md「下载」一节一致：网盘渠道在前，GitHub / Gitee 在最后
         foreach(var netdisk in NetdiskChannel.All)
             Channels.Add(new ChannelOption { Display = netdisk.Display, Kind = ChannelKind.Netdisk, Netdisk = netdisk });
+        Channels.Add(_githubChannel);
+        Channels.Add(_giteeChannel);
 
         foreach(var channel in Channels)
             channel.PropertyChanged += Channel_PropertyChanged;
@@ -144,10 +145,13 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
         _giteeChannel.IsEnabled = !string.IsNullOrEmpty(UpdateInfo?.GiteeUrl);
     }
 
+    /// <summary>
+    /// 默认选列表首位的网盘渠道（夸克网盘，固定分享链接恒可用）；GitHub / Gitee 仅作兜底。
+    /// </summary>
     private ChannelOption? FirstAvailableChannel() =>
-        Channels.FirstOrDefault(c => c.Kind == ChannelKind.Github && c.IsEnabled)
-        ?? Channels.FirstOrDefault(c => c.Kind == ChannelKind.Gitee && c.IsEnabled)
-        ?? Channels.FirstOrDefault(c => c.Kind == ChannelKind.Netdisk && c.IsEnabled);
+        Channels.FirstOrDefault(c => c.Kind == ChannelKind.Netdisk && c.IsEnabled)
+        ?? Channels.FirstOrDefault(c => c.Kind == ChannelKind.Github && c.IsEnabled)
+        ?? Channels.FirstOrDefault(c => c.Kind == ChannelKind.Gitee && c.IsEnabled);
 
     private void SelectChannel(ChannelOption? selected)
     {
@@ -194,7 +198,7 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
 
             if(info == null)
             {
-                StatusText = "检查更新失败，请稍后重试或前往发布页手动下载";
+                StatusText = "检查更新失败，请稍后重试，或点击下方链接前往夸克网盘手动查看";
                 return;
             }
 
@@ -234,6 +238,24 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
         UpdateInfo.Source = _selectedChannel.Kind == ChannelKind.Gitee ? "gitee" : "github";
 
         await DownloadAndApplyAsync();
+    }
+
+    /// <summary>
+    /// 常驻手动入口：直接跳转夸克网盘，不依赖检查结果。
+    /// </summary>
+    private void QuarkLink_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(NetdiskChannel.Quark.Url)
+            {
+                UseShellExecute = true
+            });
+        }
+        catch(Exception ex)
+        {
+            MessageBox.Show(this, $"无法打开浏览器：{ex.Message}", "夸克网盘", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private void OpenNetdiskPage(NetdiskChannel netdisk)
