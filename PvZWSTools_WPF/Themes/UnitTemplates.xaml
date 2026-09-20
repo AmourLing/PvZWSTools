@@ -372,11 +372,24 @@
                 <ItemsControl
                     VerticalAlignment="Center"
                     ItemsSource="{Binding Fields}"
-                    ItemTemplate="{DynamicResource FieldItemTemplate}" />
+                    ItemTemplate="{DynamicResource FieldItemTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <!--  ItemsControl 默认是竖排 StackPanel，不给它 WrapPanel 就会一个输入占一行  -->
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
                 <ItemsControl
                     VerticalAlignment="Center"
                     ItemsSource="{Binding Members}"
-                    ItemTemplate="{DynamicResource UnitItemTemplate}" />
+                    ItemTemplate="{DynamicResource UnitItemTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
                 <Button
                     VerticalAlignment="Center"
                     Command="{Binding RunCommand}"
