@@ -7,6 +7,8 @@ using Android.Widget;
 using AndroidX.Fragment.App;
 using PvZWSTools_Avalonia.Helpers;
 
+using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Shared.Services;
 namespace PvZWSTools_Avalonia;
 
 public class ConnectionFragment:AndroidX.Fragment.App.Fragment
@@ -67,7 +69,7 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
 
         Activity.RunOnUiThread(() =>
         {
-            bool isConnected = MainActivity.ws?.IsConnected ?? false;
+            bool isConnected = AppServices.IsConnected;
 
             // 优先级：冷却期 > 操作中 > 正常状态
 
@@ -95,17 +97,9 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
                 return;
             }
 
-            // 正常状态
-            if(isConnected)
-            {
-                buttonConnect.Text = "断开连接";
-                buttonConnect.Enabled = true;
-            }
-            else
-            {
-                buttonConnect.Text = "连接";
-                buttonConnect.Enabled = true;
-            }
+            // 正常状态：文字直接取 VM 的，跟桌面端同一个来源
+            buttonConnect.Text = AppServices.Root?.ConnectionButtonText ?? "连接";
+            buttonConnect.Enabled = true;
         });
     }
 
@@ -113,39 +107,18 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
     /// 外部可调用此方法来通知 Fragment 连接状态已改变
     /// 例如在 MainActivity.UpdateConnectionStatus 中调用
     /// </summary>
-    public void NotifyConnectionStatusChanged(bool isConnected)
-    {
-        // 如果不在冷却期且不在操作中，则立即刷新 UI
-        if(!isCooldown && !isActionInProgress)
-        {
-            RefreshUi();
-        }
-        else if(isActionInProgress)
-        {
-            // 如果操作进行中，状态改变意味着操作结束
-            // 例如：点击断开 -> ws 断开 -> onClose 触发
-            isActionInProgress = false;
+    public void NotifyConnectionStatusChanged(bool isConnected) => OnConnectionSettled();
 
-            // 如果是断开操作完成，进入冷却
-            if(!isConnected)
-            {
-                StartCooldown();
-            }
-            else
-            {
-                // 如果是连接操作成功
-                RefreshUi();
-            }
-        }
-    }
-
-    private async void OnConnectButtonClick(object sender, EventArgs e)
+    /// <summary>
+    /// 连接和断开都走 VM 的 ConnectCommand。它内部会置 _stopAutoConnect，
+    /// 所以手动断开之后自动重连不会在 1 秒内把连接抢回来；
+    /// 自己直接调 Connection.ConnectAsync/Disconnect 就绕过这个保护了。
+    /// </summary>
+    private void OnConnectButtonClick(object sender, EventArgs e)
     {
-        // 如果正在操作中或处于冷却期，忽略点击
         if(isActionInProgress || isCooldown) return;
 
         string address = editTextAddress.Text?.Trim();
-
         if(string.IsNullOrEmpty(address))
         {
             Toast.MakeText(Activity, "请输入WebSocket地址", ToastLength.Short).Show();
@@ -154,76 +127,22 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
 
         mainActivity?.SaveWebSocketAddress(address);
 
-        if(MainActivity.ws == null) return;
+        var root = AppServices.Root;
+        root.WsAddress = address;
 
-        bool wasConnected = MainActivity.ws.IsConnected;
+        isActionInProgress = true;
+        root.ConnectCommand.Execute(null);
+    }
 
-        if(wasConnected)
-        {
-            // --- 断开连接逻辑 ---
-            isActionInProgress = true;
-            RefreshUi(); // 立即更新 UI 为 "断开中..."
-
-            // 先暂停自动重连，避免断开后定时器立刻把连接抢回来
-            mainActivity?.OnManualDisconnect();
-
-            try
-            {
-                await Task.Run(() =>
-                {
-                    MainActivity.ws.Disconnect();
-                });
-
-                // Disconnect() 是同步阻塞直到关闭吗？WebSocketSharp 的 Close 可能是异步的。
-                // 但我们的 ws.OnClose 会触发 NotifyConnectionStatusChanged(false)
-                // 所以这里不需要做太多，等待事件触发即可。
-                // 为了防止事件未及时触发导致 UI 卡住，我们可以加一个超时或强制刷新
-            }
-            catch(Exception ex)
-            {
-                Log.Error($"[ConnectionFragment]断开连接异常: {ex.Message}");
-                isActionInProgress = false;
-                Toast.MakeText(Activity, "断开连接失败", ToastLength.Short).Show();
-                RefreshUi();
-            }
-        }
-        else
-        {
-            // --- 连接逻辑 ---
-            isActionInProgress = true;
-            RefreshUi(); // 立即更新 UI 为 "连接中..."
-
-            // 解除"手动断开"暂停，并让自动重连定时器避让本次握手
-            mainActivity?.OnManualConnect();
-
-            _ = Task.Run(() =>
-            {
-                try
-                {
-                    Log.Info($"[ConnectionFragment]开始连接: {address}");
-                    MainActivity.ws.Connect(address);
-
-                    // Connect() 是阻塞的，直到连接成功或失败
-                    // 连接成功后，ws.OnOpen 会触发，进而调用 MainActivity.UpdateConnectionStatus(true)
-                    // 进而调用 NotifyConnectionStatusChanged(true)
-                }
-                catch(Exception ex)
-                {
-                    Log.Error($"[ConnectionFragment]连接异常: {ex.Message}");
-                    Activity?.RunOnUiThread(() =>
-                    {
-                        isActionInProgress = false;
-                        StartCooldown(); // 连接异常也进入冷却
-                        Toast.MakeText(Activity, $"连接错误: {ex.Message}", ToastLength.Long).Show();
-                    });
-                }
-                finally
-                {
-                    // 握手已出结果（成功或失败），恢复自动重连调度
-                    mainActivity?.OnManualConnectFinished();
-                }
-            });
-        }
+    /// <summary>
+    /// 连接结果一律由 ConnectionStateChanged 报回来；失败时共享层只发 ConnectionError、
+    /// 不发状态变化，所以这里也要接一下，否则按钮会永远停在"连接中"。
+    /// </summary>
+    private void OnConnectionSettled()
+    {
+        isActionInProgress = false;
+        if(!AppServices.IsConnected) StartCooldown();
+        RefreshUi();
     }
 
     /// <summary>

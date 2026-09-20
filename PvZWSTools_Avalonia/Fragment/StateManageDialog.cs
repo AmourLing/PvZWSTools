@@ -7,6 +7,7 @@ using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Widget;
 using PvZWSTools_Avalonia.Helpers;
+using PvZWSTools_Avalonia.Platform;
 
 namespace PvZWSTools_Avalonia;
 
@@ -169,7 +170,7 @@ public static class StateManageDialog
             }
 
             service.ApplyStates(states, syncIfConnected: true);
-            Toast.MakeText(activity, "状态已应用" + (MainActivity.ws?.IsConnected == true ? "，开启的开关已同步到游戏" : ""), ToastLength.Short).Show();
+            Toast.MakeText(activity, "状态已应用" + (AppServices.IsConnected ? "，开启的开关已同步到游戏" : ""), ToastLength.Short).Show();
         };
 
         detailBtn.Click += (_, _) =>

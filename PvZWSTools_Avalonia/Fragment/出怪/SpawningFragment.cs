@@ -11,6 +11,8 @@ using PvZWSTools_Avalonia.Helpers;
 using Constants = PvZWSTools_Shared.Helpers.Constants;
 using ScriptPayload = PvZWSTools_Shared.Helpers.ScriptPayload;
 
+using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Shared.Services;
 namespace PvZWSTools_Avalonia;
 
 public class SpawningFragment:BaseFragment
@@ -370,7 +372,7 @@ public class SpawningFragment:BaseFragment
     {
         if(_isExportingWaveJson) return;
 
-        var ws = MainActivity.ws;
+        var ws = AppServices.Connection;
         if(ws == null || !ws.IsConnected)
         {
             Toast.MakeText(Activity, "ws未连接", ToastLength.Long).Show();
@@ -419,7 +421,7 @@ public class SpawningFragment:BaseFragment
 
     private async Task LoadWaveJsonAsync()
     {
-        var ws = MainActivity.ws;
+        var ws = AppServices.Connection;
         if(ws == null || !ws.IsConnected)
         {
             Toast.MakeText(Activity, "ws未连接", ToastLength.Long).Show();
@@ -444,7 +446,7 @@ public class SpawningFragment:BaseFragment
         {
             string script = (await File.ReadAllTextAsync(scriptPath))
                 .Replace(Constants.Placeholders.WaveJsonBase64, base64);
-            ws.Send(script);
+            _ = ws.SendAsync(script);
         }
         catch(Exception ex)
         {
@@ -457,7 +459,7 @@ public class SpawningFragment:BaseFragment
     {
         if(_isReadingWaveList) return;
 
-        var ws = MainActivity.ws;
+        var ws = AppServices.Connection;
         if(ws == null || !ws.IsConnected)
         {
             Toast.MakeText(Activity, "ws未连接", ToastLength.Long).Show();
@@ -530,7 +532,7 @@ public class SpawningFragment:BaseFragment
     }
 
     /// <summary>发送脚本并收集输出，直到出现 endMarker 或超时。</summary>
-    private static async Task<string> CollectOutputAsync(WebSocketClient ws, string script, string endMarker)
+    private static async Task<string> CollectOutputAsync(IConnectionService ws, string script, string endMarker)
     {
         var buffer = new StringBuilder();
         var tcs = new TaskCompletionSource<string>();
@@ -550,7 +552,7 @@ public class SpawningFragment:BaseFragment
         };
 
         ws.MessageReceived += handler;
-        ws.Send(script);
+        _ = ws.SendAsync(script);
         bool finished = await Task.WhenAny(tcs.Task, Task.Delay(ScriptOutputTimeoutMs)) == tcs.Task;
         ws.MessageReceived -= handler;
 

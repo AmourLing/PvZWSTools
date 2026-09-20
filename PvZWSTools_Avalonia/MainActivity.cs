@@ -12,6 +12,7 @@ using Android.Widget;
 using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using AndroidX.DrawerLayout.Widget;
+using PvZWSTools_Avalonia.Platform;
 using Google.Android.Material.Navigation;
 using PvZWSTools_Shared;
 using PvZWSTools_Shared.Models;
@@ -28,7 +29,6 @@ namespace PvZWSTools_Avalonia;
           MainLauncher = true)]
 public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
 {
-    public static WebSocketClient ws;
     private AppSettings _appSettings;
     private AndroidX.AppCompat.App.AlertDialog _extractDialog;
     private bool _isConnected = false;
@@ -42,19 +42,6 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         SupportFragmentManager?.FindFragmentById(Resource.Id.content_frame);
 
     public static MainActivity Instance { get; private set; }
-
-    // 自动重连相关
-    private Timer _reconnectTimer;
-
-    private readonly object _reconnectLock = new object();
-
-    private DateTime _lastReconnectAttempt = DateTime.MinValue;
-    private const int RECONNECT_INTERVAL_MS = 3000;
-    private bool _isReconnecting = false;
-    // 用户手动断开后置位：暂停自动重连，直到下次手动连接（对齐 WPF 端 _stopAutoConnect 语义）
-    private volatile bool _manualDisconnected = false;
-    // 手动连接握手进行中：自动重连定时器避让，避免掐断进行中的连接
-    private volatile bool _manualConnectInProgress = false;
 
     /// <summary>
     /// 导航项 → (Fragment 工厂, 自动刷新按钮状态对应的控件子目录；null 表示切换时不自动刷新)。
@@ -108,11 +95,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         try
         {
             Log.Info("用户确认退出，执行安全退出");
-            StopReconnectTimer();
             StopStateSaveTimer();
             AndroidStateService.Instance?.CaptureActiveFragment();
             AndroidStateService.Instance?.PersistLastStates();
-            ws?.Dispose();
+            AppServices.Connection?.Disconnect();
         }
         catch(Exception ex)
         {
@@ -125,7 +111,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         MenuInflater.Inflate(Resource.Menu.menu_main, menu);
         _settingsMenuItem = menu.FindItem(Resource.Id.action_settings);
-        UpdateConnectionStatus(ws?.IsConnected ?? false);
+        UpdateConnectionStatus(AppServices.IsConnected);
 
         return true;
     }
@@ -311,8 +297,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         Log.Info("MainActivity 销毁");
 
-        // 停止重连定时器和状态保存定时器
-        StopReconnectTimer();
+        // 停止状态保存定时器
         StopStateSaveTimer();
 
         // 状态管理：把当前状态保存为"上次状态"（OnStop 已保存过，此处兜底）
@@ -322,7 +307,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         Instance = null;
 
         // 先断开 WebSocket
-        ws?.Dispose();
+        AppServices.Connection?.Disconnect();
 
         // 最后关闭日志流
         Log.Shutdown();
@@ -339,26 +324,14 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     protected override void OnPause()
     {
         base.OnPause();
-        // 可选：如果在后台不想重连，可以暂停定时器
-        // StopReconnectTimer();
     }
 
+    /// <summary>
+    /// 从设置界面回来时，让 VM 重读一次设置（自动连接、是否发连接提醒都在那边）。
+    /// </summary>
     private void ApplySettings()
     {
-        if(ws != null)
-        {
-            ws.EnableSuppressConnectionMessage(_appSettings.SuppressConnectionMessage);
-
-            // 根据设置启用或禁用自动重连
-            if(_appSettings.AutoConnectEnabled)
-            {
-                StartReconnectTimer();
-            }
-            else
-            {
-                StopReconnectTimer();
-            }
-        }
+        AppServices.Root?.ReloadSettingsFromService();
     }
 
     /// <summary>
@@ -369,7 +342,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         if(_appSettings == null || !_appSettings.AllowAutoUpdateButtonStatus)
             return;
-        if(ws == null || !ws.IsConnected)
+        if(!AppServices.IsConnected)
             return;
 
         try
@@ -378,7 +351,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             var filepath = Path.Combine(AppFilesPath, "配置文件", "控件", subFolder, "GetButtonCheck.py");
             if(!File.Exists(filepath)) return;
 
-            ws.Send(File.ReadAllText(filepath));
+            AppServices.Send(File.ReadAllText(filepath));
         }
         catch(Exception ex)
         {
@@ -390,8 +363,8 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         try
         {
-            // 共享 ViewModel 图 + 功能清单；必须在 配置文件 解压完之后，否则读不到 setting.json
-            Platform.AppServices.Initialize(this, AppFilesPath);
+            // 共享 ViewModel 图 + 功能清单；必须在 配置文件 解压完之后，否则读不到选项 json
+            Platform.AppServices.Initialize(this, AppFilesPath, _appSettings, _settingsPath);
 
             AndroidX.AppCompat.Widget.Toolbar toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
@@ -430,37 +403,17 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                     .Commit();
             }
 
-            _ = Task.Run(() =>
-            {
-                ws = new WebSocketClient((isConnected) =>
-                {
-                    RunOnUiThread(() =>
-                    {
-                        UpdateConnectionStatus(isConnected);
-                    });
-                });
+            // 唯一一条连接：状态变化由共享层的 ConnectionService 报上来，
+            // 自动重连、连上后发 logo 都在 MainWindowViewModel 里，这里只负责刷 UI。
+            AppServices.Connection.ConnectionStateChanged += (_, connected) =>
+                UpdateConnectionStatus(connected);
 
-                RunOnUiThread(() =>
-                {
-                    ApplySettings();
-                });
-            });
+            ApplySettings();
         }
         catch(Exception ex)
         {
             Log.Error("应用初始化失败", ex);
             Toast.MakeText(this, $"应用初始化失败: {ex.Message}", ToastLength.Long).Show();
-        }
-    }
-
-    // --- 自动重连逻辑 ---
-
-    private void StartReconnectTimer()
-    {
-        if(_reconnectTimer == null)
-        {
-            Log.Info("[MainActivity] 启动自动重连定时器");
-            _reconnectTimer = new Timer(ReconnectCallback, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(1000));
         }
     }
 
@@ -504,81 +457,6 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 Log.Error($"状态定时保存失败: {ex.Message}");
             }
         });
-    }
-
-    private void StopReconnectTimer()
-    {
-        if(_reconnectTimer != null)
-        {
-            Log.Info("[MainActivity] 停止自动重连定时器");
-            _reconnectTimer.Dispose();
-            _reconnectTimer = null;
-        }
-    }
-
-    private void ReconnectCallback(object state)
-    {
-        if(!_appSettings.AutoConnectEnabled || _manualDisconnected || _manualConnectInProgress || _isReconnecting || _isConnected || ws == null)
-            return;
-
-        string address = GetLastWebSocketAddress();
-        if(string.IsNullOrWhiteSpace(address))
-            return;
-
-        if((DateTime.Now - _lastReconnectAttempt).TotalMilliseconds < RECONNECT_INTERVAL_MS)
-            return;
-
-        lock(_reconnectLock)
-        {
-            if(_isReconnecting || _isConnected) return;
-
-            _isReconnecting = true;
-            _lastReconnectAttempt = DateTime.Now;
-        }
-
-        Log.Info($"[MainActivity] 自动重连尝试: {address}");
-
-        _ = Task.Run(() =>
-        {
-            try
-            {
-                ws.Connect(address);
-            }
-            catch(Exception ex)
-            {
-                Log.Error($"[MainActivity] 自动重连异常: {ex.Message}");
-            }
-            finally
-            {
-                _isReconnecting = false;
-            }
-        });
-    }
-
-    /// <summary>
-    /// 用户手动断开：暂停自动重连，直到下次手动连接（否则定时器会在 3 秒内把连接抢回来）。
-    /// 由 ConnectionFragment 调用。
-    /// </summary>
-    public void OnManualDisconnect()
-    {
-        _manualDisconnected = true;
-        Log.Info("[MainActivity] 用户手动断开，自动重连暂停");
-    }
-
-    /// <summary>
-    /// 用户手动发起连接：解除"手动断开"暂停，并让自动重连定时器避让本次握手。
-    /// 由 ConnectionFragment 调用，握手结束后须配对调用 <see cref="OnManualConnectFinished"/>。
-    /// </summary>
-    public void OnManualConnect()
-    {
-        _manualDisconnected = false;
-        _manualConnectInProgress = true;
-    }
-
-    /// <summary>手动连接结束（无论成败），恢复自动重连调度。由 ConnectionFragment 调用。</summary>
-    public void OnManualConnectFinished()
-    {
-        _manualConnectInProgress = false;
     }
 
     // --- 对话框逻辑 ---

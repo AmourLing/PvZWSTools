@@ -13,6 +13,8 @@ using Newtonsoft.Json.Linq;
 using PvZWSTools_Avalonia.Helpers;
 using Constants = PvZWSTools_Shared.Helpers.Constants;
 
+using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Shared.Services;
 namespace PvZWSTools_Avalonia;
 
 public class FormationFragment:BaseFragment
@@ -383,13 +385,13 @@ public class FormationFragment:BaseFragment
                 }
 
                 string scriptContent = File.ReadAllText(scriptPath).Replace("{JSON_BASE64}", base64);
-                WebSocketClient ws = MainActivity.ws;
+                var ws = AppServices.Connection;
                 if(ws == null || !ws.IsConnected)
                 {
                     Toast.MakeText(Activity, "WebSocket未连接", ToastLength.Long).Show();
                     return;
                 }
-                ws.Send(scriptContent);
+                _ = ws.SendAsync(scriptContent);
                 Toast.MakeText(Activity, "切换卡组命令已发送", ToastLength.Long).Show();
             }
         );
@@ -447,13 +449,13 @@ public class FormationFragment:BaseFragment
 
                 string scriptContent2 = File.ReadAllText(scriptPath2).Replace("{JSON_BASE64}", base64Json);
 
-                var ws2 = MainActivity.ws;
+                var ws2 = AppServices.Connection;
                 if(ws2 == null || !ws2.IsConnected)
                 {
                     Toast.MakeText(Activity, "WebSocket未连接", ToastLength.Long).Show();
                     return;
                 }
-                ws2.Send(scriptContent2);
+                _ = ws2.SendAsync(scriptContent2);
                 Toast.MakeText(Activity, "布阵命令已发送", ToastLength.Long).Show();
             }
         );
@@ -500,7 +502,7 @@ public class FormationFragment:BaseFragment
                     }
 
                     string scriptContent = File.ReadAllText(scriptPath).Replace("{NAME}", name);
-                    var ws = MainActivity.ws;
+                    var ws = AppServices.Connection;
                     if(ws == null || !ws.IsConnected)
                     {
                         Toast.MakeText(Activity, "WebSocket未连接", ToastLength.Long).Show();
@@ -521,7 +523,7 @@ public class FormationFragment:BaseFragment
                         }
                     };
                     ws.MessageReceived += handler;
-                    ws.Send(scriptContent);
+                    _ = ws.SendAsync(scriptContent);
 
                     var timeout = Task.Delay(30000);
                     if(await Task.WhenAny(tcs.Task, timeout) == timeout)
@@ -655,7 +657,7 @@ public class FormationFragment:BaseFragment
                         .Replace("{VASE}", vase)
                         .Replace("{NAME}", name);
 
-                    var ws = MainActivity.ws;
+                    var ws = AppServices.Connection;
                     if(ws == null || !ws.IsConnected)
                     {
                         Toast.MakeText(Activity, "WebSocket未连接", ToastLength.Long).Show();
@@ -676,7 +678,7 @@ public class FormationFragment:BaseFragment
                         }
                     };
                     ws.MessageReceived += handler;
-                    ws.Send(scriptContent);
+                    _ = ws.SendAsync(scriptContent);
 
                     var timeout = Task.Delay(30000);
                     if(await Task.WhenAny(tcs.Task, timeout) == timeout)

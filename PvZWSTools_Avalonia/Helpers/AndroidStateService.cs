@@ -8,6 +8,8 @@ using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 
+using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Shared.Services;
 namespace PvZWSTools_Avalonia.Helpers;
 
 /// <summary>
@@ -294,7 +296,7 @@ public class AndroidStateService
     /// </summary>
     public int SyncTogglesToGame()
     {
-        var ws = MainActivity.ws;
+        var ws = AppServices.Connection;
         if(ws == null || !ws.IsConnected) return 0;
 
         int sent = 0;
@@ -314,7 +316,7 @@ public class AndroidStateService
                     string content = File.ReadAllText(scriptPath);
                     if(!content.Contains(Constants.Placeholders.Check)) continue;
 
-                    ws.Send(content.Replace(Constants.Placeholders.Check, "1"));
+                    _ = ws.SendAsync(content.Replace(Constants.Placeholders.Check, "1"));
                     sent++;
                 }
             }

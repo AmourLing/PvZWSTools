@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PvZWSTools_Shared.ViewModels;
 
+using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Shared.Services;
 namespace PvZWSTools_Avalonia;
 
 public class CreateInputDialog
@@ -25,7 +27,7 @@ public class CreateInputDialog
         }
         var configPath = Path.Combine(externalFilesDir.AbsolutePath, "配置文件");
         var filepath = Path.Combine(configPath, "控件", path, filename + ".py");
-        var ws = MainActivity.ws;
+        var ws = AppServices.Connection;
         try
         {
             string sendText = File.ReadAllText(filepath);
@@ -39,7 +41,7 @@ public class CreateInputDialog
             }
             if(ws.IsConnected)
             {
-                ws.Send(sendText);
+                _ = ws.SendAsync(sendText);
             }
             else
             {
@@ -511,10 +513,10 @@ public class CreateInputDialog
 
     private static void SendQuickScript(Context context, string content)
     {
-        var ws = MainActivity.ws;
+        var ws = AppServices.Connection;
         if(ws != null && ws.IsConnected)
         {
-            ws.Send(content);
+            _ = ws.SendAsync(content);
         }
         else
         {
