@@ -1,42 +1,37 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.ViewModels;
 using PvZWSTools_WPF.Platform;
 using PvZWSTools_WPF.Themes;
 using PvZWSTools_WPF.Services;
+using PvZWSTools_WPF.ViewModels;
 using static PvZWSTools_Shared.Sharedstring;
+using Lock = PvZWSTools_WPF.Helpers.Lock;
 
 namespace PvZWSTools_WPF.Views;
 
 public partial class MainWindow:Window
 {
     private readonly MainWindowViewModel _viewModel;
+    private ShellViewModel _shell = null!;
     private bool _isResizing = false;
     private readonly IUpdateService _updateService;
     private bool _isUpdateOnlyMode; // 过期后进入"仅更新模式"，防止自动检查重复弹 UpdateWindow
-    // 打开 UI 选择界面（经典 UI / NewUI、黑夜 / 白天）
-    private void UiButton_Click(object sender, RoutedEventArgs e)
-    {
-        new UiSelectWindow { Owner = this }.ShowDialog();
-        UiThemeManager.RefreshWindowChrome(this);
-    }
 
     public MainWindow()
     {
         InitializeComponent();
-        Themes.UiThemeManager.RefreshWindowChrome(this); // 按模式设置字体/底色（经典=系统默认）
+        UiThemeManager.RefreshWindowChrome(this); // 按模式设置字体/底色（经典=系统默认）
 
         Title = Title + "_" + CompileTime.GetCompileTime()?.ToString("yyyyMMdd");
         if(IsBetaVersion)
         {
             Title += "_Beta";
         }
-#if DEBUG // 调试模式下隐藏花园编辑页面
-        GardenPage.Visibility = Visibility.Visible;
-#endif
 
         var uiThread = new WpfUiThreadInvoker(Dispatcher);
         var connection = new ConnectionService(uiThread);
@@ -47,7 +42,7 @@ public partial class MainWindow:Window
         var dialogService = new DialogService();
 
         // 自动更新服务（WPF 端实现：bat 重启替换）
-        _updateService = new PvZWSTools_WPF.Services.WpfUpdateService();
+        _updateService = new WpfUpdateService();
 
         _viewModel = new MainWindowViewModel(
             connection,
@@ -60,6 +55,9 @@ public partial class MainWindow:Window
             _updateService,
             buttonStateService
         );
+        _shell = new ShellViewModel(_viewModel);
+        _shell.ScrollTopRequested += () => PageScroll.ScrollToVerticalOffset(0);
+        DataContext = _shell;
 
         // 启动后异步检查更新（受 AutoCheckUpdateEnabled 控制）
         _ = _viewModel.CheckAndApplyUpdateAsync(isManual: false);
@@ -119,8 +117,6 @@ public partial class MainWindow:Window
                 win.ShowDialog();
             }
         };
-
-        DataContext = _viewModel;
     }
 
     /// <summary>
@@ -134,8 +130,9 @@ public partial class MainWindow:Window
         // 标题提示
         Title = "PvZWSTools — 仅更新模式（程序已过期）";
 
-        // 禁用主功能 TabControl
-        try { if(MainTabControl != null) MainTabControl.IsEnabled = false; } catch { }
+        // 禁用主功能区（导航 + 内容），工具栏仍可用来更新
+        try { if(MainContent != null) MainContent.IsEnabled = false; } catch { }
+        try { if(NavList != null) NavList.IsEnabled = false; } catch { }
 
         // 自动弹出 UpdateWindow 引导更新
         Loaded += async (_, _) =>
@@ -149,6 +146,19 @@ public partial class MainWindow:Window
         };
     }
 
+    // 打开 UI 选择界面（经典 UI / NewUI、黑夜 / 白天）
+    private void UiButton_Click(object sender, RoutedEventArgs e)
+    {
+        new UiSelectWindow { Owner = this }.ShowDialog();
+        UiThemeManager.RefreshWindowChrome(this);
+    }
+
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        _shell.Search = ((TextBox)sender).Text;
+        _shell.ApplySearch();
+    }
+
     private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
     {
         if(_isResizing) return;
@@ -158,7 +168,6 @@ public partial class MainWindow:Window
         {
             if(e.WidthChanged)
             {
-                Height = Width / 1.6;
                 _viewModel.UpdateSize(Width);
             }
         }
@@ -170,8 +179,9 @@ public partial class MainWindow:Window
 
     protected override void OnClosing(CancelEventArgs e)
     {
-        // 窗口关闭时保存按钮状态
+        // 窗口关闭时保存按钮状态与常用统计
         try { _viewModel.SaveButtonStates(); } catch { }
+        try { _shell.SaveUsage(); } catch { }
         base.OnClosing(e);
     }
 }

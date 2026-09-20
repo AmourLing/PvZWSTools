@@ -73,6 +73,11 @@ public static class UiThemeManager
             ? (IsDark ? "Themes/DarkTheme.xaml" : "Themes/LightTheme.xaml")
             : (IsDark ? "Themes/ClassicDarkOverrides.xaml" : "Themes/ClassicOverrides.xaml");
         merged.Add(new ResourceDictionary { Source = new Uri(source, UriKind.Relative) });
+        if(UseNewUi)
+        {
+            // 单元卡片模板与配色无关，黑夜/白天共用一份
+            merged.Add(new ResourceDictionary { Source = new Uri("Themes/UnitTemplates.xaml", UriKind.Relative) });
+        }
     }
 
     /// <summary>窗口底色/文字随模式刷新：NewUI 用主题画刷；

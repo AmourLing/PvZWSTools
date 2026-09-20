@@ -1,0 +1,629 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:PvZWSTools_WPF.Controls"
+    xmlns:conv="clr-namespace:PvZWSTools_WPF.Converters"
+    xmlns:views="clr-namespace:PvZWSTools_WPF.Views">
+
+    <!--
+        NewUI 的功能行模板。
+        规矩：一行只放一个功能，行内自带它要消费的输入；不分组、不分节、不并行排布，
+        这样同一套结构以后能直接搬到 Avalonia。
+        颜色一律走主题字典的 DynamicResource，黑夜/白天共用这一份。
+    -->
+
+    <conv:BoolToVisibilityConverter x:Key="BoolToVis" />
+    <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis" />
+
+    <!--  ==================== 基础样式  ====================  -->
+
+    <Style x:Key="RowText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!--  行首的功能名，宽度固定让整页读起来是一列  -->
+    <Style x:Key="RowLabel" TargetType="TextBlock" BasedOn="{StaticResource RowText}">
+        <Setter Property="Width" Value="168" />
+        <Setter Property="Margin" Value="0,0,12,0" />
+    </Style>
+
+    <Style x:Key="FieldHint" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="FieldBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="MinWidth" Value="80" />
+    </Style>
+
+    <Style x:Key="FieldCombo" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="MaxDropDownHeight" Value="360" />
+    </Style>
+
+    <Style x:Key="RowButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="MinWidth" Value="86" />
+        <Setter Property="Margin" Value="10,0,0,0" />
+        <Setter Property="Padding" Value="12,4" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <!--  整行可点的行（开关 / 三态 / 纯动作）  -->
+    <Style x:Key="RowButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{DynamicResource BgPanelBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderLineBrush}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="Bd"
+                        Height="38"
+                        Padding="12,0"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BgHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BgPressedBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding InGroup}" Value="True">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Margin" Value="0,0,10,0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Bd"
+                                Padding="9,4"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                SnapsToDevicePixels="True">
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BgHoverBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BgPressedBrush}" />
+                                </Trigger>
+                                <DataTrigger Binding="{Binding IsOn}" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentFaintBrush}" />
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                </DataTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  开启态：整行淡绿底 + 实心绿点，一眼扫得出哪些开着  -->
+    <Style x:Key="OnRowStyle" BasedOn="{StaticResource RowButtonStyle}" TargetType="Button">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsOn}" Value="True">
+                <Setter Property="Background" Value="{DynamicResource AccentFaintBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  状态点：开=实心，关=空心环。不用 ❌/，避免读成"报错"  -->
+    <Style x:Key="StateDot" TargetType="Border">
+        <Setter Property="Width" Value="13" />
+        <Setter Property="Height" Value="13" />
+        <Setter Property="CornerRadius" Value="7" />
+        <Setter Property="Margin" Value="0,0,11,0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderLineBrush}" />
+        <Setter Property="BorderThickness" Value="1.5" />
+        <Setter Property="Background" Value="Transparent" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsOn}" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  内容行的外框（带输入的行）  -->
+    <Style x:Key="RowFrame" TargetType="Border">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding InGroup}" Value="True">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0,0,10,0" />
+            </DataTrigger>
+        </Style.Triggers>
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Padding" Value="12,4" />
+        <Setter Property="Background" Value="{DynamicResource BgPanelBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderLineBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="7" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+    </Style>
+
+    <!--  ==================== 行模板  ====================  -->
+
+    <DataTemplate x:Key="SwitchUnitTemplate">
+        <Button
+            Command="{Binding RunCommand}"
+            Style="{StaticResource OnRowStyle}"
+            ToolTip="{Binding Hint}">
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource StateDot}" />
+                <TextBlock Style="{StaticResource RowText}" Text="{Binding Label}" />
+            </StackPanel>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TriStateUnitTemplate">
+        <Button
+            Command="{Binding RunCommand}"
+            Style="{StaticResource RowButtonStyle}"
+            ToolTip="{Binding Hint}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    Style="{StaticResource RowText}"
+                    Text="{Binding Label}" />
+                <Border
+                    Grid.Column="1"
+                    Padding="10,3"
+                    Background="{DynamicResource BgControlBrush}"
+                    BorderBrush="{DynamicResource BorderLineBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DisplayState}" Value="开启">
+                                    <Setter Property="Background" Value="{DynamicResource AccentFaintBrush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DisplayState}" Value="默认">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock
+                        FontSize="14"
+                        Foreground="{DynamicResource TextPrimaryBrush}"
+                        Text="{Binding DisplayState}" />
+                </Border>
+            </Grid>
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ActionUnitTemplate">
+        <Button
+            Command="{Binding RunCommand}"
+            Style="{StaticResource RowButtonStyle}"
+            ToolTip="{Binding Hint}">
+            <TextBlock Style="{StaticResource RowText}" Text="{Binding Label}" />
+        </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="FieldUnitTemplate">
+        <Border Style="{StaticResource RowFrame}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource RowLabel}" Text="{Binding Label}" />
+                <TextBox
+                    Width="150"
+                    Style="{StaticResource FieldBox}"
+                    Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Command="{Binding RunCommand}"
+                    Content="应用"
+                    Style="{StaticResource RowButton}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PickerUnitTemplate">
+        <Border Style="{StaticResource RowFrame}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource RowLabel}" Text="{Binding Label}" />
+                <ComboBox
+                    Width="190"
+                    DisplayMemberPath="DisplayName"
+                    IsEditable="True"
+                    ItemsSource="{Binding OptionList}"
+                    SelectedItem="{Binding SelectedItem}"
+                    StaysOpenOnEdit="True"
+                    Style="{StaticResource FieldCombo}"
+                    Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox
+                    Width="90"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource FieldBox}"
+                    Text="{Binding Text2, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding HasInput2, Converter={StaticResource BoolToVis}}" />
+                <Button
+                    Command="{Binding RunCommand}"
+                    Content="应用"
+                    Style="{StaticResource RowButton}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <!--  一个功能一行：名称 | 它自己的输入（放不下就换行） | 应用  -->
+    <DataTemplate x:Key="CompositeUnitTemplate">
+        <Border Style="{StaticResource RowFrame}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="168" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource RowText}"
+                    Text="{Binding Label}" />
+                <ItemsControl
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding Fields}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel
+                                Margin="0,2,12,2"
+                                Orientation="Horizontal"
+                                ToolTip="{Binding Label}">
+                                <TextBlock Style="{StaticResource FieldHint}" Text="{Binding Label}" />
+                                <ComboBox
+                                    Width="{Binding FieldWidth}"
+                                    DisplayMemberPath="DisplayName"
+                                    IsEditable="True"
+                                    ItemsSource="{Binding OptionList}"
+                                    SelectedItem="{Binding SelectedItem}"
+                                    StaysOpenOnEdit="True"
+                                    Style="{StaticResource FieldCombo}"
+                                    Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}" />
+                                <TextBox
+                                    Width="{Binding FieldWidth}"
+                                    Style="{StaticResource FieldBox}"
+                                    Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding HasOptions, Converter={StaticResource InverseBoolToVis}}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Command="{Binding RunCommand}"
+                    Content="应用"
+                    Style="{StaticResource RowButton}" />
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <!--  循环取值：本身不是独立功能，所以只有"名称 + 当前值"一个按钮，没有应用  -->
+    <DataTemplate x:Key="CycleUnitTemplate">
+        <Button
+            Command="{Binding RunCommand}"
+            Style="{StaticResource RowButtonStyle}"
+            ToolTip="{Binding Hint}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource RowText}" Text="{Binding Label}" />
+                <TextBlock
+                    Margin="7,0,0,0"
+                    Style="{StaticResource RowText}"
+                    Text="{Binding DisplayValue}" />
+            </StackPanel>
+        </Button>
+    </DataTemplate>
+
+    <!--  组：功能名在左，输入居中，成员开关靠右，"应用"收尾。成员自己不再各带应用按钮。  -->
+    <DataTemplate x:Key="GroupUnitTemplate">
+        <Border Style="{StaticResource RowFrame}">
+            <WrapPanel>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{StaticResource RowLabel}"
+                    Text="{Binding Label}"
+                    Visibility="{Binding HasAction, Converter={StaticResource BoolToVis}}" />
+                <ItemsControl
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding Fields}"
+                    ItemTemplate="{DynamicResource FieldItemTemplate}" />
+                <ItemsControl
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding Members}"
+                    ItemTemplate="{DynamicResource UnitItemTemplate}" />
+                <Button
+                    VerticalAlignment="Center"
+                    Command="{Binding RunCommand}"
+                    Content="应用"
+                    Style="{StaticResource RowButton}"
+                    Visibility="{Binding HasAction, Converter={StaticResource BoolToVis}}" />
+            </WrapPanel>
+        </Border>
+    </DataTemplate>
+
+    <!--  组内的输入位：标签 + 下拉/文本框，不带按钮  -->
+    <DataTemplate x:Key="FieldItemTemplate">
+        <StackPanel
+            Margin="0,2,12,2"
+            Orientation="Horizontal"
+            ToolTip="{Binding Label}">
+            <TextBlock Style="{StaticResource FieldHint}" Text="{Binding Label}" />
+            <ComboBox
+                Width="{Binding FieldWidth}"
+                DisplayMemberPath="DisplayName"
+                IsEditable="True"
+                ItemsSource="{Binding OptionList}"
+                SelectedItem="{Binding SelectedItem}"
+                StaysOpenOnEdit="True"
+                Style="{StaticResource FieldCombo}"
+                Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}" />
+            <TextBox
+                Width="{Binding FieldWidth}"
+                Style="{StaticResource FieldBox}"
+                Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding HasOptions, Converter={StaticResource InverseBoolToVis}}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <controls:UnitKindSelector
+        x:Key="UnitSelector"
+        Action="{StaticResource ActionUnitTemplate}"
+        Composite="{StaticResource CompositeUnitTemplate}"
+        Field="{StaticResource FieldUnitTemplate}"
+        Picker="{StaticResource PickerUnitTemplate}"
+        Switch="{StaticResource SwitchUnitTemplate}"
+        TriState="{StaticResource TriStateUnitTemplate}"
+        Group="{StaticResource GroupUnitTemplate}"
+        Cycle="{StaticResource CycleUnitTemplate}" />
+
+    <DataTemplate x:Key="UnitItemTemplate">
+        <ContentControl Content="{Binding}" ContentTemplateSelector="{StaticResource UnitSelector}" />
+    </DataTemplate>
+
+    <!--  ==================== 页面  ====================  -->
+
+    <!--  单列：一个功能一行，从上到下排  -->
+    <DataTemplate x:Key="PageTemplate">
+        <StackPanel Margin="16,12">
+            <ItemsControl ItemTemplate="{StaticResource UnitItemTemplate}" ItemsSource="{Binding Units}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!--  搜索结果：同样单列，右侧标出属于哪个页签  -->
+    <DataTemplate x:Key="ResultItemTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ContentControl
+                Grid.Column="0"
+                Content="{Binding}"
+                ContentTemplateSelector="{StaticResource UnitSelector}" />
+            <TextBlock
+                Grid.Column="1"
+                Margin="10,0,4,0"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Foreground="{DynamicResource TextSecondaryBrush}"
+                Text="{Binding Group}" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ResultsTemplate">
+        <StackPanel Margin="16,12">
+            <StackPanel>
+                <TextBlock
+                    Margin="2,0,0,10"
+                    FontSize="14"
+                    Foreground="{DynamicResource TextSecondaryBrush}"
+                    Text="{Binding Count}" />
+                <ItemsControl ItemTemplate="{StaticResource ResultItemTemplate}" ItemsSource="{Binding Items}" />
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <!--  快捷脚本页：功能行 + 脚本自身的动态参数列表  -->
+    <DataTemplate x:Key="ScriptTemplate">
+        <StackPanel Margin="16,12">
+            <StackPanel>
+                <ItemsControl ItemTemplate="{StaticResource UnitItemTemplate}" ItemsSource="{Binding Units}" />
+                <Border
+                    Margin="0,10,0,0"
+                    Padding="12,10"
+                    Style="{StaticResource RowFrame}">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="15"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Text="脚本参数" />
+                        <TextBlock
+                            Margin="0,0,0,4"
+                            FontSize="14"
+                            Foreground="{DynamicResource TextPrimaryBrush}"
+                            Text="{Binding Extra.InfoAll}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontSize="14"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Text="{Binding Extra.DisplayAuthor}" />
+                        <ItemsControl ItemsSource="{Binding Extra.Parameters}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="240" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            Margin="0,0,10,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            Foreground="{DynamicResource TextPrimaryBrush}"
+                                            Text="{Binding DisplayDescription}"
+                                            TextWrapping="Wrap" />
+                                        <TextBox
+                                            Grid.Column="1"
+                                            Height="30"
+                                            VerticalContentAlignment="Center"
+                                            FontSize="14"
+                                            Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
+                                            <TextBox.Style>
+                                                <Style TargetType="TextBox">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ControlType}" Value="TextBox">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                        <ComboBox
+                                            Grid.Column="1"
+                                            Height="30"
+                                            FontSize="14"
+                                            ItemsSource="{Binding Options}"
+                                            SelectedItem="{Binding Value}">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ControlType}" Value="ComboBox">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ComboBox.Style>
+                                        </ComboBox>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="GardenTemplate">
+        <StackPanel Margin="16,12">
+            <ContentControl Content="{Binding Extra}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate>
+                        <views:GardenPanel />
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+        </StackPanel>
+    </DataTemplate>
+
+    <!--  ==================== 左侧导航  ====================  -->
+
+    <Style x:Key="NavListStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,10" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="0,1" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border
+                                    x:Name="Bd"
+                                    Padding="11,8"
+                                    Background="Transparent"
+                                    CornerRadius="7">
+                                    <ContentPresenter />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BgHoverBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentFaintBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Width="22"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="15"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Text="{Binding Glyph}" />
+                        <TextBlock
+                            FontSize="15"
+                            Foreground="{DynamicResource TextPrimaryBrush}"
+                            Text="{Binding Title}" />
+                    </StackPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
