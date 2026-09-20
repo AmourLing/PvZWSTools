@@ -50,6 +50,11 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
 
     private View BuildRow(Context ctx, UnitDescriptor unit)
     {
+        // 纯成员组没有主动作，它只是"这些是一回事"的容器；
+        // 当成一个按钮画的话，点上去 Command 是 null，等于一个按不动的按钮。
+        if(unit.Kind == UnitKind.Group && !unit.HasAction)
+            return BuildMemberGroup(ctx, unit);
+
         var btn = new Button(ctx)
         {
             Text = Caption(unit),
@@ -67,6 +72,15 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
         unit.PropertyChanged += (_, _) => btn.Post(() => btn.Text = Caption(unit));
 
         return btn;
+    }
+
+    /// <summary>成员组展开成各自的行；成员自己带名字，所以不加组标题。</summary>
+    private View BuildMemberGroup(Context ctx, UnitDescriptor unit)
+    {
+        var box = new LinearLayout(ctx) { Orientation = Orientation.Vertical };
+        foreach(var member in unit.Members)
+            box.AddView(BuildRow(ctx, member));
+        return box;
     }
 
     /// <summary>开关把当前状态直接写进按钮文字，省掉一列没有意义的状态符。</summary>
@@ -96,9 +110,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
 
         if(unit.Members.Count > 0)
         {
-            var head = new TextView(ctx) { Text = "开关" };
-            head.SetPadding(0, pad, 0, 0);
-            body.AddView(head);
+            // 成员各自带名字，不再加"开关"这类小标题——桌面端也没给组起标题
             foreach(var member in unit.Members)
                 body.AddView(BuildMemberToggle(ctx, member));
         }
@@ -181,8 +193,23 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
         return row;
     }
 
+    /// <summary>
+    /// 组内成员：开关画成勾选框；Cycle（罐子类型、状态这种）不是开/关，
+    /// 画成勾选框会永远显示未勾选，所以按按钮画、点一下换下一个取值。
+    /// </summary>
     private static View BuildMemberToggle(Context ctx, UnitDescriptor member)
     {
+        if(member.Kind == UnitKind.Cycle)
+        {
+            var btn = new Button(ctx) { Text = Caption(member) };
+            btn.Click += (_, _) =>
+            {
+                member.Command?.Execute(null);
+                btn.Text = Caption(member);
+            };
+            return btn;
+        }
+
         var box = new CheckBox(ctx)
         {
             Text = member.Label,

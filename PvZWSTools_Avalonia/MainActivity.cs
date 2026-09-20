@@ -47,18 +47,24 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     /// 导航项 → (Fragment 工厂, 自动刷新按钮状态对应的控件子目录；null 表示切换时不自动刷新)。
     /// 新增界面只需在此注册，无需修改 OnNavigationItemSelected 逻辑。
     /// </summary>
+    /// <summary>
+    /// 抽屉里的一行对应共享清单里的一页。除"快捷脚本"外全部由 CatalogFragment 渲染 ——
+    /// 那一页在 Android 上还要编辑脚本参数网格，共享清单里只有一个下拉，暂时留着。
+    /// SubFolder 以前喂给 AutoUpdateButtonStatus，但它发的 GetButtonCheck 回包
+    /// Android 从来没解析过（只有出怪/阵型订阅了 MessageReceived），所以不再传。
+    /// </summary>
     private static readonly Dictionary<int, (Func<AndroidX.Fragment.App.Fragment> Factory, string SubFolder)> NavFragmentMap = new()
     {
         { Resource.Id.nav_others, (() => new CatalogFragment("杂项"), null) },
-        { Resource.Id.nav_level, (() => new LevelFragment(), null) },
-        { Resource.Id.nav_resources, (() => new ResourcesFragment(), null) },
-        { Resource.Id.nav_plant, (() => new PlantFragment(), "植物") },
-        { Resource.Id.nav_zombie, (() => new ZombieFragment(), "僵尸") },
-        { Resource.Id.nav_spawning, (() => new SpawningFragment(), "出怪") },
-        { Resource.Id.nav_board, (() => new BoardFragment(), "战场") },
-        { Resource.Id.nav_challenge, (() => new ChallengeFragment(), null) },
-        { Resource.Id.nav_formation, (() => new FormationFragment(), null) },
-        { Resource.Id.nav_fun, (() => new FunFragment(), "娱乐") },
+        { Resource.Id.nav_level, (() => new CatalogFragment("关卡"), null) },
+        { Resource.Id.nav_resources, (() => new CatalogFragment("资源"), null) },
+        { Resource.Id.nav_plant, (() => new CatalogFragment("植物"), null) },
+        { Resource.Id.nav_zombie, (() => new CatalogFragment("僵尸"), null) },
+        { Resource.Id.nav_spawning, (() => new CatalogFragment("出怪"), null) },
+        { Resource.Id.nav_board, (() => new CatalogFragment("战场"), null) },
+        { Resource.Id.nav_challenge, (() => new CatalogFragment("挑战"), null) },
+        { Resource.Id.nav_formation, (() => new CatalogFragment("阵型"), null) },
+        { Resource.Id.nav_fun, (() => new CatalogFragment("娱乐"), null) },
         { Resource.Id.nav_script, (() => new ScriptFragment(), null) },
         { Resource.Id.nav_connect, (() => new ConnectionFragment(), null) },
     };
