@@ -6,6 +6,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 
+using PvZWSTools_Shared.Models;
 namespace PvZWSTools_Avalonia;
 
 public class ScriptFragment:AndroidX.Fragment.App.Fragment

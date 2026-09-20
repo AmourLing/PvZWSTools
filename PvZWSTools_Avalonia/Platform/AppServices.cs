@@ -26,6 +26,9 @@ public static class AppServices
 
     public static IConnectionService Connection { get; private set; } = null!;
 
+    /// <summary>命名状态预设，供状态管理对话框读写。</summary>
+    public static IStatePresetService Presets { get; private set; } = null!;
+
     public static bool IsReady => Root != null;
 
     public static bool IsConnected => Connection?.IsConnected ?? false;
@@ -43,6 +46,8 @@ public static class AppServices
 
         UiThread = new AndroidUiThreadInvoker();
         Connection = new ConnectionService(UiThread);
+        var buttonStates = new ButtonStateService(baseDir);
+        Presets = new StatePresetService(baseDir);
 
         // 选项 json 是各 ViewModel 构造时读的，所以根路径必须在那之前定好；
         // 不设置的话 OptionsLoader 会拿进程工作目录，Android 上找不到文件、下拉全空。
@@ -57,7 +62,7 @@ public static class AppServices
             UiThread,
             notifier: null,
             updateService: null,
-            buttonStateService: null);
+            buttonStateService: buttonStates);
 
         // 上次连成功的地址只存在 Android 的 AppSettings 里，共享层看不到，得显式喂进去；
         // 不喂的话自动重连会一直去连默认的 localhost，而那是仿真机自己。

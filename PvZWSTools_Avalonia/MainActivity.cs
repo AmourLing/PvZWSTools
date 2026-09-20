@@ -37,10 +37,6 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     private AndroidUpdateService _updateService;
     public static string AppFilesPath { get; private set; }
 
-    /// <summary>当前显示的 Fragment（用于状态应用后同步刷新）。</summary>
-    public AndroidX.Fragment.App.Fragment CurrentFragment =>
-        SupportFragmentManager?.FindFragmentById(Resource.Id.content_frame);
-
     public static MainActivity Instance { get; private set; }
 
     /// <summary>
@@ -102,8 +98,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         {
             Log.Info("用户确认退出，执行安全退出");
             StopStateSaveTimer();
-            AndroidStateService.Instance?.CaptureActiveFragment();
-            AndroidStateService.Instance?.PersistLastStates();
+            PersistButtonStates();
             AppServices.Connection?.Disconnect();
         }
         catch(Exception ex)
@@ -206,11 +201,8 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     {
         _isConnected = isConnected;
 
-        // 状态管理：连接成功后把开启的开关脚本批量同步到游戏（后台执行，避免阻塞 UI）
-        if(isConnected && AndroidStateService.Instance is { } stateService && stateService.StatesApplied)
-        {
-            _ = Task.Run(stateService.SyncTogglesToGame);
-        }
+        // 连接成功后把开启的开关同步给游戏，由 MainWindowViewModel 自己做，
+        // 这里只负责把状态反映到界面上。
 
         RunOnUiThread(() =>
         {
@@ -256,8 +248,6 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         _settingsPath = Path.Combine(configPath, "setting.json");
         _appSettings = AppSettings.Load(_settingsPath);
 
-        // 状态管理：采集默认状态 → 加载上次状态 → 按设置自动应用
-        AndroidStateService.Initialize(this, _appSettings);
         StartStateSaveTimer();
 
         _updateService = new AndroidUpdateService(this);
@@ -295,8 +285,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         // 状态管理：退后台/关闭时把当前状态保存为"上次状态"。
         // 放在 OnStop（而非仅 OnDestroy）：从最近任务划掉应用时 OnDestroy 可能不触发，
         // 导致磁盘上的上次状态永远不更新。
-        AndroidStateService.Instance?.CaptureActiveFragment();
-        AndroidStateService.Instance?.PersistLastStates();
+        PersistButtonStates();
     }
 
     protected override void OnDestroy()
@@ -307,8 +296,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         StopStateSaveTimer();
 
         // 状态管理：把当前状态保存为"上次状态"（OnStop 已保存过，此处兜底）
-        AndroidStateService.Instance?.CaptureActiveFragment();
-        AndroidStateService.Instance?.PersistLastStates();
+        PersistButtonStates();
 
         Instance = null;
 
@@ -448,21 +436,26 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         _stateSaveTimer = null;
     }
 
+    /// <summary>
+    /// 把当前各界面状态存成"上次状态"。开关现在住在共享 ViewModel 的属性上，
+    /// 所以直接让 VM 导出并落盘，不再需要先从 Fragment 的 Map 里回捞一次。
+    /// 定时器和 AppServices.Initialize 有先后，Root 可能还没建好，这里要判空。
+    /// </summary>
+    private void PersistButtonStates()
+    {
+        try
+        {
+            AppServices.Root?.SaveButtonStates();
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"保存按钮状态失败: {ex.Message}");
+        }
+    }
+
     private void StateSaveCallback(object state)
     {
-        // 切回主线程执行，避免与 UI 线程并发读写 fragment.Map
-        RunOnUiThread(() =>
-        {
-            try
-            {
-                AndroidStateService.Instance?.CaptureActiveFragment();
-                AndroidStateService.Instance?.PersistLastStates();
-            }
-            catch(Exception ex)
-            {
-                Log.Error($"状态定时保存失败: {ex.Message}");
-            }
-        });
+        RunOnUiThread(PersistButtonStates);
     }
 
     // --- 对话框逻辑 ---

@@ -8,6 +8,7 @@ using Android.Views;
 using Android.Widget;
 using PvZWSTools_Avalonia.Helpers;
 using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Shared.Models;
 
 namespace PvZWSTools_Avalonia;
 
@@ -15,22 +16,26 @@ namespace PvZWSTools_Avalonia;
 /// 状态管理对话框（与 WPF 端 StateWindow 功能对齐）：
 /// 列表首两项固定为"初始状态"（应用默认值）和"上次状态"（关闭时自动保存），均不可删除；
 /// 其后为用户命名保存的多组预设。支持 保存当前 / 加载 / 详细信息 / 删除。
+///
+/// 状态的真相来源是共享的 MainWindowViewModel —— 界面改成清单驱动之后，
+/// 开关就住在 VM 的属性上，这里只是把它现有的读写能力接到 Android 的弹窗上，
+/// 和 WPF 的 StateWindow 用的是同一批方法。
 /// </summary>
 public static class StateManageDialog
 {
+    /// <summary>列表里固定在前两位的条目名，不可删除。</summary>
+    private const string InitialStateName = "初始状态";
+    private const string LastStateName = "上次状态";
+
     /// <summary>打开状态管理对话框。</summary>
     public static void Show(Activity activity)
     {
-        var service = AndroidStateService.Instance;
-        if(service == null)
+        var root0 = AppServices.Root;
+        if(root0 == null)
         {
             Toast.MakeText(activity, "状态服务未初始化", ToastLength.Short).Show();
             return;
         }
-
-        // 关键：先把当前显示 Fragment 的最新 Map 写回状态存储，
-        // 否则保存预设/查看详情读到的是 Fragment 创建时的旧快照
-        service.CaptureActiveFragment();
 
         var names = new List<string>();
 
@@ -103,9 +108,9 @@ public static class StateManageDialog
         void RefreshList()
         {
             names.Clear();
-            names.Add(AndroidStateService.InitialStateName);
-            names.Add(AndroidStateService.LastStateName);
-            names.AddRange(service.LoadPresets().Select(p => p.Name));
+            names.Add(InitialStateName);
+            names.Add(LastStateName);
+            names.AddRange(AppServices.Presets.LoadAll().Select(p => p.Name));
 
             var adapter = new ArrayAdapter<string>(activity, Android.Resource.Layout.SimpleListItemSingleChoice, names);
             listView.Adapter = adapter;
@@ -128,92 +133,55 @@ public static class StateManageDialog
                 Toast.MakeText(activity, "请输入方案名称", ToastLength.Short).Show();
                 return;
             }
-            if(name == AndroidStateService.InitialStateName || name == AndroidStateService.LastStateName)
+            if(name == InitialStateName || name == LastStateName)
             {
                 Toast.MakeText(activity, "不能使用保留名称「初始状态」或「上次状态」", ToastLength.Short).Show();
                 return;
             }
-            if(service.SavePreset(name))
-            {
-                Toast.MakeText(activity, $"方案\"{name}\"已保存", ToastLength.Short).Show();
-                nameInput.Text = "";
-                RefreshList();
-            }
-            else
-            {
-                Toast.MakeText(activity, "保存失败", ToastLength.Short).Show();
-            }
+
+            var presets = AppServices.Presets.LoadAll();
+            presets.RemoveAll(p => p.Name == name);
+            presets.Add(new StatePreset { Name = name, States = root0.GetCurrentButtonStates() });
+            AppServices.Presets.SaveAll(presets);
+
+            Toast.MakeText(activity, $"方案\"{name}\"已保存", ToastLength.Short).Show();
+            nameInput.Text = "";
+            RefreshList();
         };
 
         loadBtn.Click += (_, _) =>
         {
-            Dictionary<string, Dictionary<string, string>> states;
-            if(selectedIndex == 0)
-            {
-                states = service.DefaultStates;
-            }
-            else if(selectedIndex == 1)
-            {
-                if(service.LastStates.Count == 0)
-                {
-                    Toast.MakeText(activity, "没有可加载的上次状态", ToastLength.Short).Show();
-                    return;
-                }
-                states = service.LastStates;
-            }
-            else
-            {
-                var presets = service.LoadPresets();
-                int idx = selectedIndex - 2;
-                if(idx < 0 || idx >= presets.Count) return;
-                states = presets[idx].States;
-            }
+            var states = StatesFor(selectedIndex, names);
+            if(states == null) return;
 
-            service.ApplyStates(states, syncIfConnected: true);
+            // VM 里已连接就立刻把开启的开关同步给游戏，未连接则等连接成功事件
+            root0.ApplyButtonStates(states);
             Toast.MakeText(activity, "状态已应用" + (AppServices.IsConnected ? "，开启的开关已同步到游戏" : ""), ToastLength.Short).Show();
         };
 
         detailBtn.Click += (_, _) =>
         {
-            Dictionary<string, Dictionary<string, string>> states;
-            string presetName;
-            if(selectedIndex == 0)
+            if(selectedIndex == 1 && root0.LoadLastButtonStates().Count == 0)
             {
-                states = service.DefaultStates;
-                presetName = AndroidStateService.InitialStateName;
-            }
-            else if(selectedIndex == 1)
-            {
-                states = service.LastStates;
-                presetName = AndroidStateService.LastStateName;
-                if(states.Count == 0)
-                {
-                    Toast.MakeText(activity, "上次状态为空：应用尚未成功保存过状态（改动界面后退后台或退出一次即可保存）", ToastLength.Long).Show();
-                    return;
-                }
-            }
-            else
-            {
-                var presets = service.LoadPresets();
-                int idx = selectedIndex - 2;
-                if(idx < 0 || idx >= presets.Count) return;
-                states = presets[idx].States;
-                presetName = presets[idx].Name;
-                if(states.Count == 0)
-                {
-                    Toast.MakeText(activity, "该方案没有保存内容", ToastLength.Short).Show();
-                    return;
-                }
+                Toast.MakeText(activity, "上次状态为空：应用尚未成功保存过状态（改动界面后退后台或退出一次即可保存）", ToastLength.Long).Show();
+                return;
             }
 
-            ShowDetails(activity, presetName, states, service.DefaultStates);
+            var states = StatesFor(selectedIndex, names);
+            if(states == null)
+            {
+                Toast.MakeText(activity, "该方案没有保存内容", ToastLength.Short).Show();
+                return;
+            }
+
+            ShowDetails(activity, names[selectedIndex], states, root0.GetDefaultButtonStates());
         };
 
         deleteBtn.Click += (_, _) =>
         {
             if(selectedIndex <= 1) return;
             string name = names[selectedIndex];
-            if(service.DeletePreset(name))
+            if(AppServices.Presets.Delete(name))
             {
                 Toast.MakeText(activity, $"方案\"{name}\"已删除", ToastLength.Short).Show();
                 selectedIndex = 0;
@@ -228,6 +196,21 @@ public static class StateManageDialog
             .SetView(root)
             .SetNegativeButton("关闭", (IDialogInterfaceOnClickListener)null)
             .Show();
+    }
+
+    /// <summary>
+    /// 取列表第 index 项对应的状态：0=默认值，1=上次保存，其后是用户预设。
+    /// 取不到时返回 null，由调用方决定提示什么。
+    /// </summary>
+    private static Dictionary<string, Dictionary<string, string>>? StatesFor(
+        int index, List<string> names)
+    {
+        if(index == 0) return AppServices.Root.GetDefaultButtonStates();
+        if(index == 1) return AppServices.Root.LoadLastButtonStates();
+
+        int idx = index - 2;
+        var presets = AppServices.Presets.LoadAll();
+        return idx >= 0 && idx < presets.Count ? presets[idx].States : null;
     }
 
     /// <summary>显示方案与默认状态的差异详情（仅列出有改变的项）。</summary>
