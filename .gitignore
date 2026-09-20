@@ -1,48 +1,48 @@
-[Bb]in
-[Oo]bj
+# ── 构建产物 ──
+[Bb]in/
+[Oo]bj/
+.fake/
+PvZWSTools_WPF/Output/
 
-.git
-# .github 默认全部忽略，但放行 workflows（GitHub Actions 才能识别）
+# ── 发布产物：走 GitHub Release 附件，不进仓库历史 ──
+publish/
+*.exe
+*.zip
+*.keystore
+# 手册 PDF 由 文档/_build/gen_manual.py 生成
+文档/**/*.pdf
+# 更新器运行时在 exe 旁下载的临时目录
+update/
+
+# ── IDE / 编辑器本地状态 ──
+.vs/
+.vscode/
+.workbuddy/
+*.user
+# 发布配置不入库（*.pubxml 里带本机路径与账号）
+*.pubxml
+
+# ── GitHub 目录：整目录忽略，只放行 workflows ──
 .github/*
 !.github/workflows/
-!.github/workflows/**
-.vs
-.workbuddy
-PvZWSTools_WPF/Properties
-PvZWSTools_Xamarin/Assets/need.zip
-PvZWSTools_Avalonia/Assets/need.zip
-update
-pyrightconfig.json
-*.user
-*.zip
-*.pubxml
-.fake
-.vscode
-global.json
-*.keystore
-build-release.cmd
+
+# ── 本机发布脚本与 SDK 锁定，不入库 ──
 build-release.ps1
+build-release.cmd
+global.json
+
+# ── Python / IronPython 本地环境 ──
+# typings 源在 IronPythonEditor\typings\，VS Python 项目用 copytypings.bat 镜像一份
+IronPythonEditor/
+PythonApplication1/
 typings/
 copytypings.bat
-PythonApplication1/
-IronPythonEditor/
+pyrightconfig.json
 button_states.json
+__pycache__/
 
-# 临时/本地项目，不提交
-.git_backup_*/
+# ── 临时/本地项目，不提交 ──
 UpdateTest/
 VersionTest/
 SkillVerify/
-
-# 发布产物（不在仓库内，走 GitHub Release）
-publish/
-PvZWSTools_WPF/Output/
-*.exe
-# 手册 PDF 由 文档/_build/gen_manual.py 生成，走 Release 附件与群文件，不占仓库历史
-文档/*.pdf
-文档/_build/*.pdf
-# VS Python 项目本地存根镜像（源在 typings/，同步命令：xcopy /E /Y typings PythonApplication1\typings\）
-PythonApplication1/typings/
-
-# Python 编译缓存
-__pycache__/
+.git_backup_*/
