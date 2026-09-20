@@ -97,12 +97,27 @@ public class ResourcesViewModel:ViewModelBase
     }
 
     public ICommand DamageSetCommand => new RelayCommand(async _ =>
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Resources, _damageName,
-            new Dictionary<string, string>
+        {
+            // 两个占位符都是把文本直接替换进 Python 源码：数值留空会让 "DAMAGE_NUM = " 变成
+            // 语法错误（整份脚本编译失败，只回一行看不懂的报错），名字留空则拼出 ProjectileType.
+            if(!int.TryParse(DamageInput2?.Trim(), out var damageValue))
             {
-                [Constants.Placeholders.Damage] = NameOption.GetValue(DamageInput, DamageOptions),
-                [Constants.Placeholders.Damage2] = DamageInput2
-            }));
+                Log.Error($"设置伤害：伤害数值需为整数，当前为 '{DamageInput2}'，未下发");
+                return;
+            }
+            var damageKey = NameOption.GetValue(DamageInput, DamageOptions);
+            if(string.IsNullOrEmpty(damageKey))
+            {
+                Log.Error($"设置伤害：'{DamageInput}' 不在 伤害.json 的 Name 里，未下发");
+                return;
+            }
+            _ = await _scriptExec.ExecuteAsync(Constants.SubFolders.Resources, _damageName,
+                new Dictionary<string, string>
+                {
+                    [Constants.Placeholders.Damage] = damageKey,
+                    [Constants.Placeholders.Damage2] = damageValue.ToString()
+                });
+        });
 
     public bool HealthDropdownToggleIsChecked
     {

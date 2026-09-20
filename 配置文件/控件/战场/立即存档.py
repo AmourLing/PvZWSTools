@@ -1,27 +1,81 @@
 # 立即存档
 # 立即存储游戏
-# 2025.07.05
+# 2026.09.19
+#
+# SaveGame 会清点 EffectSystem/Board 里的全部对象写下标。工具下发的脚本跑在
+# WebSocket 接收线程上（IronPyInteractive.PyHub.OnMessage），直接调用会和游戏
+# 主线程的 Update/Draw 并发读写同一批列表——反复存读档时撞出
+# Reanimation.DrawRenderGroup / TodParticleEmitter.Draw 之类 "对象活着但内部
+# 已被换掉" 的 NRE。所以真正的存档动作必须排队到游戏主线程执行：
+# BattleSave_GameThreadPump 挂在 Main.Draw 上（不挂 Main.Update——窗口失焦时
+# “后台运行”关着的话 Update 整个冻结，而 Draw 仍在每帧跑），帧尾串行执行队列。
+# 本执行器与 立即回档.py 里的同名同体，互为重绑，行为一致。
 
+import System
 from Lawn import *
 from Sexy import *
 from System.IO import *
 from LawnMod import MonoModUtils as M
 
 app = GlobalStaticVars.gLawnApp
-board = app.mBoard
 
-SaveGame_Name = "game{}_{}.dat".format(int(app.mPlayerInfo.mId), int(app.mGameMode))
-SaveGame_Path = Path.Combine(
-    Directory.GetCurrentDirectory(), "docs", "userdata", SaveGame_Name
-)
+_saved_game_name = app.GetType().Assembly.GetType("Lawn.LawnCommon").GetMethod(
+    "GetSavedGameName",
+    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static,
+).Invoke(None, (app.mGameMode, int(app.mPlayerInfo.mId)))
+SaveGame_Path = _saved_game_name
+SaveGame_File = Path.Combine(app.applicationStoragePath, _saved_game_name)
 
-@M.HookTo(SexyAppBase.WriteBufferToFile)
-def SexyAppBase_WriteBufferToFile(orig, self, theFileName, theBuffer):
-    orig(self, theFileName, theBuffer)
-    return True
+Battle_Pending = None
+Battle_DoneSeq = 0
+Battle_Error = None
 
-board.SaveGame(SaveGame_Path)
+for _n in ("BattleSave_GameThreadPump",):
+    if _n in globals():
+        try:
+            globals()[_n].UnHook()
+        except Exception:
+            pass
 
-@M.HookTo(SexyAppBase.WriteBufferToFile)
-def SexyAppBase_WriteBufferToFile(orig, self, theFileName, theBuffer):
-    return orig(self, theFileName, theBuffer)
+
+@M.HookTo(Main.Draw)
+def BattleSave_GameThreadPump(orig, self, gameTime):
+    global Battle_Pending, Battle_DoneSeq, Battle_Error
+    orig(self, gameTime)
+    item = Battle_Pending
+    if item is None:
+        return
+    Battle_Pending = None
+    seq, work = item
+    try:
+        work()
+    except Exception as e:
+        Battle_Error = "{}: {}".format(type(e).__name__, e)
+    Battle_DoneSeq = seq
+
+
+def BattleSave_RunOnGameThread(work, timeout_ms=10000):
+    global Battle_Pending, Battle_Error
+    Battle_Error = None
+    seq = Battle_DoneSeq + 1
+    Battle_Pending = (seq, work)
+    waited = 0
+    while Battle_DoneSeq < seq and waited < timeout_ms:
+        System.Threading.Thread.Sleep(10)
+        waited += 10
+    if Battle_DoneSeq < seq:
+        Battle_Pending = None
+        return "TIMEOUT"
+    return "OK" if Battle_Error is None else "ERROR"
+
+
+def BattleSave_DoSave():
+    board = GlobalStaticVars.gLawnApp.mBoard
+    board.SaveGame(SaveGame_Path)
+
+_result = BattleSave_RunOnGameThread(BattleSave_DoSave)
+if _result == "OK" and not File.Exists(SaveGame_File):
+    _result = "NOFILE"
+if _result != "OK":
+    Debug.Log("立即存档失败:" + str(Battle_Error or _result))
+print(("SAVE_OK" if _result == "OK" else "SAVE_FAIL_" + _result) + "\n===END===")

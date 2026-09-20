@@ -23,8 +23,18 @@
  },
  {
   "tab": "杂项",
+  "kind": "Action",
+  "label": "游戏速度",
+  "state": null,
+  "cmd": "GameRunSpeedCommand",
+  "options": null,
+  "selected": null,
+  "inputs": []
+ },
+ {
+  "tab": "杂项",
   "kind": "Switch",
-  "label": "清除浓雾",
+  "label": "清除迷雾",
   "state": "ClearFog",
   "cmd": "ClearFogCommand",
   "options": null,
@@ -34,7 +44,7 @@
  {
   "tab": "杂项",
   "kind": "Switch",
-  "label": "透明花瓶",
+  "label": "罐子透视",
   "state": "ClearVase",
   "cmd": "ClearVaseCommand",
   "options": null,
@@ -64,7 +74,7 @@
  {
   "tab": "杂项",
   "kind": "Switch",
-  "label": "无冷却种植",
+  "label": "取消冷却",
   "state": "NoCDPlanting",
   "cmd": "NoCDPlantingCommand",
   "options": null,
@@ -84,7 +94,7 @@
  {
   "tab": "杂项",
   "kind": "Switch",
-  "label": "0花费种植",
+  "label": "取消阳光",
   "state": "NoCostPlanting",
   "cmd": "NoCostPlantingCommand",
   "options": null,
@@ -149,7 +159,7 @@
  {
   "tab": "关卡",
   "kind": "Action",
-  "label": "进入关卡",
+  "label": "EnterNewLevel",
   "state": null,
   "cmd": "EnterNewLevelCommand",
   "options": null,
@@ -342,6 +352,16 @@
   "label": "路灯花觉醒",
   "state": "PlanternAlwaysHenshin",
   "cmd": "PlanternAlwaysHenshinCommand",
+  "options": null,
+  "selected": null,
+  "inputs": []
+ },
+ {
+  "tab": "植物",
+  "kind": "Switch",
+  "label": "伞弹车常驻",
+  "state": "UmbrellaTriggerRV",
+  "cmd": "UmbrellaTriggerRVCommand",
   "options": null,
   "selected": null,
   "inputs": []
@@ -1010,6 +1030,16 @@
  },
  {
   "tab": "出怪",
+  "kind": "Switch",
+  "label": "下一波",
+  "state": "NextWave",
+  "cmd": "NextWaveCommand",
+  "options": null,
+  "selected": null,
+  "inputs": []
+ },
+ {
+  "tab": "出怪",
   "kind": "Action",
   "label": "极限出怪测试",
   "state": null,
@@ -1492,6 +1522,18 @@
  },
  {
   "tab": "阵型",
+  "kind": "Field",
+  "label": "戴夫选卡数量",
+  "state": null,
+  "cmd": "DavePickNumCommand",
+  "options": null,
+  "selected": null,
+  "inputs": [
+   "DavePickNumInput"
+  ]
+ },
+ {
+  "tab": "阵型",
   "kind": "Action",
   "label": "随机选卡",
   "state": null,
@@ -1658,6 +1700,36 @@
   "label": "随机卡槽",
   "state": "RandomPacket",
   "cmd": "RandomPacketCommand",
+  "options": null,
+  "selected": null,
+  "inputs": []
+ },
+ {
+  "tab": "娱乐",
+  "kind": "Switch",
+  "label": "手套常驻",
+  "state": "GloveAlways",
+  "cmd": "GloveAlwaysCommand",
+  "options": null,
+  "selected": null,
+  "inputs": []
+ },
+ {
+  "tab": "娱乐",
+  "kind": "Switch",
+  "label": "融合常驻",
+  "state": "AlwaysFusionMode",
+  "cmd": "AlwaysFusionModeCommand",
+  "options": null,
+  "selected": null,
+  "inputs": []
+ },
+ {
+  "tab": "娱乐",
+  "kind": "Switch",
+  "label": "垃圾桶常驻",
+  "state": "AlwaysHasTrashcan",
+  "cmd": "AlwaysHasTrashcanCommand",
   "options": null,
   "selected": null,
   "inputs": []

@@ -1,4 +1,4 @@
-﻿namespace PvZWSTools_Shared.Helpers;
+namespace PvZWSTools_Shared.Helpers;
 
 public static class Constants
 {
@@ -11,6 +11,9 @@ public static class Constants
     public const string c_Value_Error = "-1";
     public const string c_Value_Unchecked = "0";
 
+    /// <summary>{CHECK} 的第四档：由宿主（安卓端）请求脚本把文本载荷以 Base64 回传。</summary>
+    public const string c_Value_Base64Text = "2";
+
     #endregion 符号
 
     #region 文件夹
@@ -21,6 +24,7 @@ public static class Constants
     public const string Folder_Options = "选项";
     public const string Folder_Scripts = "快捷脚本";
     public const string Folder_SeedPackets = "卡组";
+    public const string Folder_SpawnWave = "出怪";
     public const string Folder_Log = "Log";
 
     #endregion 文件夹
@@ -47,7 +51,13 @@ public static class Constants
     public const string JsonValueFile = "价值.json";
     public const string JsonZombieFile = "僵尸.json";
 
+    public const string JsonDavePickNumFile = "戴夫选卡数量.json";
+
+    public const string JsonGameRunSpeedFile = "游戏速度.json";
+
     #endregion 选项文件名
+
+    public const string JsonWaveFile = "ZombiesInWave.json";
 
     public const string JsonSettingFile = "setting.json";
 
@@ -64,7 +74,6 @@ public static class Constants
         public const string ColPermit = "{COLPERMIT}";
         public const string Damage = "{DAMAGE}";
         public const string Damage2 = "{DAMAGE2}";
-        public const string DefaultPath = "{DEFAULTPATH}";
         public const string Flag = "{FLAG}";
         public const string GameMode = "{GAMEMODE}";
         public const string GridCheck = "{GRIDCHECK}";
@@ -80,7 +89,6 @@ public static class Constants
         public const string MindCheck = "{MIND_CHECK}";
         public const string MindControl = "{MINDCONTROL}";
         public const string Name = "{NAME}";
-        public const string Path = "{PATH}";
         public const string RandomVaseCheck = "{RANDOM_VASE_CHECK}";
         public const string RedeyeCheck = "{REDEYE_CHECK}";
         public const string Row = "{ROW}";
@@ -100,6 +108,30 @@ public static class Constants
         public const string GameObjectDeltamX = "{DELTA_MX}";
         public const string GameObjectDeltamY = "{DELTA_MY}";
         public const string IsSleeping = "{ISSLEEPING}";
+
+        public const string GameRunSpeed = "{GAME_RUN_SPEED}";
+
+        /// <summary>内联进脚本的僵尸名称映射表（选项/僵尸.json 的 Base64）。</summary>
+        public const string ZombieJsonBase64 = "{ZOMBIE_JSON_B64}";
+
+        /// <summary>内联进脚本的波次出怪数据（出怪/ZombiesInWave.json 的 Base64）。</summary>
+        public const string WaveJsonBase64 = "{WAVE_JSON_B64}";
+    }
+
+    /// <summary>脚本与宿主之间经 WebSocket 交换数据时使用的协议标记。</summary>
+    public static class Markers
+    {
+        /// <summary>脚本输出结束标记；宿主收到它才提前结束收集。</summary>
+        public const string ScriptEnd = "===END===";
+
+        public const string FormationJsonStart = "FORMATION_JSON_START";
+        public const string FormationJsonEnd = "FORMATION_JSON_END";
+        public const string SeedPacketJsonStart = "SEEDPACKET_JSON_START";
+        public const string SeedPacketJsonEnd = "SEEDPACKET_JSON_END";
+        public const string WaveJsonStart = "WAVE_JSON_START";
+        public const string WaveJsonEnd = "WAVE_JSON_END";
+        public const string WaveListStart = "WAVELIST_B64_START";
+        public const string WaveListEnd = "WAVELIST_B64_END";
     }
 
     public static class SubFolders

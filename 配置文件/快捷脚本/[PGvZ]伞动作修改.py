@@ -5,6 +5,14 @@ from Lawn import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
+# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
+for _legacy_hook_name in ['Plant_UpdateUmbrella']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 # 提前触发时间（cs/帧）：篮球到达弹起点前多少cs触发伞的DoSpecial
 LEAD_FRAMES = 30
 # 是否快进伞的动作（跳过Triggered的5cs倒计时，立即进入Reflecting）
@@ -41,7 +49,7 @@ def FramesUntilZ(ball, theZ):
     return 9999
 
 @M.HookTo(Plant.UpdateUmbrella)
-def Plant_UpdateUmbrella(orig, self):
+def Plant_UpdateUmbrella_UmbMod(orig, self):
     if FAST_FORWARD and self.mState == PlantState.UmbrellaTriggered:
         self.mStateCountdown = 0
     orig(self)

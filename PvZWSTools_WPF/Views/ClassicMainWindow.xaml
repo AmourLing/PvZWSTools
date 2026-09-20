@@ -102,7 +102,53 @@
                                     Command="{Binding SetTreeHeightCommand}"
                                     Content="设置树的高度" />
 
-                                <!--  清除浓雾  -->
+                                <!--  游戏速度  -->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="65" />
+                                        <ColumnDefinition Width="25" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        Grid.Column="0"
+                                        Height="25"
+                                        FontSize="16"
+                                        IsReadOnly="True"
+                                        Text="{Binding GameRunSpeedInput}" />
+                                    <ToggleButton
+                                        x:Name="GameRunSpeedDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        Content="🔻"
+                                        IsChecked="{Binding GameRunSpeedDropdownToggleIsChecked, Mode=TwoWay}" />
+
+                                    <Popup
+                                        IsOpen="{Binding GameRunSpeedDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=GameRunSpeedDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="GameRunSpeedListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding GameRunSpeedOptions}"
+                                                SelectedItem="{Binding GameRunSpeedSelected}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                                <Button
+                                    x:Name="GameRunSpeedBtn"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Height="25"
+                                    Command="{Binding GameRunSpeedCommand}"
+                                    Content="游戏速度" />
+
+                                <!--  清除迷雾  -->
                                 <TextBox
                                     Grid.Row="0"
                                     Grid.Column="3"
@@ -117,9 +163,9 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding ClearFogCommand}"
-                                    Content="清除浓雾" />
+                                    Content="清除迷雾" />
 
-                                <!--  透明花瓶  -->
+                                <!--  罐子透视  -->
                                 <TextBox
                                     Grid.Row="1"
                                     Grid.Column="3"
@@ -134,7 +180,7 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding ClearVaseCommand}"
-                                    Content="透明花瓶" />
+                                    Content="罐子透视" />
 
                                 <!--  阳光增值  -->
                                 <TextBox
@@ -170,7 +216,7 @@
                                     Command="{Binding AutoCollectCommand}"
                                     Content="自动收集" />
 
-                                <!--  无冷却种植  -->
+                                <!--  取消冷却  -->
                                 <TextBox
                                     Grid.Row="1"
                                     Grid.Column="6"
@@ -185,7 +231,7 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding NoCDPlantingCommand}"
-                                    Content="无冷却种植" />
+                                    Content="取消冷却" />
 
                                 <!--  自动浇水  -->
                                 <TextBox
@@ -204,7 +250,7 @@
                                     Command="{Binding AutoWateringCommand}"
                                     Content="自动浇水" />
 
-                                <!--  0花费种植  -->
+                                <!--  取消阳光  -->
                                 <TextBox
                                     Grid.Row="0"
                                     Grid.Column="9"
@@ -219,7 +265,7 @@
                                     Width="90"
                                     Height="25"
                                     Command="{Binding NoCostPlantingCommand}"
-                                    Content="0花费种植" />
+                                    Content="取消阳光" />
 
                                 <!--  后台运行  -->
                                 <TextBox
@@ -911,7 +957,7 @@
                                     Height="25"
                                     Command="{Binding PlanternAlwaysHenshinCommand}"
                                     Content="路灯花觉醒" />
-                                <!--  土豆准备时间  -->
+                                <!--  伞弹车常驻  -->
                                 <TextBox
                                     Grid.Row="2"
                                     Grid.Column="0"
@@ -919,9 +965,26 @@
                                     Height="25"
                                     FontSize="16"
                                     IsReadOnly="True"
-                                    Text="{Binding CD_Potato}" />
+                                    Text="{Binding UmbrellaTriggerRV}" />
                                 <Button
                                     Grid.Row="2"
+                                    Grid.Column="1"
+                                    Width="90"
+                                    Height="25"
+                                    Command="{Binding UmbrellaTriggerRVCommand}"
+                                    Content="伞弹车常驻" />
+
+                                <!--  土豆准备时间  -->
+                                <TextBox
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="25"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding CD_Potato}" />
+                                <Button
+                                    Grid.Row="3"
                                     Grid.Column="1"
                                     Width="90"
                                     Height="25"
@@ -930,7 +993,7 @@
 
                                 <!--  大嘴准备时间  -->
                                 <TextBox
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="3"
                                     Width="30"
                                     Height="25"
@@ -938,7 +1001,7 @@
                                     IsReadOnly="True"
                                     Text="{Binding CD_Chomper}" />
                                 <Button
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="4"
                                     Width="90"
                                     Height="25"
@@ -947,7 +1010,7 @@
 
                                 <!--  光菇准备时间  -->
                                 <TextBox
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="6"
                                     Width="30"
                                     Height="25"
@@ -955,7 +1018,7 @@
                                     IsReadOnly="True"
                                     Text="{Binding CD_Sunshroom}" />
                                 <Button
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="7"
                                     Width="90"
                                     Height="25"
@@ -964,7 +1027,7 @@
 
                                 <!--  磁菇准备时间  -->
                                 <TextBox
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="9"
                                     Width="30"
                                     Height="25"
@@ -972,7 +1035,7 @@
                                     IsReadOnly="True"
                                     Text="{Binding CD_Magnet}" />
                                 <Button
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="10"
                                     Width="90"
                                     Height="25"
@@ -981,7 +1044,7 @@
 
                                 <!--  炮准备时间  -->
                                 <TextBox
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="0"
                                     Width="30"
                                     Height="25"
@@ -989,7 +1052,7 @@
                                     IsReadOnly="True"
                                     Text="{Binding CD_Cob}" />
                                 <Button
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="1"
                                     Width="90"
                                     Height="25"
@@ -997,7 +1060,7 @@
                                     Content="炮准备时间" />
                                 <!--  超嘴准备时间  -->
                                 <TextBox
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="3"
                                     Width="30"
                                     Height="25"
@@ -1005,7 +1068,7 @@
                                     IsReadOnly="True"
                                     Text="{Binding CD_SuperChomper}" />
                                 <Button
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="4"
                                     Width="90"
                                     Height="25"
@@ -1013,7 +1076,7 @@
                                     Content="超嘴准备时间" />
                                 <!--  龙舌兰大招  -->
                                 <TextBox
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="6"
                                     Width="30"
                                     Height="25"
@@ -1021,7 +1084,7 @@
                                     IsReadOnly="True"
                                     Text="{Binding CD_Agave}" />
                                 <Button
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="7"
                                     Width="90"
                                     Height="25"
@@ -1029,7 +1092,7 @@
                                     Content="龙舌兰大招" />
                                 <!--  火红莲大招  -->
                                 <TextBox
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="9"
                                     Width="30"
                                     Height="25"
@@ -1037,7 +1100,7 @@
                                     IsReadOnly="True"
                                     Text="{Binding CD_Endo}" />
                                 <Button
-                                    Grid.Row="3"
+                                    Grid.Row="4"
                                     Grid.Column="10"
                                     Width="90"
                                     Height="25"
@@ -1045,7 +1108,7 @@
                                     Content="火红莲大招" />
                                 <!--  其他准备时间  -->
                                 <Grid
-                                    Grid.Row="4"
+                                    Grid.Row="5"
                                     Grid.Column="0"
                                     Grid.ColumnSpan="5">
                                     <Grid.ColumnDefinitions>
@@ -2213,6 +2276,27 @@
                                     VerticalAlignment="Top"
                                     Command="{Binding RedeyeHandleCommand}"
                                     Content="红眼处理" />
+
+                                <!--  下一波  -->
+                                <TextBox
+                                    x:Name="NextWaveInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="400,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding NextWave}" />
+                                <Button
+                                    x:Name="NextWaveButton"
+                                    Width="60"
+                                    Height="25"
+                                    Margin="430,125,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding NextWaveCommand}"
+                                    Content="下一波" />
 
                                 <!--  极限出怪测试  -->
                                 <Button
@@ -3480,6 +3564,54 @@
                                     </Popup>
                                 </Grid>
 
+                                <!--  戴夫选卡  -->
+                                <Grid Margin="0,245,0,0" VerticalAlignment="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50" />
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        x:Name="DavePickNumInput"
+                                        Grid.Column="0"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        Text="{Binding DavePickNumInput}" />
+                                    <ToggleButton
+                                        x:Name="DavePickNumDropdownToggle"
+                                        Grid.Column="1"
+                                        Width="25"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Content="🔻"
+                                        IsChecked="{Binding DavePickNumDropdownToggleIsChecked, Mode=TwoWay}" />
+                                    <Button
+                                        x:Name="DavePickNumBtn"
+                                        Grid.Column="2"
+                                        Height="25"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding DavePickNumCommand}"
+                                        Content="戴夫选卡数量" />
+                                    <Popup
+                                        IsOpen="{Binding DavePickNumDropdownToggleIsChecked, Mode=TwoWay}"
+                                        Placement="Bottom"
+                                        PlacementTarget="{Binding ElementName=DavePickNumDropdownToggle}"
+                                        StaysOpen="False">
+                                        <Border
+                                            Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1">
+                                            <ListBox
+                                                x:Name="DavePickNumListBox"
+                                                MaxHeight="150"
+                                                DisplayMemberPath="DisplayName"
+                                                ItemsSource="{Binding DavePickNumOptions}"
+                                                SelectedItem="{Binding SelectedDavePickNum}" />
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
                                 <!--  随机选卡  -->
                                 <Button
                                     x:Name="PickRandomSeedBtn"
@@ -3942,6 +4074,69 @@
                                     VerticalAlignment="Top"
                                     Command="{Binding RandomPacketCommand}"
                                     Content="随机卡槽" />
+
+                                <!--  手套常驻  -->
+                                <TextBox
+                                    x:Name="GloveAlwaysInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="390,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding GloveAlways}" />
+                                <Button
+                                    x:Name="GloveAlwaysBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="420,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding GloveAlwaysCommand}"
+                                    Content="手套常驻" />
+
+                                <!--  融合常驻  -->
+                                <TextBox
+                                    x:Name="AlwaysFusionModeInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="0,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding AlwaysFusionMode}" />
+                                <Button
+                                    x:Name="AlwaysFusionModeBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="30,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding AlwaysFusionModeCommand}"
+                                    Content="融合常驻" />
+
+                                <!--  垃圾桶常驻  -->
+                                <TextBox
+                                    x:Name="AlwaysHasTrashcanInput"
+                                    Width="30"
+                                    Height="25"
+                                    Margin="130,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    IsReadOnly="True"
+                                    Text="{Binding AlwaysHasTrashcan}" />
+                                <Button
+                                    x:Name="AlwaysHasTrashcanModeBtn"
+                                    Width="90"
+                                    Height="25"
+                                    Margin="160,35,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Command="{Binding AlwaysHasTrashcanCommand}"
+                                    Content="垃圾桶常驻" />
                             </Grid>
                         </TabItem>
                         <!--  快捷脚本  -->

@@ -11,8 +11,13 @@
 ## 下载
 
 * 企鹅群 1034609947
+* 夸克网盘 https://pan.quark.cn/s/b05452efdd9d
+* 迅雷云盘 https://pan.xunlei.com/s/VP1mIwIh5ejBzPUkFl61vqebA1?pwd=79he
+* 移动云盘 https://yun.139.com/shareweb/#/w/i/2xTrEZYJmLtyn
+* UC网盘 https://drive.uc.cn/s/23bbc188ce1c4
 * 百度网盘 https://pan.baidu.com/s/1UibnjHtCUx6ygEJpO3jbpQ?pwd=LING
 * GitHhub Releases https://github.com/AmourLing/PvZWSTools/releases
+* Gitee Releases https://gitee.com/AmourLing0412/PvZWSTools/releases
 
 ---
 
@@ -34,7 +39,7 @@
 
 ---
 
-## GitHub Releases 下载说明
+## 下载说明
 
 | 文件                                         | 说明       | 
 | -------------------------------------------- | -----------|

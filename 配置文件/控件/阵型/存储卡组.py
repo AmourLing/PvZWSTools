@@ -1,11 +1,9 @@
 #存储卡组
 
 import clr
-clr.AddReference("System.IO")
 clr.AddReference("System")
 clr.AddReference("Newtonsoft.Json")
 
-from System.IO import Path, File, Directory
 from System import Convert, String
 from System.Text import Encoding
 from Newtonsoft.Json import JsonConvert
@@ -16,7 +14,7 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard if app else None
 
-def LOG(e, code=0):
+def LOG_DeckStore(e, code=0):
     msg = "[ErrorCode {}] {}".format(code, repr(e) if e else "Unknown Error")
     try:
         if app is not None:
@@ -37,7 +35,7 @@ try:
                 p_obj["imitater"] = int(packet.mImitaterType)
                 seed_packets_list.append(p_obj)
 except Exception as e:
-    LOG(e, 1001)
+    LOG_DeckStore(e, 1001)
 
 try:
     root_data = JObject()
@@ -59,16 +57,18 @@ try:
 
     output_payload = "SEEDPACKET_JSON_START\n" + base64_str + "\nSEEDPACKET_JSON_END"
 
-    print(output_payload)
+    print(output_payload + "\n===END===")
 
 except Exception as e:
-    LOG(e, 1004)
+    LOG_DeckStore(e, 1004)
+    # 失败也要收口，否则 WPF 端 ExecuteWithResultAsync 白等满 3 秒且看不到原因
+    print("[ErrorCode 1004] {}\n===END===".format(repr(e) if e else "Unknown Error"))
 
 try:
     import sys
     sys.stdout.flush()
 except Exception as e:
-    LOG(e, 1005)
+    LOG_DeckStore(e, 1005)
 
 formation_name = "{NAME}"
 if not formation_name or formation_name.startswith("{"):

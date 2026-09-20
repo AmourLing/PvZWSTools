@@ -14,6 +14,9 @@ public class FunViewModel:ViewModelBase
         ["RANDOM_VASE_CHECK"] = nameof(RandomVase),
         ["RANDOM_PACKET_CHECK"] = nameof(RandomPacket),
         ["RANDOM_CARD_CHECK"] = nameof(RandomCard),
+        ["GLOVE_ALWAYS_CHECK"] = nameof(GloveAlways),
+        ["ALWAYS_FUSION_MODE_CHECK"] = nameof(AlwaysFusionMode),
+        ["ALWAYS_HAS_TRASHCAN_CHECK"] = nameof(AlwaysHasTrashcan),
     };
 
     public ICommand UpdateButtonStatusCommand => new RelayCommand(async _ =>
@@ -59,7 +62,28 @@ public class FunViewModel:ViewModelBase
         get => _randomPacket;
         set { _randomPacket = value; OnPropertyChanged(); }
     }
+    private string _gloveAlways = Constants.c_Symbol_Off;
 
+    public string GloveAlways
+    {
+        get => _gloveAlways;
+        set { _gloveAlways = value; OnPropertyChanged(); }
+    }
+
+    private string _alwaysFusionMode = Constants.c_Symbol_Off;
+
+    public string AlwaysFusionMode
+    {
+        get => _alwaysFusionMode;
+        set { _alwaysFusionMode = value; OnPropertyChanged(); }
+    }
+    private string _alwaysHasTrashcan = Constants.c_Symbol_Off;
+
+    public string AlwaysHasTrashcan
+    {
+        get => _alwaysHasTrashcan;
+        set { _alwaysHasTrashcan = value; OnPropertyChanged(); }
+    }
     public ICommand RandomVaseCommand => new RelayCommand(async _ =>
     {
         var __old = RandomVase;
@@ -85,5 +109,31 @@ public class FunViewModel:ViewModelBase
         if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "随机卡槽",
             new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(RandomPacket) }))
             RandomPacket = __old;
+    });
+
+    public ICommand GloveAlwaysCommand => new RelayCommand(async _ =>
+    {
+        var __old = GloveAlways;
+        GloveAlways = ButtonHelper.ToggleCheck(GloveAlways);
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "手套常驻",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(GloveAlways) }))
+            GloveAlways = __old;
+    });
+    public ICommand AlwaysFusionModeCommand => new RelayCommand(async _ =>
+    {
+        var __old = AlwaysFusionMode;
+        AlwaysFusionMode = ButtonHelper.ToggleCheck(AlwaysFusionMode);
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "融合常驻",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AlwaysFusionMode) }))
+            AlwaysFusionMode = __old;
+    });
+
+    public ICommand AlwaysHasTrashcanCommand => new RelayCommand(async _ =>
+    {
+        var __old = AlwaysHasTrashcan;
+        AlwaysHasTrashcan = ButtonHelper.ToggleCheck(AlwaysHasTrashcan);
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "垃圾桶常驻",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AlwaysHasTrashcan) }))
+            AlwaysHasTrashcan = __old;
     });
 }

@@ -5,6 +5,14 @@ from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
 
+# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
+for _legacy_hook_name in ['Plant_PlantInitialize']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 if 'HealthDir' not in globals():
     HealthDir = {}
 if 'PlantHealthDir' not in globals():
@@ -28,7 +36,7 @@ def SetPlantHealth(plant, num):
     plant.mPlantHealth = num
 
 @M.HookTo(Plant.PlantInitialize)
-def Plant_PlantInitialize(orig, self, x, y, st, it):
+def Plant_PlantInitialize_SetHp(orig, self, x, y, st, it):
     orig(self, x, y, st, it)
     if PlantHealthDir.get(self.mSeedType,"EMPTY")!="EMPTY":
         SetPlantHealth(self, PlantHealthDir.get(self.mSeedType))

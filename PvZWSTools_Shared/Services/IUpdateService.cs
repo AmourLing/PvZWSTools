@@ -18,15 +18,15 @@ public interface IUpdateService
     string CurrentVersionDisplay { get; }
 
     /// <summary>
-    /// 后台检查最新版本，失败返回 null（不抛异常，由调用方决定如何提示）。
-    /// 优先 GitHub Releases，失败回退 Gitee。
+    /// 后台检查最新版本（GitHub 与 Gitee 并行，单源失败/超时不影响另一源），失败返回 null
+    /// （不抛异常，由调用方决定如何提示）。
     /// </summary>
-    /// <param name="assetName">平台对应的资产文件名（如 PvZWSTools-win.zip / PvZWSTools-android.apk）。</param>
+    /// <param name="assetName">平台对应的资产文件名（如 PvZWSTools_windows_framework-dependent.zip / PvZWSTools_android.APK）。</param>
     Task<UpdateInfo?> CheckForUpdatesAsync(string assetName, CancellationToken ct = default);
 
     /// <summary>
     /// 下载更新包到临时文件，返回本地路径；失败返回 null。
-    /// 内部会先尝试主链接，失败再尝试 fallback。
+    /// 按 <see cref="UpdateInfo.Source"/> 选中的渠道优先，另一源作 fallback。
     /// </summary>
     /// <param name="info">由 <see cref="CheckForUpdatesAsync"/> 返回的版本信息。</param>
     /// <param name="progress">可选进度回调（bytes/total/speed 完整信息）。</param>

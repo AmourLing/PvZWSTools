@@ -13,9 +13,8 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <OutputType>Exe</OutputType>
     <UseWindowsForms>false</UseWindowsForms>
-    <Version>2026.9.7</Version>
-    <Version>2026.9.2</Version>
-    <InformationalVersion>2026.09.02</InformationalVersion>
+    <Version>2026.9.18</Version>
+    <InformationalVersion>2026.09.18</InformationalVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)..\</SolutionDir>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <NoWarn>$(NoWarn);WPF0001</NoWarn>

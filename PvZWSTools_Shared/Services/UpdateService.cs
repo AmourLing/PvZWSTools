@@ -19,6 +19,15 @@ public abstract class UpdateService:IUpdateService
     private const string GITHUB_API = "https://api.github.com/repos/{0}/{1}/releases?per_page=50";
     private const string GITEE_API = "https://gitee.com/api/v5/repos/{0}/{1}/releases?per_page=50";
 
+    private const string SourceGithub = "github";
+    private const string SourceGitee = "gitee";
+
+    /// <summary>
+    /// 单个源的检查超时（秒）。GitHub 不通时往往是静默丢包而不是立刻 reset，
+    /// 不能让它拖住整个检查——下载仍走 <see cref="_httpClient"/> 的 5 分钟超时。
+    /// </summary>
+    private const int SourceTimeoutSeconds = 10;
+
     private static readonly HttpClient _httpClient = new(new HttpClientHandler
     {
         AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
@@ -48,38 +57,42 @@ public abstract class UpdateService:IUpdateService
     /// <inheritdoc />
     public virtual async Task<UpdateInfo?> CheckForUpdatesAsync(string assetName, CancellationToken ct = default)
     {
-        // 同时查 GitHub 和 Gitee，两个源的 URL 都存好，下载时 Gitee 优先（国内快）
-        var gh = await TryFetchAsync("github", GITHUB_API, assetName, ct);
-        var gitee = await TryFetchAsync("gitee", GITEE_API, assetName, ct);
+        // 两源并行查、各自带短超时：访问不了 GitHub 的用户不必等 GitHub 超时才轮到 Gitee
+        var githubTask = TryFetchAsync(SourceGithub, GITHUB_API, assetName, ct);
+        var giteeTask = TryFetchAsync(SourceGitee, GITEE_API, assetName, ct);
+        _ = await Task.WhenAll(githubTask, giteeTask);
 
-        // 合并：选有新版本的那个作为主，另一个的 URL 作为 fallback
-        UpdateInfo? primary;
-        UpdateInfo? secondary;
+        var github = githubTask.Result;
+        var gitee = giteeTask.Result;
 
-        // 优先返回有下载 URL 的（检查更充分）
-        if(gh != null && !string.IsNullOrEmpty(gh.DownloadUrl))
-        {
-            primary = gh;
-            secondary = gitee;
-        }
-        else if(gitee != null && !string.IsNullOrEmpty(gitee.DownloadUrl))
-        {
-            primary = gitee;
-            secondary = gh;
-        }
-        else if(gh != null) { primary = gh; secondary = gitee; }
-        else if(gitee != null) { primary = gitee; secondary = gh; }
-        else return null;
+        // 版本信息（tag / 更新说明）取更新的源；同版本时保留 GitHub，Gitee 只是镜像
+        var primary = NewerOf(github, gitee);
+        if(primary == null) return null;
 
-        // 把另一个源的 URL 合并到 primary
-        if(secondary != null && !string.IsNullOrEmpty(secondary.DownloadUrl))
+        // 直链按源分开存，UI 才能把渠道标签对上。镜像同步有延迟时两源版本可能不同，
+        // 不同版本的直链不能混用，所以只在同版本时借用另一源的直链。
+        var other = ReferenceEquals(primary, github) ? gitee : github;
+        if(other != null && string.Equals(other.TagName, primary.TagName, StringComparison.Ordinal))
         {
-            // 如果 primary 没有 fallback，把 secondary 的 URL 作为 fallback
-            if(string.IsNullOrEmpty(primary.DownloadUrlFallback) && secondary.DownloadUrl != primary.DownloadUrl)
-                primary.DownloadUrlFallback = secondary.DownloadUrl;
+            primary.GithubUrl ??= other.GithubUrl;
+            primary.GiteeUrl ??= other.GiteeUrl;
         }
 
         return primary;
+    }
+
+    /// <summary>取版本更新的 <see cref="UpdateInfo" />；同版本或无法解析时保留 <paramref name="a" />。</summary>
+    private static UpdateInfo? NewerOf(UpdateInfo? a, UpdateInfo? b)
+    {
+        if(a == null) return b;
+        if(b == null) return a;
+
+        var pa = a.Parsed ?? a.ParseTag();
+        var pb = b.Parsed ?? b.ParseTag();
+        if(pa == null) return b;
+        if(pb == null) return a;
+
+        return CompareParsed(pb, pa) > 0 ? b : a;
     }
 
     /// <inheritdoc />
@@ -87,20 +100,16 @@ public abstract class UpdateService:IUpdateService
     {
         if(info == null) throw new ArgumentNullException(nameof(info));
 
-        // 收集所有 URL，Gitee 优先（国内 CDN 速度快），GitHub 作 fallback
-        var urls = new List<string>();
-        if(!string.IsNullOrWhiteSpace(info.DownloadUrl))
-            urls.Add(info.DownloadUrl);
-        if(!string.IsNullOrWhiteSpace(info.DownloadUrlFallback) && info.DownloadUrlFallback != info.DownloadUrl)
-            urls.Add(info.DownloadUrlFallback);
+        // 用户选的渠道优先（由 info.Source 表达）；没指定时 Gitee 优先（国内快）
+        bool giteeFirst = info.Source != SourceGithub;
+        string? first = giteeFirst ? info.GiteeUrl : info.GithubUrl;
+        string? second = giteeFirst ? info.GithubUrl : info.GiteeUrl;
 
-        // Gitee URL 排到前面
-        urls.Sort((a, b) =>
-        {
-            bool aIsGitee = a.Contains("gitee.com", StringComparison.OrdinalIgnoreCase);
-            bool bIsGitee = b.Contains("gitee.com", StringComparison.OrdinalIgnoreCase);
-            return aIsGitee == bIsGitee ? 0 : (aIsGitee ? -1 : 1);
-        });
+        var urls = new List<string>();
+        if(!string.IsNullOrWhiteSpace(first))
+            urls.Add(first);
+        if(!string.IsNullOrWhiteSpace(second) && second != first)
+            urls.Add(second);
 
         if(urls.Count == 0)
         {
@@ -152,23 +161,27 @@ public abstract class UpdateService:IUpdateService
 
     private async Task<UpdateInfo?> TryFetchAsync(string source, string apiTemplate, string assetName, CancellationToken ct)
     {
-        var (owner, repo) = source == "github"
+        var (owner, repo) = source == SourceGithub
             ? (Sharedstring.GitHubOwner, Sharedstring.GitHubRepo)
             : (Sharedstring.GiteeOwner, Sharedstring.GiteeRepo);
 
         string url = string.Format(apiTemplate, owner, repo);
         Log.Info($"检查更新（{source}）: {url}");
 
+        // 单源短超时：外部 ct 取消时一起取消，超时只放弃这一个源
+        using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        timeoutCts.CancelAfter(TimeSpan.FromSeconds(SourceTimeoutSeconds));
+
         try
         {
-            using var resp = await _httpClient.GetAsync(url, ct);
+            using var resp = await _httpClient.GetAsync(url, timeoutCts.Token);
             if(!resp.IsSuccessStatusCode)
             {
                 Log.Warning($"{source} API 返回 {(int)resp.StatusCode} {resp.ReasonPhrase}");
                 return null;
             }
 
-            string json = await resp.Content.ReadAsStringAsync(ct);
+            string json = await resp.Content.ReadAsStringAsync(timeoutCts.Token);
 
             // releases?per_page=50 返回数组；releases/latest 返回单对象
             var releaseJsons = TryParseReleaseArray(json);
@@ -217,6 +230,11 @@ public abstract class UpdateService:IUpdateService
 
             Log.Info($"{source} 最新版本: tag={best.TagName}（已过滤 draft/prerelease）");
             return best;
+        }
+        catch(OperationCanceledException) when(!ct.IsCancellationRequested)
+        {
+            Log.Warning($"{source}：{SourceTimeoutSeconds}s 内无响应，跳过该源");
+            return null;
         }
         catch(Exception ex)
         {
@@ -308,50 +326,27 @@ public abstract class UpdateService:IUpdateService
             Source = source
         };
 
-        // 百度网盘链接：优先使用硬编码常量，没配置时从 Release Notes 正则提取
-        var baiduFromConst = Sharedstring.BaiduNetdiskUrl;
-        if(!string.IsNullOrWhiteSpace(baiduFromConst))
-        {
-            info.DownloadUrlBaidu = baiduFromConst;
-            info.BaiduExtractCode = Sharedstring.BaiduNetdiskCode;
-            Log.Info($"使用硬编码百度网盘链接: {baiduFromConst}");
-        }
-        else
-        {
-            // 从 Release Notes 中提取百度网盘链接（格式：https://pan.baidu.com/s/1xxxxx 或 https://pan.baidu.com/share/link?shareid=xxx&uk=xxx）
-            // 同时支持提取码：提取码：abcd / code: abcd / pwd=abcd
-            var notes = info.ReleaseNotes ?? "";
-            var baiduMatch = Regex.Match(notes, @"https?://pan\.baidu\.com/(?:s/[\w-]+|share/link\?[^\s)]+)", RegexOptions.IgnoreCase);
-            if(baiduMatch.Success)
-            {
-                info.DownloadUrlBaidu = baiduMatch.Value;
-                var codeMatch = Regex.Match(notes, @"提取码[：:]\s*([a-zA-Z0-9]{4})|code[：:]\s*([a-zA-Z0-9]{4})|pwd[=:]\s*([a-zA-Z0-9]{4})", RegexOptions.IgnoreCase);
-                if(codeMatch.Success)
-                {
-                    info.BaiduExtractCode = codeMatch.Groups[1].Value
-                        ?? codeMatch.Groups[2].Value
-                        ?? codeMatch.Groups[3].Value;
-                }
-                Log.Info($"从 Release Notes 提取到百度网盘链接: {info.DownloadUrlBaidu}");
-            }
-        }
-
-        // 在 assets 中按文件名匹配（不区分大小写、忽略查询字符串）
+        // 在 assets 中按文件名匹配（忽略大小写与 -/_ 差异、忽略查询字符串）
         // GitHub: assets[].browser_download_url
-        // Gitee:  assets[].download_url
+        // Gitee:  attach_files[].download_url
         var assets = root["assets"] as JArray ?? root["attach_files"] as JArray;
         if(assets == null) return info;
 
-        string assetNameLower = assetName.ToLowerInvariant();
+        string assetKey = NormalizeAssetName(assetName);
         foreach(JObject asset in assets.OfType<JObject>())
         {
             var name = asset.Value<string>("name");
             if(string.IsNullOrEmpty(name)) continue;
-            if(!name.ToLowerInvariant().Equals(assetNameLower)) continue;
+            if(NormalizeAssetName(name) != assetKey) continue;
 
             // GitHub: browser_download_url；Gitee: download_url
-            info.DownloadUrl = asset.Value<string>("browser_download_url")
-                            ?? asset.Value<string>("download_url");
+            string? url = asset.Value<string>("browser_download_url")
+                       ?? asset.Value<string>("download_url");
+            if(source == SourceGitee)
+                info.GiteeUrl = url;
+            else
+                info.GithubUrl = url;
+
             info.Size = asset.Value<long?>("size");
 
             var digest = asset.Value<string>("digest");
@@ -363,6 +358,13 @@ public abstract class UpdateService:IUpdateService
         // GitHub 没有匹配的 asset，但更新包可能存在同名 .sha256 文件，留作扩展点
         return info;
     }
+
+    /// <summary>
+    /// 资产名在不同 release 之间漂移过（PvZWSTools-win.zip / PvZWSTools_windows_setup.exe、
+    /// .apk / .APK），比较时统一大小写和分隔符。
+    /// </summary>
+    private static string NormalizeAssetName(string name) =>
+        name.Trim().ToLowerInvariant().Replace('_', '-');
 
     private static string? ParseSha256(string raw)
     {

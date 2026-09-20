@@ -1,14 +1,15 @@
 #波次出怪_数量
 # 僵尸出怪列表 (按数量输出)
 # 2025.07.05 (IronPython 无标准库版，使用 MatchEvaluator 修复反向引用)
+# 2026.09.18 脚本不再读写磁盘：僵尸名映射由宿主内联传入，JSON 经 print 回传宿主落盘（跨平台）
 
 import clr
 
-clr.AddReference("System.IO")
 clr.AddReference("System")
 clr.AddReference("Newtonsoft.Json")
 
-from System.IO import Path, File, Directory
+from System import Convert
+from System.Text import Encoding
 from System.Text.RegularExpressions import Regex, MatchEvaluator
 from Newtonsoft.Json import JsonConvert, Formatting
 from Newtonsoft.Json.Linq import JObject, JArray
@@ -18,12 +19,12 @@ from Sexy import *
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-def LOG(e, code=0):
+def LOG_WaveNum(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     app.DoDialog(16, True, "ERROR!", msg, "OK", 3)
     print(msg)
 
-def safe_int(value, default=0, error_code=5000):
+def safe_int_WaveNum(value, default=0, error_code=5000):
     """安全转换为整数，支持枚举、JValue、字符串等"""
     try:
         return int(value)
@@ -34,16 +35,16 @@ def safe_int(value, default=0, error_code=5000):
                 return default
             return int(s)
         except:
-            LOG(Exception(f"safe_int failed: value={value!r} type={type(value)} original={e}"), error_code)
+            LOG_WaveNum(Exception(f"safe_int_WaveNum failed: value={value!r} type={type(value)} original={e}"), error_code)
             return default
 
-def load_zombie_names():
-    path = r"{PATH}"
-    if not File.Exists(path):
-        LOG(Exception(f"Zombie name mapping file not found: {path}"), 1001)
+def load_zombie_names_WaveNum():
+    # 宿主整份文本替换占位符；未替换时这里仍是花括号字面量，退化为只显示枚举名
+    payload = r"{ZOMBIE_JSON_B64}"
+    if not payload or payload.startswith("{"):
         return {}
     try:
-        content = File.ReadAllText(path)
+        content = Encoding.UTF8.GetString(Convert.FromBase64String(payload))
         array = JArray.Parse(content)
         result = {}
         for item in array:
@@ -57,40 +58,49 @@ def load_zombie_names():
             result[enum_id] = name
         return result
     except Exception as e:
-        LOG(e, 1002)
+        LOG_WaveNum(e, 1002)
         return {}
 
 ALLOW_JSON_ZOMBIES_IN_WAVE = "{CHECK}"
 
 if board is None:
-    LOG(Exception("未找到board进程"), 2001)
+    LOG_WaveNum(Exception("未找到board进程"), 2001)
+    print("===END===")
 elif ALLOW_JSON_ZOMBIES_IN_WAVE != "1":
-    zombie_names = load_zombie_names()
-    max_zombie_type = safe_int(ZombieType.RedeyeGargantuar, error_code=2002)
+    # 逐条 print 会被输出缓冲的刷新边界切成多条消息，一整波一行有被劈开的风险；攒进列表一次输出。
+    zombie_names = load_zombie_names_WaveNum()
+    max_zombie_type = safe_int_WaveNum(ZombieType.RedeyeGargantuar, error_code=2002)
+    out_lines = []
     for i in range(0, board.mNumWaves):
-        print("第{}波".format(i+1), end=":")
+        line = "第{}波:".format(i+1)
         z_dic = {}
         for j in range(0, 50):
             z_raw = board.mZombiesInWave[i, j]
-            z = safe_int(z_raw, default=-1, error_code=2003)
+            z = safe_int_WaveNum(z_raw, default=-1, error_code=2003)
             if z == -1:
                 break
             z_dic[z] = z_dic.get(z, 0) + 1
         for k in range(0, max_zombie_type + 1):
             if k in z_dic:
                 name = zombie_names.get(k, ZombieType(k))
-                print(f"{name}x{z_dic[k]}", end=" ")
-        print("")
+                line += "{}x{} ".format(name, z_dic[k])
+        out_lines.append(line)
+    out_lines.append("===END===")
+    print("\n".join(out_lines))
 else:
+    # 多次 print 会被输出缓冲的刷新边界切成多条消息，载荷有被劈开的风险，
+    # 因此攒进一个列表、连 END 收口一起一次性输出。
+    out_lines = []
+    err_msg = None
     try:
         combined_data = JObject()
         combined_data["NumWaves"] = board.mNumWaves
-        max_zombie_type = safe_int(ZombieType.RedeyeGargantuar, error_code=3001)
+        max_zombie_type = safe_int_WaveNum(ZombieType.RedeyeGargantuar, error_code=3001)
         for i in range(0, board.mNumWaves):
             z_dic = {}
             for j in range(0, 50):
                 z_raw = board.mZombiesInWave[i, j]
-                z = safe_int(z_raw, default=-1, error_code=3002)
+                z = safe_int_WaveNum(z_raw, default=-1, error_code=3002)
                 if z == -1:
                     break
                 z_dic[z] = z_dic.get(z, 0) + 1
@@ -110,21 +120,25 @@ else:
             return f"[{m.Groups[1].Value},{m.Groups[2].Value}]"
         json_str = Regex.Replace(json_str, r'\[\s*(-?\d+)\s*,\s*(-?\d+)\s*\]', MatchEvaluator(replacer))
 
-        default_dir = r"{DEFAULTPATH}"
-        if not Directory.Exists(default_dir):
-            Directory.CreateDirectory(default_dir)
-        file_path = Path.Combine(default_dir, "ZombiesInWave.json")
-        if File.Exists(file_path):
-            File.Delete(file_path)
-        File.WriteAllText(file_path, json_str)
-
-        # 使用 ShellExecute 打开文件
-        try:
-            from System.Diagnostics import Process, ProcessStartInfo
-            psi = ProcessStartInfo(file_path)
-            psi.UseShellExecute = True
-            Process.Start(psi)
-        except Exception as e:
-            LOG(e, 4001)
+        base64_str = Convert.ToBase64String(Encoding.UTF8.GetBytes(json_str))
+        out_lines.append("WAVE_JSON_START")
+        out_lines.append(base64_str)
+        out_lines.append("WAVE_JSON_END")
     except Exception as e:
-        LOG(e, 4002)
+        err_msg = "[ErrorCode 4002] {}".format(repr(e))
+        out_lines.append(err_msg)
+
+    out_lines.append("===END===")
+    print("\n".join(out_lines))
+
+    try:
+        import sys
+        sys.stdout.flush()
+    except Exception:
+        pass
+
+    if err_msg is not None:
+        try:
+            app.DoDialog(16, True, "ERROR!", err_msg, "OK", 3)
+        except Exception:
+            pass

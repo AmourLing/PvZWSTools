@@ -11,6 +11,7 @@ using Android.Widget;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PvZWSTools_Avalonia.Helpers;
+using Constants = PvZWSTools_Shared.Helpers.Constants;
 
 namespace PvZWSTools_Avalonia;
 
@@ -27,7 +28,6 @@ public class FormationFragment:BaseFragment
 
     protected override Dictionary<int, string> OptionFileMappings => new Dictionary<int, string>
     {
-        // 固定选项文件映射
         [Resource.String.formation_strings_1_1_key] = "卡槽序",
         [Resource.String.formation_strings_1_2_key] = "卡槽",
         [Resource.String.formation_strings_1_3_key] = "开关1",
@@ -41,6 +41,7 @@ public class FormationFragment:BaseFragment
         [Resource.String.formation_strings_9_1_key] = "行",
         [Resource.String.formation_strings_9_2_key] = "道路状况",
         [Resource.String.formation_strings_9_3_key] = "开关1",
+        [Resource.String.formation_strings_11_1_key] = "戴夫选卡数量",
     };
 
     protected override void InitializeMap()
@@ -62,6 +63,9 @@ public class FormationFragment:BaseFragment
         Map[GetString(Resource.String.formation_strings_10_1_key)] = GetString(Resource.String.formation_strings_10_1_value);
         Map[GetString(Resource.String.formation_strings_10_2_key)] = GetString(Resource.String.formation_strings_10_2_value);
         Map[GetString(Resource.String.formation_strings_10_3_key)] = GetString(Resource.String.formation_strings_10_3_value);
+
+        Map[GetString(Resource.String.formation_strings_11_1_key)] = GetString(Resource.String.formation_strings_11_1_value);
+
     }
 
     // -------- 生命周期 --------
@@ -192,6 +196,22 @@ public class FormationFragment:BaseFragment
                 },
                 Map,
                 BuildDropdownOptions(key1, key2, key3) // 仅 key3 有下拉选项
+            );
+        };
+
+        // 按钮11：
+        view.FindViewById<Button>(Resource.Id.button11).Click += (sender, e) =>
+        {
+            string key = GetString(Resource.String.formation_strings_11_1_key);
+            CreateInputDialog.OptAndDone3(
+                Activity,
+                GetString(Resource.String.formation_strings_11),
+                BuildInitialData(key),
+                FragmentPath,
+                GetString(Resource.String.formation_strings_11),
+                new Dictionary<string, string> { ["{DAVEPICKNUM}"] = "0" },
+                Map,
+                BuildDropdownOptions(key)
             );
         };
 
@@ -494,7 +514,7 @@ public class FormationFragment:BaseFragment
                     {
                         string content = ExtractMsgFromWebSocketMessage(msg);
                         messageList.Add(content);
-                        if(content.Contains("SEEDPACKET_JSON_END"))
+                        if(content.Contains(Constants.Markers.SeedPacketJsonEnd))
                         {
                             ws.MessageReceived -= handler;
                             tcs.TrySetResult(messageList);
@@ -513,8 +533,8 @@ public class FormationFragment:BaseFragment
 
                     var allMessages = await tcs.Task;
                     string fullOutput = string.Join("", allMessages);
-                    const string startMarker = "SEEDPACKET_JSON_START";
-                    const string endMarker = "SEEDPACKET_JSON_END";
+                    string startMarker = Constants.Markers.SeedPacketJsonStart;
+                    string endMarker = Constants.Markers.SeedPacketJsonEnd;
                     int si = fullOutput.IndexOf(startMarker);
                     int ei = fullOutput.IndexOf(endMarker);
                     if(si == -1 || ei == -1 || ei <= si)
@@ -649,7 +669,7 @@ public class FormationFragment:BaseFragment
                     {
                         string content = ExtractMsgFromWebSocketMessage(msg);
                         messageList.Add(content);
-                        if(content.Contains("FORMATION_JSON_END"))
+                        if(content.Contains(Constants.Markers.FormationJsonEnd))
                         {
                             ws.MessageReceived -= handler;
                             tcs.TrySetResult(messageList);
@@ -668,8 +688,8 @@ public class FormationFragment:BaseFragment
 
                     var allMessages = await tcs.Task;
                     string fullOutput = string.Join("", allMessages);
-                    const string fStart = "FORMATION_JSON_START";
-                    const string fEnd = "FORMATION_JSON_END";
+                    string fStart = Constants.Markers.FormationJsonStart;
+                    string fEnd = Constants.Markers.FormationJsonEnd;
                     int si = fullOutput.IndexOf(fStart);
                     int ei = fullOutput.IndexOf(fEnd);
                     if(si == -1 || ei == -1 || ei <= si)

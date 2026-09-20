@@ -157,6 +157,12 @@ public class MainWindowViewModel:ViewModelBase
     /// </summary>
     public event EventHandler<UpdateInfoEventArgs>? ShowUpdateWindowRequested;
 
+    /// <summary>
+    /// 用户点击"获取更新"时触发：直接打开 UpdateWindow，检查在窗口内进行——
+    /// 查到新版本展示渠道，失败时窗口内也有常驻网盘入口可手动下载。
+    /// </summary>
+    public event EventHandler? OpenUpdateWindowRequested;
+
     public class UpdateInfoEventArgs(UpdateInfo info, bool isAuto):EventArgs
     {
         public UpdateInfo Info { get; } = info;
@@ -609,9 +615,8 @@ public class MainWindowViewModel:ViewModelBase
             Log.Error($"打开更新页面失败: {ex.Message}");
         }
 #else
-        // WPF 端：让 View 层打开 UpdateWindow（有渠道选择 UI）
-        // 先触发检查，查到新版本后 raise 事件
-        _ = CheckAndApplyUpdateAsync(isManual: true);
+        // WPF 端：直接打开更新窗口，检查在窗口内进行（失败时窗口里仍有常驻网盘入口）
+        OpenUpdateWindowRequested?.Invoke(this, EventArgs.Empty);
 #endif
     }
 

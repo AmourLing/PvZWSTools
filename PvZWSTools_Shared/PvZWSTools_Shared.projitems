@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Enums.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Log.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ScriptPayload.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Platform\IUserNotifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Platform\IUiThreadInvoker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\AppSettings.cs" />
@@ -31,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\NameOption.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ScriptParameter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UpdateInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\NetdiskChannel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DownloadProgress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StatePreset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\ButtonStateService.cs" />

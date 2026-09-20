@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
@@ -17,6 +16,9 @@ public class FormationViewModel:ViewModelBase
     private bool _bgDropdownToggleIsChecked;
 
     private string _bgInput = "白天";
+    private bool _davePickNumDropdownToggleIsChecked;
+
+    private string _davePickNumInput = "0";
     private string _formation_Sync_CardInput = Constants.c_Symbol_On;
     private bool _formationColDropdownToggleIsChecked;
     private string _formationColInput = "第1列";
@@ -48,6 +50,8 @@ public class FormationViewModel:ViewModelBase
     private NameOption _selectedSeedPacket;
     private NameOption _selectedSp1;
     private NameOption _selectedSp2;
+
+    private NameOption _selectedDavePickNum;
     private bool _slotDropdownToggleIsChecked;
     private string _spInput1 = "第1槽";
     private bool _spInput1DropdownToggleIsChecked;
@@ -76,7 +80,7 @@ public class FormationViewModel:ViewModelBase
         GridSquareTypeOptions = OptionsLoader.Load(Constants.JsonGridSquareTypeFile);
         FormationRowOptions = OptionsLoader.Load(Constants.JsonRowFile);
         FormationColOptions = OptionsLoader.Load(Constants.JsonColFile);
-
+        DavePickNumOptions = OptionsLoader.Load(Constants.JsonDavePickNumFile);
         LoadFormationOptions();
         LoadSeedPacketsOptions();
     }
@@ -88,6 +92,10 @@ public class FormationViewModel:ViewModelBase
     public ObservableCollection<NameOption> BackgroundOptions { get; }
     public bool BgDropdownToggleIsChecked { get => _bgDropdownToggleIsChecked; set { _bgDropdownToggleIsChecked = value; OnPropertyChanged(); } }
     public string BgInput { get => _bgInput; set { _bgInput = value; OnPropertyChanged(); } }
+    public ObservableCollection<NameOption> DavePickNumOptions { get; }
+    public bool DavePickNumDropdownToggleIsChecked { get => _davePickNumDropdownToggleIsChecked; set { _davePickNumDropdownToggleIsChecked = value; OnPropertyChanged(); } }
+    public string DavePickNumInput { get => _davePickNumInput; set { _davePickNumInput = value; OnPropertyChanged(); } }
+
 
     public bool FormationColDropdownToggleIsChecked { get => _formationColDropdownToggleIsChecked; set { _formationColDropdownToggleIsChecked = value; OnPropertyChanged(); } }
     public string FormationColInput { get => _formationColInput; set { _formationColInput = value; OnPropertyChanged(); } }
@@ -135,6 +143,7 @@ public class FormationViewModel:ViewModelBase
     public NameOption SelectedSeedPacket { get => _selectedSeedPacket; set { _selectedSeedPacket = value; if(value != null) SeedPacketsInput = value.Name; SeedPacketsDropdownToggleIsChecked = false; OnPropertyChanged(); } }
     public NameOption SelectedSp1 { get => _selectedSp1; set { _selectedSp1 = value; if(value != null) SpInput1 = value.Name; SpInput1DropdownToggleIsChecked = false; OnPropertyChanged(); } }
     public NameOption SelectedSp2 { get => _selectedSp2; set { _selectedSp2 = value; if(value != null) SpInput2 = value.Name; SlotDropdownToggleIsChecked = false; OnPropertyChanged(); } }
+    public NameOption SelectedDavePickNum { get => _selectedDavePickNum; set { _selectedDavePickNum = value; if(value != null) DavePickNumInput = value.Name; DavePickNumDropdownToggleIsChecked = false; OnPropertyChanged(); } }
 
     public bool SlotDropdownToggleIsChecked { get => _slotDropdownToggleIsChecked; set { _slotDropdownToggleIsChecked = value; OnPropertyChanged(); } }
     public ObservableCollection<NameOption> SlotOptions { get; }
@@ -162,7 +171,7 @@ public class FormationViewModel:ViewModelBase
                 }
             );
 
-            string jsonBase64 = ExtractJsonFromOutput(output, "FORMATION_JSON_START", "FORMATION_JSON_END");
+            string jsonBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.FormationJsonStart, Constants.Markers.FormationJsonEnd);
 
             if(string.IsNullOrEmpty(jsonBase64))
             {
@@ -248,7 +257,7 @@ public class FormationViewModel:ViewModelBase
                 new Dictionary<string, string> { ["{NAME}"] = SeedPacketsInput }
             );
 
-            string jsonBase64 = ExtractJsonFromOutput(output, "SEEDPACKET_JSON_START", "SEEDPACKET_JSON_END");
+            string jsonBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.SeedPacketJsonStart, Constants.Markers.SeedPacketJsonEnd);
 
             if(string.IsNullOrEmpty(jsonBase64))
             {
@@ -323,7 +332,16 @@ public class FormationViewModel:ViewModelBase
         }
         catch(Exception ex) { ShowError(ex.Message); }
     });
-
+    public ICommand DavePickNumCommand => new RelayCommand(async _ =>
+    {
+        try
+        {
+            string DavePickNumValue = NameOption.GetValue(DavePickNumInput, DavePickNumOptions);
+            await _scriptExec.ExecuteAsync(Constants.SubFolders.Formation, "戴夫选卡",
+                new Dictionary<string, string> { ["{DAVEPICKNUM}"] = DavePickNumValue });
+        }
+        catch(Exception ex) { ShowError(ex.Message); }
+    });
     public ICommand GridSquareTypeCommand => new RelayCommand(async _ =>
     {
         try
@@ -396,48 +414,6 @@ public class FormationViewModel:ViewModelBase
     public ICommand ToggleImitaterSlotCommand => new RelayCommand(_ => ImitaterSlot = ButtonHelper.ToggleCheck(ImitaterSlot));
     public ICommand ToggleSpImitaterCommand => new RelayCommand(_ => SpInput3 = ButtonHelper.ToggleCheck(SpInput3));
 
-    /// <summary>
-    /// 从脚本输出中提取 JSON 数据（支持 Base64 或纯 JSON）
-    /// </summary>
-    private string ExtractJsonFromOutput(string output, string startMarker, string endMarker)
-    {
-        if(string.IsNullOrEmpty(output)) return null;
-
-        if(!string.IsNullOrEmpty(startMarker) && !string.IsNullOrEmpty(endMarker))
-        {
-            int startIdx = output.IndexOf(startMarker);
-            int endIdx = output.IndexOf(endMarker);
-
-            if(startIdx != -1 && endIdx != -1 && endIdx > startIdx)
-            {
-                string content = output.Substring(startIdx + startMarker.Length, endIdx - startIdx - startMarker.Length).Trim();
-                if(!string.IsNullOrEmpty(content))
-                {
-                    return Regex.Replace(content, @"\s+", "");
-                }
-            }
-        }
-
-        int braceStart = output.LastIndexOf('{');
-        int braceEnd = output.LastIndexOf('}');
-
-        if(braceStart != -1 && braceEnd != -1 && braceEnd > braceStart)
-        {
-            string potentialJson = output.Substring(braceStart, braceEnd - braceStart + 1);
-            if(potentialJson.StartsWith("{") && potentialJson.EndsWith("}"))
-            {
-                return potentialJson;
-            }
-        }
-
-        if(!output.Contains("{") && Regex.IsMatch(output.Trim(), @"^[A-Za-z0-9+/=]+$"))
-        {
-            return output.Trim();
-        }
-
-        return null;
-    }
-
     private async Task SaveSeedPacketsAsync(string name)
     {
         string output = await _scriptExec.ExecuteWithResultAsync(
@@ -446,7 +422,7 @@ public class FormationViewModel:ViewModelBase
             new Dictionary<string, string> { ["{NAME}"] = name }
         );
 
-        string jsonBase64 = ExtractJsonFromOutput(output, "SEEDPACKET_JSON_START", "SEEDPACKET_JSON_END");
+        string jsonBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.SeedPacketJsonStart, Constants.Markers.SeedPacketJsonEnd);
 
         if(string.IsNullOrEmpty(jsonBase64))
         {

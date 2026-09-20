@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -36,6 +36,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/spawning_strings_6" />
+        <!-- 排在 button6 之后显示；id 编号与位置无关，见 strings.xml 说明 -->
+        <Button
+            android:id="@+id/button10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/spawning_strings_10" />
         <Button
             android:id="@+id/button7"
             android:layout_width="match_parent"
@@ -46,6 +52,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/spawning_strings_8" />
+        <Button
+    android:id="@+id/button9"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/spawning_strings_9" />
     </TableLayout>
 </ScrollView>
 

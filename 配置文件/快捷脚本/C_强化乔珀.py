@@ -9,6 +9,14 @@ from Sexy import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
+# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
+for _legacy_hook_name in ['Board_GetCurrentPlantCost', 'Plant_PlantInitialize']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 # 1. 基础属性
 CHOMPER_INITIAL_HEALTH = 4000       # 大嘴花初始生命值
 CHOMPER_HEIGHT = 81                 # 大嘴花高度判定 (用于撑杆跳判断)
@@ -54,7 +62,7 @@ def Get_Chomper_Biting_StateCountdown(zombie):
 
 # 初始化
 @M.HookTo(Plant.PlantInitialize)
-def Plant_PlantInitialize(orig, self, theX, theY, theSeedType, theImitaterType):
+def Plant_PlantInitialize_QPerk(orig, self, theX, theY, theSeedType, theImitaterType):
     orig(self, theX, theY, theSeedType, theImitaterType)
 
     if self.mSeedType == SeedType.Chomper:
@@ -393,7 +401,7 @@ def Board_PlantUsesAccelerated(orig, self, theSeedType):
 
 # 植物涨价速度
 @M.HookTo(Board.GetCurrentPlantCost)
-def Board_GetCurrentPlantCost(orig, self, theSeedType, theImitaterType):
+def Board_GetCurrentPlantCost_QPerk(orig, self, theSeedType, theImitaterType):
     tst = theSeedType
     tit = theImitaterType
     if theSeedType == SeedType.Imitater:

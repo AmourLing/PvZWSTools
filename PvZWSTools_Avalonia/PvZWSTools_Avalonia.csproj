@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk" InitialTargets="CleanManifestBom">
 
     <PropertyGroup>
-        <Version>2026.9.7.0</Version>
-        <InformationalVersion>2026.09.07</InformationalVersion>
+        <Version>2026.9.18.0</Version>
+        <InformationalVersion>2026.09.18</InformationalVersion>
         <AndroidKeyStore>true</AndroidKeyStore>
         <AndroidSigningKeyStore>PvZWSTools.keystore</AndroidSigningKeyStore>
         <AndroidSigningKeyAlias>PvZWSTools</AndroidSigningKeyAlias>

@@ -56,5 +56,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/formation_strings_10" />
+        <Button
+    android:id="@+id/button11"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/formation_strings_11" />
     </TableLayout>
 </ScrollView>

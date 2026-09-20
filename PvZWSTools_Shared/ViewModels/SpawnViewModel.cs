@@ -12,7 +12,7 @@ public class SpawnViewModel:ViewModelBase
         ["BUNGEE_FLAG_CHECK"] = nameof(BungeeCheck),
         ["REDEYE_FLAG_CHECK"] = nameof(RedeyeCheck),
         ["STOP_SPAWN_CHECK"] = nameof(StopSpawn),
-        ["MAXPOINT_CHECK"] = nameof(MaxPoint)
+        ["MAXPOINT_CHECK"] = nameof(MaxPoint),
     };
 
     private readonly string _defaultPath;
@@ -66,6 +66,9 @@ public class SpawnViewModel:ViewModelBase
     private string _zombieWallnutHead = Constants.c_Symbol_Off;
     private string _zombieYeti = Constants.c_Symbol_Off;
     private string _zombieZamboni = Constants.c_Symbol_Off;
+
+    private string _nextWave = Constants.c_Symbol_Off;
+    private string _nextWave_Name = "下一波";
 
     public SpawnViewModel(IScriptExecutionService scriptExec, string defaultPath, IMessageProcessor messageProcessor, IUiThreadInvoker uiThread)
     {
@@ -121,7 +124,19 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand LimitTestCommand => new RelayCommand(async _ => await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "极限出怪测试"));
 
-    public ICommand LoadJsonZombiesInWaveCommand => new RelayCommand(async _ => await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "载入json", new Dictionary<string, string> { [Constants.Placeholders.DefaultPath] = _defaultPath }));
+    public ICommand LoadJsonZombiesInWaveCommand => new RelayCommand(async _ =>
+        {
+            string wavePath = GetSpawnWaveFilePath();
+            string? waveBase64 = await ScriptPayload.ReadFileAsBase64Async(wavePath);
+            if(string.IsNullOrEmpty(waveBase64))
+            {
+                Log.Error($"波次出怪文件不存在：{wavePath}，请先执行「波次出怪(数量)」导出。");
+                return;
+            }
+
+            await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "载入json",
+                new Dictionary<string, string> { [Constants.Placeholders.WaveJsonBase64] = waveBase64 });
+        });
 
     public string MaxPoint
     {
@@ -151,7 +166,13 @@ public class SpawnViewModel:ViewModelBase
                 }))
                 RedeyeCheck = __old;
         });
+    public string NextWave
+    {
+        get => _nextWave;
+        set => SetProperty(ref _nextWave, value);
+    }
 
+    public ICommand NextWaveCommand => CreateToggleCommand(() => NextWave, "下一波");
     public string StopSpawn
     {
         get => _stopSpawn;
@@ -453,16 +474,79 @@ public class SpawnViewModel:ViewModelBase
 
     public ICommand ZombieRobotTitanCommand => CreateSpawnToggleCommand("ZombieRobotTitan");
 
+    /// <summary>波次出怪 JSON 的存放目录：配置文件/出怪/。</summary>
+    private string GetSpawnWaveDir() =>
+        System.IO.Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_SpawnWave);
+
+    private string GetSpawnWaveFilePath() =>
+        System.IO.Path.Combine(GetSpawnWaveDir(), Constants.JsonWaveFile);
+
+    /// <summary>僵尸名称映射表（配置文件/选项/僵尸.json）的 Base64，内联给脚本用。</summary>
+    private async Task<string> ReadZombieNameMapBase64Async() =>
+        await ScriptPayload.ReadFileAsBase64Async(
+            System.IO.Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_Options, Constants.JsonZombieFile))
+            ?? string.Empty;
+
     public ICommand ZombiesInWaveCountCommand => new RelayCommand(async _ =>
         {
-            string path = System.IO.Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_Options, Constants.JsonZombieFile);
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "波次出怪_数量", new Dictionary<string, string> { [Constants.Placeholders.Path] = path, [Constants.Placeholders.DefaultPath] = _defaultPath, [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(JsonEditZombiesInWave) });
+            string checkValue = ButtonHelper.GetCheckValue(JsonEditZombiesInWave);
+            var placeholders = new Dictionary<string, string>
+            {
+                [Constants.Placeholders.ZombieJsonBase64] = await ReadZombieNameMapBase64Async(),
+                [Constants.Placeholders.Check] = checkValue
+            };
+
+            if(checkValue != Constants.c_Value_Checked)
+            {
+                await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "波次出怪_数量", placeholders);
+                return;
+            }
+
+            try
+            {
+                string output = await _scriptExec.ExecuteWithResultAsync(Constants.SubFolders.Spawn, "波次出怪_数量", placeholders);
+                string? waveBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.WaveJsonStart, Constants.Markers.WaveJsonEnd);
+                if(string.IsNullOrEmpty(waveBase64))
+                {
+                    Log.Error($"未能从脚本输出中提取波次出怪数据，请确认当前在关卡内且已开启 json 编辑。输出：{output}");
+                    return;
+                }
+
+                string savedPath = await ScriptPayload.WriteBase64ToAsync(GetSpawnWaveDir(), Constants.JsonWaveFile, waveBase64);
+                Log.Info($"波次出怪数据已保存到 {savedPath}");
+                OpenWithExternalEditor(savedPath);
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"导出波次出怪失败：{ex}");
+            }
         });
+
+    /// <summary>Windows 下用系统关联程序打开导出的 JSON 供编辑；Android 端由 SpawningFragment 的应用内编辑器接管。</summary>
+    private static void OpenWithExternalEditor(string path)
+    {
+#if ANDROID
+        _ = path;
+#else
+        try
+        {
+            _ = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch(Exception ex)
+        {
+            Log.Warning($"已保存到 {path}，但无法自动打开：{ex.Message}");
+        }
+#endif
+    }
 
     public ICommand ZombiesInWaveIndexCommand => new RelayCommand(async _ =>
         {
-            string path = System.IO.Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_Options, Constants.JsonZombieFile);
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "波次出怪_序号", new Dictionary<string, string> { [Constants.Placeholders.Path] = path, [Constants.Placeholders.DefaultPath] = _defaultPath, [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(JsonEditZombiesInWave) });
+            var placeholders = new Dictionary<string, string>
+            {
+                [Constants.Placeholders.ZombieJsonBase64] = await ReadZombieNameMapBase64Async(),
+                [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(JsonEditZombiesInWave)
+            };
+            await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "波次出怪_序号", placeholders);
         });
 
     public string ZombieSnorkel
@@ -568,6 +652,7 @@ public class SpawnViewModel:ViewModelBase
             var newState = ButtonHelper.ToggleCheck(current);
             if(scriptName == "暂停出怪") StopSpawn = newState;
             else if(scriptName == "最大密度") MaxPoint = newState;
+            else if(scriptName == _nextWave_Name)NextWave = newState;
             await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, scriptName,
                 new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(newState) });
         });

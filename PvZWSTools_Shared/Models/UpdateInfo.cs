@@ -24,21 +24,11 @@ public class UpdateInfo
     [JsonProperty("published_at")]
     public DateTime? PublishedAt { get; set; }
 
-    /// <summary>主下载地址（GitHub Release asset 直链）。</summary>
-    [JsonProperty("url")]
-    public string? DownloadUrl { get; set; }
+    /// <summary>GitHub Release 资产直链；该源未提供匹配资产时为 null。</summary>
+    public string? GithubUrl { get; set; }
 
-    /// <summary>Fallback 下载地址（Gitee Release asset 直链）。</summary>
-    [JsonProperty("fallback_url")]
-    public string? DownloadUrlFallback { get; set; }
-
-    /// <summary>百度网盘下载地址（分享链接，自动解析提取码）。</summary>
-    [JsonProperty("baidu_url")]
-    public string? DownloadUrlBaidu { get; set; }
-
-    /// <summary>百度网盘提取码（若 URL 中未包含）。</summary>
-    [JsonIgnore]
-    public string? BaiduExtractCode { get; set; }
+    /// <summary>Gitee Release 附件直链；该源未提供匹配资产时为 null。</summary>
+    public string? GiteeUrl { get; set; }
 
     /// <summary>期望的 SHA256（若 Release 中提供 sha256 资产，否则为 null）。</summary>
     [JsonProperty("sha256")]
@@ -48,7 +38,10 @@ public class UpdateInfo
     [JsonProperty("size")]
     public long? Size { get; set; }
 
-    /// <summary>当前来源（"github" 或 "gitee"），便于日志排查。</summary>
+    /// <summary>
+    /// 版本信息（tag / 更新说明）来自哪个源："github" 或 "gitee"。
+    /// 同时决定 <see cref="GithubUrl"/> 与 <see cref="GiteeUrl"/> 谁先被下载。
+    /// </summary>
     [JsonIgnore]
     public string? Source { get; set; }
 

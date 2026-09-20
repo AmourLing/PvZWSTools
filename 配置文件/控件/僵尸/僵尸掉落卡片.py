@@ -14,7 +14,7 @@ from LawnMod import MonoModUtils as M
 
 DROPPACKET_CHECK = {CHECK}
 
-def LOG(e, code=0):
+def LOG_ZDrop(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     try:
         app = GlobalStaticVars.gLawnApp
@@ -54,7 +54,7 @@ def GetSeedTypeNum():
                 return seed_type
         return 0  # 理论上不会执行到这里
     except Exception as e:
-        LOG(e, 5001)
+        LOG_ZDrop(e, 5001)
         return 0
 
 @M.HookTo(Zombie.DropLoot)
@@ -77,4 +77,4 @@ def Zombie_DropLoot(orig, self):
         else:
             orig(self)
     except Exception as e:
-        LOG(e, 5002)
+        LOG_ZDrop(e, 5002)

@@ -6,7 +6,7 @@
     },
     {
         "Name": "冰豆",
-        "Value": "SnowPea",
+        "Value": "Snowpea",
         "Default": "20"
     },
     {
@@ -27,12 +27,12 @@
     {
         "Name": "冰西瓜",
         "Value": "Wintermelon",
-        "Default": "40"
+        "Default": "80"
     },
     {
         "Name": "火豆",
         "Value": "Fireball",
-        "Default": "80"
+        "Default": "40"
     },
     {
         "Name": "星星",
@@ -40,11 +40,15 @@
         "Default": "20"
     },
     {
-        "Name": "刺",
+        "Name": "仙人掌刺",
         "Value": "Spike",
         "Default": "20"
     },
-
+    {
+        "Name": "海蘑菇",
+        "Value": "PuffGreen",
+        "Default": "20"
+    },
     {
         "Name": "篮球",
         "Value": "Basketball",
@@ -54,11 +58,6 @@
         "Name": "玉米粒",
         "Value": "Kernel",
         "Default": "20"
-    },
-    {
-        "Name": "玉米炮弹",
-        "Value": "Cobbig",
-        "Default": "300"
     },
     {
         "Name": "黄油",
@@ -91,7 +90,22 @@
         "Default": "40"
     },
     {
-        "Name": "灰烬",
+        "Name": "地刺/地刺王",
+        "Value": "rowarea_spike",
+        "Default": "20"
+    },
+    {
+        "Name": "大喷菇",
+        "Value": "rowarea_fume",
+        "Default": "20"
+    },
+    {
+        "Name": "忧郁菇(曾)",
+        "Value": "rowarea_gloom",
+        "Default": "20"
+    },
+    {
+        "Name": "灰烬(含玉米炮)",
         "Value": "huijin",
         "Default": "1800"
     },

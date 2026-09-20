@@ -40,29 +40,15 @@ public class ScriptFragment:AndroidX.Fragment.App.Fragment
         Button btnScript = view.FindViewById<Button>(Resource.Id.button1);
         btnScript.Click += (sender, e) =>
         {
-            CreateInputDialog.OptAndDone3(Activity, GetString(Resource.String.script_strings_1), new Dictionary<string, string>
-            {
-                [GetString(Resource.String.script_strings_1_0_key)] = map[GetString(Resource.String.script_strings_1_0_key)],
-                [GetString(Resource.String.script_strings_1_1_key)] = map[GetString(Resource.String.script_strings_1_1_key)],
-                [GetString(Resource.String.script_strings_1_2_key)] = map[GetString(Resource.String.script_strings_1_2_key)],
-                [GetString(Resource.String.script_strings_1_3_key)] = map[GetString(Resource.String.script_strings_1_3_key)],
-                [GetString(Resource.String.script_strings_1_4_key)] = map[GetString(Resource.String.script_strings_1_4_key)],
-                [GetString(Resource.String.script_strings_1_5_key)] = map[GetString(Resource.String.script_strings_1_5_key)],
-                [GetString(Resource.String.script_strings_1_6_key)] = map[GetString(Resource.String.script_strings_1_6_key)],
-                [GetString(Resource.String.script_strings_1_7_key)] = map[GetString(Resource.String.script_strings_1_7_key)],
-                [GetString(Resource.String.script_strings_1_8_key)] = map[GetString(Resource.String.script_strings_1_8_key)],
-            }, "快捷脚本", string.Empty, new Dictionary<string, string>
-            {
-                ["{NAME}"] = "0",
-                ["{1}"] = "1",
-                ["{2}"] = "2",
-                ["{3}"] = "3",
-                ["{4}"] = "4",
-                ["{5}"] = "5",
-                ["{6}"] = "6",
-                ["{7}"] = "7",
-                ["{8}"] = "8",
-            }, map, ModOptions);
+            // 与 WPF 端一致：先选脚本，再按 <脚本>.py.config.json 动态出参数框
+            CreateInputDialog.Opt3(Activity, GetString(Resource.String.script_strings_1),
+                new Dictionary<string, string>
+                {
+                    [GetString(Resource.String.script_strings_1_0_key)] = GetString(Resource.String.script_strings_1_0_value),
+                }, map, ModOptions, _ =>
+                {
+                    CreateInputDialog.RunQuickScript(Activity, map[GetString(Resource.String.script_strings_1_0_key)]);
+                });
         };
         return view;
     }
@@ -81,14 +67,6 @@ public class ScriptFragment:AndroidX.Fragment.App.Fragment
         map = new Dictionary<string, string>
         {
             [GetString(Resource.String.script_strings_1_0_key)] = GetString(Resource.String.script_strings_1_0_value),
-            [GetString(Resource.String.script_strings_1_1_key)] = GetString(Resource.String.script_strings_1_1_value),
-            [GetString(Resource.String.script_strings_1_2_key)] = GetString(Resource.String.script_strings_1_2_value),
-            [GetString(Resource.String.script_strings_1_3_key)] = GetString(Resource.String.script_strings_1_3_value),
-            [GetString(Resource.String.script_strings_1_4_key)] = GetString(Resource.String.script_strings_1_4_value),
-            [GetString(Resource.String.script_strings_1_5_key)] = GetString(Resource.String.script_strings_1_5_value),
-            [GetString(Resource.String.script_strings_1_6_key)] = GetString(Resource.String.script_strings_1_6_value),
-            [GetString(Resource.String.script_strings_1_7_key)] = GetString(Resource.String.script_strings_1_7_value),
-            [GetString(Resource.String.script_strings_1_8_key)] = GetString(Resource.String.script_strings_1_8_value),
         };
     }
 

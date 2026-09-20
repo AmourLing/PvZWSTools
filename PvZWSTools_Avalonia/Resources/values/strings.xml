@@ -55,6 +55,10 @@
     <string name="others_strings_11_1_key">补充肥料杀虫剂{CHECK}</string>
     <string name="others_strings_11_1_value">0</string>
 
+    <string name="others_strings_12">游戏速度</string>
+    <string name="others_strings_12_1_key">选择游戏速度</string>
+    <string name="others_strings_12_1_value">1</string>
+
     <string name="level_strings_1">EnterNewLevel</string>
 
     <string name="level_strings_2">直接过关</string>
@@ -176,6 +180,10 @@
     <string name="plant_strings_17">路灯花觉醒</string>
     <string name="plant_strings_17_1_key">路灯花觉醒{CHECK}</string>
     <string name="plant_strings_17_1_value">0</string>
+
+    <string name="plant_strings_18">伞弹车常驻</string>
+    <string name="plant_strings_18_1_key">伞弹车常驻{CHECK}</string>
+    <string name="plant_strings_18_1_value">0</string>
 
     <string name="zombie_strings_1">僵尸血量显示</string>
     <string name="zombie_strings_1_1_key">僵尸血量显示{CHECK}</string>
@@ -329,6 +337,9 @@
     <string name="spawning_strings_5_1_value">0</string>
 
     <string name="spawning_strings_6">波次出怪_数量</string>
+    <!-- 后缀数字是按钮 id、不是显示顺序：本条对应 layout 里的 button10，排在波次出怪_数量后面。
+         这些文案同时被当作脚本文件名用，所以不要为了排序去改编号。 -->
+    <string name="spawning_strings_10">波次出怪_序号</string>
     <string name="spawning_strings_7">载入json</string>
 
     <string name="spawning_strings_8">刷新血量</string>
@@ -336,6 +347,10 @@
     <string name="spawning_strings_8_1_value">0.5</string>
     <string name="spawning_strings_8_2_key">出怪血量最大比例</string>
     <string name="spawning_strings_8_2_value">0.65</string>
+
+    <string name="spawning_strings_9">下一波</string>
+    <string name="spawning_strings_9_1_key">下一波{CHECK}</string>
+    <string name="spawning_strings_9_1_value">0</string>
 
     <string name="board_strings_1">放置植物</string>
     <string name="board_strings_1_1_key">植物行</string>
@@ -532,6 +547,10 @@
     <string name="formation_strings_10_3_key">类型</string>
     <string name="formation_strings_10_3_value">1</string>
 
+    <string name="formation_strings_11">戴夫选卡</string>
+    <string name="formation_strings_11_1_key">戴夫选卡数量</string>
+    <string name="formation_strings_11_1_value">0</string>
+
     <string name="sync_card_label">同步卡组</string>
     <string name="sync_card_yes">是</string>
     <string name="sync_card_no">否</string>
@@ -549,23 +568,19 @@
     <string name="fun_strings_3_1_key">随机卡槽{CHECK}</string>
     <string name="fun_strings_3_1_value">0</string>
 
+    <string name="fun_strings_4">手套常驻</string>
+    <string name="fun_strings_4_1_key">手套常驻{CHECK}</string>
+    <string name="fun_strings_4_1_value">0</string>
+
+    <string name="fun_strings_5">融合常驻</string>
+    <string name="fun_strings_5_1_key">融合常驻{CHECK}</string>
+    <string name="fun_strings_5_1_value">0</string>
+
+    <string name="fun_strings_6">垃圾桶常驻</string>
+    <string name="fun_strings_6_1_key">垃圾桶常驻{CHECK}</string>
+    <string name="fun_strings_6_1_value">0</string>
+
     <string name="script_strings_1">快捷脚本</string>
     <string name="script_strings_1_0_key">请输入脚本名称</string>
     <string name="script_strings_1_0_value">example</string>
-    <string name="script_strings_1_1_key">参数{1}</string>
-    <string name="script_strings_1_1_value">0</string>
-    <string name="script_strings_1_2_key">参数{2}</string>
-    <string name="script_strings_1_2_value">0</string>
-    <string name="script_strings_1_3_key">参数{3}</string>
-    <string name="script_strings_1_3_value">0</string>
-    <string name="script_strings_1_4_key">参数{4}</string>
-    <string name="script_strings_1_4_value">0</string>
-    <string name="script_strings_1_5_key">参数{5}</string>
-    <string name="script_strings_1_5_value">0</string>
-    <string name="script_strings_1_6_key">参数{6}</string>
-    <string name="script_strings_1_6_value">0</string>
-    <string name="script_strings_1_7_key">参数{7}</string>
-    <string name="script_strings_1_7_value">0</string>
-    <string name="script_strings_1_8_key">参数{8}</string>
-    <string name="script_strings_1_8_value">0</string>
 </resources>

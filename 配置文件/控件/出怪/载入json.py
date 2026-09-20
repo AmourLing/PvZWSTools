@@ -1,17 +1,19 @@
 #载入json
 # 载入僵尸出怪列表
 # 2025.07.05 (使用 eval 解析 JSON，简单可靠)
+# 2026.09.18 出怪数据由宿主内联传入，脚本不再读磁盘（跨平台）
 
 import clr
-clr.AddReference("System.IO")
-from System.IO import Path, File
+clr.AddReference("System")
+from System import Convert
+from System.Text import Encoding
 from Lawn import *
 from Sexy import *
 
 app = GlobalStaticVars.gLawnApp
 board = app.mBoard
 
-def LOG(e, code=0):
+def LOG_LoadJson(e, code=0):
     msg = f"[ErrorCode {code}] {repr(e)}"
     try:
         if app is not None:
@@ -21,14 +23,14 @@ def LOG(e, code=0):
     print(msg)
 
 def load_zombies_data():
-    default_dir = r"{DEFAULTPATH}"
-    file_path = Path.Combine(default_dir, "ZombiesInWave.json")
-    if not File.Exists(file_path):
-        LOG(Exception(f"文件不存在: {file_path}"), 1001)
+    # 宿主整份文本替换占位符；未替换说明还没导出过波次数据
+    payload = r"{WAVE_JSON_B64}"
+    if not payload or payload.startswith("{"):
+        LOG_LoadJson(Exception("未收到出怪数据，请先执行波次出怪(数量)导出"), 1001)
         return 0, []
 
     try:
-        content = File.ReadAllText(file_path)
+        content = Encoding.UTF8.GetString(Convert.FromBase64String(payload))
         # 将 JSON 转换为 Python 字面量
         import re
         content = re.sub(r'\btrue\b', 'True', content)
@@ -62,11 +64,11 @@ def load_zombies_data():
         return 0, []
 
 if board is None:
-    LOG(Exception("未找到board进程"), 2001)
+    LOG_LoadJson(Exception("未找到board进程"), 2001)
 else:
     num_waves, waves = load_zombies_data()
     if num_waves <= 0:
-        LOG(Exception("加载的出怪数据无效或波数为0"), 2002)
+        LOG_LoadJson(Exception("加载的出怪数据无效或波数为0"), 2002)
     else:
         try:
             board.mNumWaves = num_waves
@@ -84,4 +86,4 @@ else:
                 board.mZombiesInWave[i, num] = ZombieType(-1)
             print("出怪列表加载成功！")
         except Exception as e:
-            LOG(e, 2003)
+            LOG_LoadJson(e, 2003)

@@ -65,7 +65,7 @@ public class ResourcesFragment:BaseFragment
                 BuildInitialData(key1, key2),
                 FragmentPath,
                 GetString(Resource.String.resources_strings_1),
-                new Dictionary<string, string> { ["{DAMAGE}"] = "0", ["{DAMAGE2}"] = "1" },
+                new Dictionary<string, string> { ["{DAMAGE}"] = "Pea", ["{DAMAGE2}"] = "20" },
                 Map,
                 BuildDropdownOptions(key1) // 仅 key1 有下拉选项
             );

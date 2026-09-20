@@ -6,6 +6,10 @@ AddSeedPacketsCommand
 AddZombieCommand
 AdventureInput
 AllowMindCtrl
+AlwaysFusionMode
+AlwaysFusionModeCommand
+AlwaysHasTrashcan
+AlwaysHasTrashcanCommand
 AutoCollect
 AutoCollectCommand
 AutoFertilizerBugSpray
@@ -83,6 +87,10 @@ DamageInput2
 DamageOptions
 DamageSelected
 DamageSetCommand
+DavePickNumCommand
+DavePickNumDropdownToggleIsChecked
+DavePickNumInput
+DavePickNumOptions
 DeMowerCommand
 DeltamXInput
 DeltamYInput
@@ -118,9 +126,16 @@ Formation_Sync_CardInput
 FreePlant
 FreePlantCommand
 Fun
+GameRunSpeedCommand
+GameRunSpeedDropdownToggleIsChecked
+GameRunSpeedInput
+GameRunSpeedOptions
+GameRunSpeedSelected
 Garden
 GardenButtonCommand
 GetZombieSpawnCommand
+GloveAlways
+GloveAlwaysCommand
 GridSquareTogetInput
 GridSquareTypeCommand
 GridSquareTypeDropdownToggleIsChecked
@@ -168,6 +183,8 @@ MoneyCount
 MoneyCountLimit
 MoneyLimitSetCommand
 MoneySetCommand
+NextWave
+NextWaveCommand
 NoCDPlanting
 NoCDPlantingCommand
 NoCostPlanting
@@ -237,6 +254,7 @@ SelectedBg
 SelectedClear
 SelectedCoin
 SelectedCol
+SelectedDavePickNum
 SelectedFormation
 SelectedFormationCol
 SelectedFormationRow
@@ -313,6 +331,8 @@ ToggleLimitZombieGetDebuffCommand
 ToggleMindCtrlCommand
 ToggleSpImitaterCommand
 ToggleZXPermitCommand
+UmbrellaTriggerRV
+UmbrellaTriggerRVCommand
 UpdateButtonStatusCommand
 UpdateDownloadedMB
 UpdateProgress

@@ -41,6 +41,15 @@
                 Margin="0,8,0,0"
                 Foreground="{DynamicResource TextSecondaryBrush}"
                 Text="{Binding StatusText}" />
+            <!-- 常驻手动入口：不依赖检查结果，随时可跳转夸克网盘查看/下载 -->
+            <TextBlock
+                Margin="0,4,0,0"
+                FontSize="12"
+                Foreground="#666">
+                <Run Text="检查不到更新？可随时前往" />
+                <Hyperlink Click="QuarkLink_Click" Foreground="#0078D4">夸克网盘</Hyperlink>
+                <Run Text="手动查看下载" />
+            </TextBlock>
         </StackPanel>
 
         <!-- 发现新版本区域（默认隐藏） -->
@@ -53,23 +62,21 @@
             </StackPanel>
 
             <!-- 更新渠道选择 -->
+            <!-- 更新渠道选择：Channels 由后端按可用渠道动态填充，互斥在 code-behind 里维护 -->
             <TextBlock Margin="0,8,0,4" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Text="下载渠道：" />
-            <StackPanel>
-                <RadioButton
-                    Content="GitHub （海外高速，国内可能较慢）"
-                    IsChecked="{Binding SourceIsGithub}"
-                    IsEnabled="{Binding HasGithub}" />
-                <RadioButton
-                    Content="Gitee （国内高速，推荐）"
-                    Margin="0,2,0,0"
-                    IsChecked="{Binding SourceIsGitee}"
-                    IsEnabled="{Binding HasGitee}" />
-                <RadioButton
-                    Content="百度网盘 （国内备用，需提取码）"
-                    Margin="0,2,0,0"
-                    IsChecked="{Binding SourceIsBaidu}"
-                    IsEnabled="{Binding HasBaidu}" />
-            </StackPanel>
+            <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Channels}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton
+                                Margin="0,2,0,2"
+                                Content="{Binding Display}"
+                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                IsEnabled="{Binding IsEnabled}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </StackPanel>
 
         <!-- 更新说明 -->
