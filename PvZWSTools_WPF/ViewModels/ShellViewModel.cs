@@ -32,8 +32,33 @@ public sealed class ShellViewModel : INotifyPropertyChanged
 
     public ObservableCollection<NavItem> Pages { get; } = new();
 
-    /// <summary>收藏页的内容，顺序始终跟清单里的原有顺序一致，不按收藏先后。</summary>
-    public ObservableCollection<UnitDescriptor> FavoriteUnits { get; } = new();
+    /// <summary>收藏页的内容：收藏区 + 常用区，两个都是实时集合，界面不用重建绑定。</summary>
+    public sealed class FavoritesPanel : INotifyPropertyChanged
+    {
+        public ObservableCollection<UnitDescriptor> Favorites { get; } = new();
+        public ObservableCollection<UnitDescriptor> Frequent { get; } = new();
+
+        /// <summary>
+        /// 空状态提示用这两个开关，而不是直接绑集合的 Count ——
+        /// ObservableCollection 只在内容变化时发 CollectionChanged，不发 PropertyChanged(Count)，
+        /// 绑 Count 的触发器不会跟着刷新。
+        /// </summary>
+        public bool HasFavorites => Favorites.Count > 0;
+        public bool HasFrequent => Frequent.Count > 0;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void RefreshFlags()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasFavorites)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasFrequent)));
+        }
+    }
+
+    public FavoritesPanel FavoritePanel { get; } = new();
+
+    /// <summary>常用区最多列这么多条，且不含已收藏的（否则同一页出现两遍）。</summary>
+    private const int FrequentLimit = 12;
 
     public NavItem FavoritePage { get; private set; } = null!;
 
@@ -123,13 +148,14 @@ public sealed class ShellViewModel : INotifyPropertyChanged
             u.FavoriteCommand = new RelayCommand(_ => ToggleFavorite(u));
         }
 
-        // 收藏页放在导航最前面：它是聚合视图，不参与"导航名照抄经典页签"那条约束
+        // 收藏页放在导航最前面，并且是启动默认页：它是聚合视图，
+        // 不参与"导航名照抄经典页签"那条约束
         FavoritePage = new NavItem
         {
             Title = "收藏",
             Glyph = "\uE734",
             Kind = NavKind.Favorites,
-            Units = FavoriteUnits,
+            Extra = FavoritePanel,
         };
         Pages.Insert(0, FavoritePage);
         RebuildFavorites();
@@ -141,7 +167,7 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         foreach (var u in _all)
             u.RunCommand = new RelayCommand(_ => Run(u));
 
-        Selected = Pages.FirstOrDefault(p => p.Kind == NavKind.Units) ?? Pages[0];
+        Selected = FavoritePage;
     }
 
     private static object? Child(object root, string name) =>
@@ -162,6 +188,7 @@ public sealed class ShellViewModel : INotifyPropertyChanged
     private void Run(UnitDescriptor unit)
     {
         _usage[unit.Id] = _usage.TryGetValue(unit.Id, out int n) ? n + 1 : 1;
+        RebuildFrequent();
         unit.Command?.Execute(null);
     }
 
@@ -175,12 +202,32 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         SaveFavorites();
     }
 
-    /// <summary>按 _all 的顺序重排收藏列表，避免先收藏的永远压在前面。</summary>
+    /// <summary>收藏区按清单原序排，不按收藏先后；常用区跟着一起重算。</summary>
     private void RebuildFavorites()
     {
-        FavoriteUnits.Clear();
+        FavoritePanel.Favorites.Clear();
         foreach (var u in _all.Where(u => _favorites.Contains(u.Id)))
-            FavoriteUnits.Add(u);
+            FavoritePanel.Favorites.Add(u);
+        RebuildFrequent();
+    }
+
+    /// <summary>
+    /// 常用区按点击次数降序（次数相同的保持清单原序），并排掉已收藏的，
+    /// 否则同一个功能会在收藏页出现两遍。
+    /// 组也排掉：组渲染出来是整块参数面板，一行顶五格，常用区就没法一眼扫完；
+    /// 而且组的成员本身会被单独计数，等于同一件事列两遍。
+    /// </summary>
+    private void RebuildFrequent()
+    {
+        FavoritePanel.Frequent.Clear();
+        foreach (var u in _all
+                 .Where(u => _usage.ContainsKey(u.Id)
+                             && !_favorites.Contains(u.Id)
+                             && u.Kind != UnitKind.Group)
+                 .OrderByDescending(u => _usage[u.Id])
+                 .Take(FrequentLimit))
+            FavoritePanel.Frequent.Add(u);
+        FavoritePanel.RefreshFlags();
     }
 
     private void StepZoom(int dir)
