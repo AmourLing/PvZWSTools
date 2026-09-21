@@ -42,5 +42,49 @@
       <_Parameter2>$([System.DateTime]::UtcNow.ToString("o"))</_Parameter2>
     </AssemblyAttribute>
   </ItemGroup>
+
+  <!-- 发布布局：根目录只留一个入口 exe，其余文件收进 app\。
+       做在工程里而不是只做在 build-release.ps1 里，是为了让 VS 的"发布"向导走同一条路。
+       入口用 Framework 自带的 csc 编，产物只依赖 .NET Framework 4，用户机器无需装运行时。
+       -p:StageNestedPublishLayout=false 可以跳过。 -->
+  <PropertyGroup>
+    <LauncherSource>$(MSBuildProjectDirectory)\..\PvZWSTools_Launcher\Launcher.cs</LauncherSource>
+    <!-- 生成源码不能落在本工程 obj\ 里：WPF 的 _wpftmp 临时工程会把 obj 下的 .cs 当源码 glob 进去，
+         造成 AssemblyTitle 等特性重复。入口的构建产物放它自己工程目录下。 -->
+    <LauncherDir>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '..', 'PvZWSTools_Launcher', 'obj'))</LauncherDir>
+    <LauncherInfoFile>$(LauncherDir)\AssemblyInfo.cs</LauncherInfoFile>
+    <LauncherExe>$(LauncherDir)\PvZWSTools.exe</LauncherExe>
+    <FrameworkCsc>$([MSBuild]::NormalizePath($([System.Environment]::GetEnvironmentVariable('WINDIR')), 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'))</FrameworkCsc>
+  </PropertyGroup>
+
+  <Target Name="StageNestedPublishLayout" AfterTargets="Publish"
+          Condition="'$(StageNestedPublishLayout)' != 'false'">
+    <Error Condition="!Exists('$(LauncherSource)')" Text="缺少入口源码：$(LauncherSource)" />
+    <Error Condition="!Exists('$(FrameworkCsc)')" Text="缺少 .NET Framework csc：$(FrameworkCsc)" />
+
+    <PropertyGroup>
+      <_PubDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(PublishDir)'))))</_PubDir>
+      <_PubAppDir>$([MSBuild]::NormalizePath($(_PubDir), 'app'))\</_PubAppDir>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(LauncherDir)" />
+    <!-- 单行分号分隔：MSBuild 按 ; 切成 6 行写文件；写成多行会把行尾分号带进 C# 源码 -->
+    <WriteLinesToFile File="$(LauncherInfoFile)" Overwrite="true"
+      Lines='[assembly: System.Reflection.AssemblyTitle("PvZWSTools")];[assembly: System.Reflection.AssemblyProduct("PvZWSTools")];[assembly: System.Reflection.AssemblyCompany("AmourLing")];[assembly: System.Reflection.AssemblyVersion("$(Version).0")];[assembly: System.Reflection.AssemblyFileVersion("$(Version).0")];[assembly: System.Reflection.AssemblyInformationalVersion("$(InformationalVersion)")]' />
+    <Exec Command="&quot;$(FrameworkCsc)&quot; -nologo -target:winexe -out:&quot;$(LauncherExe)&quot; -win32icon:&quot;$(MSBuildProjectDirectory)\Resources\icon.ico&quot; -r:System.Windows.Forms.dll &quot;$(LauncherSource)&quot; &quot;$(LauncherInfoFile)&quot;" />
+
+    <MakeDir Directories="$(_PubAppDir)" />
+    <!-- Copy+Delete 只会删文件，会把 Resources\配置文件 这些空目录骨架留在根上；
+         robocopy /MOVE 连目录一起搬走。robocopy 的 0-7 都是正常码，所以不拿退出码判断，
+         改看结构：主程序 dll 必须已经进 app\，且根上不能再有它。 -->
+    <Exec Command="robocopy &quot;$(_PubDir.TrimEnd('\'))&quot; &quot;$(_PubAppDir.TrimEnd('\'))&quot; /E /MOVE /XD &quot;$(_PubAppDir.TrimEnd('\'))&quot; /NFL /NDL /NJH /NJS /NP"
+          IgnoreExitCode="true" />
+    <Error Condition="!Exists('$(_PubAppDir)PvZWSTools.dll')" Text="发布文件没有移进 $(_PubAppDir)" />
+    <Error Condition="Exists('$(_PubDir)PvZWSTools.dll')" Text="$(_PubDir) 根上还留着主程序，app\ 重排没干净" />
+    <Copy SourceFiles="$(LauncherExe)" DestinationFolder="$(_PubDir)" />
+
+    <Message Importance="high" Text="发布布局已重排：$(_PubDir) 只剩 PvZWSTools.exe(入口) 与 app\（$([System.IO.Directory]::GetFiles($(_PubAppDir), '*', System.IO.SearchOption.AllDirectories).Length) 个文件）" />
+  </Target>
+
   <Import Project="..\PvZWSTools_Shared\PvZWSTools_Shared.projitems" Label="Shared" />
 </Project>

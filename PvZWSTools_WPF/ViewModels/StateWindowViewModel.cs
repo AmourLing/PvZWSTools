@@ -50,7 +50,7 @@ public class StateWindowViewModel:INotifyPropertyChanged
         _getLastStates = getLastStates;
         _getDefaultStates = getDefaultStates;
         _applyStates = applyStates;
-        _presetService = new StatePresetService(System.IO.Directory.GetCurrentDirectory());
+        _presetService = new StatePresetService(AppContext.BaseDirectory);
         RefreshList();
 
         SavePresetCommand = new RelayCommand(_ => SaveCurrent());

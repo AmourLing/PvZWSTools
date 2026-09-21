@@ -3,6 +3,8 @@
 [Oo]bj/
 .fake/
 PvZWSTools_WPF/Output/
+# 手动双击 PvZWSTools_setup.iss 时 ISCC 写在脚本旁边的产物
+/Output/
 
 # ── 发布产物：走 GitHub Release 附件，不进仓库历史 ──
 publish/

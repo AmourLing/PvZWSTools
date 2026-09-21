@@ -52,7 +52,7 @@ public class GardenDialogViewModel:ViewModelBase
 
     private void LoadOptions()
     {
-        string configDir = Path.Combine(Directory.GetCurrentDirectory(),
+        string configDir = Path.Combine(Services.OptionsLoader.BasePath,
             Constants.Folder_Need, Constants.Folder_Options);
         string plantFilePath = Path.Combine(configDir, Constants.JsonPlantFile);
         if(File.Exists(plantFilePath))

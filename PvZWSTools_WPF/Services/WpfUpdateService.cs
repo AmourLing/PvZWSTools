@@ -136,13 +136,18 @@ public class WpfUpdateService:UpdateService
             Log.Info($"解压更新包到: {extractDir}");
             await Task.Run(() => ZipFile.ExtractToDirectory(downloadedFilePath, extractDir, overwriteFiles: true));
 
-            // 期望 zip 内至少包含 PvZWSTools.exe（或与 AssemblyName 同名 .exe）
+            // 发布包是「根放入口 exe、其余全在 app\」的两层布局，而 baseDir 本身就是 app\，
+            // 所以覆盖源要往下钻一层；平铺的老包（master 那批）走 else，行为不变。
+            string nestedDir = Path.Combine(extractDir, "app");
+            string payloadDir = Directory.Exists(nestedDir) ? nestedDir : extractDir;
+
+            // 期望包内至少包含 PvZWSTools.exe（或与 AssemblyName 同名 .exe）
             string exeName = (Assembly.GetEntryAssembly()?.GetName().Name ?? "PvZWSTools") + ".exe";
-            string extractedExe = Path.Combine(extractDir, exeName);
+            string extractedExe = Path.Combine(payloadDir, exeName);
             if(!File.Exists(extractedExe))
             {
-                // 兜底：扫描 zip 根目录的任意 .exe
-                var alt = Directory.GetFiles(extractDir, "*.exe", SearchOption.TopDirectoryOnly)
+                // 兜底：扫描包内主程序目录的任意 .exe
+                var alt = Directory.GetFiles(payloadDir, "*.exe", SearchOption.TopDirectoryOnly)
                     .FirstOrDefault();
                 if(alt == null)
                 {
@@ -155,11 +160,29 @@ public class WpfUpdateService:UpdateService
             string currentExe = Process.GetCurrentProcess().MainModule?.FileName
                 ?? Path.Combine(baseDir, exeName);
 
+            // 更新完从外层入口重启。判定"我确实在嵌套布局的内层"要精确：
+            // 父目录下的 app\<当前 exe 名> 必须正好就是正在运行的这个文件。
+            string restartExe = currentExe;
+            var parentDir = Directory.GetParent(
+                baseDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            if(parentDir != null)
+            {
+                string innerExe = Path.GetFullPath(
+                    Path.Combine(parentDir.FullName, "app", Path.GetFileName(currentExe)));
+                string outerEntry = Path.Combine(parentDir.FullName, Path.GetFileName(currentExe));
+                if(File.Exists(outerEntry)
+                   && string.Equals(innerExe, Path.GetFullPath(currentExe), StringComparison.OrdinalIgnoreCase))
+                {
+                    restartExe = outerEntry;
+                    Log.Info($"重启改走外层入口: {outerEntry}");
+                }
+            }
+
             // 安装形态决定能不能覆盖宿主文件：self-contained 安装（setup.exe 装的这种）自带运行时，
             // 换上小包的 runtimeconfig/deps 后宿主会改去找共享运行时，
             // 没装过的机器更新完直接启动不了（实测报 "You must install or update .NET"）。
             var installed = ReadHostInfo(baseDir);
-            var package = ReadHostInfo(extractDir);
+            var package = ReadHostInfo(payloadDir);
 
             if(installed.RuntimeMajor > 0 && package.RuntimeMajor > 0 && installed.RuntimeMajor != package.RuntimeMajor)
             {
@@ -174,8 +197,9 @@ public class WpfUpdateService:UpdateService
             // 1. 完美支持中文路径 + UTF-8
             // 2. Copy-Item -Force 无条件覆盖（robocopy 默认跳过时间戳旧的文件）
             // 3. 自带重试循环应对文件占用
+            // 包里的外层入口不覆盖：它只负责拉起 app\ 里的主程序，装一次就够，旧入口带新主程序照样能跑。
             string psPath = Path.Combine(updateRoot, $"pvzwstools_apply_{Guid.NewGuid():N}.ps1");
-            File.WriteAllText(psPath, BuildApplyScript(Environment.ProcessId, extractDir, baseDir, currentExe, keepHostFiles));
+            File.WriteAllText(psPath, BuildApplyScript(Environment.ProcessId, payloadDir, baseDir, restartExe, keepHostFiles));
 
             Log.Info($"启动应用脚本: {psPath}");
             var psi = new ProcessStartInfo

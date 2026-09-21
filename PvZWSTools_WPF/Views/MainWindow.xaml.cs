@@ -35,7 +35,7 @@ public partial class MainWindow:Window
 
         var uiThread = new WpfUiThreadInvoker(Dispatcher);
         var connection = new ConnectionService(uiThread);
-        string defaultPath = Directory.GetCurrentDirectory();
+        string defaultPath = AppContext.BaseDirectory;
         var settingsService = new SettingsService(defaultPath);
         var buttonStateService = new ButtonStateService(defaultPath);
         var messageProcessor = new MessageProcessor();
