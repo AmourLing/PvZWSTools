@@ -425,9 +425,101 @@
         </StackPanel>
     </DataTemplate>
 
+    <Style x:Key="LayoutToggle" TargetType="ToggleButton">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Padding" Value="11,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border
+                        x:Name="Bd"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{DynamicResource BgPanelBrush}"
+                        BorderBrush="{DynamicResource BorderLineBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentFaintBrush}" />
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BgHoverBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  多选块：成员不是 40 个功能，是同一个多选控件的 40 个选项，所以整块只算一行、只有一个收藏星。
+          块头的"已选 N/M"是这一大坨唯一还能一眼看出来的汇总信息。  -->
+    <DataTemplate x:Key="ChipsUnitTemplate">
+        <Border Style="{StaticResource RowFrame}">
+            <StackPanel>
+                <DockPanel LastChildFill="False" Margin="0,2,0,8">
+                    <TextBlock
+                        DockPanel.Dock="Left"
+                        Style="{StaticResource RowLabel}"
+                        Text="{Binding Label}" />
+                    <TextBlock
+                        DockPanel.Dock="Left"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondaryBrush}"
+                        Text="{Binding SelectedSummary}" />
+                    <ToggleButton
+                        DockPanel.Dock="Right"
+                        Content="密排"
+                        IsChecked="{Binding Compact, Mode=TwoWay}"
+                        Style="{StaticResource LayoutToggle}"
+                        ToolTip="密排：一行摆多个；取消：一个选项一行" />
+                </DockPanel>
+                <ItemsControl ItemTemplate="{DynamicResource UnitItemTemplate}" ItemsSource="{Binding Members}">
+                    <ItemsControl.Style>
+                        <Style TargetType="ItemsControl">
+                            <Setter Property="ItemContainerStyle">
+                                <Setter.Value>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Margin" Value="0,0,0,5" />
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                            <!--  ItemsControl 默认竖排，密排得自己换成 WrapPanel  -->
+                            <Setter Property="ItemsPanel">
+                                <Setter.Value>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Compact}" Value="False">
+                                    <Setter Property="ItemsPanel">
+                                        <Setter.Value>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel />
+                                            </ItemsPanelTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.Style>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
     <controls:UnitKindSelector
         x:Key="UnitSelector"
         Action="{StaticResource ActionUnitTemplate}"
+        Chips="{StaticResource ChipsUnitTemplate}"
         Composite="{StaticResource CompositeUnitTemplate}"
         Field="{StaticResource FieldUnitTemplate}"
         Picker="{StaticResource PickerUnitTemplate}"
@@ -500,7 +592,7 @@
 
     <!--  ==================== 页面  ====================  -->
 
-    <!--  单列：一个功能一行，从上到下排  -->
+    <!--  单列：一个功能一行  -->
     <DataTemplate x:Key="PageTemplate">
         <StackPanel Margin="16,12">
             <ItemsControl ItemTemplate="{StaticResource PageItemTemplate}" ItemsSource="{Binding Units}" />

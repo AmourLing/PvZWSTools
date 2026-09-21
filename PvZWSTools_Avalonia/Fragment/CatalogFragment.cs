@@ -52,7 +52,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
     {
         // 纯成员组没有主动作，它只是"这些是一回事"的容器；
         // 当成一个按钮画的话，点上去 Command 是 null，等于一个按不动的按钮。
-        if(unit.Kind == UnitKind.Group && !unit.HasAction)
+        if(!unit.HasAction && unit.Kind is UnitKind.Group or UnitKind.Chips)
             return BuildMemberGroup(ctx, unit);
 
         var btn = new Button(ctx)
@@ -74,10 +74,13 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
         return btn;
     }
 
-    /// <summary>成员组展开成各自的行；成员自己带名字，所以不加组标题。</summary>
+    /// <summary>成员组展开成各自的行；成员自己带名字，所以不加组标题。
+    /// 多选块例外：普僵、旗子单看不知道是什么，块名得留着。</summary>
     private View BuildMemberGroup(Context ctx, UnitDescriptor unit)
     {
         var box = new LinearLayout(ctx) { Orientation = Orientation.Vertical };
+        if(unit.Kind == UnitKind.Chips)
+            box.AddView(new TextView(ctx) { Text = unit.Label });
         foreach(var member in unit.Members)
             box.AddView(BuildRow(ctx, member));
         return box;

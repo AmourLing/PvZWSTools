@@ -24,6 +24,8 @@ public enum UnitKind
     Cycle,
     /// <summary>成组：旧界面里同处一个容器的几个功能，视觉上放一起但不改名字。</summary>
     Group,
+    /// <summary>多选块：成员是同一个多选控件的一批选项，整块算一个功能（出怪类型）。</summary>
+    Chips,
 }
 
 /// <summary>反射读写根 DataContext 上的一条属性（形如 "Others.ClearFog"），
@@ -184,6 +186,29 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
     /// <summary>所属页签，名称与经典 UI 一致；搜索结果用它标出处。</summary>
     public string Group { get; internal set; } = string.Empty;
 
+    /// <summary>
+    /// 多选块当前是密排芯片还是竖排一行一个。只是视图偏好，外壳负责落盘；
+    /// 别的单元类型读不到它（模板里只有 <see cref="UnitKind.Chips"/> 用它做触发）。
+    /// </summary>
+    private bool _compact;
+
+    public bool Compact
+    {
+        get => _compact;
+        set
+        {
+            if (_compact == value)
+                return;
+            _compact = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Compact)));
+        }
+    }
+
+    /// <summary>40 个选项铺开以后，"选了几个"是这一块唯一还能一眼看出来的信息。</summary>
+    public string SelectedSummary => Kind == UnitKind.Chips
+        ? $"已选 {Members.Count(m => m.IsOn)}/{Members.Count}"
+        : string.Empty;
+
     public ICommand? Command { get; private set; }
 
     /// <summary>界面绑这个而不是 Command：外壳借这一跳记录常用次数。</summary>
@@ -262,6 +287,9 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
         {
             m.InGroup = true;
             m.Bind(root);
+            // 成员开关联动到块头的"已选 N/M"；多选块整块算一个功能，计数是它唯一的汇总信息
+            m.PropertyChanged += (_, _) =>
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedSummary)));
         }
         if (CommandPath != null)
             Command = ResolveCommand(root, CommandPath);

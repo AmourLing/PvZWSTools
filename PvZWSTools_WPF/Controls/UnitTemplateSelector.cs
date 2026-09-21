@@ -16,6 +16,7 @@ public sealed class UnitKindSelector : DataTemplateSelector
     public DataTemplate? Composite { get; set; }
     public DataTemplate? Group { get; set; }
     public DataTemplate? Cycle { get; set; }
+    public DataTemplate? Chips { get; set; }
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
@@ -30,6 +31,7 @@ public sealed class UnitKindSelector : DataTemplateSelector
             UnitKind.Composite => Composite,
             UnitKind.Group => Group,
             UnitKind.Cycle => Cycle,
+            UnitKind.Chips => Chips,
             _ => Action,
         };
     }

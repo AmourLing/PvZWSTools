@@ -21,10 +21,14 @@ public sealed class ShellViewModel : INotifyPropertyChanged
     private static readonly string FavoritesPath =
         Path.Combine(AppContext.BaseDirectory, "ui_favorites.cfg");
 
+    private static readonly string LayoutPath =
+        Path.Combine(AppContext.BaseDirectory, "ui_layout.cfg");
+
     private static readonly double[] ZoomSteps = { 0.85, 1.0, 1.15, 1.3, 1.45, 1.6 };
 
     private readonly Dictionary<string, int> _usage = new();
     private readonly HashSet<string> _favorites = new();
+    private readonly Dictionary<string, bool> _layouts = new();
     private readonly List<UnitDescriptor> _all = new();
     private NavItem? _selected;
     private string _search = string.Empty;
@@ -167,6 +171,8 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         foreach (var u in _all)
             u.RunCommand = new RelayCommand(_ => Run(u));
 
+        RestoreLayouts();
+
         Selected = FavoritePage;
     }
 
@@ -214,8 +220,8 @@ public sealed class ShellViewModel : INotifyPropertyChanged
     /// <summary>
     /// 常用区按点击次数降序（次数相同的保持清单原序），并排掉已收藏的，
     /// 否则同一个功能会在收藏页出现两遍。
-    /// 组也排掉：组渲染出来是整块参数面板，一行顶五格，常用区就没法一眼扫完；
-    /// 而且组的成员本身会被单独计数，等于同一件事列两遍。
+    /// 带成员的也排掉（组、多选块）：它们渲染出来是整块面板，一行顶五格，常用区就没法一眼扫完；
+    /// 而且成员本身会被单独计数，等于同一件事列两遍。
     /// </summary>
     private void RebuildFrequent()
     {
@@ -223,7 +229,7 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         foreach (var u in _all
                  .Where(u => _usage.ContainsKey(u.Id)
                              && !_favorites.Contains(u.Id)
-                             && u.Kind != UnitKind.Group)
+                             && u.Members.Count == 0)
                  .OrderByDescending(u => _usage[u.Id])
                  .Take(FrequentLimit))
             FavoritePanel.Frequent.Add(u);
@@ -257,6 +263,55 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             Log.Error("常用统计写入失败: " + ex);
+        }
+    }
+
+    /// <summary>多选块的密排/竖排选择。整块是一个功能，所以按单元 Id 记，不按页记。
+    /// 没有记录时默认密排——把这 40 个选项收成一块本来就是为了一屏看完。</summary>
+    private void RestoreLayouts()
+    {
+        LoadLayouts();
+        foreach (var u in _all.Where(u => u.Kind == UnitKind.Chips))
+        {
+            u.Compact = !_layouts.TryGetValue(u.Id, out bool on) || on;
+            u.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(UnitDescriptor.Compact))
+                    SaveLayouts();
+            };
+        }
+    }
+
+    private void LoadLayouts()
+    {
+        try
+        {
+            if (!File.Exists(LayoutPath))
+                return;
+            foreach (var line in File.ReadAllLines(LayoutPath))
+            {
+                int i = line.IndexOf('=');
+                if (i <= 0 || !bool.TryParse(line[(i + 1)..], out bool on))
+                    continue;
+                _layouts[line[..i]] = on;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error("页面布局读取失败: " + ex);
+        }
+    }
+
+    private void SaveLayouts()
+    {
+        try
+        {
+            File.WriteAllLines(LayoutPath, _all.Where(u => u.Kind == UnitKind.Chips)
+                                        .Select(u => u.Id + "=" + u.Compact));
+        }
+        catch (Exception ex)
+        {
+            Log.Error("页面布局写入失败: " + ex);
         }
     }
 
