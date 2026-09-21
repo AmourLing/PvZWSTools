@@ -42,6 +42,7 @@ public sealed class ActiveViewSelector : DataTemplateSelector
     public DataTemplate? Script { get; set; }
     public DataTemplate? Garden { get; set; }
     public DataTemplate? Results { get; set; }
+    public DataTemplate? Favorites { get; set; }
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
@@ -50,6 +51,7 @@ public sealed class ActiveViewSelector : DataTemplateSelector
             ShellViewModel.SearchResults => Results,
             NavItem { Kind: NavKind.Script } => Script,
             NavItem { Kind: NavKind.Garden } => Garden,
+            NavItem { Kind: NavKind.Favorites } => Favorites,
             NavItem => Page,
             _ => base.SelectTemplate(item, container),
         };

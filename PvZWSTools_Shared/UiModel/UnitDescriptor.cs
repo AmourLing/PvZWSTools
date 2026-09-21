@@ -189,6 +189,22 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
     /// <summary>界面绑这个而不是 Command：外壳借这一跳记录常用次数。</summary>
     public ICommand? RunCommand { get; internal set; }
 
+    /// <summary>收藏开关。真正的集合和落盘在外壳里，这里只存当前这一条的状态供界面绑定。</summary>
+    public ICommand? FavoriteCommand { get; internal set; }
+
+    private bool _isFavorite;
+    public bool IsFavorite
+    {
+        get => _isFavorite;
+        set
+        {
+            if (_isFavorite == value)
+                return;
+            _isFavorite = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsFavorite)));
+        }
+    }
+
     public string? StateText => State.Text;
     public string? Text
     {
@@ -280,7 +296,7 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
 }
 
 /// <summary>内容区的渲染形态：功能行列表页，或两块特殊面板。</summary>
-public enum NavKind { Units, Script, Garden }
+public enum NavKind { Units, Script, Garden, Favorites }
 
 /// <summary>左侧导航的一项，名称与顺序跟经典 UI 的页签一致。</summary>
 public sealed class NavItem

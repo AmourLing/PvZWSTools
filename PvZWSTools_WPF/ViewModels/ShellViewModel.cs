@@ -18,9 +18,13 @@ public sealed class ShellViewModel : INotifyPropertyChanged
     private static readonly string UsagePath =
         Path.Combine(AppContext.BaseDirectory, "ui_usage.cfg");
 
+    private static readonly string FavoritesPath =
+        Path.Combine(AppContext.BaseDirectory, "ui_favorites.cfg");
+
     private static readonly double[] ZoomSteps = { 0.85, 1.0, 1.15, 1.3, 1.45, 1.6 };
 
     private readonly Dictionary<string, int> _usage = new();
+    private readonly HashSet<string> _favorites = new();
     private readonly List<UnitDescriptor> _all = new();
     private NavItem? _selected;
     private string _search = string.Empty;
@@ -28,10 +32,24 @@ public sealed class ShellViewModel : INotifyPropertyChanged
 
     public ObservableCollection<NavItem> Pages { get; } = new();
 
+    /// <summary>收藏页的内容，顺序始终跟清单里的原有顺序一致，不按收藏先后。</summary>
+    public ObservableCollection<UnitDescriptor> FavoriteUnits { get; } = new();
+
+    public NavItem FavoritePage { get; private set; } = null!;
+
     public NavItem? Selected
     {
         get => _selected;
-        set { _selected = value; Raise(); Raise(nameof(ActiveView)); ScrollTopRequested?.Invoke(); }
+        set
+        {
+            _selected = value;
+            // 选页面就该退出搜索态，否则 ActiveView 还是结果集，点了页面看起来没反应
+            _search = string.Empty;
+            Raise(nameof(Search));
+            Raise();
+            Raise(nameof(ActiveView));
+            ScrollTopRequested?.Invoke();
+        }
     }
 
     /// <summary>内容区实际渲染的对象：搜索时是结果集，否则是当前导航页。</summary>
@@ -98,6 +116,24 @@ public sealed class ShellViewModel : INotifyPropertyChanged
 
         _all = Pages.SelectMany(p => Flatten(p.Units)).ToList();
 
+        LoadFavorites();
+        foreach (var u in _all)
+        {
+            u.IsFavorite = _favorites.Contains(u.Id);
+            u.FavoriteCommand = new RelayCommand(_ => ToggleFavorite(u));
+        }
+
+        // 收藏页放在导航最前面：它是聚合视图，不参与"导航名照抄经典页签"那条约束
+        FavoritePage = new NavItem
+        {
+            Title = "收藏",
+            Glyph = "\uE734",
+            Kind = NavKind.Favorites,
+            Units = FavoriteUnits,
+        };
+        Pages.Insert(0, FavoritePage);
+        RebuildFavorites();
+
         ZoomInCommand = new RelayCommand(_ => StepZoom(+1));
         ZoomOutCommand = new RelayCommand(_ => StepZoom(-1));
         ClearSearchCommand = new RelayCommand(_ => Search = string.Empty);
@@ -105,7 +141,7 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         foreach (var u in _all)
             u.RunCommand = new RelayCommand(_ => Run(u));
 
-        Selected = Pages[0];
+        Selected = Pages.FirstOrDefault(p => p.Kind == NavKind.Units) ?? Pages[0];
     }
 
     private static object? Child(object root, string name) =>
@@ -127,6 +163,24 @@ public sealed class ShellViewModel : INotifyPropertyChanged
     {
         _usage[unit.Id] = _usage.TryGetValue(unit.Id, out int n) ? n + 1 : 1;
         unit.Command?.Execute(null);
+    }
+
+    /// <summary>收藏改动少、又容易丢，所以点一下立刻落盘，不等退出。</summary>
+    private void ToggleFavorite(UnitDescriptor unit)
+    {
+        if(!_favorites.Remove(unit.Id))
+            _favorites.Add(unit.Id);
+        unit.IsFavorite = _favorites.Contains(unit.Id);
+        RebuildFavorites();
+        SaveFavorites();
+    }
+
+    /// <summary>按 _all 的顺序重排收藏列表，避免先收藏的永远压在前面。</summary>
+    private void RebuildFavorites()
+    {
+        FavoriteUnits.Clear();
+        foreach (var u in _all.Where(u => _favorites.Contains(u.Id)))
+            FavoriteUnits.Add(u);
     }
 
     private void StepZoom(int dir)
@@ -156,6 +210,37 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             Log.Error("常用统计写入失败: " + ex);
+        }
+    }
+
+    private void LoadFavorites()
+    {
+        try
+        {
+            if (!File.Exists(FavoritesPath))
+                return;
+            foreach (var line in File.ReadAllLines(FavoritesPath))
+            {
+                string id = line.Trim();
+                if (id.Length > 0)
+                    _favorites.Add(id);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error("收藏读取失败: " + ex);
+        }
+    }
+
+    private void SaveFavorites()
+    {
+        try
+        {
+            File.WriteAllLines(FavoritesPath, _favorites);
+        }
+        catch (Exception ex)
+        {
+            Log.Error("收藏写入失败: " + ex);
         }
     }
 
