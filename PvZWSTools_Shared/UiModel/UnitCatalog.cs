@@ -1,3 +1,5 @@
+﻿using PvZWSTools_Shared.Helpers;
+
 namespace PvZWSTools_Shared.UiModel;
 
 /// <summary>全部功能单元的声明。一行一个单元：标签 + 它自己消费的绑定路径。
@@ -10,6 +12,11 @@ public static class UnitCatalog
                          r = "Resources.", lv = "Level.", fn = "Fun.", q = "QMod.",
                          m = "";   // 根 VM（MainWindowViewModel）上的成员
 
+    /// <summary>搜索用的关键词：调用点给的关键词 + 中文原文标签。
+    /// 英文界面下也要能用中文搜到，所以中文那一份永远留在集合里。</summary>
+    private static string[] SearchKeys(string label, params string[] kw) =>
+        (kw.Length > 0 ? kw : new[] { label }).Append(label).Distinct().ToArray();
+
     // ---------- 工厂 ----------
 
     /// <summary>开关。命令名默认是 "&lt;状态&gt;Command"，不同名时用 cmd 显式给出。</summary>
@@ -18,12 +25,12 @@ public static class UnitCatalog
         new()
         {
             Id = state,
-            Label = label,
-            Hint = hint ?? label,
+            Label = Loc.T(label),
+            Hint = Loc.T(hint ?? label),
             Kind = UnitKind.Switch,
             StatePath = state,
             CommandPath = cmd ?? state + "Command",
-            Keywords = kw,
+            Keywords = SearchKeys(label, kw),
         };
 
     /// <summary>三态：0 关闭 / 1 开启 / 2 默认。</summary>
@@ -32,12 +39,12 @@ public static class UnitCatalog
         new()
         {
             Id = state,
-            Label = label,
-            Hint = label + "：点击在 关闭 / 开启 / 默认 之间循环",
+            Label = Loc.T(label),
+            Hint = Loc.F("{0}：点击在 关闭 / 开启 / 默认 之间循环", Loc.T(label)),
             Kind = UnitKind.TriState,
             StatePath = state,
             CommandPath = cmd ?? state + "Command",
-            Keywords = kw,
+            Keywords = SearchKeys(label, kw),
         };
 
     /// <summary>纯动作按钮。</summary>
@@ -45,11 +52,11 @@ public static class UnitCatalog
         new()
         {
             Id = cmd,
-            Label = label,
-            Hint = label,
+            Label = Loc.T(label),
+            Hint = Loc.T(label),
             Kind = UnitKind.Action,
             CommandPath = cmd,
-            Keywords = kw,
+            Keywords = SearchKeys(label, kw),
         };
 
     /// <summary>一个输入框 + 一个动作按钮。</summary>
@@ -58,12 +65,12 @@ public static class UnitCatalog
         new()
         {
             Id = cmd,
-            Label = label,
-            Hint = label,
+            Label = Loc.T(label),
+            Hint = Loc.T(label),
             Kind = UnitKind.Field,
             InputPath = input,
             CommandPath = cmd,
-            Keywords = kw.Length > 0 ? kw : new[] { label },
+            Keywords = SearchKeys(label, kw),
         };
 
     /// <summary>可编辑下拉 + 一个动作按钮。</summary>
@@ -72,15 +79,15 @@ public static class UnitCatalog
         new()
         {
             Id = cmd,
-            Label = label,
-            Hint = label,
+            Label = Loc.T(label),
+            Hint = Loc.T(label),
             Kind = UnitKind.Picker,
             InputPath = input,
             OptionsPath = options,
             SelectedPath = selected,
             Input2Path = input2,
             CommandPath = cmd,
-            Keywords = kw,
+            Keywords = SearchKeys(label, kw),
         };
 
     /// <summary>一个功能 = 一行：动作按钮和它消费的输入同处一行，字段多则行内换行。</summary>
@@ -88,12 +95,12 @@ public static class UnitCatalog
         new()
         {
             Id = cmd,
-            Label = label,
-            Hint = label,
+            Label = Loc.T(label),
+            Hint = Loc.T(label),
             Kind = UnitKind.Composite,
             CommandPath = cmd,
             Fields = fields,
-            Keywords = new[] { label },
+            Keywords = SearchKeys(label),
         };
 
     /// <summary>循环取值：点一下换下一个值。它不是独立功能，所以不配"应用"按钮。</summary>
@@ -102,12 +109,12 @@ public static class UnitCatalog
         new()
         {
             Id = cmd,
-            Label = label,
-            Hint = label + "：点击换下一个取值",
+            Label = Loc.T(label),
+            Hint = Loc.F("{0}：点击换下一个取值", Loc.T(label)),
             Kind = UnitKind.Cycle,
             StatePath = state,
             CommandPath = cmd,
-            Keywords = kw,
+            Keywords = SearchKeys(label, kw),
         };
 
     /// <summary>带主动作的组：功能名在左，输入居中，成员开关靠右，"应用"收尾。</summary>
@@ -116,8 +123,8 @@ public static class UnitCatalog
         new()
         {
             Id = cmd,
-            Label = label,
-            Hint = label,
+            Label = Loc.T(label),
+            Hint = Loc.T(label),
             Kind = UnitKind.Group,
             CommandPath = cmd,
             Fields = fields,
@@ -142,18 +149,18 @@ public static class UnitCatalog
         new()
         {
             Id = id,
-            Label = label,
-            Hint = label + "：点一下切这个类型的出怪开关",
+            Label = Loc.T(label),
+            Hint = Loc.F("{0}：点一下切这个类型的出怪开关", Loc.T(label)),
             Kind = UnitKind.Chips,
             Members = members,
-            Keywords = new[] { label },
+            Keywords = SearchKeys(label),
         };
 
     private static UnitField F(string label, string input, string? options = null,
                                string? selected = null, double width = double.NaN) =>
         new()
         {
-            Label = label,
+            Label = Loc.T(label),
             InputPath = input,
             OptionsPath = options,
             SelectedPath = selected,
@@ -169,7 +176,7 @@ public static class UnitCatalog
                                 params UnitDescriptor[] units)
     {
         foreach (var u in units)
-            u.Mark(title);
+            u.Mark(Loc.T(title));
         return new NavItem { Title = title, Glyph = glyph, Kind = kind, Units = units };
     }
 

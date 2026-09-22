@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
@@ -72,7 +72,8 @@ public sealed class ConsoleViewModel:ViewModelBase
     }
 
     /// <summary>三个过滤档：收发指 WebSocket 收到的回传与发出去的脚本。</summary>
-    public static IReadOnlyList<string> Filters { get; } = new[] { "全部", "只看日志", "只看收发" };
+    /// <summary>筛选项按编号轮转，文字只是显示层，所以这里过文案表。</summary>
+    public static IReadOnlyList<string> Filters { get; } = new[] { Loc.T("全部"), Loc.T("只看日志"), Loc.T("只看收发") };
 
     public string FilterText => Filters[_filterIndex];
 

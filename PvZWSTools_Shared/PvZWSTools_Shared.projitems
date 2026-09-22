@@ -25,6 +25,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\EmbeddedScript.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Enums.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Log.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Loc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Loc.en.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ScriptPayload.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Platform\IUserNotifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Platform\IUiThreadInvoker.cs" />

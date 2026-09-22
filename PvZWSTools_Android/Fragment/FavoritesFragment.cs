@@ -1,5 +1,6 @@
-using Android.Content;
+﻿using Android.Content;
 using PvZWSTools_Android.Platform;
+using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.UiModel;
 
 namespace PvZWSTools_Android;
@@ -25,5 +26,5 @@ public class FavoritesFragment:CatalogFragment
     }
 
     protected override string EmptyHint =>
-        "还没有收藏，也还没点过任何功能。在任意一页的功能上长按即可收藏。";
+        Loc.T("还没有收藏，也还没点过任何功能。在任意一页的功能上长按即可收藏。");
 }

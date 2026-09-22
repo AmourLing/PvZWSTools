@@ -1,5 +1,6 @@
-using System.Collections;
+﻿using System.Collections;
 using System.ComponentModel;
+using PvZWSTools_Shared.Helpers;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -206,7 +207,7 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
 
     /// <summary>40 个选项铺开以后，"选了几个"是这一块唯一还能一眼看出来的信息。</summary>
     public string SelectedSummary => Kind == UnitKind.Chips
-        ? $"已选 {Members.Count(m => m.IsOn)}/{Members.Count}"
+        ? Loc.F("已选 {0}/{1}", Members.Count(m => m.IsOn), Members.Count)
         : string.Empty;
 
     public ICommand? Command { get; private set; }
@@ -262,8 +263,12 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
     /// <summary>把 VM 里的协议符号（✔️/❌/""，或挑战的 0/1/2）翻译成界面文案。
     /// 只影响显示，不回写，脚本协议保持不变。</summary>
     public string DisplayState => Kind == UnitKind.TriState
-        ? State.Text switch { "1" => "开启", "0" => "关闭", "2" => "默认", _ => "未知" }
-        : State.Text switch { On => "开", Off => "关", "" or null => "未知", _ => "未知" };
+        ? Loc.T(State.Text switch { "1" => "开启", "0" => "关闭", "2" => "默认", _ => "未知" })
+        : Loc.T(State.Text switch { On => "开", Off => "关", "" or null => "未知", _ => "未知" });
+
+    /// <summary>三态的原始协议值。界面配色绑这个而不是 <see cref="DisplayState"/>——
+    /// 后者会随语种变中文/英文，拿文案当触发条件换一种语言就静默失效了。</summary>
+    public string TriStateCode => Kind == UnitKind.TriState ? (State.Text ?? string.Empty) : string.Empty;
 
     /// <summary>VM 里存的是发给脚本的协议符号，显示层只读不写。</summary>
     public const string On = "✔️";
@@ -330,6 +335,10 @@ public enum NavKind { Units, Script, Garden, Favorites, Console }
 public sealed class NavItem
 {
     public required string Title { get; init; }
+
+    /// <summary>导航上显示的那一份。Title 同时是查页/对账用的键，所以键保持中文，
+    /// 只有这里跟着语种走。</summary>
+    public string Display => Loc.T(Title);
     public string Glyph { get; init; } = string.Empty;
     public NavKind Kind { get; init; } = NavKind.Units;
     public IReadOnlyList<UnitDescriptor> Units { get; init; } = Array.Empty<UnitDescriptor>();

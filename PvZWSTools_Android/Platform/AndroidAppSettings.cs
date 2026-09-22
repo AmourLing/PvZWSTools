@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -26,6 +26,11 @@ public class AndroidAppSettings
     public bool AutoApplyLastState { get; set; }  // 启动时自动应用上次关闭前保存的状态（关闭时始终保存"上次状态"）
 
     public string LastWebSocketAddress { get; set; }  // 上次连接成功的WebSocket地址
+
+    /// <summary>界面语种："zh"（默认）或 "en"。中文原文就是文案的键，所以这里只决定要不要查英文表。
+    /// 改它要重启生效：清单标签和导航文案都是启动时一次性拼好的。</summary>
+    [Setting("界面语种")]
+    public string Language { get; set; } = Loc.Zh;
 
     // 保存设置到文件
     public void Save(string settingsPath)

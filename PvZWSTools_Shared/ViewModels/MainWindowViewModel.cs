@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,7 +33,7 @@ public class MainWindowViewModel:ViewModelBase
     private readonly IUiThreadInvoker _uiThread;
     private readonly IUpdateService? _updateService;
     private bool _autoConnectEnabled;
-    private string _connectionButtonText = "连接";
+    private string _connectionButtonText = Loc.T("连接");
     private int _currentAddressIndex = 0;
     private double _currentWidth = 960;
     private int _failCount = 0;
@@ -109,7 +109,7 @@ public class MainWindowViewModel:ViewModelBase
 
         _connection.ConnectionStateChanged += (s, connected) =>
         {
-            ConnectionButtonText = connected ? "断开连接" : "连接";
+            ConnectionButtonText = connected ? Loc.T("断开连接") : Loc.T("连接");
             if(connected)
             {
                 _failCount = 0;

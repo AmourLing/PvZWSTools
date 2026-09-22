@@ -1,4 +1,4 @@
-using Android.Content;
+﻿using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -9,6 +9,8 @@ using PvZWSTools_Shared.UiModel;
 // 本文件在 PvZWSTools_Android 命名空间下，那里还有一份同名旧 NameOption，
 // 不显式别名的话 Cast<NameOption>() 会绑到旧的那份并抛 InvalidCastException。
 using SharedNameOption = PvZWSTools_Shared.Models.NameOption;
+
+using PvZWSTools_Shared.Helpers;
 
 namespace PvZWSTools_Android;
 
@@ -37,7 +39,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
             yield return (null, unit);
     }
 
-    protected virtual string EmptyHint => $"清单里没有「{_pageTitle}」这一页";
+    protected virtual string EmptyHint => Loc.F("清单里没有「{0}」这一页", Loc.T(_pageTitle));
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -74,7 +76,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
         int top = (int)(10 * ctx.Resources!.DisplayMetrics!.Density + 0.5f);
         return new TextView(ctx)
         {
-            Text = text,
+            Text = Loc.T(text),
             LayoutParameters = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent)
             {
@@ -213,7 +215,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
             .SetTitle(ChipsCaption(unit))
             .SetView(scroll)
             .SetCancelable(false)
-            .SetNegativeButton("关闭", (_, _) => unit.PropertyChanged -= onUnitChanged)
+            .SetNegativeButton(Loc.T("关闭", "btn"), (_, _) => unit.PropertyChanged -= onUnitChanged)
             .Show();
     }
 
@@ -253,7 +255,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
         _ = new AlertDialog.Builder(ctx)
             .SetTitle(unit.Label)
             .SetView(body)
-            .SetPositiveButton("应用", (_, _) => unit.RunCommand?.Execute(null))
+            .SetPositiveButton(Loc.T("应用"), (_, _) => unit.RunCommand?.Execute(null))
             .SetNegativeButton("取消", (_, _) => { })
             .Show();
     }

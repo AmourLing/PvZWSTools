@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -54,7 +54,7 @@ public sealed class ShellViewModel : INotifyPropertyChanged
     /// <summary>内容区实际渲染的对象：搜索时是结果集，否则是当前导航页。</summary>
     public object? ActiveView => string.IsNullOrWhiteSpace(_search)
         ? (object?)Selected
-        : new SearchResults(Results, $"命中 {Results.Count} 个功能");
+        : new SearchResults(Results, Loc.F("命中 {0} 个功能", Results.Count));
 
     public string Search
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using PvZWSTools_Shared.Helpers;
 using System.Reflection;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
@@ -40,7 +41,8 @@ public class SettingDialogViewModel:ViewModelBase
         {
             Settings.Add(new SettingItem
             {
-                Label = prop.GetCustomAttribute<SettingAttribute>()?.Label ?? prop.Name,
+                // 属性标注里只能是编译期常量（中文原文），显示这一层才翻
+                Label = Loc.T(prop.GetCustomAttribute<SettingAttribute>()?.Label ?? prop.Name),
                 Property = prop,
                 Value = (bool)prop.GetValue(_originalSettings)
             });

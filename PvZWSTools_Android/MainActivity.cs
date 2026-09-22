@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -246,6 +246,11 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
         _settingsPath = Path.Combine(configPath, "setting.json");
         _appSettings = AndroidAppSettings.Load(_settingsPath);
+
+        // 语种要比重建清单早定：UnitCatalog 在 AppServices.Initialize 里拼标签。
+        // 抽屉标题是从 XML 读出来的中文，就地过一遍文案表。
+        Loc.SetLanguage(_appSettings.Language);
+        LocalizeDrawer();
 
         StartStateSaveTimer();
 
@@ -739,6 +744,17 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         var chkAutoCheckUpdate = CreateSettingCheckBox(this, "启动时自动检查更新", _appSettings.AutoCheckUpdateEnabled, 10);
         var chkAutoApplyLastState = CreateSettingCheckBox(this, "自动应用上次配置", _appSettings.AutoApplyLastState, 10);
 
+        // 语言名故意不翻译：这一组就是切语言的入口，两种语言下都显示各自本名才不会找不到自己。
+        var rbLangZh = new RadioButton(this) { Text = "简体中文" };
+        var rbLangEn = new RadioButton(this) { Text = "English" };
+        rbLangZh.Checked = !Loc.IsEnglish;
+        rbLangEn.Checked = Loc.IsEnglish;
+        var langGroup = new RadioGroup(this) { Orientation = Orientation.Vertical };
+        langGroup.AddView(rbLangZh);
+        langGroup.AddView(rbLangEn);
+        var txtLangLabel = new TextView(this) { Text = "界面语言（改后要重启）", TextSize = 16 };
+        txtLangLabel.SetPadding(0, 20, 0, 6);
+
         var txtWsAddressLabel = new TextView(this)
         {
             Text = "WebSocket地址:",
@@ -765,14 +781,16 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         layout.AddView(chkAutoUpdateButtonStatus);
         layout.AddView(chkAutoCheckUpdate);
         layout.AddView(chkAutoApplyLastState);
+        layout.AddView(txtLangLabel);
+        layout.AddView(langGroup);
         layout.AddView(txtWsAddressLabel);
         layout.AddView(txtWsAddress);
 
         var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-        _ = builder.SetTitle("设置");
+        _ = builder.SetTitle(Loc.T("设置"));
         _ = builder.SetView(layout);
 
-        _ = builder.SetPositiveButton("确定", (sender, e) =>
+        _ = builder.SetPositiveButton(Loc.T("确定"), (sender, e) =>
         {
             _appSettings.AutoConnectEnabled = chkAutoConnect.Checked;
             _appSettings.SuppressConnectionMessage = chkShowNotification.Checked;
@@ -785,13 +803,19 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 _appSettings.LastWebSocketAddress = address;
             }
 
+            string wantedLang = rbLangEn.Checked ? Loc.En : Loc.Zh;
+            bool relaunch = wantedLang != (string.IsNullOrEmpty(_appSettings.Language) ? Loc.Zh : _appSettings.Language);
+            _appSettings.Language = wantedLang;
+
             _appSettings.Save(_settingsPath);
             ApplySettings(); // 应用新设置
 
-            Toast.MakeText(this, "设置已保存", ToastLength.Short).Show();
+            Toast.MakeText(this, Loc.T("设置已保存"), ToastLength.Short).Show();
+            if(relaunch)
+                RestartForNewLanguage();   // 清单标签是启动时拼好的，换语种只能重来一遍
         });
 
-        _ = builder.SetNegativeButton("取消", (Android.Content.IDialogInterfaceOnClickListener)null);
+        _ = builder.SetNegativeButton(Loc.T("取消"), (Android.Content.IDialogInterfaceOnClickListener)null);
 
         var dialog = builder.Create();
         dialog.Show();
@@ -810,6 +834,47 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         checkBox.SetTextSize(Android.Util.ComplexUnitType.Sp, 16);
         checkBox.SetPadding(0, 0, 0, bottomPadding);
         return checkBox;
+    }
+
+    /// <summary>抽屉那 17 条标题在 activity_main_drawer.xml 里是写死的中文。
+    /// 翻页比对用的是 Resource.Id 而不是标题文字，所以翻译它们不影响选页回调。</summary>
+    private void LocalizeDrawer()
+    {
+        var menu = FindViewById<NavigationView>(Resource.Id.nav_view)?.Menu;
+        if(menu == null)
+            return;
+        for(int i = 0; i < menu.Size(); i++)
+        {
+            var item = menu.GetItem(i);
+            string title = item?.TitleFormatted?.ToString();
+            if(item != null && !string.IsNullOrEmpty(title))
+                item.SetTitle(Loc.T(title));
+
+            var sub = item.SubMenu;
+            if(sub == null)
+                continue;
+            for(int j = 0; j < sub.Size(); j++)
+            {
+                var child = sub.GetItem(j);
+                string childTitle = child?.TitleFormatted?.ToString();
+                if(child != null && !string.IsNullOrEmpty(childTitle))
+                    child.SetTitle(Loc.T(childTitle));
+            }
+        }
+    }
+
+    /// <summary>换语种要重启：静态的 AppServices 里攥着按旧语种拼好的清单，
+    /// 只 Recreate 一个 Activity 换不掉它。</summary>
+    private void RestartForNewLanguage()
+    {
+        var intent = PackageManager?.GetLaunchIntentForPackage(PackageName ?? "");
+        if(intent != null)
+        {
+            intent.AddFlags(ActivityFlags.ClearTask | ActivityFlags.NewTask);
+            StartActivity(intent);
+        }
+        Finish();
+        Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
     }
 
     private static string FormatSpeed(double bytesPerSecond)

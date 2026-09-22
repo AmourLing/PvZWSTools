@@ -21,7 +21,11 @@ public static class UiThemeManager
     /// <summary>主题：true = 黑夜，false = 白天。</summary>
     public static bool IsDark { get; private set; } = true;
 
-    /// <summary>应用启动时读取上次的选择并应用（须在主窗口创建前调用）。</summary>
+    /// <summary>界面语种。中文原文就是文案的键，所以这里只决定"要不要查英文表"。</summary>
+    public static string Language { get; private set; } = PvZWSTools_Shared.Helpers.Loc.Zh;
+
+    /// <summary>应用启动时读取上次的选择并应用（须在主窗口创建前调用：
+    /// 清单是在建 ViewModel 时拼好的，语种必须比它更早定下来）。</summary>
     public static void LoadAndApply()
     {
         try
@@ -31,24 +35,29 @@ public static class UiThemeManager
                 var parts = File.ReadAllText(ConfigPath).Trim().Split('|');
                 UseNewUi = parts[0] != "classic";
                 IsDark = parts.Length < 2 || parts[1] != "light";
+                Language = parts.Length < 3 ? Language : parts[2];
             }
         }
         catch (Exception ex)
         {
             Log.Error("UI 配置读取失败: " + ex);
         }
-        Log.Info(string.Format("UI 模式: UseNewUi={0}, IsDark={1}", UseNewUi, IsDark));
+        PvZWSTools_Shared.Helpers.Loc.SetLanguage(Language);
+        Log.Info(string.Format("UI 模式: UseNewUi={0}, IsDark={1}, Language={2}",
+            UseNewUi, IsDark, PvZWSTools_Shared.Helpers.Loc.Language));
         Apply();
     }
 
     /// <summary>保存选择并重启应用使其生效（主题字典整体重载，渲染零残留）。</summary>
-    public static void SaveAndRestart(bool useNewUi, bool isDark)
+    public static void SaveAndRestart(bool useNewUi, bool isDark, string language)
     {
         UseNewUi = useNewUi;
         IsDark = isDark;
+        Language = language;
         try
         {
-            File.WriteAllText(ConfigPath, (useNewUi ? "newui" : "classic") + "|" + (isDark ? "dark" : "light"));
+            File.WriteAllText(ConfigPath, (useNewUi ? "newui" : "classic") + "|" + (isDark ? "dark" : "light")
+                + "|" + language);
         }
         catch
         {

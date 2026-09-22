@@ -1,8 +1,9 @@
-<ResourceDictionary
+﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:PvZWSTools_WPF.Controls"
     xmlns:conv="clr-namespace:PvZWSTools_WPF.Converters"
+    xmlns:loc="clr-namespace:PvZWSTools_WPF.Themes"
     xmlns:views="clr-namespace:PvZWSTools_WPF.Views">
 
     <!--
@@ -214,11 +215,11 @@
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding DisplayState}" Value="开启">
+                                <DataTrigger Binding="{Binding TriStateCode}" Value="1">
                                     <Setter Property="Background" Value="{DynamicResource AccentFaintBrush}" />
                                     <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding DisplayState}" Value="默认">
+                                <DataTrigger Binding="{Binding TriStateCode}" Value="2">
                                     <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -252,7 +253,7 @@
                     Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
                     Command="{Binding RunCommand}"
-                    Content="应用"
+                    Content="{loc:Loc 应用}"
                     Style="{StaticResource RowButton}" />
             </StackPanel>
         </Border>
@@ -279,7 +280,7 @@
                     Visibility="{Binding HasInput2, Converter={StaticResource BoolToVis}}" />
                 <Button
                     Command="{Binding RunCommand}"
-                    Content="应用"
+                    Content="{loc:Loc 应用}"
                     Style="{StaticResource RowButton}" />
             </StackPanel>
         </Border>
@@ -338,7 +339,7 @@
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     Command="{Binding RunCommand}"
-                    Content="应用"
+                    Content="{loc:Loc 应用}"
                     Style="{StaticResource RowButton}" />
             </Grid>
         </Border>
@@ -393,7 +394,7 @@
                 <Button
                     VerticalAlignment="Center"
                     Command="{Binding RunCommand}"
-                    Content="应用"
+                    Content="{loc:Loc 应用}"
                     Style="{StaticResource RowButton}"
                     Visibility="{Binding HasAction, Converter={StaticResource BoolToVis}}" />
             </WrapPanel>
@@ -475,10 +476,10 @@
                         Text="{Binding SelectedSummary}" />
                     <ToggleButton
                         DockPanel.Dock="Right"
-                        Content="密排"
+                        Content="{loc:Loc 密排}"
                         IsChecked="{Binding Compact, Mode=TwoWay}"
                         Style="{StaticResource LayoutToggle}"
-                        ToolTip="密排：一行摆多个；取消：一个选项一行" />
+                        ToolTip="{loc:Loc '密排：一行摆多个；取消：一个选项一行'}" />
                 </DockPanel>
                 <ItemsControl ItemTemplate="{DynamicResource UnitItemTemplate}" ItemsSource="{Binding Members}">
                     <ItemsControl.Style>
@@ -539,7 +540,7 @@
         <Setter Property="Margin" Value="0,0,4,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="ToolTip" Value="收藏 / 取消收藏" />
+        <Setter Property="ToolTip" Value="{loc:Loc '收藏 / 取消收藏'}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
@@ -648,12 +649,12 @@
                 FontSize="15"
                 FontWeight="Bold"
                 Foreground="{DynamicResource TextSecondaryBrush}"
-                Text="常用" />
+                Text="{loc:Loc 常用}" />
             <TextBlock
                 Margin="2,0,0,8"
                 FontSize="14"
                 Foreground="{DynamicResource TextSecondaryBrush}"
-                Text="点过的功能会自动按次数排到这里（最多 5 条）；一旦收藏就移上去，这里不再重复出现。">
+                Text="{loc:Loc '点过的功能会自动按次数排到这里（最多 5 条）；一旦收藏就移上去，这里不再重复出现。'}">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -674,12 +675,12 @@
                 FontSize="15"
                 FontWeight="Bold"
                 Foreground="{DynamicResource TextSecondaryBrush}"
-                Text="收藏" />
+                Text="{loc:Loc 收藏}" />
             <TextBlock
                 Margin="2,0,0,8"
                 FontSize="14"
                 Foreground="{DynamicResource TextSecondaryBrush}"
-                Text="还没有收藏。任意一行左侧点星标即可收藏；组里的子功能（大蒜、黄油这类）可以先搜出来再收藏。"
+                Text="{loc:Loc '还没有收藏。任意一行左侧点星标即可收藏；组里的子功能（大蒜、黄油这类）可以先搜出来再收藏。'}"
                 TextWrapping="Wrap">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
@@ -713,7 +714,7 @@
                             FontSize="15"
                             FontWeight="Bold"
                             Foreground="{DynamicResource TextSecondaryBrush}"
-                            Text="脚本参数" />
+                            Text="{loc:Loc 脚本参数}" />
                         <TextBlock
                             Margin="0,0,0,4"
                             FontSize="14"
@@ -847,7 +848,7 @@
                         <TextBlock
                             FontSize="15"
                             Foreground="{DynamicResource TextPrimaryBrush}"
-                            Text="{Binding Title}" />
+                            Text="{Binding Display}" />
                     </StackPanel>
                 </DataTemplate>
             </Setter.Value>
