@@ -66,14 +66,22 @@ def transform(text):
     return out.replace('\r\n', '\n').replace('\n', '\r\n')
 
 
-def from_git(ref='origin/master'):
-    """从 git 里取 master 那份原生 XAML；取不到返回 None。"""
+# 原生（经典）窗口的基准分支。master 已经是 NewUI 的主分支，旧界面整体挪到了 oldui，
+# 所以这里不能再指 master —— 指过去只会因为「master 已是 NewUI 外壳」而被永久跳过。
+# 本地分支优先：没网/没 fetch 到 origin/oldui 时核对门照样能跑。
+BASELINE_REFS = ('oldui', 'origin/oldui')
+BASELINE_REF = BASELINE_REFS[0]
+
+
+def from_git(refs=BASELINE_REFS):
+    """从 git 里取 oldui 那份原生 XAML；两个引用都取不到才返回 None。"""
     import subprocess
-    r = subprocess.run(['git', '-C', ROOT, 'show', f'{ref}:{MASTER_XAML}'],
-                       capture_output=True)
-    if r.returncode != 0:
-        return None
-    return r.stdout.decode('utf-8')
+    for ref in refs:
+        r = subprocess.run(['git', '-C', ROOT, 'show', f'{ref}:{MASTER_XAML}'],
+                           capture_output=True)
+        if r.returncode == 0:
+            return r.stdout.decode('utf-8')
+    return None
 
 
 def main(argv):

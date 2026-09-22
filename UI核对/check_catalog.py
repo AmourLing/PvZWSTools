@@ -6,10 +6,10 @@
   3. legacy_units.json 里的旧功能单元，一个都不能从界面上消失；
   4. legacy_bindings.txt 里旧 XAML 用到的绑定目标，除显式豁免外都要被覆盖。
 
-外加一项跟 master 的对账：ClassicMainWindow.xaml 必须等于 master 原生窗口套上 sync_classic
-的那三处差异。少了这一项，从 master 同步时很容易只改了清单、忘了改经典界面。
+外加一项跟 oldui 分支的对账：ClassicMainWindow.xaml 必须等于 oldui（原 master）那份原生窗口
+套上 sync_classic 的三处差异。少了这一项，从旧界面同步时很容易只改了清单、忘了改经典界面。
 
-基准数据（legacy_*）是从 master 的原生 MainWindow.xaml 抽出来的快照，
+基准数据（legacy_*）是从旧界面那份原生 MainWindow.xaml 抽出来的快照，
 用 gen_baseline.py 可以从任意一份旧 XAML 重新生成。
 """
 import io, json, os, re, sys
@@ -46,6 +46,20 @@ DROP = {
     'ControlType', 'Value', 'Options', 'DisplayDescription',
     'InfoAll', 'DisplayAuthor',           # 快捷脚本参数列表，原样搬进脚本页
     'GardenButtonCommand',                # 花园热区搬进 GardenPanel，绑定名不变
+    # 波次出怪三步收成一行：点「波次出怪(数量)」= 导出 -> 应用内编辑 -> 确认即载入。
+    # 勾选框和「载入json」的动作进编辑框，两端走的仍是同一批 SpawnViewModel 方法，
+    # 经典页保留原来的三步（那四个绑定仍被 ClassicMainWindow.xaml 用着）。
+    'ZombiesInWaveCountCommand', 'JsonEditCommand', 'JsonEditZombiesInWave',
+    # 大蒜/黄油/冰封/魅惑是同一个动作的四种取值，收成「施加僵尸状态」一个下拉 + 一个应用；
+    # 四个"一键××效果"脚本本身没动，动的只是清单上不再各占一行。
+    'SetYuckyFaceCommand', 'SetButteredCommand', 'SetIceTrapCommand', 'SetMindControlCommand',
+    # 「获取当前出怪」(点一次问一次) 换成开关「同步出怪列表」：游戏侧在换关/初始化/读档时主动推。
+    # 命令本身留着给经典页，只是新清单不再列它。
+    'GetZombieSpawnCommand',
+    # 罐子类型/状态改绑到 AddItemCommand 真正塞进载荷的 VaseType/VaseState：
+    # 旧的那对 *Input 循环完没人读（BoardViewModel.cs:160-161），等于控件是死的。
+    # 桌面经典页仍按 master 的写法用着它们（ClassicMainWindow.xaml:2865），新清单不再列。
+    'VaseTypeInput', 'VaseStateInput', 'CycleVaseTypeCommand', 'CycleItemStateCommand',
 }
 # 旧 XAML 用 DataContext="{Binding Board}" 分子 VM，新实现把前缀写进路径里
 CHILD_VM = {'Board', 'Challenge', 'Formation', 'Fun', 'Garden', 'Level', 'Others',
@@ -143,29 +157,29 @@ def main():
 
 
 def check_classic_sync():
-    """ClassicMainWindow 是否跟得上 master。True=一致，False=落后，None=无从判断。"""
-    master = sync_classic.from_git()
-    if master is None:
-        print('[4/4] 跳过：本地没有 origin/master 的原生窗口可对照')
+    """ClassicMainWindow 是否跟得上基准分支（oldui）。True=一致，False=落后，None=无从判断。"""
+    baseline = sync_classic.from_git()
+    if baseline is None:
+        print(f'[4/4] 跳过：本地没有 {sync_classic.BASELINE_REF} 的原生窗口可对照')
         return None
-    if sync_classic.is_new_ui_shell(master):
-        print('[4/4] 跳过：master 的 MainWindow 已经是 NewUI 外壳，没有原生布局可对照')
+    if sync_classic.is_new_ui_shell(baseline):
+        print('[4/4] 跳过：基准分支的 MainWindow 已经是 NewUI 外壳，没有原生布局可对照')
         return None
     try:
-        expected = sync_classic.transform(master)
+        expected = sync_classic.transform(baseline)
     except ValueError as ex:
         print(f'[4/4] 未通过：{ex}')
         return False
     with io.open(sync_classic.CLASSIC, encoding='utf-8', newline='') as f:
         actual = f.read()
     if actual == expected:
-        print('[4/4] 经典窗口与 master 原生布局一致')
+        print(f'[4/4] 经典窗口与 {sync_classic.BASELINE_REF} 原生布局一致')
         return True
     diff = [i for i, (a, b) in enumerate(zip(actual.splitlines(), expected.splitlines()))
             if a != b]
-    print(f'[4/4] 未通过：经典窗口落后 master，首个差异在第 {diff[0] + 1 if diff else min(len(actual), len(expected))} 行'
+    print(f'[4/4] 未通过：经典窗口落后基准分支，首个差异在第 {diff[0] + 1 if diff else min(len(actual), len(expected))} 行'
           f'（共 {len(diff)} 行不同）')
-    print('     跑：git show origin/master:PvZWSTools_WPF/Views/MainWindow.xaml > 旧版.xaml'
+    print(f'     跑：git show {sync_classic.BASELINE_REF}:PvZWSTools_WPF/Views/MainWindow.xaml > 旧版.xaml'
           ' && python UI核对/sync_classic.py 旧版.xaml PvZWSTools_WPF/Views/ClassicMainWindow.xaml')
     return False
 
