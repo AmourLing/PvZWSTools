@@ -738,11 +738,11 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             ViewGroup.LayoutParams.WrapContent);
         layout.SetPadding(50, 30, 50, 30);
 
-        var chkAutoConnect = CreateSettingCheckBox(this, "允许自动连接", _appSettings.AutoConnectEnabled, 30);
-        var chkShowNotification = CreateSettingCheckBox(this, "取消连接提醒", _appSettings.SuppressConnectionMessage, 10);
-        var chkAutoUpdateButtonStatus = CreateSettingCheckBox(this, "允许自动更新按钮状态", _appSettings.AllowAutoUpdateButtonStatus, 10);
-        var chkAutoCheckUpdate = CreateSettingCheckBox(this, "启动时自动检查更新", _appSettings.AutoCheckUpdateEnabled, 10);
-        var chkAutoApplyLastState = CreateSettingCheckBox(this, "自动应用上次配置", _appSettings.AutoApplyLastState, 10);
+        var chkAutoConnect = CreateSettingCheckBox(this, Loc.T("允许自动连接"), _appSettings.AutoConnectEnabled, 30);
+        var chkShowNotification = CreateSettingCheckBox(this, Loc.T("取消连接提醒"), _appSettings.SuppressConnectionMessage, 10);
+        var chkAutoUpdateButtonStatus = CreateSettingCheckBox(this, Loc.T("允许自动更新按钮状态"), _appSettings.AllowAutoUpdateButtonStatus, 10);
+        var chkAutoCheckUpdate = CreateSettingCheckBox(this, Loc.T("启动时自动检查更新"), _appSettings.AutoCheckUpdateEnabled, 10);
+        var chkAutoApplyLastState = CreateSettingCheckBox(this, Loc.T("自动应用上次配置"), _appSettings.AutoApplyLastState, 10);
 
         // 语言名故意不翻译：这一组就是切语言的入口，两种语言下都显示各自本名才不会找不到自己。
         var rbLangZh = new RadioButton(this) { Text = "简体中文" };

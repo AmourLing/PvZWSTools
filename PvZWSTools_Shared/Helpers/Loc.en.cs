@@ -58,6 +58,7 @@ public static partial class Loc
         ["全部"] = "All",
         ["只看日志"] = "Log only",
         ["只看收发"] = "Traffic only",
+        ["取消连接提醒"] = "Suppress connect notices",
         ["应用"] = "Apply",
         ["连接"] = "Connect",
         ["断开连接"] = "Disconnect",
