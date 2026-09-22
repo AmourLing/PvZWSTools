@@ -17,7 +17,7 @@ using Google.Android.Material.Navigation;
 using PvZWSTools_Shared;
 using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
-using PvZWSTools_Android.Helpers;
+using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Android.Services;
 using static PvZWSTools_Shared.Helpers.Sharedstring;
 
@@ -238,7 +238,9 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         if(!Directory.Exists(configPath))
             _ = Directory.CreateDirectory(configPath);
 
-        Log.Initialize(configPath);
+        // 日志要落文件：安卓这边显式指到外部存储的 配置文件\Log，
+        // 和桌面端同一套相对布局，用户在文件管理器里就能翻到
+        Log.Initialize(Path.Combine(configPath, Constants.Folder_Log));
         Log.Info("MainActivity 启动");
         Log.Info($"存储路径: {AppFilesPath}");
 
@@ -350,7 +352,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             var versionItem = menu.FindItem(Resource.Id.nav_versioninfo);
             if(versionItem != null)
             {
-                var versionSuffix = CompileTimeHelper.GetCompileTimeString("yyyyMMdd");
+                var versionSuffix = CompileTime.GetCompileTime()?.ToString("yyyyMMdd") ?? "未知";
                 string title = $"当前版本{versionSuffix}";
                 if(IsBetaVersion)
                 {
