@@ -1,4 +1,5 @@
-using Android.Content;
+﻿using Android.Content;
+using PvZWSTools_Shared.Helpers;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -34,7 +35,7 @@ public class ScriptFragment:AndroidX.Fragment.App.Fragment
         body.SetPadding(pad, pad, pad, pad);
         scroll.AddView(body);
 
-        body.AddView(new TextView(ctx) { Text = "选择脚本", TextSize = 15 });
+        body.AddView(new TextView(ctx) { Text = Loc.T("选择脚本"), TextSize = 15 });
 
         _scripts = new Spinner(ctx);
         _scripts.LayoutParameters = new LinearLayout.LayoutParams(
@@ -57,7 +58,7 @@ public class ScriptFragment:AndroidX.Fragment.App.Fragment
         _parameters = new LinearLayout(ctx) { Orientation = Orientation.Vertical };
         body.AddView(_parameters);
 
-        var run = new Button(ctx) { Text = "运行" };
+        var run = new Button(ctx) { Text = Loc.T("运行") };
         run.LayoutParameters = new LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
         run.Click += (_, _) => Vm?.QModCommand.Execute(null);
@@ -111,7 +112,7 @@ public class ScriptFragment:AndroidX.Fragment.App.Fragment
         var vm = Vm;
         if(vm == null || vm.Parameters.Count == 0) return;
 
-        _parameters.AddView(new TextView(ctx) { Text = "脚本参数", TextSize = 15 });
+        _parameters.AddView(new TextView(ctx) { Text = Loc.T("脚本参数"), TextSize = 15 });
 
         foreach(var param in vm.Parameters)
         {

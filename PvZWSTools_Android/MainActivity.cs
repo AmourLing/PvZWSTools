@@ -79,10 +79,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
 
         // 抽屉关闭时，弹出退出确认，避免误触直接退出
         new AndroidX.AppCompat.App.AlertDialog.Builder(this)
-            .SetTitle("退出应用")
-            .SetMessage("确定要退出吗？当前设置已自动保存。")
-            .SetPositiveButton("退出", (sender, e) => SafeExit())
-            .SetNegativeButton("取消", (IDialogInterfaceOnClickListener)null)
+            .SetTitle(Loc.T("退出应用"))
+            .SetMessage(Loc.T("确定要退出吗？当前设置已自动保存。"))
+            .SetPositiveButton(Loc.T("退出"), (sender, e) => SafeExit())
+            .SetNegativeButton(Loc.T("取消"), (IDialogInterfaceOnClickListener)null)
             .Show();
     }
 
@@ -170,11 +170,11 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         {
             if(_isConnected)
             {
-                _ = settingsMenuItem.SetTitle(Resource.String.ws_connected);
+                _ = settingsMenuItem.SetTitle(Loc.T(GetString(Resource.String.ws_connected)));
             }
             else
             {
-                _ = settingsMenuItem.SetTitle(Resource.String.ws_disconnected);
+                _ = settingsMenuItem.SetTitle(Loc.T(GetString(Resource.String.ws_disconnected)));
             }
         }
         return base.OnPrepareOptionsMenu(menu);
@@ -207,11 +207,11 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             {
                 if(isConnected)
                 {
-                    _ = _settingsMenuItem.SetTitle(Resource.String.ws_connected);
+                    _ = _settingsMenuItem.SetTitle(Loc.T(GetString(Resource.String.ws_connected)));
                 }
                 else
                 {
-                    _ = _settingsMenuItem.SetTitle(Resource.String.ws_disconnected);
+                    _ = _settingsMenuItem.SetTitle(Loc.T(GetString(Resource.String.ws_disconnected)));
                 }
             }
 
@@ -358,7 +358,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             if(versionItem != null)
             {
                 var versionSuffix = CompileTime.GetCompileTime()?.ToString("yyyyMMdd") ?? "未知";
-                string title = $"当前版本{versionSuffix}";
+                string title = Loc.F("当前版本{0}", versionSuffix);
                 if(IsBetaVersion)
                 {
                     title += "-beta";
@@ -454,8 +454,8 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     private void ShowExtractDialog()
     {
         var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-        _ = builder.SetTitle("正在准备资源文件");
-        _ = builder.SetMessage("正在解压必要资源，请稍候...");
+        _ = builder.SetTitle(Loc.T("正在准备资源文件"));
+        _ = builder.SetMessage(Loc.T("正在解压必要资源，请稍候..."));
         _ = builder.SetCancelable(false);
 
         ProgressBar progressBar = new ProgressBar(this);
@@ -520,6 +520,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         RunOnUiThread(() =>
         {
             var dialogView = LayoutInflater.From(this)!.Inflate(Resource.Layout.update_dialog, null);
+            AndroidUi.LocalizeTexts(dialogView);          // 渠道说明这些文字写在布局 XML 里
 
             var currentVerText = dialogView.FindViewById<TextView>(Resource.Id.current_version_text)!;
             currentVerText.Text = _updateService!.CurrentVersionDisplay;
@@ -552,7 +553,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             void ApplyInfo(UpdateInfo i)
             {
                 found = i;
-                statusTitle.Text = "发现新版本！";
+                statusTitle.Text = Loc.T("发现新版本！");
                 statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#2E7D32"));
                 newTagText.Text = i.TagName;
                 sizeText.Text = i.Size.HasValue ? $"（{i.Size.Value / 1048576.0:F1} MB）" : "";
@@ -567,9 +568,9 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             }
             else
             {
-                statusTitle.Text = "正在检查更新...";
+                statusTitle.Text = Loc.T("正在检查更新...");
                 statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#555555"));
-                notesText.Text = "正在从 GitHub / Gitee 检查新版本，请稍候。\n\n无论检查结果如何，都可以随时通过下方网盘渠道手动下载。";
+                notesText.Text = Loc.T("正在从 GitHub / Gitee 检查新版本，请稍候。\n\n无论检查结果如何，都可以随时通过下方网盘渠道手动下载。");
 
                 _ = CheckInBackgroundAsync();
                 async Task CheckInBackgroundAsync()
@@ -579,16 +580,16 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                     {
                         if(result == null)
                         {
-                            statusTitle.Text = "检查更新失败";
+                            statusTitle.Text = Loc.T("检查更新失败");
                             statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#C62828"));
-                            notesText.Text = "无法从 GitHub / Gitee 获取版本信息，请稍后重试，或通过下方网盘渠道手动下载查看。";
+                            notesText.Text = Loc.T("无法从 GitHub / Gitee 获取版本信息，请稍后重试，或通过下方网盘渠道手动下载查看。");
                         }
                         else if(!result.IsNewerThan(_updateService!.CurrentVersion))
                         {
-                            statusTitle.Text = "当前已是最新版本";
+                            statusTitle.Text = Loc.T("当前已是最新版本");
                             statusTitle.SetTextColor(Android.Graphics.Color.ParseColor("#2E7D32"));
                             newTagText.Text = result.TagName;
-                            notesText.Text = "服务器最新版本如上，仍可通过下方网盘渠道手动查看。";
+                            notesText.Text = Loc.T("服务器最新版本如上，仍可通过下方网盘渠道手动查看。");
                         }
                         else
                         {
@@ -602,10 +603,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             netdiskRadios[0].Radio.Checked = true;
 
             var dialog = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
-                .SetTitle("检查更新")
+                .SetTitle(Loc.T("检查更新"))
                 .SetView(dialogView)
                 .SetCancelable(true)
-                .SetPositiveButton("下载并更新", (_, _) =>
+                .SetPositiveButton(Loc.T("下载并更新"), (_, _) =>
                 {
                     if(radioGithub.Checked && radioGithub.Enabled)
                     {
@@ -627,7 +628,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                     }
                     tcs.TrySetResult((UpdateSource.None, null, found));
                 })
-                .SetNegativeButton("取消", (_, _) => tcs.TrySetResult((UpdateSource.None, null, found)))
+                .SetNegativeButton(Loc.T("取消"), (_, _) => tcs.TrySetResult((UpdateSource.None, null, found)))
                 .Create();
 
             dialog.Show();
@@ -649,7 +650,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
                 .SetTitle($"打开{netdisk.Name}")
                 .SetMessage($"{codeText}即将打开浏览器，请手动下载 APK 后安装。\n\n下载完成后，关闭本程序，安装新 APK 即可。")
-                .SetPositiveButton("打开浏览器", (_, _) =>
+                .SetPositiveButton(Loc.T("打开浏览器"), (_, _) =>
                 {
                     try
                     {
@@ -659,10 +660,10 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                     catch(Exception ex)
                     {
                         Log.Error($"打开{netdisk.Name}失败", ex);
-                        Toast.MakeText(this, "无法打开浏览器，请手动复制链接", ToastLength.Long).Show();
+                        Toast.MakeText(this, Loc.T("无法打开浏览器，请手动复制链接"), ToastLength.Long).Show();
                     }
                 })
-                .SetNegativeButton("取消", (_, _) => { });
+                .SetNegativeButton(Loc.T("取消"), (_, _) => { });
             builder.Create().Show();
         });
     }
@@ -690,8 +691,8 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         RunOnUiThread(() =>
         {
             var builder = new AndroidX.AppCompat.App.AlertDialog.Builder(this);
-            builder.SetTitle("正在下载更新");
-            builder.SetMessage("正在后台下载更新包，请稍候...");
+            builder.SetTitle(Loc.T("正在下载更新"));
+            builder.SetMessage(Loc.T("正在后台下载更新包，请稍候..."));
             builder.SetCancelable(false);
             ProgressBar progressBar = new ProgressBar(this) { Indeterminate = true };
             builder.SetView(progressBar);
@@ -716,7 +717,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         if(string.IsNullOrEmpty(downloaded))
         {
             RunOnUiThread(() =>
-                Toast.MakeText(this, "下载更新包失败，请稍后重试", ToastLength.Long).Show());
+                Toast.MakeText(this, Loc.T("下载更新包失败，请稍后重试"), ToastLength.Long).Show());
             return;
         }
 
@@ -724,7 +725,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         if(!applied)
         {
             RunOnUiThread(() =>
-                Toast.MakeText(this, "应用更新失败，请前往发布页手动下载", ToastLength.Long).Show());
+                Toast.MakeText(this, Loc.T("应用更新失败，请前往发布页手动下载"), ToastLength.Long).Show());
         }
         // 应用成功时系统安装器已弹起
     }
@@ -752,12 +753,12 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         var langGroup = new RadioGroup(this) { Orientation = Orientation.Vertical };
         langGroup.AddView(rbLangZh);
         langGroup.AddView(rbLangEn);
-        var txtLangLabel = new TextView(this) { Text = "界面语言（改后要重启）", TextSize = 16 };
+        var txtLangLabel = new TextView(this) { Text = Loc.T("界面语言（改后要重启）"), TextSize = 16 };
         txtLangLabel.SetPadding(0, 20, 0, 6);
 
         var txtWsAddressLabel = new TextView(this)
         {
-            Text = "WebSocket地址:",
+            Text = Loc.T("WebSocket地址:"),
             TextSize = 16
         };
         txtWsAddressLabel.SetPadding(0, 20, 0, 10);
@@ -765,7 +766,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         var txtWsAddress = new EditText(this)
         {
             Text = _appSettings.LastWebSocketAddress,
-            Hint = "请输入WebSocket地址"
+            Hint = Loc.T("请输入WebSocket地址")
         };
         txtWsAddress.SetTextSize(Android.Util.ComplexUnitType.Sp, 14);
         txtWsAddress.SetPadding(10, 10, 10, 10);
@@ -840,7 +841,13 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     /// 翻页比对用的是 Resource.Id 而不是标题文字，所以翻译它们不影响选页回调。</summary>
     private void LocalizeDrawer()
     {
-        var menu = FindViewById<NavigationView>(Resource.Id.nav_view)?.Menu;
+        var nav = FindViewById<NavigationView>(Resource.Id.nav_view);
+        if(nav == null)
+            return;
+        for(int i = 0; i < nav.HeaderCount; i++)
+            AndroidUi.LocalizeTexts(nav.GetHeaderView(i));
+
+        var menu = nav.Menu;
         if(menu == null)
             return;
         for(int i = 0; i < menu.Size(); i++)
@@ -853,6 +860,9 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             var sub = item.SubMenu;
             if(sub == null)
                 continue;
+            // ISubMenu 没有读标题的 getter，但分组头就是父项那条标题，所以拿刚读到的原文喂它
+            if(!string.IsNullOrEmpty(title))
+                sub.SetHeaderTitle(Loc.T(title));
             for(int j = 0; j < sub.Size(); j++)
             {
                 var child = sub.GetItem(j);
@@ -863,6 +873,18 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         }
     }
 
+    /// <summary>头部布局里的说明文字走 @string，平台按设备语言取值、不跟应用内语种，
+    /// 所以 inflate 完再就地过一遍文案表。</summary>
+    private static void LocalizeTexts(Android.Views.View v)
+    {
+        if(v == null)
+            return;
+        if(v is Android.Widget.TextView tv && !string.IsNullOrEmpty(tv.Text))
+            tv.Text = Loc.T(tv.Text);
+        if(v is Android.Views.ViewGroup group)
+            for(int i = 0; i < group.ChildCount; i++)
+                LocalizeTexts(group.GetChildAt(i));
+    }
     /// <summary>换语种要重启：静态的 AppServices 里攥着按旧语种拼好的清单，
     /// 只 Recreate 一个 Activity 换不掉它。</summary>
     private void RestartForNewLanguage()

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Android.App;
@@ -33,7 +33,7 @@ public static class StateManageDialog
         var root0 = AppServices.Root;
         if(root0 == null)
         {
-            Toast.MakeText(activity, "状态服务未初始化", ToastLength.Short).Show();
+            Toast.MakeText(activity, Loc.T("状态服务未初始化"), ToastLength.Short).Show();
             return;
         }
 
@@ -48,7 +48,7 @@ public static class StateManageDialog
         // 说明文字
         var hint = new TextView(activity)
         {
-            Text = "保存/恢复各界面的开关、输入框、下拉框状态。\n\"初始状态\"为应用默认值；\"上次状态\"为关闭时自动保存，均不可删除。",
+            Text = Loc.T("保存/恢复各界面的开关、输入框、下拉框状态。\n\"初始状态\"为应用默认值；\"上次状态\"为关闭时自动保存，均不可删除。"),
             TextSize = 13,
         };
         hint.SetPadding(0, 0, 0, 20);
@@ -72,7 +72,7 @@ public static class StateManageDialog
 
         var nameInput = new EditText(activity)
         {
-            Hint = "输入方案名称",
+            Hint = Loc.T("输入方案名称"),
             TextSize = 14,
         };
         nameInput.LayoutParameters = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WrapContent, 1f);
@@ -130,12 +130,12 @@ public static class StateManageDialog
             string name = nameInput.Text?.Trim();
             if(string.IsNullOrEmpty(name))
             {
-                Toast.MakeText(activity, "请输入方案名称", ToastLength.Short).Show();
+                Toast.MakeText(activity, Loc.T("请输入方案名称"), ToastLength.Short).Show();
                 return;
             }
             if(name == InitialStateName || name == LastStateName)
             {
-                Toast.MakeText(activity, "不能使用保留名称「初始状态」或「上次状态」", ToastLength.Short).Show();
+                Toast.MakeText(activity, Loc.T("不能使用保留名称「初始状态」或「上次状态」"), ToastLength.Short).Show();
                 return;
             }
 
@@ -156,21 +156,21 @@ public static class StateManageDialog
 
             // VM 里已连接就立刻把开启的开关同步给游戏，未连接则等连接成功事件
             root0.ApplyButtonStates(states);
-            Toast.MakeText(activity, "状态已应用" + (AppServices.IsConnected ? "，开启的开关已同步到游戏" : ""), ToastLength.Short).Show();
+            Toast.MakeText(activity, Loc.T("状态已应用") + (AppServices.IsConnected ? "，开启的开关已同步到游戏" : ""), ToastLength.Short).Show();
         };
 
         detailBtn.Click += (_, _) =>
         {
             if(selectedIndex == 1 && root0.LoadLastButtonStates().Count == 0)
             {
-                Toast.MakeText(activity, "上次状态为空：应用尚未成功保存过状态（改动界面后退后台或退出一次即可保存）", ToastLength.Long).Show();
+                Toast.MakeText(activity, Loc.T("上次状态为空：应用尚未成功保存过状态（改动界面后退后台或退出一次即可保存）"), ToastLength.Long).Show();
                 return;
             }
 
             var states = StatesFor(selectedIndex, names);
             if(states == null)
             {
-                Toast.MakeText(activity, "该方案没有保存内容", ToastLength.Short).Show();
+                Toast.MakeText(activity, Loc.T("该方案没有保存内容"), ToastLength.Short).Show();
                 return;
             }
 
@@ -192,9 +192,9 @@ public static class StateManageDialog
         RefreshList();
 
         _ = new AlertDialog.Builder(activity)
-            .SetTitle("状态管理")
+            .SetTitle(Loc.T("状态管理"))
             .SetView(root)
-            .SetNegativeButton("关闭", (IDialogInterfaceOnClickListener)null)
+            .SetNegativeButton(Loc.T("关闭"), (IDialogInterfaceOnClickListener)null)
             .Show();
     }
 
@@ -258,9 +258,9 @@ public static class StateManageDialog
         scroll.AddView(text);
 
         _ = new AlertDialog.Builder(activity)
-            .SetTitle("详细信息")
+            .SetTitle(Loc.T("详细信息"))
             .SetView(scroll)
-            .SetPositiveButton("关闭", (IDialogInterfaceOnClickListener)null)
+            .SetPositiveButton(Loc.T("关闭"), (IDialogInterfaceOnClickListener)null)
             .Show();
     }
 

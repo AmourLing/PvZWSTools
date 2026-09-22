@@ -148,7 +148,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
         return btn;
     }
 
-    private static string ChipsCaption(UnitDescriptor unit) => $"{unit.Label}（{unit.SelectedSummary}）";
+    private static string ChipsCaption(UnitDescriptor unit) => Loc.F("{0}（{1}）", unit.Label, unit.SelectedSummary);
 
     /// <summary>三个一行的勾选网格。每个勾就是它自己那个开关，点完立刻生效，所以不需要"应用"收尾。
     /// 打开期间列表可能被别处改动（同步出怪列表的钩子随时会推一份过来），
@@ -223,8 +223,8 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
     /// 已收藏的前面加一颗星——手机上星标只能靠长按切，不加标记就看不出哪些已经收过。</summary>
     private static string Caption(UnitDescriptor unit) => (unit.IsFavorite ? "★ " : "") + unit.Kind switch
     {
-        UnitKind.Switch or UnitKind.TriState => $"{unit.Label}（{unit.DisplayState}）",
-        UnitKind.Cycle => $"{unit.Label}：{unit.DisplayValue}",
+        UnitKind.Switch or UnitKind.TriState => Loc.F("{0}（{1}）", unit.Label, unit.DisplayState),
+        UnitKind.Cycle => Loc.F("{0}：{1}", unit.Label, unit.DisplayValue),
         _ => unit.Label
     };
 
@@ -256,7 +256,7 @@ public class CatalogFragment:AndroidX.Fragment.App.Fragment
             .SetTitle(unit.Label)
             .SetView(body)
             .SetPositiveButton(Loc.T("应用"), (_, _) => unit.RunCommand?.Execute(null))
-            .SetNegativeButton("取消", (_, _) => { })
+            .SetNegativeButton(Loc.T("取消"), (_, _) => { })
             .Show();
     }
 

@@ -1,10 +1,11 @@
-<Window
+﻿<Window
     x:Class="PvZWSTools_WPF.Views.WaveJsonEditor"
     Background="{DynamicResource BgRootBrush}"
     FontFamily="Microsoft YaHei UI"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="编辑波次出怪 JSON"
+    xmlns:loc="clr-namespace:PvZWSTools_WPF.Themes"
+    Title="{loc:Loc '编辑波次出怪 JSON'}"
     Width="620"
     Height="520"
     WindowStartupLocation="CenterOwner">
@@ -20,7 +21,7 @@
             Grid.Row="0"
             Margin="0,0,0,8"
             FontSize="13"
-            Text="每波一行 waveN，方括号里是 [僵尸序号, 数量]。「载入到游戏」写回关卡；「仅保存」只留在这台设备上，进关后用『载入已存波次表』灌回去。"
+            Text="{loc:Loc '每波一行 waveN，方括号里是 [僵尸序号, 数量]。「载入到游戏」写回关卡；「仅保存」只留在这台设备上，进关后用『载入已存波次表』灌回去。'}"
             TextWrapping="Wrap" />
 
         <TextBox
@@ -54,19 +55,19 @@
                 Height="28"
                 Margin="0,0,10,0"
                 Command="{Binding ApplyCommand}"
-                Content="载入到游戏"
+                Content="{loc:Loc '载入到游戏'}"
                 IsDefault="True" />
             <Button
                 Width="90"
                 Height="28"
                 Margin="0,0,10,0"
                 Command="{Binding SaveOnlyCommand}"
-                Content="仅保存" />
+                Content="{loc:Loc '仅保存'}" />
             <Button
                 Width="70"
                 Height="28"
                 Command="{Binding CancelCommand}"
-                Content="取消"
+                Content="{loc:Loc '取消'}"
                 IsCancel="True" />
         </StackPanel>
     </Grid>

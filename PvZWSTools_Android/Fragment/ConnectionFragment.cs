@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.OS;
@@ -35,6 +35,7 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         var view = inflater.Inflate(Resource.Layout.connection_fragment, container, false);
+        Platform.AndroidUi.LocalizeTexts(view);            // 布局里写死的提示文字跟着语种走
 
         editTextAddress = view.FindViewById<EditText>(Resource.Id.editText);
         buttonConnect = view.FindViewById<Button>(Resource.Id.button1);
@@ -76,7 +77,7 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
             if(isCooldown)
             {
                 buttonConnect.Enabled = false;
-                buttonConnect.Text = "请稍后...";
+                buttonConnect.Text = Loc.T("请稍后...");
                 return;
             }
 
@@ -88,11 +89,11 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
                 {
                     // 理论上断开操作中 ws 可能还显示 connected 直到 onClose 触发，
                     // 但为了用户体验，点击断开后立即显示断开中
-                    buttonConnect.Text = "断开中...";
+                    buttonConnect.Text = Loc.T("断开中...");
                 }
                 else
                 {
-                    buttonConnect.Text = "连接中...";
+                    buttonConnect.Text = Loc.T("连接中...");
                 }
                 return;
             }
@@ -121,7 +122,7 @@ public class ConnectionFragment:AndroidX.Fragment.App.Fragment
         string address = editTextAddress.Text?.Trim();
         if(string.IsNullOrEmpty(address))
         {
-            Toast.MakeText(Activity, "请输入WebSocket地址", ToastLength.Short).Show();
+            Toast.MakeText(Activity, Loc.T("请输入WebSocket地址"), ToastLength.Short).Show();
             return;
         }
 

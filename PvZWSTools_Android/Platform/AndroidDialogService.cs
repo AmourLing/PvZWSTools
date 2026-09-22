@@ -1,4 +1,4 @@
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
@@ -68,17 +68,17 @@ public sealed class AndroidDialogService:IDialogService
 
         var apply = new Button(activity)
         {
-            Text = "载入到游戏",
+            Text = Loc.T("载入到游戏"),
             LayoutParameters = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WrapContent, 1f)
         };
         var saveOnly = new Button(activity)
         {
-            Text = "仅保存",
+            Text = Loc.T("仅保存"),
             LayoutParameters = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WrapContent, 1f)
         };
         var cancel = new Button(activity)
         {
-            Text = "取消",
+            Text = Loc.T("取消"),
             LayoutParameters = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent)
         };
@@ -93,7 +93,7 @@ public sealed class AndroidDialogService:IDialogService
         root.AddView(buttons);
 
         var dialog = new AlertDialog.Builder(activity)
-            .SetTitle("编辑波次出怪 JSON")
+            .SetTitle(Loc.T("编辑波次出怪 JSON"))
             .SetView(root)
             .SetCancelable(false)
             .Create();

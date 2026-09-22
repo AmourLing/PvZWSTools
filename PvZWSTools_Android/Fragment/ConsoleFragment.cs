@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Android.Graphics;
 using Android.OS;
 using Android.Text;
@@ -39,13 +39,13 @@ public class ConsoleFragment:AndroidX.Fragment.App.Fragment
             console.CycleFilterCommand.Execute(null);
             filter.Text = console.FilterText;
         };
-        var follow = new CheckBox(ctx) { Text = "跟随", Checked = console.AutoScroll };
+        var follow = new CheckBox(ctx) { Text = Loc.T("跟随"), Checked = console.AutoScroll };
         follow.CheckedChange += (_, _) => console.AutoScroll = follow.Checked;
-        var freeze = new CheckBox(ctx) { Text = "暂停", Checked = console.Frozen };
+        var freeze = new CheckBox(ctx) { Text = Loc.T("暂停"), Checked = console.Frozen };
         freeze.CheckedChange += (_, _) => console.Frozen = freeze.Checked;
         var clear = new Button(ctx)
         {
-            Text = "清空",
+            Text = Loc.T("清空"),
             LayoutParameters = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent)
         };
@@ -71,7 +71,7 @@ public class ConsoleFragment:AndroidX.Fragment.App.Fragment
 
         var input = new EditText(ctx)
         {
-            Hint = "写 Python 语句发给游戏",
+            Hint = Loc.T("写 Python 语句发给游戏"),
             Text = console.Input,
             Typeface = Android.Graphics.Typeface.Monospace
         };
@@ -81,7 +81,7 @@ public class ConsoleFragment:AndroidX.Fragment.App.Fragment
 
         var send = new Button(ctx)
         {
-            Text = "发送",
+            Text = Loc.T("发送"),
             LayoutParameters = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent)
         };
