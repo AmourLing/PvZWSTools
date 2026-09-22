@@ -132,6 +132,10 @@ public static class Constants
         public const string WaveJsonEnd = "WAVE_JSON_END";
         public const string WaveListStart = "WAVELIST_B64_START";
         public const string WaveListEnd = "WAVELIST_B64_END";
+
+        /// <summary>游戏主动推送出怪列表时包的一对标记（同步出怪列表.py）。</summary>
+        public const string SpawnListStart = "SPAWN_LIST_START";
+        public const string SpawnListEnd = "SPAWN_LIST_END";
     }
 
     public static class SubFolders

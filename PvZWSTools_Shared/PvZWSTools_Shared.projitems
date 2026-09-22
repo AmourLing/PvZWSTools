@@ -53,6 +53,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\UpdateService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\BoardViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ChallengeViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ConsoleViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\FormationViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\FunViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\GardenDialogViewModel.cs" />
@@ -66,7 +67,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SettingDialogViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SpawnViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\WaveJsonEditorViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ZombiesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UiModel\FavoriteStore.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UiModel\UnitCatalog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UiModel\UnitDescriptor.cs" />
   </ItemGroup>

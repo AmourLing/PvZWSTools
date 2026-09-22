@@ -6,6 +6,10 @@ namespace PvZWSTools_Shared.Services;
 
 public class ScriptExecutionService:IScriptExecutionService
 {
+    /// <summary>等脚本回传的上限。手机走 Wi-Fi 连电脑，关卡数据大时 3 秒根本不够；
+    /// 超时只说明"没等到"，已经收到的部分照样返回。</summary>
+    private const int ResultTimeoutMs = 30000;
+
     private readonly string _basePath;
     private readonly IConnectionService _connection;
     private readonly IUserNotifier? _notifier;
@@ -129,11 +133,19 @@ public class ScriptExecutionService:IScriptExecutionService
         };
 
         _connection.MessageReceived += handler;
-        await _connection.SendAsync(scriptContent);
-        var timeoutTask = Task.Delay(3000);
-        var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
-        if(completedTask == timeoutTask)
+        try
+        {
+            await _connection.SendAsync(scriptContent);
+            bool finished = await Task.WhenAny(tcs.Task, Task.Delay(ResultTimeoutMs)) == tcs.Task;
+            if(!finished)
+                Log.Error($"等待「{scriptName}」回传超时（{ResultTimeoutMs / 1000}秒），只收到 {lines.Count} 行。");
+        }
+        finally
+        {
+            // 成功路径以前没摘过订阅：每调一次就留一个 handler 挂在连接上。
             _connection.MessageReceived -= handler;
+        }
+
         string result = string.Join(Environment.NewLine, lines);
         return result;
     }

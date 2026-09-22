@@ -83,7 +83,7 @@ else:
         out_lines.append(line)
     listing = "\n".join(out_lines)
 
-    # CHECK=2 是安卓端：它要弹窗显示这份文本，而 print 直接带非 ASCII 会被替换成 U+FFFD，
+    # CHECK=2：这份清单要经标准输出回传给宿主，而 print 直接带非 ASCII 可能被替换成 U+FFFD，
     # 所以裹一层 Base64 让宿主自己解码。WPF 端走明文，输出框照旧能看。
     payload_lines = []
     if ALLOW_JSON_ZOMBIES_IN_WAVE == "2":

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.ViewModels;
@@ -185,6 +186,39 @@ public partial class MainWindow:Window
         {
             _isResizing = false;
         }
+    }
+
+    private ScrollViewer? _consoleScroll;
+
+    /// <summary>控制台模板里的贴底只能写在代码里：换页签时模板会被拆掉重建，
+    /// 所以订阅跟着 Loaded/Unloaded 走，不留着旧视图的引用。</summary>
+    private void ConsoleScroll_Loaded(object sender, RoutedEventArgs e)
+    {
+        _consoleScroll = sender as ScrollViewer;
+        _viewModel.Console.PropertyChanged += ConsoleLinesChanged;
+        _consoleScroll?.ScrollToEnd();
+    }
+
+    private void ConsoleScroll_Unloaded(object sender, RoutedEventArgs e)
+    {
+        _consoleScroll = null;
+        _viewModel.Console.PropertyChanged -= ConsoleLinesChanged;
+    }
+
+    /// <summary>关掉"自动滚动"时不抢用户正在读的位置。</summary>
+    private void ConsoleLinesChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if(e.PropertyName != nameof(ConsoleViewModel.Shown)) return;
+        if(_viewModel.Console.AutoScroll)
+            _consoleScroll?.ScrollToEnd();
+    }
+
+    /// <summary>输入框里回车是换行（脚本常常不止一行），发送用 Ctrl+Enter。</summary>
+    private void ConsoleInput_KeyDown(object sender, KeyEventArgs e)
+    {
+        if(e.Key != Key.Enter || (Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
+        if(sender is TextBox box && box.Tag is ConsoleViewModel console)
+            console.SendCommand.Execute(null);
     }
 
     protected override void OnClosing(CancelEventArgs e)

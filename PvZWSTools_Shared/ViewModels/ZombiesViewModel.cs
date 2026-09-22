@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
+using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 
 namespace PvZWSTools_Shared.ViewModels;
@@ -142,6 +144,40 @@ public class ZombiesViewModel:ViewModelBase
     public ICommand SetMindControlCommand => SetaCommand(_setMindControl_Name);
 
     public ICommand SetYuckyFaceCommand => SetaCommand(_setYuckyFace_Name);
+
+    /// <summary>大蒜/黄油/冰封/魅惑是同一个动作的四种取值（各自发一条"一键××效果"脚本），
+    /// 在清单里本来占四行，和真正的开关混在一起看不出区别。收成一份选项 + 一个应用。</summary>
+    public ObservableCollection<NameOption> ZombieStateOptions { get; } = new()
+    {
+        new NameOption { Name = "一键大蒜效果", Value = "garlic" },
+        new NameOption { Name = "一键黄油效果", Value = "butter" },
+        new NameOption { Name = "一键冰封效果", Value = "ice" },
+        new NameOption { Name = "一键魅惑效果", Value = "mindcontrol" },
+    };
+
+    private string _zombieStateInput = "一键大蒜效果";
+
+    private NameOption _selectedZombieState;
+
+    public string ZombieStateInput
+    {
+        get => _zombieStateInput;
+        set => SetProperty(ref _zombieStateInput, value);
+    }
+
+    public NameOption SelectedZombieState
+    {
+        get => _selectedZombieState;
+        set
+        {
+            _selectedZombieState = value;
+            if(value != null)
+                ZombieStateInput = value.Name;
+            OnPropertyChanged();
+        }
+    }
+
+    public ICommand ApplyZombieStateCommand => new RelayCommand(_ => SetaCommand(ZombieStateInput).Execute(null));
 
     public string StopWalk
     {

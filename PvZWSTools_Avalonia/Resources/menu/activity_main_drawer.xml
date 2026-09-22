@@ -4,6 +4,9 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_favorite"
+            android:title="收藏" />
+        <item
             android:id="@+id/nav_others"
             android:title="杂项" />
         <item
@@ -41,6 +44,9 @@
         <item
             android:id="@+id/nav_connect"
             android:title="连接" />
+        <item
+            android:id="@+id/nav_console"
+            android:title="控制台" />
     </group>
     <item android:title="更多功能">
         <menu>

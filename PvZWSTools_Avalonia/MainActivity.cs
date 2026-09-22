@@ -40,29 +40,26 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     public static MainActivity Instance { get; private set; }
 
     /// <summary>
-    /// 导航项 → (Fragment 工厂, 自动刷新按钮状态对应的控件子目录；null 表示切换时不自动刷新)。
-    /// 新增界面只需在此注册，无需修改 OnNavigationItemSelected 逻辑。
+    /// 抽屉里的一行对应共享清单里的一页，全部由 CatalogFragment 渲染；
+    /// 只有"快捷脚本"留着自己的 Fragment —— 那一页在 Android 上还要编辑脚本参数网格，
+    /// 共享清单里只有一个下拉。
     /// </summary>
-    /// <summary>
-    /// 抽屉里的一行对应共享清单里的一页。除"快捷脚本"外全部由 CatalogFragment 渲染 ——
-    /// 那一页在 Android 上还要编辑脚本参数网格，共享清单里只有一个下拉，暂时留着。
-    /// SubFolder 以前喂给 AutoUpdateButtonStatus，但它发的 GetButtonCheck 回包
-    /// Android 从来没解析过（只有出怪/阵型订阅了 MessageReceived），所以不再传。
-    /// </summary>
-    private static readonly Dictionary<int, (Func<AndroidX.Fragment.App.Fragment> Factory, string SubFolder)> NavFragmentMap = new()
+    private static readonly Dictionary<int, Func<AndroidX.Fragment.App.Fragment>> NavFragmentMap = new()
     {
-        { Resource.Id.nav_others, (() => new CatalogFragment("杂项"), null) },
-        { Resource.Id.nav_level, (() => new CatalogFragment("关卡"), null) },
-        { Resource.Id.nav_resources, (() => new CatalogFragment("资源"), null) },
-        { Resource.Id.nav_plant, (() => new CatalogFragment("植物"), null) },
-        { Resource.Id.nav_zombie, (() => new CatalogFragment("僵尸"), null) },
-        { Resource.Id.nav_spawning, (() => new CatalogFragment("出怪"), null) },
-        { Resource.Id.nav_board, (() => new CatalogFragment("战场"), null) },
-        { Resource.Id.nav_challenge, (() => new CatalogFragment("挑战"), null) },
-        { Resource.Id.nav_formation, (() => new CatalogFragment("阵型"), null) },
-        { Resource.Id.nav_fun, (() => new CatalogFragment("娱乐"), null) },
-        { Resource.Id.nav_script, (() => new ScriptFragment(), null) },
-        { Resource.Id.nav_connect, (() => new ConnectionFragment(), null) },
+        { Resource.Id.nav_favorite, () => new FavoritesFragment() },
+        { Resource.Id.nav_others, () => new CatalogFragment("杂项") },
+        { Resource.Id.nav_level, () => new CatalogFragment("关卡") },
+        { Resource.Id.nav_resources, () => new CatalogFragment("资源") },
+        { Resource.Id.nav_plant, () => new CatalogFragment("植物") },
+        { Resource.Id.nav_zombie, () => new CatalogFragment("僵尸") },
+        { Resource.Id.nav_spawning, () => new CatalogFragment("出怪") },
+        { Resource.Id.nav_board, () => new CatalogFragment("战场") },
+        { Resource.Id.nav_challenge, () => new CatalogFragment("挑战") },
+        { Resource.Id.nav_formation, () => new CatalogFragment("阵型") },
+        { Resource.Id.nav_fun, () => new CatalogFragment("娱乐") },
+        { Resource.Id.nav_script, () => new ScriptFragment() },
+        { Resource.Id.nav_connect, () => new ConnectionFragment() },
+        { Resource.Id.nav_console, () => new ConsoleFragment() },
     };
 
     public string GetLastWebSocketAddress()
@@ -136,18 +133,18 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 return true;
         }
 
-        if(!NavFragmentMap.TryGetValue(id, out var entry))
+        if(!NavFragmentMap.TryGetValue(id, out var factory))
             return false;
 
-        // 开启“允许自动更新按钮状态”时，切换界面自动刷新对应控件的按钮开关状态
-        if(!string.IsNullOrEmpty(entry.SubFolder))
-        {
-            AutoUpdateButtonStatus(entry.SubFolder);
-        }
-
+        var fragment = factory();
         _ = SupportFragmentManager.BeginTransaction()
-            .Replace(Resource.Id.content_frame, entry.Factory())
+            .Replace(Resource.Id.content_frame, fragment)
             .Commit();
+
+        // 开启"允许自动更新按钮状态"时，切页顺带向游戏要一次真实开关状态。
+        // 走共享层的同一个入口：回包由 MessageProcessor 解析，桌面和手机看到的是同一份结果。
+        if(fragment is CatalogFragment page)
+            AppServices.Root?.RefreshButtonStatesForPage(page.PageTitle);
 
         DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
         drawer.CloseDrawer(GravityCompat.Start);
@@ -318,6 +315,9 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     protected override void OnPause()
     {
         base.OnPause();
+        // 常用统计是"点一次记一笔"，只有这份计数值得退到后台时整份覆写一次；
+        // 收藏改动小又容易丢，ToggleFavorite 里当场就落盘了。
+        AppServices.Favorites?.SaveUsage();
     }
 
     /// <summary>
@@ -326,31 +326,6 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
     private void ApplySettings()
     {
         AppServices.Root?.ReloadSettingsFromService();
-    }
-
-    /// <summary>
-    /// 根据"允许自动更新按钮状态"设置，在切换界面时自动发送 GetButtonCheck 脚本刷新按钮开关状态。
-    /// </summary>
-    /// <param name="subFolder">控件子目录（杂项/植物/僵尸/出怪/战场/娱乐）</param>
-    private void AutoUpdateButtonStatus(string subFolder)
-    {
-        if(_appSettings == null || !_appSettings.AllowAutoUpdateButtonStatus)
-            return;
-        if(!AppServices.IsConnected)
-            return;
-
-        try
-        {
-            // 复用 OnCreate 中已确定的静态应用文件路径，避免重复查询外部存储目录
-            var filepath = Path.Combine(AppFilesPath, "配置文件", "控件", subFolder, "GetButtonCheck.py");
-            if(!File.Exists(filepath)) return;
-
-            AppServices.Send(File.ReadAllText(filepath));
-        }
-        catch(Exception ex)
-        {
-            Log.Error($"自动更新按钮状态失败({subFolder})", ex);
-        }
     }
 
     private void FinishInitialization()

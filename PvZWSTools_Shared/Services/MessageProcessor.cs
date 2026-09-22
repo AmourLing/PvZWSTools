@@ -9,6 +9,8 @@ public class MessageProcessor:IMessageProcessor
     // 定义事件，用于通知按钮状态已更新
     public event Action<Dictionary<string, bool>>? ButtonStatusUpdated;
 
+    public event Action<string>? OutputReceived;
+
     public void ProcessMessage(string message)
     {
         try
@@ -23,6 +25,9 @@ public class MessageProcessor:IMessageProcessor
                 {
                     // 尝试解析按钮状态
                     TryParseButtonStatus(output.msg);
+                    // 一次 print 的多行正文是一帧整段到达的，不在这里拆行
+                    if(!string.IsNullOrEmpty(output.msg))
+                        OutputReceived?.Invoke(output.msg);
                 }
                 Log.Info($"[输出] {output?.msg}");
             }

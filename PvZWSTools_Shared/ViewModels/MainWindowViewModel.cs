@@ -92,12 +92,13 @@ public class MainWindowViewModel:ViewModelBase
         Resources = new ResourcesViewModel(_scriptExec, _messageProcessor);
         Plants = new PlantsViewModel(_scriptExec, _messageProcessor);
         Zombies = new ZombiesViewModel(_scriptExec, _messageProcessor);
-        Spawn = new SpawnViewModel(_scriptExec, defaultPath, _messageProcessor, uiThread);
+        Spawn = new SpawnViewModel(_scriptExec, defaultPath, _messageProcessor, uiThread, dialogService);
         Board = new BoardViewModel(_scriptExec, _messageProcessor);
         Challenge = new ChallengeViewModel(_scriptExec, _messageProcessor);
-        Formation = new FormationViewModel(_scriptExec, defaultPath, _messageProcessor);
+        Formation = new FormationViewModel(_scriptExec, defaultPath, _messageProcessor, notifier);
         Fun = new FunViewModel(_scriptExec, _messageProcessor);
         QMod = new QModViewModel(_scriptExec, defaultPath);
+        Console = new ConsoleViewModel(_connection, uiThread, notifier);
 
         Garden = new GardenViewModel(_scriptExec, _connection, dialogService, _messageProcessor);
 
@@ -225,6 +226,9 @@ public class MainWindowViewModel:ViewModelBase
 
     public ChallengeViewModel Challenge { get; }
 
+    /// <summary>界面内控制台（日志 / WebSocket 收发 / 手动发脚本），两端同一个数据源。</summary>
+    public ConsoleViewModel Console { get; }
+
     public ICommand ConnectCommand { get; }
 
     public string ConnectionButtonText
@@ -262,45 +266,51 @@ public class MainWindowViewModel:ViewModelBase
         get => _selectedTabIndex;
         set
         {
-            if(SetProperty(ref _selectedTabIndex, value))
-            {
-                // 仅在开启"允许自动更新按钮状态"时才自动发送脚本刷新开关状态
-                if(!AllowAutoUpdateButtonStatus)
-                    return;
+            if(!SetProperty(ref _selectedTabIndex, value)) return;
+            if(value >= 0 && value < ClassicTabOrder.Length)
+                RefreshButtonStatesForPage(ClassicTabOrder[value]);
+        }
+    }
 
-                switch(value)
-                {
-                    case 0:
-                        Others?.UpdateButtonStatusCommand?.Execute(null);
-                        break;
+    /// <summary>经典窗口的页签顺序，用来把 SelectedIndex 换成页签名。</summary>
+    private static readonly string[] ClassicTabOrder =
+    {
+        "杂项", "关卡", "资源", "植物", "僵尸", "出怪", "战场", "挑战", "阵型", "娱乐", "快捷脚本", "花园"
+    };
 
-                    case 1:
-                        break;
+    /// <summary>切到某一页时向游戏要一次真实开关状态（只有部分页有对应的回报脚本）。
+    /// 安卓抽屉没有 SelectedIndex 可绑，所以按页签名进来，两端共用这一份判断。</summary>
+    public void RefreshButtonStatesForPage(string pageTitle)
+    {
+        // 仅在开启"允许自动更新按钮状态"时才自动发送脚本刷新开关状态
+        if(!AllowAutoUpdateButtonStatus)
+            return;
 
-                    case 2:
-                        break;
+        switch(pageTitle)
+        {
+            case "杂项":
+                Others?.UpdateButtonStatusCommand?.Execute(null);
+                break;
 
-                    case 3:
-                        Plants?.UpdateButtonStatusCommand?.Execute(null);
-                        break;
+            case "植物":
+                Plants?.UpdateButtonStatusCommand?.Execute(null);
+                break;
 
-                    case 4:
-                        Zombies?.UpdateButtonStatusCommand?.Execute(null);
-                        break;
+            case "僵尸":
+                Zombies?.UpdateButtonStatusCommand?.Execute(null);
+                break;
 
-                    case 5:
-                        Spawn?.UpdateButtonStatusCommand?.Execute(null);
-                        break;
+            case "出怪":
+                Spawn?.UpdateButtonStatusCommand?.Execute(null);
+                break;
 
-                    case 6:
-                        Board?.UpdateButtonStatusCommand?.Execute(null);
-                        break;
+            case "战场":
+                Board?.UpdateButtonStatusCommand?.Execute(null);
+                break;
 
-                    case 9:
-                        Fun?.UpdateButtonStatusCommand?.Execute(null);
-                        break;
-                }
-            }
+            case "娱乐":
+                Fun?.UpdateButtonStatusCommand?.Execute(null);
+                break;
         }
     }
 

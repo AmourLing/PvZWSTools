@@ -11,6 +11,7 @@ public class DialogService:IDialogService
     public DialogService()
     {
         Register<GardenDialogViewModel, Views.GardenDialog>();
+        Register<WaveJsonEditorViewModel, Views.WaveJsonEditor>();
     }
 
     public void Register<TViewModel, TView>() where TViewModel : class where TView : Window

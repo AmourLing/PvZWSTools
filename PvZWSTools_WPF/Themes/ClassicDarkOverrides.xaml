@@ -14,6 +14,22 @@
     <SolidColorBrush x:Key="CLine" Color="#55555A" />
     <SolidColorBrush x:Key="CFg" Color="#E8EAED" />
 
+    <!--
+        同一套语义键见 ClassicOverrides.xaml：经典模式下不定义的话，共享弹窗里的
+        底色/文字/分隔线/红色提示会因 DynamicResource 悬空而整体失效（弹窗停在白底孤岛）。
+        配色沿用本文件上面那五个值，不新造颜色。
+        （别用 <StaticResource x:Key=... ResourceKey=.../> 做别名：能编译，运行时解析成
+          DependencyProperty.UnsetValue，窗口一 Measure 就抛"不是 Foreground 的有效值"。）
+    -->
+    <SolidColorBrush x:Key="BgRootBrush" Color="#1B1E24" />
+    <SolidColorBrush x:Key="BgPanelBrush" Color="#22262D" />
+    <SolidColorBrush x:Key="BgControlBrush" Color="#2D2D30" />
+    <SolidColorBrush x:Key="BorderLineBrush" Color="#55555A" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8EAED" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A8ADB5" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#4CC2FF" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#FF6B6B" />
+
     <!--  按钮：默认模板 + 深色  -->
     <Style TargetType="Button">
         <Setter Property="Background" Value="{StaticResource CCtl}" />

@@ -26,4 +26,19 @@
         <Setter Property="Margin" Value="5" />
     </Style>
 
+    <!--
+        共享弹窗（设置/状态管理/更新/花园/密码/波次编辑）在 newui 里改引用主题画刷，
+        而 UiThemeManager.Apply() 一次只合并一份字典：经典模式加载的就是这一份，
+        键不在就整条 DynamicResource 悬空（红色过期提示、分隔线、面板底色全丢）。
+        下面这套值照抄 master 原本写死在 XAML 里的字面颜色，所以经典外观零漂移。
+    -->
+    <SolidColorBrush x:Key="BgRootBrush" Color="White" />
+    <SolidColorBrush x:Key="BgPanelBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="BgControlBrush" Color="White" />
+    <SolidColorBrush x:Key="BorderLineBrush" Color="#888888" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#333333" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#666666" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#2E7D32" />
+    <SolidColorBrush x:Key="DangerBrush" Color="Red" />
+
 </ResourceDictionary>

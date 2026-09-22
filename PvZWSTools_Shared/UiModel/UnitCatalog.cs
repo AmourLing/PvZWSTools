@@ -258,14 +258,12 @@ public static class UnitCatalog
                 Sw("僵尸血量显示", z + "DrawZombieHP"),
                 Sw("僵尸掉落卡片", z + "DropPacket"),
                 Sw("小偷不偷", z + "NoSteal"),
-                Grp(
-                    Sw("魅惑有效", z + "AllowMindCtrl", z + "ToggleAllowMindCtrlCommand"),
-                    Sw("取消限制", z + "LimitZombieGetDebuff",
-                       z + "ToggleLimitZombieGetDebuffCommand"),
-                    Ac("大蒜", z + "SetYuckyFaceCommand", "garlic"),
-                    Ac("黄油", z + "SetButteredCommand", "butter"),
-                    Ac("冰封", z + "SetIceTrapCommand", "ice"),
-                    Ac("魅惑", z + "SetMindControlCommand", "mindcontrol"))),
+                Sw("魅惑有效", z + "AllowMindCtrl", z + "ToggleAllowMindCtrlCommand"),
+                Sw("取消限制", z + "LimitZombieGetDebuff",
+                   z + "ToggleLimitZombieGetDebuffCommand"),
+                Pk("施加僵尸状态", z + "ZombieStateInput", z + "ZombieStateOptions",
+                   z + "SelectedZombieState", z + "ApplyZombieStateCommand", null,
+                   "garlic", "butter", "ice", "mindcontrol")),
 
             Page("出怪", "\uE81D",
                 ChipBox("出怪类型", "spawn:types",
@@ -315,13 +313,13 @@ public static class UnitCatalog
                 Sw("红眼处理", s + "RedeyeCheck", s + "RedeyeHandleCommand"),
                 Sw("下一波", s + "NextWave"),
                 Ac("极限出怪测试", s + "LimitTestCommand"),
-                Ac("获取当前出怪", s + "GetZombieSpawnCommand"),
+                Sw("同步出怪列表", s + "SyncSpawnList", s + "SyncSpawnListCommand"),
                 Ac("打印场上僵尸", s + "PrintZombieSpawnCommand"),
-                Ac("波次出怪(数量)", s + "ZombiesInWaveCountCommand"),
+                Ac("波次出怪(数量)", s + "ZombiesInWaveEditCommand", "json"),
+                // 编辑框里点「仅保存」存下的表靠这一行灌回游戏：它读盘上的文件，不向游戏要数据，
+                // 所以不在关卡内也能先备好一份，进关再套用
+                Ac("载入已存波次表", s + "LoadJsonZombiesInWaveCommand", "json"),
                 Ac("波次出怪(序号)", s + "ZombiesInWaveIndexCommand"),
-                Grp(
-                    Sw("json编辑", s + "JsonEditZombiesInWave", s + "JsonEditCommand", kw: "json"),
-                    Ac("载入json", s + "LoadJsonZombiesInWaveCommand", "json")),
                 Cx("刷新出怪血量", s + "ZombieHealthToNextWaveCommand",
                    F("下限", s + "ZombieHealthMin", width: 80),
                    F("上限", s + "ZombieHealthMax", width: 80))),
@@ -347,8 +345,10 @@ public static class UnitCatalog
                               b + "SelectedPlant", 150),
                             F("罐内僵尸", b + "ZTInput", b + "ZombieOptions",
                               b + "SelectedZombie", 150)),
-                    Cyc("罐子类型", b + "VaseTypeInput", b + "CycleVaseTypeCommand", "vase"),
-                    Cyc("状态", b + "VaseStateInput", b + "CycleItemStateCommand")),
+                    // 绑的是 AddItemCommand 实际塞进载荷的 VaseType/VaseState（BoardViewModel.cs:160-161）。
+                    // 另一对 *Input + Cycle*Command 是桌面经典页的历史遗留：循环它，脚本永远收不到。
+                    Cyc("罐子类型", b + "VaseType", b + "VaseTypeCycleCommand", "vase"),
+                    Cyc("状态", b + "VaseState", b + "VaseStateCycleCommand")),
                 Pk("清除所有", b + "ClearInput", b + "ClearOptions", b + "SelectedClear",
                    b + "ClearObjectsCommand", null, "clear"),
                 Grp(
@@ -389,12 +389,11 @@ public static class UnitCatalog
                    f + "SetBgCommand", null, "background"),
                 Pk("戴夫选卡数量", f + "DavePickNumInput", f + "DavePickNumOptions",
                    f + "SelectedDavePickNum", f + "DavePickNumCommand", null, "card"),
-                Grp(
-                    Ac("随机选卡", f + "PickRandSeedCommand"),
-                    Ac("查看草坪", f + "ViewLawnCommand"),
+                Ac("随机选卡", f + "PickRandSeedCommand"),
+                Ac("查看草坪", f + "ViewLawnCommand"),
                 Pk("切换卡组", f + "SeedPacketsInput", f + "SeedPacketsOptions",
                    f + "SelectedSeedPacket", f + "SetSeedPacketsCommand", null, "card"),
-                    Ac("存储卡组", f + "AddSeedPacketsCommand")),
+                Fd("存储卡组", f + "SeedPacketsInput", f + "AddSeedPacketsCommand", "card"),
                 Grp("一键布阵", f + "SetFormationCommand",
                     [F("阵型", f + "FormationInput", f + "FormationOptions",
                        f + "SelectedFormation", 190)],
@@ -413,6 +412,10 @@ public static class UnitCatalog
                     Sw("同步格子", f + "GridSquareTogetInput",
                        f + "ToggleGridSquareTogetCommand")),
                 Cx("格子类型", f + "GridSquareTypeCommand",
+                   // 设置格子类型.py 要 {ROW}{COL}{TYPE}：不给行就只能沿用「设置路状」那行的共享值，
+                   // 弹层里既看不见也改不了
+                   F("行", f + "FormationRowInput", f + "FormationRowOptions",
+                     f + "SelectedFormationRow", 110),
                    F("列", f + "FormationColInput", f + "FormationColOptions",
                      f + "SelectedFormationCol", 110),
                    F("类型", f + "GridSquareTypeInput", f + "GridSquareTypeOptions",

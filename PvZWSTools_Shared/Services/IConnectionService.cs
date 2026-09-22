@@ -10,6 +10,8 @@ public interface IConnectionService
 
     event EventHandler<string> MessageReceived;
 
+    event EventHandler<string>? MessageSent;
+
     Task ConnectAsync(string address, CancellationToken cancellationToken = default);
 
     void Disconnect();

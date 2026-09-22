@@ -1,4 +1,4 @@
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
@@ -16,6 +16,7 @@ public class SpawnViewModel:ViewModelBase
     };
 
     private readonly string _defaultPath;
+    private readonly IDialogService _dialogService;
     private readonly IMessageProcessor _messageProcessor;
     private readonly IScriptExecutionService _scriptExec;
     private readonly IUiThreadInvoker _uiThread;
@@ -24,6 +25,7 @@ public class SpawnViewModel:ViewModelBase
     private string _maxPoint = Constants.c_Symbol_Off;
     private string _redeyeCheck = Constants.c_Symbol_Off;
     private string _stopSpawn = Constants.c_Symbol_Off;
+    private string _syncSpawnList = Constants.c_Symbol_Off;
     private string _zombieBackupDancer = Constants.c_Symbol_Off;
     private string _zombieBalloon = Constants.c_Symbol_Off;
     private string _zombieBobsled = Constants.c_Symbol_Off;
@@ -69,15 +71,20 @@ public class SpawnViewModel:ViewModelBase
 
     private string _nextWave = Constants.c_Symbol_Off;
     private string _nextWave_Name = "下一波";
+    private bool _isEditingWaveJson;
 
-    public SpawnViewModel(IScriptExecutionService scriptExec, string defaultPath, IMessageProcessor messageProcessor, IUiThreadInvoker uiThread)
+    public SpawnViewModel(IScriptExecutionService scriptExec, string defaultPath, IMessageProcessor messageProcessor, IUiThreadInvoker uiThread, IDialogService dialogService)
     {
         _scriptExec = scriptExec;
         _defaultPath = defaultPath;
         _messageProcessor = messageProcessor;
         _uiThread = uiThread;
+        _dialogService = dialogService;
         if(_messageProcessor != null)
+        {
             _messageProcessor.ButtonStatusUpdated += OnButtonStatusUpdated;
+            _messageProcessor.OutputReceived += OnGameOutput;
+        }
     }
 
     public string BungeeCheck
@@ -99,6 +106,7 @@ public class SpawnViewModel:ViewModelBase
                 BungeeCheck = __old;
         });
 
+    /// <summary>经典页那一下"点一次问一次"的拉取，留着不动；新界面改用了下面的开关。</summary>
     public ICommand GetZombieSpawnCommand => new RelayCommand(async _ =>
         {
             try
@@ -111,6 +119,16 @@ public class SpawnViewModel:ViewModelBase
                 Log.Error($"获取当前出怪失败: {ex}");
             }
         });
+
+    /// <summary>同步出怪列表：开=让游戏在换关/初始化/读档时主动把 mZombieAllowed 推过来，
+    /// 不再是宿主点一次问一次。见 控件/出怪/同步出怪列表.py。</summary>
+    public string SyncSpawnList
+    {
+        get => _syncSpawnList;
+        set => SetProperty(ref _syncSpawnList, value);
+    }
+
+    public ICommand SyncSpawnListCommand => CreateToggleCommand(() => SyncSpawnList, v => SyncSpawnList = v, "同步出怪列表");
 
     public ICommand JsonEditCommand => new RelayCommand(_ => { JsonEditZombiesInWave = ButtonHelper.ToggleCheck(JsonEditZombiesInWave); });
 
@@ -134,8 +152,7 @@ public class SpawnViewModel:ViewModelBase
                 return;
             }
 
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "载入json",
-                new Dictionary<string, string> { [Constants.Placeholders.WaveJsonBase64] = waveBase64 });
+            await SendWaveJsonAsync(waveBase64);
         });
 
     public string MaxPoint
@@ -144,7 +161,7 @@ public class SpawnViewModel:ViewModelBase
         set => SetProperty(ref _maxPoint, value);
     }
 
-    public ICommand MaxPointCommand => CreateToggleCommand(() => MaxPoint, "最大密度");
+    public ICommand MaxPointCommand => CreateToggleCommand(() => MaxPoint, v => MaxPoint = v, "最大密度");
 
     public ICommand PrintZombieSpawnCommand => new RelayCommand(async _ => await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "打印场上僵尸"));
 
@@ -172,14 +189,14 @@ public class SpawnViewModel:ViewModelBase
         set => SetProperty(ref _nextWave, value);
     }
 
-    public ICommand NextWaveCommand => CreateToggleCommand(() => NextWave, "下一波");
+    public ICommand NextWaveCommand => CreateToggleCommand(() => NextWave, v => NextWave = v, "下一波");
     public string StopSpawn
     {
         get => _stopSpawn;
         set => SetProperty(ref _stopSpawn, value);
     }
 
-    public ICommand StopSpawnCommand => CreateToggleCommand(() => StopSpawn, "暂停出怪");
+    public ICommand StopSpawnCommand => CreateToggleCommand(() => StopSpawn, v => StopSpawn = v, "暂停出怪");
 
     public ICommand ToggleSpawnCommand => new RelayCommand(async param =>
         {
@@ -522,7 +539,60 @@ public class SpawnViewModel:ViewModelBase
             }
         });
 
-    /// <summary>Windows 下用系统关联程序打开导出的 JSON 供编辑；Android 端由 SpawningFragment 的应用内编辑器接管。</summary>
+    /// <summary>波次出怪(数量)：导出当前关卡波次表 → 应用内编辑 → 确认即写回游戏。
+    /// 一个功能一次点完，不再拆成"先勾 json 编辑、再点载入"三步。</summary>
+    public ICommand ZombiesInWaveEditCommand => new RelayCommand(async _ =>
+        {
+            if(_isEditingWaveJson) return;
+            _isEditingWaveJson = true;
+
+            try
+            {
+                var placeholders = new Dictionary<string, string>
+                {
+                    [Constants.Placeholders.ZombieJsonBase64] = await ReadZombieNameMapBase64Async(),
+                    [Constants.Placeholders.Check] = Constants.c_Value_Checked
+                };
+
+                string output = await _scriptExec.ExecuteWithResultAsync(Constants.SubFolders.Spawn, "波次出怪_数量", placeholders);
+                string? waveBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.WaveJsonStart, Constants.Markers.WaveJsonEnd);
+                if(string.IsNullOrEmpty(waveBase64))
+                {
+                    // 分两种情况报：完全没回传（没连上/超时/不在关卡），和回了但没带数据。
+                    Log.Error(string.IsNullOrEmpty(output)
+                        ? "没收到波次出怪回传，请确认已连接游戏且当前在关卡内。"
+                        : $"回传里没有波次出怪数据（缺 WAVE_JSON 标记）。输出：{output}");
+                    return;
+                }
+
+                // 先把原样导出的表落盘，编辑中途退出也留得住关卡现状。
+                _ = await ScriptPayload.WriteBase64ToAsync(GetSpawnWaveDir(), Constants.JsonWaveFile, waveBase64);
+
+                var editor = new WaveJsonEditorViewModel(ScriptPayload.DecodeUtf8(waveBase64));
+                if(!await _dialogService.ShowDialogAsync(editor)) return;
+
+                string editedBase64 = ScriptPayload.EncodeUtf8(editor.Json);
+                _ = await ScriptPayload.WriteBase64ToAsync(GetSpawnWaveDir(), Constants.JsonWaveFile, editedBase64);
+                if(editor.SaveOnly)
+                    Log.Info("波次表只保存、未载入游戏。进关后点「载入已存波次表」可以灌回去。");
+                else
+                    await SendWaveJsonAsync(editedBase64);
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"波次出怪编辑失败：{ex}");
+            }
+            finally
+            {
+                _isEditingWaveJson = false;
+            }
+        });
+
+    private Task SendWaveJsonAsync(string waveBase64) =>
+        _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "载入json",
+            new Dictionary<string, string> { [Constants.Placeholders.WaveJsonBase64] = waveBase64 });
+
+    /// <summary>经典页那条"勾了 json 编辑再点"的老路子：Windows 交给系统关联程序打开，Android 没有对应程序，只落盘。</summary>
     private static void OpenWithExternalEditor(string path)
     {
 #if ANDROID
@@ -539,14 +609,28 @@ public class SpawnViewModel:ViewModelBase
 #endif
     }
 
+    /// <summary>波次出怪(序号)：让脚本把清单用 Base64 包一层再回传（CHECK=2），
+    /// 宿主解出来打进日志/控制台。明文回传要走标准输出那条通道，
+    /// 中文在那之前就可能变成 U+FFFD；包一层两端都稳，桌面和手机读到的完全一样。</summary>
     public ICommand ZombiesInWaveIndexCommand => new RelayCommand(async _ =>
         {
             var placeholders = new Dictionary<string, string>
             {
                 [Constants.Placeholders.ZombieJsonBase64] = await ReadZombieNameMapBase64Async(),
-                [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(JsonEditZombiesInWave)
+                [Constants.Placeholders.Check] = Constants.c_Value_Base64Text
             };
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "波次出怪_序号", placeholders);
+
+            string output = await _scriptExec.ExecuteWithResultAsync(Constants.SubFolders.Spawn, "波次出怪_序号", placeholders);
+            string? listing = ScriptPayload.ExtractBase64(output, Constants.Markers.WaveListStart, Constants.Markers.WaveListEnd);
+            if(string.IsNullOrEmpty(listing))
+            {
+                Log.Error(string.IsNullOrEmpty(output)
+                    ? "没收到波次清单回传，请确认已连接游戏且当前在关卡内。"
+                    : $"回传里没有 WAVELIST_B64 载荷。输出：{output}");
+                return;
+            }
+
+            Log.Info("波次出怪（序号）：\n" + ScriptPayload.DecodeUtf8(listing));
         });
 
     public string ZombieSnorkel
@@ -644,23 +728,38 @@ public class SpawnViewModel:ViewModelBase
         });
     }
 
-    private ICommand CreateToggleCommand(Func<string> stateGetter, string scriptName)
+    /// <summary>开关：翻转状态 → 带着新状态发脚本；发不出去就翻回去，
+    /// 否则界面上写着"开"、游戏里根本没装钩子。</summary>
+    private ICommand CreateToggleCommand(Func<string> stateGetter, Action<string> stateSetter, string scriptName)
     {
         return new RelayCommand(async _ =>
         {
             var current = stateGetter();
             var newState = ButtonHelper.ToggleCheck(current);
-            if(scriptName == "暂停出怪") StopSpawn = newState;
-            else if(scriptName == "最大密度") MaxPoint = newState;
-            else if(scriptName == _nextWave_Name)NextWave = newState;
-            await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, scriptName,
-                new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(newState) });
+            stateSetter(newState);
+            if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, scriptName,
+                new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(newState) }))
+                stateSetter(current);
         });
     }
 
     private void OnButtonStatusUpdated(Dictionary<string, bool> statusDict)
     {
         UpdatePropertiesFromDict(statusDict, _buttonMapping);
+    }
+
+    /// <summary>游戏侧「同步出怪列表」的钩子主动推来的发布，不等宿主提问。
+    /// 只认自家那对标记：其它脚本也往 stdout 打 "X =&gt; True"（GetButtonCheck 等），
+    /// 不加这道闸就会把别人的输出当出怪列表吃进来。</summary>
+    private void OnGameOutput(string msg)
+    {
+        if(SyncSpawnList != Constants.c_Symbol_On) return;
+
+        int start = msg.IndexOf(Constants.Markers.SpawnListStart, StringComparison.Ordinal);
+        int end = msg.IndexOf(Constants.Markers.SpawnListEnd, StringComparison.Ordinal);
+        if(start < 0 || end <= start) return;
+
+        UpdateZombieStatesFromOutput(msg.Substring(start, end - start));
     }
 
     private void UpdateZombieStatesFromOutput(string output)

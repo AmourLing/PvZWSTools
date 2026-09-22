@@ -26,6 +26,9 @@ public static class AppServices
 
     public static IConnectionService Connection { get; private set; } = null!;
 
+    /// <summary>收藏 + 常用统计，和桌面端同一份共享实现；收藏页读它，功能行的长按写它。</summary>
+    public static FavoriteStore Favorites { get; private set; } = null!;
+
     /// <summary>命名状态预设，供状态管理对话框读写。</summary>
     public static IStatePresetService Presets { get; private set; } = null!;
 
@@ -60,7 +63,7 @@ public static class AppServices
             new AndroidDialogService(),
             new MessageProcessor(),
             UiThread,
-            notifier: null,
+            notifier: new AndroidUserNotifier(),
             updateService: null,
             buttonStateService: buttonStates);
 
@@ -70,5 +73,9 @@ public static class AppServices
             Root.WsAddress = settings.LastWebSocketAddress;
 
         Pages = UnitCatalog.Build(Root);
+
+        // 收藏/常用是共享层的一份状态，配置根跟其它 cfg 同一个目录（baseDir）
+        Favorites = new FavoriteStore(baseDir);
+        Favorites.Attach(Pages.SelectMany(p => p.Units));
     }
 }

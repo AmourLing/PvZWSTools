@@ -18,6 +18,9 @@ public class ConnectionService:IConnectionService, IDisposable
 
     public event EventHandler<string> MessageReceived;
 
+    /// <summary>真正写进 socket 的内容，供界面内控制台显示"发出去的是什么"。</summary>
+    public event EventHandler<string>? MessageSent;
+
     public ConnectionService(IUiThreadInvoker uiThread)
     {
         _uiThread = uiThread;
@@ -75,6 +78,8 @@ public class ConnectionService:IConnectionService, IDisposable
         }
         else
         {
+            // 先记账再交给 socket：等发完再报，慢一点的回包会插到发送行前面，读起来是反的。
+            MessageSent?.Invoke(this, message);
             await Task.Run(() => _ws.SendAsync(message, _ => { }));
         }
     }

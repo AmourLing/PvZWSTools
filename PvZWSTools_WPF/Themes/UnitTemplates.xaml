@@ -642,8 +642,35 @@
     <!--  收藏页：收藏区 + 常用区。这两块标题是用户要的两份内容本身，不是给功能造的分组  -->
     <DataTemplate x:Key="FavoritesTemplate">
         <StackPanel Margin="16,12">
+            <!--  常用在前：收藏一多就把常用推到看不见的地方，而常用只留 5 条，不会挤掉收藏  -->
             <TextBlock
                 Margin="2,0,0,8"
+                FontSize="15"
+                FontWeight="Bold"
+                Foreground="{DynamicResource TextSecondaryBrush}"
+                Text="常用" />
+            <TextBlock
+                Margin="2,0,0,8"
+                FontSize="14"
+                Foreground="{DynamicResource TextSecondaryBrush}"
+                Text="点过的功能会自动按次数排到这里（最多 5 条）；一旦收藏就移上去，这里不再重复出现。">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Extra.HasFrequent}" Value="False">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <ItemsControl
+                ItemTemplate="{StaticResource ResultItemTemplate}"
+                ItemsSource="{Binding Extra.Frequent}" />
+
+            <TextBlock
+                Margin="2,18,0,8"
                 FontSize="15"
                 FontWeight="Bold"
                 Foreground="{DynamicResource TextSecondaryBrush}"
@@ -668,32 +695,6 @@
             <ItemsControl
                 ItemTemplate="{StaticResource ResultItemTemplate}"
                 ItemsSource="{Binding Extra.Favorites}" />
-
-            <TextBlock
-                Margin="2,18,0,8"
-                FontSize="15"
-                FontWeight="Bold"
-                Foreground="{DynamicResource TextSecondaryBrush}"
-                Text="常用" />
-            <TextBlock
-                Margin="2,0,0,8"
-                FontSize="14"
-                Foreground="{DynamicResource TextSecondaryBrush}"
-                Text="点过的功能会自动按次数排到这里；一旦收藏就移上去，这里不再重复出现。">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Extra.HasFrequent}" Value="False">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
-            <ItemsControl
-                ItemTemplate="{StaticResource ResultItemTemplate}"
-                ItemsSource="{Binding Extra.Frequent}" />
         </StackPanel>
     </DataTemplate>
 

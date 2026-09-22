@@ -324,7 +324,7 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
 }
 
 /// <summary>内容区的渲染形态：功能行列表页，或两块特殊面板。</summary>
-public enum NavKind { Units, Script, Garden, Favorites }
+public enum NavKind { Units, Script, Garden, Favorites, Console }
 
 /// <summary>左侧导航的一项，名称与顺序跟经典 UI 的页签一致。</summary>
 public sealed class NavItem

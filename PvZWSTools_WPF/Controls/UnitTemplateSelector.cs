@@ -46,6 +46,8 @@ public sealed class ActiveViewSelector : DataTemplateSelector
     public DataTemplate? Results { get; set; }
     public DataTemplate? Favorites { get; set; }
 
+    public DataTemplate? Console { get; set; }
+
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
         return item switch
@@ -54,6 +56,7 @@ public sealed class ActiveViewSelector : DataTemplateSelector
             NavItem { Kind: NavKind.Script } => Script,
             NavItem { Kind: NavKind.Garden } => Garden,
             NavItem { Kind: NavKind.Favorites } => Favorites,
+            NavItem { Kind: NavKind.Console } => Console,
             NavItem => Page,
             _ => base.SelectTemplate(item, container),
         };

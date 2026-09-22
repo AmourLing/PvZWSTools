@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:PvZWSTools_WPF.Controls"
+    xmlns:conv="clr-namespace:PvZWSTools_WPF.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="PvZWSTools_Windows"
@@ -19,8 +20,84 @@
     mc:Ignorable="d">
 
     <Window.Resources>
+        <conv:ConsoleColorConverter x:Key="ConsoleColor" />
+
+        <!--  控制台的"新行来了贴到底"只能写代码（WPF 没有声明式的贴底），所以这个模板留在本文件：
+              UnitTemplates.xaml 没有代码后置，挂不了 TextChanged / KeyDown。 -->
+        <DataTemplate x:Key="ConsoleTemplate">
+            <StackPanel Margin="16,12">
+                <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                    <Button
+                        Width="110"
+                        Command="{Binding Extra.CycleFilterCommand}"
+                        Content="{Binding Extra.FilterText}"
+                        ToolTip="点击切换：全部 / 只看日志 / 只看收发" />
+                    <CheckBox
+                        Margin="12,0,0,0"
+                        VerticalAlignment="Center"
+                        Content="自动滚动"
+                        IsChecked="{Binding Extra.AutoScroll}" />
+                    <CheckBox
+                        Margin="12,0,0,0"
+                        VerticalAlignment="Center"
+                        Content="暂停"
+                        IsChecked="{Binding Extra.Frozen}"
+                        ToolTip="攒住当前画面不再刷新；行照样收着，取消暂停就能看到" />
+                    <Button
+                        Width="70"
+                        Margin="12,0,0,0"
+                        Command="{Binding Extra.ClearCommand}"
+                        Content="清空" />
+                </StackPanel>
+
+                <ScrollViewer
+                    x:Name="ConsoleScroll"
+                    Height="360"
+                    Background="{DynamicResource BgControlBrush}"
+                    BorderBrush="{DynamicResource BorderLineBrush}"
+                    BorderThickness="1"
+                    HorizontalScrollBarVisibility="Auto"
+                    Loaded="ConsoleScroll_Loaded"
+                    Unloaded="ConsoleScroll_Unloaded"
+                    VerticalScrollBarVisibility="Auto">
+                    <ItemsControl FontFamily="Consolas" FontSize="13" ItemsSource="{Binding Extra.Shown}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Foreground="{Binding Color, Converter={StaticResource ConsoleColor}}"
+                                    Text="{Binding Text}"
+                                    TextWrapping="NoWrap" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <TextBox
+                    x:Name="ConsoleInput"
+                    Height="76"
+                    Margin="0,8,0,0"
+                    AcceptsReturn="True"
+                    FontFamily="Consolas"
+                    FontSize="13"
+                    HorizontalScrollBarVisibility="Auto"
+                    Tag="{Binding Extra}"
+                    KeyDown="ConsoleInput_KeyDown"
+                    Text="{Binding Extra.Input, UpdateSourceTrigger=PropertyChanged}"
+                    ToolTip="写 Python/IronPython 语句直接发给游戏；Ctrl+Enter 发送"
+                    VerticalScrollBarVisibility="Auto" />
+
+                <Button
+                    Margin="0,8,0,0"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Extra.SendCommand}"
+                    Content="发送"
+                    Style="{DynamicResource AccentButtonStyle}" />
+            </StackPanel>
+        </DataTemplate>
+
         <controls:ActiveViewSelector
             x:Key="ActiveViewSelector"
+            Console="{StaticResource ConsoleTemplate}"
             Favorites="{StaticResource FavoritesTemplate}"
             Garden="{StaticResource GardenTemplate}"
             Page="{StaticResource PageTemplate}"

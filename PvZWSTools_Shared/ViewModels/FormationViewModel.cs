@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
 using PvZWSTools_Shared.Commands;
@@ -39,7 +39,7 @@ public class FormationViewModel:ViewModelBase
     private bool _plantRowTypeDropdownToggleIsChecked;
     private string _plantRowTypeInput = "裸地";
     private bool _seedPacketsDropdownToggleIsChecked;
-    private string _seedPacketsInput = "默认卡组名称";
+    private string _seedPacketsInput = string.Empty;
     private ObservableCollection<NameOption> _seedPacketsOptions;
     private NameOption _selectedBg;
     private NameOption _selectedFormation;
@@ -60,17 +60,19 @@ public class FormationViewModel:ViewModelBase
     private static readonly IReadOnlyDictionary<string, string> _buttonMapping = new Dictionary<string, string>();
 
     private readonly IMessageProcessor _messageProcessor;
+    private readonly IUserNotifier? _notifier;
 
     private void OnButtonStatusUpdated(Dictionary<string, bool> statusDict)
     {
         UpdatePropertiesFromDict(statusDict, _buttonMapping);
     }
 
-    public FormationViewModel(IScriptExecutionService scriptExec, string defaultPath, IMessageProcessor messageProcessor)
+    public FormationViewModel(IScriptExecutionService scriptExec, string defaultPath, IMessageProcessor messageProcessor, IUserNotifier? notifier = null)
     {
         _scriptExec = scriptExec;
         _defaultPath = defaultPath;
         _messageProcessor = messageProcessor;
+        _notifier = notifier;
         if(_messageProcessor != null)
             _messageProcessor.ButtonStatusUpdated += OnButtonStatusUpdated;
         BackgroundOptions = OptionsLoader.Load(Constants.JsonBackgroundFile);
@@ -159,6 +161,8 @@ public class FormationViewModel:ViewModelBase
     {
         try
         {
+            // 这一步要等游戏回传（最长 30 秒），不给一句话提示就是干等着不知道死活
+            Log.Info("正在从游戏导出当前阵型…");
             string output = await _scriptExec.ExecuteWithResultAsync(
                 Constants.SubFolders.Formation,
                 "存储阵型",
@@ -249,12 +253,22 @@ public class FormationViewModel:ViewModelBase
 
     public ICommand AddSeedPacketsCommand => new RelayCommand(async _ =>
     {
+        // 名字得由用户给：直接拿「切换卡组」当前的值去存，等于默默覆盖一份同名卡组。
+        string name = (SeedPacketsInput ?? string.Empty).Trim();
+        if(name.Length == 0)
+        {
+            _notifier?.Warn("存储卡组", "请先输入要保存的卡组名称。");
+            Log.Error("存储卡组：未输入卡组名称。");
+            return;
+        }
+
         try
         {
+            Log.Info($"正在从游戏导出卡组「{name}」…");
             string output = await _scriptExec.ExecuteWithResultAsync(
                 Constants.SubFolders.Formation,
                 "存储卡组",
-                new Dictionary<string, string> { ["{NAME}"] = SeedPacketsInput }
+                new Dictionary<string, string> { ["{NAME}"] = name }
             );
 
             string jsonBase64 = ScriptPayload.ExtractBase64(output, Constants.Markers.SeedPacketJsonStart, Constants.Markers.SeedPacketJsonEnd);
@@ -280,7 +294,7 @@ public class FormationViewModel:ViewModelBase
             string dir = Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_SeedPackets);
             if(!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-            string uniquePath = GetUniqueFilePath(dir, SeedPacketsInput);
+            string uniquePath = GetUniqueFilePath(dir, name);
             await File.WriteAllTextAsync(uniquePath, jsonContent);
 
             LoadSeedPacketsOptions();
@@ -297,6 +311,12 @@ public class FormationViewModel:ViewModelBase
         try
         {
             string selectedName = SeedPacketsInput;
+            if(string.IsNullOrWhiteSpace(selectedName))
+            {
+                ShowWarning("请先从下拉里选一个卡组，或输入它的名字。");
+                return;
+            }
+
             string dir = Path.Combine(_defaultPath, Constants.Folder_Need, Constants.Folder_SeedPackets);
             string filePath = Path.Combine(dir, selectedName + ".json");
 
@@ -512,13 +532,17 @@ public class FormationViewModel:ViewModelBase
         }
     }
 
+    /// <summary>失败要弹到用户眼前：以前只写日志，手机上根本看不见，
+    /// 桌面端也得切到控制台页才知道出了事。日志照写，两边都留痕。</summary>
     private void ShowError(string message)
     {
         Log.Error(message);
+        _notifier?.Error("阵型 / 卡组", message);
     }
 
     private void ShowWarning(string message)
     {
         Log.Warning(message);
+        _notifier?.Warn("阵型 / 卡组", message);
     }
 }
