@@ -10,7 +10,7 @@ using PvZWSTools_WPF.Platform;
 using PvZWSTools_WPF.Themes;
 using PvZWSTools_WPF.Services;
 using PvZWSTools_WPF.ViewModels;
-using static PvZWSTools_Shared.Sharedstring;
+using static PvZWSTools_Shared.Helpers.Sharedstring;
 using Lock = PvZWSTools_WPF.Helpers.Lock;
 
 namespace PvZWSTools_WPF.Views;

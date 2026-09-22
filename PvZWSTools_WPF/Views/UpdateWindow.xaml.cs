@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
-using static PvZWSTools_Shared.Sharedstring;
+using static PvZWSTools_Shared.Helpers.Sharedstring;
 
 namespace PvZWSTools_WPF.Views;
 

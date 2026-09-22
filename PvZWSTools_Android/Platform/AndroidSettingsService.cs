@@ -4,9 +4,9 @@ using SharedAppSettings = PvZWSTools_Shared.Models.AppSettings;
 namespace PvZWSTools_Android.Platform;
 
 /// <summary>
-/// 把 Android 自己的 AppSettings 投影成共享层的 ISettingsService。
+/// 把 Android 自己的 AndroidAppSettings 投影成共享层的 ISettingsService。
 ///
-/// 之所以不直接用共享的 SettingsService：它和 Android 的 AppSettings 是两个类、
+/// 之所以不直接用共享的 SettingsService：它和 Android 的 AndroidAppSettings 是两个类、
 /// 读写同一个 setting.json，而 Android 那份多一个 LastWebSocketAddress 字段。
 /// 让 VM 用 SettingsService 的话，它一保存就把上次连接地址抹掉，
 /// 而且两边各自缓存，改设置后谁的值是真的说不清。
@@ -18,10 +18,10 @@ namespace PvZWSTools_Android.Platform;
 /// </summary>
 public sealed class AndroidSettingsService:ISettingsService
 {
-    private readonly AppSettings _local;
+    private readonly AndroidAppSettings _local;
     private readonly string _path;
 
-    public AndroidSettingsService(AppSettings local, string path)
+    public AndroidSettingsService(AndroidAppSettings local, string path)
     {
         _local = local;
         _path = path;

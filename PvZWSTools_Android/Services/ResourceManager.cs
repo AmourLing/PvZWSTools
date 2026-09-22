@@ -5,7 +5,7 @@ using System.Text;
 using Android.Content;
 using Java.Util.Zip;
 
-namespace PvZWSTools_Android;
+namespace PvZWSTools_Android.Services;
 
 public static class ResourceManager
 {

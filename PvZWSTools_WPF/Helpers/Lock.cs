@@ -27,8 +27,8 @@ public static class Lock
 
         Log.Info($"程序已过期（有效期至 {EXPIRATION_DATE()}），需要密码验证");
         Log.Info($"请尝试通过密码验证或通过" +
-            $"{PvZWSTools_Shared.Sharedstring.BaseUpdateUrl}" +
-            $"或{PvZWSTools_Shared.Sharedstring.BaseUpdateQQ}" +
+            $"{PvZWSTools_Shared.Helpers.Sharedstring.BaseUpdateUrl}" +
+            $"或{PvZWSTools_Shared.Helpers.Sharedstring.BaseUpdateQQ}" +
             $"等途径获取新版本");
         Log.Info("具体途径可以参考文件目录下的readme.md文档");
 

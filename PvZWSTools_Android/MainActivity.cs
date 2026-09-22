@@ -19,7 +19,7 @@ using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Android.Helpers;
 using PvZWSTools_Android.Services;
-using static PvZWSTools_Shared.Sharedstring;
+using static PvZWSTools_Shared.Helpers.Sharedstring;
 
 namespace PvZWSTools_Android;
 
@@ -29,7 +29,7 @@ namespace PvZWSTools_Android;
           MainLauncher = true)]
 public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
 {
-    private AppSettings _appSettings;
+    private AndroidAppSettings _appSettings;
     private AndroidX.AppCompat.App.AlertDialog _extractDialog;
     private bool _isConnected = false;
     private IMenuItem _settingsMenuItem;
@@ -243,7 +243,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         Log.Info($"存储路径: {AppFilesPath}");
 
         _settingsPath = Path.Combine(configPath, "setting.json");
-        _appSettings = AppSettings.Load(_settingsPath);
+        _appSettings = AndroidAppSettings.Load(_settingsPath);
 
         StartStateSaveTimer();
 
@@ -478,7 +478,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         if(!isManual)
         {
             // 启动自动检查：查到新版本才弹窗，否则静默
-            preFetched = await _updateService.CheckForUpdatesAsync(Sharedstring.AssetNameAndroid);
+            preFetched = await _updateService.CheckForUpdatesAsync(PvZWSTools_Shared.Helpers.Sharedstring.AssetNameAndroid);
             if(preFetched == null || !preFetched.IsNewerThan(_updateService.CurrentVersion))
                 return;
         }
@@ -567,7 +567,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                 _ = CheckInBackgroundAsync();
                 async Task CheckInBackgroundAsync()
                 {
-                    var result = await _updateService!.CheckForUpdatesAsync(Sharedstring.AssetNameAndroid);
+                    var result = await _updateService!.CheckForUpdatesAsync(PvZWSTools_Shared.Helpers.Sharedstring.AssetNameAndroid);
                     RunOnUiThread(() =>
                     {
                         if(result == null)

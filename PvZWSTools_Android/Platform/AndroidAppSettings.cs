@@ -6,9 +6,9 @@ using System.Reflection;
 using PvZWSTools_Android.Helpers;
 using PvZWSTools_Shared.Models;
 
-namespace PvZWSTools_Android;
+namespace PvZWSTools_Android.Platform;
 
-public class AppSettings
+public class AndroidAppSettings
 {
     [Setting("允许自动连接")]
     public bool AutoConnectEnabled { get; set; }  // 允许自动连接
@@ -47,30 +47,30 @@ public class AppSettings
         catch(Exception ex)
         {
             Log.Error("保存设置失败", ex);
-            _ = Android.Util.Log.Error("AppSettings", $"保存设置失败: {ex.Message}");
+            _ = Android.Util.Log.Error("AndroidAppSettings", $"保存设置失败: {ex.Message}");
         }
     }
 
     // 从文件加载设置
-    public static AppSettings Load(string settingsPath)
+    public static AndroidAppSettings Load(string settingsPath)
     {
-        AppSettings settings = null;
+        AndroidAppSettings settings = null;
         try
         {
             if(File.Exists(settingsPath))
             {
                 string json = File.ReadAllText(settingsPath);
-                settings = JsonConvert.DeserializeObject<AppSettings>(json);
+                settings = JsonConvert.DeserializeObject<AndroidAppSettings>(json);
             }
         }
         catch(Exception ex)
         {
             Log.Error("加载设置失败", ex);
-            _ = Android.Util.Log.Error("AppSettings", $"加载设置失败: {ex.Message}");
+            _ = Android.Util.Log.Error("AndroidAppSettings", $"加载设置失败: {ex.Message}");
         }
 
         // 如果文件不存在或加载失败，返回默认设置
-        settings ??= new AppSettings
+        settings ??= new AndroidAppSettings
         {
             AutoConnectEnabled = false,
             SuppressConnectionMessage = false,
@@ -88,7 +88,7 @@ public class AppSettings
     /// </summary>
     private void LogSettings()
     {
-        foreach(var prop in typeof(AppSettings).GetProperties())
+        foreach(var prop in typeof(AndroidAppSettings).GetProperties())
         {
             if(prop.PropertyType != typeof(bool)) continue;
             var attr = prop.GetCustomAttribute<SettingAttribute>();

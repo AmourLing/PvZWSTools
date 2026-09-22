@@ -1,7 +1,7 @@
 using System.Windows;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_WPF.Views;
-using static PvZWSTools_Shared.Sharedstring;
+using static PvZWSTools_Shared.Helpers.Sharedstring;
 using Lock = PvZWSTools_WPF.Helpers.Lock;
 
 namespace PvZWSTools_WPF;

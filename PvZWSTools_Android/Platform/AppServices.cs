@@ -43,7 +43,7 @@ public static class AppServices
     }
 
     /// <summary>要在 配置文件 解压完成之后调用，否则读不到选项 json。</summary>
-    public static void Initialize(Context context, string baseDir, AppSettings settings, string settingsPath)
+    public static void Initialize(Context context, string baseDir, AndroidAppSettings settings, string settingsPath)
     {
         if(Root != null) return;
 
@@ -67,7 +67,7 @@ public static class AppServices
             updateService: null,
             buttonStateService: buttonStates);
 
-        // 上次连成功的地址只存在 Android 的 AppSettings 里，共享层看不到，得显式喂进去；
+        // 上次连成功的地址只存在 Android 的 AndroidAppSettings 里，共享层看不到，得显式喂进去；
         // 不喂的话自动重连会一直去连默认的 localhost，而那是仿真机自己。
         if(!string.IsNullOrWhiteSpace(settings.LastWebSocketAddress))
             Root.WsAddress = settings.LastWebSocketAddress;

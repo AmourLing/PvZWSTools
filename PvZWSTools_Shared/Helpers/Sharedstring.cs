@@ -1,4 +1,4 @@
-namespace PvZWSTools_Shared;
+namespace PvZWSTools_Shared.Helpers;
 
 public class Sharedstring
 {

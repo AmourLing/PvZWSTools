@@ -9,8 +9,8 @@
     <Import_RootNamespace>PvZWSTools_Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Sharedstring.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)WSEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Sharedstring.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\WSEvents.cs" />
   </ItemGroup>
   <!--
     以下业务共享代码（ViewModels/Helpers/Services/Models/Commands/Platform）

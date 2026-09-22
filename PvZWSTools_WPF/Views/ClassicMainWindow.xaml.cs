@@ -6,7 +6,7 @@ using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.ViewModels;
 using PvZWSTools_WPF.Platform;
 using PvZWSTools_WPF.Services;
-using static PvZWSTools_Shared.Sharedstring;
+using static PvZWSTools_Shared.Helpers.Sharedstring;
 
 using PvZWSTools_WPF.Themes;
 
