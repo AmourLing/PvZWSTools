@@ -31,10 +31,6 @@
     <Content Include="$(SolutionDir)配置文件\**\*" Link="配置文件\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="Always" />
     <Content Include="$(SolutionDir)readme.md" CopyToOutputDirectory="Always" />
     <Content Include="Resources\icon.ico" CopyToOutputDirectory="Always" />
-    <Content Include="Resources\Background_Main.png" Condition="'$(Configuration)' == 'Debug'" CopyToOutputDirectory="Always" />
-    <Content Include="Resources\Background_Night.png" Condition="'$(Configuration)' == 'Debug'" CopyToOutputDirectory="Always" />
-    <Content Include="Resources\Background_Mushroom.png" Condition="'$(Configuration)' == 'Debug'" CopyToOutputDirectory="Always" />
-    <Content Include="Resources\Background_Aquarium.png" Condition="'$(Configuration)' == 'Debug'" CopyToOutputDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
@@ -48,10 +44,12 @@
        入口用 Framework 自带的 csc 编，产物只依赖 .NET Framework 4，用户机器无需装运行时。
        -p:StageNestedPublishLayout=false 可以跳过。 -->
   <PropertyGroup>
-    <LauncherSource>$(MSBuildProjectDirectory)\..\PvZWSTools_Launcher\Launcher.cs</LauncherSource>
-    <!-- 生成源码不能落在本工程 obj\ 里：WPF 的 _wpftmp 临时工程会把 obj 下的 .cs 当源码 glob 进去，
-         造成 AssemblyTitle 等特性重复。入口的构建产物放它自己工程目录下。 -->
-    <LauncherDir>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '..', 'PvZWSTools_Launcher', 'obj'))</LauncherDir>
+    <LauncherSource>$(MSBuildProjectDirectory)\..\PvZWSTools_WpfLauncher\Launcher.cs</LauncherSource>
+    <!-- 入口源码单独放 PvZWSTools_WpfLauncher\，不在本工程目录里：SDK 工程会把 **\*.cs 全 glob 进编译，
+         那个文件里有自己的 Main，混进来就是重复入口。生成物也不能落本工程 obj\：WPF 的 _wpftmp
+         临时工程会把 obj 下的 .cs 当源码收进去，造成 AssemblyTitle 等特性重复。
+         这条只服务 Windows 的发布布局，和安卓那条线无关，所以名字里写清是 WPF 的。 -->
+    <LauncherDir>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '..', 'PvZWSTools_WpfLauncher', 'obj'))</LauncherDir>
     <LauncherInfoFile>$(LauncherDir)\AssemblyInfo.cs</LauncherInfoFile>
     <LauncherExe>$(LauncherDir)\PvZWSTools.exe</LauncherExe>
     <FrameworkCsc>$([MSBuild]::NormalizePath($([System.Environment]::GetEnvironmentVariable('WINDIR')), 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'))</FrameworkCsc>

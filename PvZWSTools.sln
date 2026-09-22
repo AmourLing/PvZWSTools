@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.9.12120.119
@@ -6,8 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PvZWSTools_WPF", "PvZWSTools_WPF\PvZWSTools_WPF.csproj", "{CD8C986A-12FA-4B57-852C-2FB8C2D7A5EA}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PvZWSTools_Shared", "PvZWSTools_Shared\PvZWSTools_Shared.shproj", "{B98F5710-197F-420E-82EB-5A7750239CEB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvZWSTools_Xamarin", "PvZWSTools_Xamarin\PvZWSTools_Xamarin.csproj", "{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvZWSTools_Avalonia", "PvZWSTools_Avalonia\PvZWSTools_Avalonia.csproj", "{0B66BC97-38EE-4BDD-A9E6-B48258A44D17}"
 EndProject
@@ -35,20 +33,6 @@ Global
 		{CD8C986A-12FA-4B57-852C-2FB8C2D7A5EA}.Release|x64.Build.0 = Release|Any CPU
 		{CD8C986A-12FA-4B57-852C-2FB8C2D7A5EA}.Release|x86.ActiveCfg = Release|Any CPU
 		{CD8C986A-12FA-4B57-852C-2FB8C2D7A5EA}.Release|x86.Build.0 = Release|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Debug|x64.Build.0 = Debug|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Debug|x86.Build.0 = Debug|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Release|x64.ActiveCfg = Release|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Release|x64.Build.0 = Release|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Release|x86.ActiveCfg = Release|Any CPU
-		{BB070A3B-69E9-41CF-9B27-84B52D4C1DB3}.Release|x86.Build.0 = Release|Any CPU
 		{0B66BC97-38EE-4BDD-A9E6-B48258A44D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B66BC97-38EE-4BDD-A9E6-B48258A44D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B66BC97-38EE-4BDD-A9E6-B48258A44D17}.Debug|x64.ActiveCfg = Debug|Any CPU

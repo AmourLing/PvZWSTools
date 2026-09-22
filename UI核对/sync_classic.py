@@ -5,11 +5,14 @@
 不带输出路径时只做到内存里并报告是否与现有 ClassicMainWindow 一致，
 check_catalog.py 的第 4 项就是这么用的。
 
-ClassicMainWindow 与 master 的原生窗口只有三处刻意的差异：
+ClassicMainWindow 与 master 的原生窗口只有四处刻意的差异：
   1. x:Class 改名；
   2. Window.Resources 里的 TabItem / TabControl 样式删掉（已移进 Themes/ClassicOverrides.xaml，
      这样夜间模式才能覆盖它们）；
   3. 底部工具条多一个 "UI" 按钮，用来切回新界面。
+  4. 花园那 6 处背景预览图删掉 —— 四张 Background_*.png 合计 7.6 MiB，占仓库九成体积，
+     而 csproj 本来就只在 Debug 下才拷进输出目录、Release 不打包，已整体移出仓库；
+     这块预览以后重做时再决定怎么发图（见 BG_IMAGE_LINE）。
 除此之外应当逐字相同，所以整文件重写而不是打补丁。
 """
 import io
@@ -35,6 +38,9 @@ UI_BUTTON = """                    <Button
                         Content="UI" />
 """
 
+# 花园背景预览图。图已从仓库移除，这些行留着就是运行时找不到文件的 Image 元素。
+BG_IMAGE_LINE = re.compile(r'[ \t]*<Image Source="/Resources/Background_[^"]*\.png"[^>]*/>\r?\n')
+
 # master 的原生窗口里有页签样式和 Viewbox；NewUI 外壳没有。用它判断 master 是否已经换过实现。
 SHELL_MARKERS = ('NavList', 'UnitCatalog', 'PageScroll')
 
@@ -51,6 +57,10 @@ def transform(text):
     out, n = HEADER_STYLE_BLOCK.subn('', out)
     if n != 1:
         raise ValueError(f'页签样式块匹配到 {n} 处，预期 1 处')
+
+    out, n = BG_IMAGE_LINE.subn('', out)
+    if n != 6:
+        raise ValueError(f'背景预览图删掉 {n} 处，预期 6 处（经典窗口的结构变了，得改 sync_classic）')
 
     anchor = 'Command="{Binding SettingCommand}"\n'
     i = out.find(anchor)
