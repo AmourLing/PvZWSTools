@@ -3,14 +3,14 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using System.ComponentModel;
-using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Android.Platform;
 using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.UiModel;
-// 本文件在 PvZWSTools_Avalonia 命名空间下，那里还有一份同名旧 NameOption，
+// 本文件在 PvZWSTools_Android 命名空间下，那里还有一份同名旧 NameOption，
 // 不显式别名的话 Cast<NameOption>() 会绑到旧的那份并抛 InvalidCastException。
 using SharedNameOption = PvZWSTools_Shared.Models.NameOption;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 /// <summary>
 /// 清单驱动的一页功能列表：从 AppServices 拿到那一页的 UnitDescriptor，按 UnitKind

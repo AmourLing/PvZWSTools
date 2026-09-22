@@ -5,7 +5,7 @@ namespace PvZWSTools_Shared.Helpers;
 
 /// <summary>
 /// 平台无关的 UI 线程调用抽象。
-/// WPF 实现基于 <c>System.Windows.Threading.Dispatcher</c>，Avalonia 实现基于 <c>Avalonia.Threading.Dispatcher.UIThread</c>。
+/// WPF 实现基于 <c>System.Windows.Threading.Dispatcher</c>，安卓实现基于主 <c>Looper</c>（AndroidUiThreadInvoker）。
 /// </summary>
 public interface IUiThreadInvoker
 {

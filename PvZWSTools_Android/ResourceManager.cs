@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Android.Content;
 using Java.Util.Zip;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 public static class ResourceManager
 {

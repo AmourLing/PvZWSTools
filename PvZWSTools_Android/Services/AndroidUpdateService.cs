@@ -5,7 +5,7 @@ using AndroidX.Core.Content;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.Helpers;
 
-namespace PvZWSTools_Avalonia.Services;
+namespace PvZWSTools_Android.Services;
 
 /// <summary>
 /// Android 端自动更新实现：

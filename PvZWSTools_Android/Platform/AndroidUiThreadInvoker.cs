@@ -1,7 +1,7 @@
 using Android.OS;
 using PvZWSTools_Shared.Helpers;
 
-namespace PvZWSTools_Avalonia.Platform;
+namespace PvZWSTools_Android.Platform;
 
 /// <summary>
 /// Android 实现的 UI 线程调用器。刻意不依赖 Activity：ViewModel 图要在 MainActivity

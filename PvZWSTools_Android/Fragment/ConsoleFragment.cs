@@ -5,11 +5,11 @@ using Android.Text;
 using Android.Text.Style;
 using Android.Views;
 using Android.Widget;
-using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Android.Platform;
 using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.ViewModels;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 /// <summary>
 /// 控制台页：日志、WebSocket 收发，以及手动发一条脚本给游戏。

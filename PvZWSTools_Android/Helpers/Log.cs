@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using Android.App;
 
-namespace PvZWSTools_Avalonia.Helpers;
+namespace PvZWSTools_Android.Helpers;
 
 public static class Log
 {

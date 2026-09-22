@@ -1,7 +1,7 @@
 using PvZWSTools_Shared.Services;
 using SharedAppSettings = PvZWSTools_Shared.Models.AppSettings;
 
-namespace PvZWSTools_Avalonia.Platform;
+namespace PvZWSTools_Android.Platform;
 
 /// <summary>
 /// 把 Android 自己的 AppSettings 投影成共享层的 ISettingsService。

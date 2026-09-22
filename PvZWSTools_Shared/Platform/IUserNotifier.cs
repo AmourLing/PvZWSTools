@@ -2,7 +2,7 @@ namespace PvZWSTools_Shared.Helpers;
 
 /// <summary>
 /// 平台无关的用户通知抽象（替代 WPF 的 MessageBox）。
-/// WPF 实现基于 MessageBox，Avalonia 实现基于对话框窗口。
+/// WPF 实现是 MessageBox（模态），安卓实现是 Toast（不阻塞）。
 /// </summary>
 public interface IUserNotifier
 {

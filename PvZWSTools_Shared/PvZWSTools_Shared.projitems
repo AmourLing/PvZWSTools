@@ -14,10 +14,10 @@
   </ItemGroup>
   <!--
     以下业务共享代码（ViewModels/Helpers/Services/Models/Commands/Platform）
-    编译到 WPF 与 Avalonia；Xamarin 项目因自带同名类（AppSettings/NameOption/Log 等）
-    且已被弃用，故通过条件排除，避免重复类定义。
+    编译到 WPF 与 Android 两个宿主；同一份源码里用 #if ANDROID 分平台，
+    也因为是共享工程，internal 在两边都算同程序集，能直接互相引用。
   -->
-  <ItemGroup Condition="'$(MSBuildProjectName)' != 'PvZWSTools_Xamarin'">
+  <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Commands\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ButtonHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CompileTime.cs" />

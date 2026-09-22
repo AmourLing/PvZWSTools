@@ -4,7 +4,7 @@ using Android.OS;
 using Android.Widget;
 using PvZWSTools_Shared.Helpers;
 
-namespace PvZWSTools_Avalonia.Platform;
+namespace PvZWSTools_Android.Platform;
 
 /// <summary>
 /// Android 端的通知就是 Toast。共享层的每个失败分支本来就写着 <c>_notifier?.Warn/Error</c>

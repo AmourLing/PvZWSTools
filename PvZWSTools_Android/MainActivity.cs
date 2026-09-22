@@ -12,16 +12,16 @@ using Android.Widget;
 using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using AndroidX.DrawerLayout.Widget;
-using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Android.Platform;
 using Google.Android.Material.Navigation;
 using PvZWSTools_Shared;
 using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.Services;
-using PvZWSTools_Avalonia.Helpers;
-using PvZWSTools_Avalonia.Services;
+using PvZWSTools_Android.Helpers;
+using PvZWSTools_Android.Services;
 using static PvZWSTools_Shared.Sharedstring;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 [Activity(Name = "net.pvz.pvzwstools.MainActivity",
           Label = "@string/app_name",

@@ -3,9 +3,9 @@ using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.UiModel;
 using PvZWSTools_Shared.ViewModels;
-using PvZWSTools_Avalonia.Services;
+using PvZWSTools_Android.Services;
 
-namespace PvZWSTools_Avalonia.Platform;
+namespace PvZWSTools_Android.Platform;
 
 /// <summary>
 /// Android 侧的组合根：共享的 ViewModel 图和功能清单各建一次，Fragment 只从这里取，

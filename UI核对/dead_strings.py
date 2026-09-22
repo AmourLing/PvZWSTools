@@ -9,7 +9,7 @@
 import io, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJ = os.path.join(ROOT, 'PvZWSTools_Avalonia')
+PROJ = os.path.join(ROOT, 'PvZWSTools_Android')
 STRINGS = os.path.join(PROJ, 'Resources', 'values', 'strings.xml')
 
 ENTRY = re.compile(r'^(\s*)<string name="([^"]+)"')

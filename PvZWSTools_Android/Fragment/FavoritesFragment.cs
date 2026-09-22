@@ -1,8 +1,8 @@
 using Android.Content;
-using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Android.Platform;
 using PvZWSTools_Shared.UiModel;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 /// <summary>
 /// 收藏页：常用在前（只留几条），收藏在后。行的画法全在 <see cref="CatalogFragment"/>，

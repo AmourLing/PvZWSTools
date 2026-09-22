@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace PvZWSTools_Avalonia.Helpers;
+namespace PvZWSTools_Android.Helpers;
 
 public static class CompileTimeHelper
 {

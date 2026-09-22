@@ -14,7 +14,7 @@
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>PvZWSTools</AssemblyName>
-        <RootNamespace>PvZWSTools_Avalonia</RootNamespace>
+        <RootNamespace>PvZWSTools_Android</RootNamespace>
         <ApplicationId>net.pvz.pvzwstools</ApplicationId>
         <ApplicationTitle>PvZWSTools</ApplicationTitle>
         <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
@@ -92,7 +92,7 @@
             <BuildTime>$([System.DateTime]::UtcNow.ToString('o'))</BuildTime>
             <BuildInfoFile>$(IntermediateOutputPath)BuildInfo.g.cs</BuildInfoFile>
         </PropertyGroup>
-        <WriteLinesToFile File="$(BuildInfoFile)" Lines="using System%3B%0anamespace PvZWSTools_Avalonia.Helpers%0a{%0a    public static class BuildInfo%0a    {%0a        public const string CompileTime = &quot;$(BuildTime)&quot;%3B%0a    }%0a}" Overwrite="true" Encoding="UTF-8" />
+        <WriteLinesToFile File="$(BuildInfoFile)" Lines="using System%3B%0anamespace PvZWSTools_Android.Helpers%0a{%0a    public static class BuildInfo%0a    {%0a        public const string CompileTime = &quot;$(BuildTime)&quot;%3B%0a    }%0a}" Overwrite="true" Encoding="UTF-8" />
         <ItemGroup>
             <Compile Include="$(BuildInfoFile)" />
         </ItemGroup>

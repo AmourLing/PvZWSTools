@@ -32,9 +32,8 @@
 
 | 项目名称              | 说明 |
 | --------              | ---- |
-| `PvZWSTools_Avalonia` | Android端|                
-| `PvZWSTools_WPF`      | Windows端|
-| `PvZWSTools_Xamarin`  | 已废弃   | 
+| `PvZWSTools_Android` | Android端|                
+| `PvZWSTools_WPF`      | Windows端| 
 | `PvZWSTools_Shared`   | 共享项目 | 
 
 ---

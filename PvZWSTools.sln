@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PvZWSTools_WPF", "PvZWSTool
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PvZWSTools_Shared", "PvZWSTools_Shared\PvZWSTools_Shared.shproj", "{B98F5710-197F-420E-82EB-5A7750239CEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvZWSTools_Avalonia", "PvZWSTools_Avalonia\PvZWSTools_Avalonia.csproj", "{0B66BC97-38EE-4BDD-A9E6-B48258A44D17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PvZWSTools_Android", "PvZWSTools_Android\PvZWSTools_Android.csproj", "{0B66BC97-38EE-4BDD-A9E6-B48258A44D17}"
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "IronPythonEditor", "IronPythonEditor\IronPythonEditor.pyproj", "{CCA420BB-50E1-4DC3-8C90-8F43D53B3122}"
 EndProject

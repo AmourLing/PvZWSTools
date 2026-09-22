@@ -6,7 +6,7 @@ using PvZWSTools_Shared.Helpers;
 using PvZWSTools_Shared.Services;
 using PvZWSTools_Shared.ViewModels;
 
-namespace PvZWSTools_Avalonia.Platform;
+namespace PvZWSTools_Android.Platform;
 
 /// <summary>
 /// 应用内对话框。波次出怪 JSON 走这里 —— Android 没有能打开 .json 的系统关联程序，

@@ -2,11 +2,11 @@ using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Android.Platform;
 using PvZWSTools_Shared.Models;
 using PvZWSTools_Shared.ViewModels;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 /// <summary>
 /// 快捷脚本页：选脚本 → 按该脚本的 .py.config.json 出参数 → 运行。

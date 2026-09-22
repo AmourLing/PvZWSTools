@@ -6,11 +6,11 @@ using Android.Content;
 using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Widget;
-using PvZWSTools_Avalonia.Helpers;
-using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Android.Helpers;
+using PvZWSTools_Android.Platform;
 using PvZWSTools_Shared.Models;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 /// <summary>
 /// 状态管理对话框（与 WPF 端 StateWindow 功能对齐）：

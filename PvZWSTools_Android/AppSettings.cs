@@ -3,10 +3,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using PvZWSTools_Avalonia.Helpers;
+using PvZWSTools_Android.Helpers;
 using PvZWSTools_Shared.Models;
 
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 public class AppSettings
 {

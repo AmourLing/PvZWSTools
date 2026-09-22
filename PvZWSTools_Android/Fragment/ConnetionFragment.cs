@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
 using AndroidX.Fragment.App;
-using PvZWSTools_Avalonia.Helpers;
+using PvZWSTools_Android.Helpers;
 
-using PvZWSTools_Avalonia.Platform;
+using PvZWSTools_Android.Platform;
 using PvZWSTools_Shared.Services;
-namespace PvZWSTools_Avalonia;
+namespace PvZWSTools_Android;
 
 public class ConnectionFragment:AndroidX.Fragment.App.Fragment
 {
