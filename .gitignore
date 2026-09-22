@@ -45,3 +45,9 @@ UpdateTest/
 VersionTest/
 SkillVerify/
 .git_backup_*/
+
+# ── 只在本机用的开发/发布工具，不进公开仓库 ──
+# UI核对：清单回归门（读的是本地基准快照，公开仓库里没有对应产物）
+# installer：Inno Setup 脚本与它的本地产物
+/UI核对/
+/installer/
