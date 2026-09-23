@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  整个解决方案共用的构建开关。放最外层是因为花园这件事横跨两处：背景图在
+  PvZWSTools_WPF.csproj 的 Resource 项上，导航入口在 C#（Sharedstring.HasGarden）里，
+  两边必须读同一个值，否则会出一个"导航里有花园、点进去背景全空"的包。
+  用法：dotnet build -p:HasGarden=true / 不传就是下面的默认值。
+-->
+<Project>
+
+  <PropertyGroup>
+    <!-- 默认跟着配置走：Debug 开着好测，Release 关掉省下载——四张 JPEG 合计 ~700 KiB，
+         而框架依赖的发布包总共才 940 KiB。 -->
+    <HasGarden Condition="'$(HasGarden)' == '' And '$(Configuration)' == 'Debug'">true</HasGarden>
+    <HasGarden Condition="'$(HasGarden)' == ''">false</HasGarden>
+    <!-- 只能追加。写成 <DefineConstants>GARDEN_OPEN</DefineConstants> 会把 SDK 生成的
+         DEBUG/TRACE 连同以后加的符号一起冲掉。 -->
+    <DefineConstants Condition="'$(HasGarden)' == 'true'">$(DefineConstants);GARDEN_OPEN</DefineConstants>
+  </PropertyGroup>
+
+</Project>

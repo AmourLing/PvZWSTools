@@ -100,11 +100,10 @@ public sealed class ShellViewModel : INotifyPropertyChanged
         var catalog = UnitCatalog.Build(root);
         foreach (var p in catalog)
         {
-            // 花园编辑页沿用调试期才开放的做法
-#if !DEBUG
-            if (p.Kind == NavKind.Garden)
+            // 花园页在没打进背景图的那个构建里根本没有意义，所以整页不进导航
+            // （开关是构建期的，见 Sharedstring.HasGarden 和仓库根的 Directory.Build.props）
+            if (p.Kind == NavKind.Garden && !Sharedstring.HasGarden)
                 continue;
-#endif
             if (p.Kind == NavKind.Script)
                 p.Extra = Child(root, "QMod");
             else if (p.Kind == NavKind.Garden)

@@ -8,6 +8,20 @@ public class Sharedstring
     public static readonly bool IsBetaVersion = false;
 
     /// <summary>
+    /// 这个构建里有没有花园页。开关只说一次：仓库根的 Directory.Build.props 里那个 MSBuild
+    /// 属性 HasGarden 同时决定这行值和那四张背景图进不进程序集，所以不会出现"页开着、图没打进包"。
+    /// 默认 Debug 有、Release 没有；Release 要出带花园的包就 -p:HasGarden=true。
+    /// 三份花园脚本 (Scripts\Garden*.py) 不受它影响，永远内嵌 —— 一共 11 KiB，省不出什么，
+    /// 而 <see cref="EmbeddedScript.Read"/> 找不到资源是直接抛的，留给运行时一个炸点不值当。
+    /// </summary>
+    public const bool HasGarden =
+#if GARDEN_OPEN
+        true;
+#else
+        false;
+#endif
+
+    /// <summary>
     /// 企鹅群
     /// </summary>
     public static readonly string BaseUpdateQQ = "1034609947";
