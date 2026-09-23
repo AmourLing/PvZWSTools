@@ -97,7 +97,7 @@ public class SpawnViewModel:ViewModelBase
         {
             var __old = BungeeCheck;
             BungeeCheck = ButtonHelper.ToggleCheck(BungeeCheck);
-            if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "蹦极红眼处理",
+            if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "飞贼红眼处理",
                 new Dictionary<string, string>
                 {
                     [Constants.Placeholders.BungeeCheck] = ButtonHelper.GetCheckValue(BungeeCheck),
@@ -175,7 +175,7 @@ public class SpawnViewModel:ViewModelBase
         {
             var __old = RedeyeCheck;
             RedeyeCheck = ButtonHelper.ToggleCheck(RedeyeCheck);
-            if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "蹦极红眼处理",
+            if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Spawn, "飞贼红眼处理",
                 new Dictionary<string, string>
                 {
                     [Constants.Placeholders.BungeeCheck] = ButtonHelper.GetCheckValue(BungeeCheck),

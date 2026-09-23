@@ -31,6 +31,14 @@
     <Content Include="$(SolutionDir)配置文件\**\*" Link="配置文件\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="Always" />
     <Content Include="$(SolutionDir)readme.md" CopyToOutputDirectory="Always" />
     <Content Include="Resources\icon.ico" CopyToOutputDirectory="Always" />
+    <!--  花园页的背景图，取自游戏的 Background_Greenhouse / _Night / Background_MushroomGarden /
+          aquarium1，整张不裁（原生 1680x720，按 resources.xml 的 invscale=1.2 出成 1400x600），
+          格位坐标与图同一套像素，换算见 PvZWSTools_Shared\UiModel\GardenLayout.cs。
+          花园页只在 Debug 进导航（ShellViewModel 里的 #if !DEBUG），所以图也只编进 Debug 的程序集：
+          四张 JPEG 合计 ~700 KiB，而框架依赖的发布包总共才 940 KiB，Release 用不上的东西不占下载。
+          必须是 Resource 而不是随目录走的 Content —— 界面里的 Image 用的是 pack URI，
+          松散文件不会被这个 URI 找到。  -->
+    <Resource Include="Resources\garden\*.jpg" Condition="'$(Configuration)' == 'Debug'" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">

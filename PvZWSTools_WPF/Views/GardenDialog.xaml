@@ -1,7 +1,8 @@
-﻿<Window
+<Window
     x:Class="PvZWSTools_WPF.Views.GardenDialog"
     Background="{DynamicResource BgRootBrush}"
     FontFamily="Microsoft YaHei UI"
+    Foreground="{DynamicResource TextPrimaryBrush}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:loc="clr-namespace:PvZWSTools_WPF.Themes"
@@ -10,14 +11,56 @@
     xmlns:viewModels="clr-namespace:PvZWSTools_Shared.ViewModels"
     Title="{loc:Loc '花园编辑'}"
     Width="300"
-    Height="450"
+    Height="460"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
 
+    <Window.Resources>
+        <!--  下拉箭头：主题里没有隐式的 ToggleButton 样式，默认的灰色方块在夜间模式下很扎眼，
+              而且和右边的输入框拼不出一个整体。箭头本身用 Path 画，IsChecked 时翻向上。  -->
+        <Style x:Key="DropdownToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="{DynamicResource BgControlBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderLineBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border
+                            x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <Path
+                                x:Name="Arrow"
+                                Width="8"
+                                Height="5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M 0 0 L 4 5 L 8 0 Z"
+                                Fill="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource BgHoverBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Arrow" Property="Data" Value="M 0 5 L 4 0 L 8 5 Z" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="60" />
             <RowDefinition Height="60" />
             <RowDefinition Height="60" />
             <RowDefinition Height="60" />
@@ -58,8 +101,8 @@
                     Width="25"
                     Height="25"
                     VerticalAlignment="Top"
-                    Content="🔻"
-                    IsChecked="{Binding SeedTypeDropdownOpen, Mode=TwoWay}" />
+                    IsChecked="{Binding SeedTypeDropdownOpen, Mode=TwoWay}"
+                    Style="{StaticResource DropdownToggleStyle}" />
                 <Popup
                     IsOpen="{Binding SeedTypeDropdownOpen}"
                     Placement="Bottom"
@@ -105,8 +148,8 @@
                     Width="25"
                     Height="25"
                     VerticalAlignment="Top"
-                    Content="🔻"
-                    IsChecked="{Binding FacingDropdownOpen, Mode=TwoWay}" />
+                    IsChecked="{Binding FacingDropdownOpen, Mode=TwoWay}"
+                    Style="{StaticResource DropdownToggleStyle}" />
                 <Popup
                     IsOpen="{Binding FacingDropdownOpen}"
                     Placement="Bottom"
@@ -152,8 +195,8 @@
                     Width="25"
                     Height="25"
                     VerticalAlignment="Top"
-                    Content="🔻"
-                    IsChecked="{Binding AgeDropdownOpen, Mode=TwoWay}" />
+                    IsChecked="{Binding AgeDropdownOpen, Mode=TwoWay}"
+                    Style="{StaticResource DropdownToggleStyle}" />
                 <Popup
                     IsOpen="{Binding AgeDropdownOpen}"
                     Placement="Bottom"
@@ -174,12 +217,66 @@
             </Grid>
         </Grid>
 
+        <!--  植物状态：这一株正在等什么，游戏里就是 PottedPlant.mPlantNeed  -->
         <Grid Grid.Row="4">
+            <TextBlock FontSize="16" Text="{loc:Loc '植物状态'}" />
+            <Grid
+                Margin="0,25,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="25" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="NeedInput"
+                    Grid.Column="0"
+                    Height="25"
+                    VerticalAlignment="Top"
+                    FontSize="16"
+                    IsReadOnly="True"
+                    Text="{Binding SelectedNeedDisplay, Mode=TwoWay}" />
+                <ToggleButton
+                    x:Name="NeedDropdownToggle"
+                    Grid.Column="1"
+                    Width="25"
+                    Height="25"
+                    VerticalAlignment="Top"
+                    IsChecked="{Binding NeedDropdownOpen, Mode=TwoWay}"
+                    Style="{StaticResource DropdownToggleStyle}" />
+                <Popup
+                    IsOpen="{Binding NeedDropdownOpen}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=NeedDropdownToggle}"
+                    StaysOpen="False">
+                    <Border
+                        Background="{DynamicResource BgControlBrush}"
+                        BorderBrush="{DynamicResource BorderLineBrush}"
+                        BorderThickness="1">
+                        <ListBox
+                            x:Name="NeedListBox"
+                            MaxHeight="150"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding NeedOptions}"
+                            SelectedItem="{Binding SelectedNeedOption}" />
+                    </Border>
+                </Popup>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="5">
             <!--  空白填充  -->
         </Grid>
 
         <!--  确定/取消按钮  -->
-        <Grid Grid.Row="5">
+        <Grid Grid.Row="6">
+            <Button
+                MinWidth="60"
+                HorizontalAlignment="Left"
+                Command="{Binding RemoveCommand}"
+                Content="{loc:Loc '移除'}"
+                IsEnabled="{Binding CanRemove}"
+                ToolTip="{loc:Loc '把这一格的盆栽从花园里拿掉'}" />
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
                     MinWidth="60"

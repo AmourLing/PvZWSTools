@@ -118,7 +118,7 @@ def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
 
     # 特殊权重调整（与 C# 一致）
     try:
-        # 香蒲(37)：蹦极/气球僵尸时启用
+        # 香蒲(37)：气球僵尸时启用
         if self.mBoard.mZombieAllowed[22] or self.mBoard.mZombieAllowed[20]:
             if 37 in weights:
                 weights[37] = base_weight

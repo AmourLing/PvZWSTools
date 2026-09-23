@@ -16,7 +16,7 @@
         "Value": "Wallnut"
     },
     {
-        "Name": "土豆地雷",
+        "Name": "土豆雷",
         "Value": "Potatomine"
     },
     {
@@ -28,7 +28,7 @@
         "Value": "Chomper"
     },
     {
-        "Name": "双重射手",
+        "Name": "双发射手",
         "Value": "Repeater"
     },
     {
@@ -48,7 +48,7 @@
         "Value": "Gravebuster"
     },
     {
-        "Name": "迷糊菇",
+        "Name": "魅惑菇",
         "Value": "Hypnoshroom"
     },
     {
@@ -56,15 +56,15 @@
         "Value": "Scaredyshroom"
     },
     {
-        "Name": "冰川菇",
+        "Name": "寒冰菇",
         "Value": "Iceshroom"
     },
     {
-        "Name": "末日菇",
+        "Name": "毁灭菇",
         "Value": "Doomshroom"
     },
     {
-        "Name": "莲叶",
+        "Name": "睡莲",
         "Value": "Lilypad"
     },
     {
@@ -72,7 +72,7 @@
         "Value": "Squash"
     },
     {
-        "Name": "三重射手",
+        "Name": "三线射手",
         "Value": "Threepeater"
     },
     {
@@ -96,7 +96,7 @@
         "Value": "Tallnut"
     },
     {
-        "Name": "水兵菇",
+        "Name": "海蘑菇",
         "Value": "Seashroom"
     },
     {
@@ -112,11 +112,11 @@
         "Value": "Blover"
     },
     {
-        "Name": "双向射手",
+        "Name": "裂荚射手",
         "Value": "Splitpea"
     },
     {
-        "Name": "星星果",
+        "Name": "杨桃",
         "Value": "Starfruit"
     },
     {
@@ -168,11 +168,11 @@
         "Value": "Twinsunflower"
     },
     {
-        "Name": "多嘴小蘑菇",
+        "Name": "忧郁菇",
         "Value": "Gloomshroom"
     },
     {
-        "Name": "猫尾草",
+        "Name": "香蒲",
         "Value": "Cattail"
     },
     {
@@ -180,11 +180,11 @@
         "Value": "Wintermelon"
     },
     {
-        "Name": "吸金菇",
+        "Name": "吸金磁",
         "Value": "GoldMagnet"
     },
     {
-        "Name": "钢地刺",
+        "Name": "地刺王",
         "Value": "Spikerock"
     },
     {
@@ -216,7 +216,7 @@
         "Value": "SuperChomper"
     },
     {
-        "Name": "泡椒",
+        "Name": "泡椒炸弹",
         "Value": "PickledPepper"
     },
     {
@@ -228,7 +228,7 @@
         "Value": "Agave"
     },
     {
-        "Name": "火红莲女王",
+        "Name": "火红莲",
         "Value": "Endoflame"
     },
     {
@@ -244,23 +244,23 @@
         "Value": "ImitaterRandomZombie"
     },
     {
-        "Name": "魅惑猫尾草",
+        "Name": "魅惑香蒲",
         "Value": "HypnoCattail"
     },
     {
-        "Name": "向日葵和豌豆射手",
+        "Name": "豌豆向日葵(融合)",
         "Value": "SunflowerPea"
     },
     {
-        "Name": "豌豆射手和坚果",
+        "Name": "豌豆坚果(融合)",
         "Value": "PeaWallnut"
     },
     {
-        "Name": "向日葵和坚果",
+        "Name": "阳光坚果(融合)",
         "Value": "SunflowerWallnut"
     },
     {
-        "Name": "冰坚果",
+        "Name": "寒冰坚果(融合)",
         "Value": "IceWallnut"
     }
 ]

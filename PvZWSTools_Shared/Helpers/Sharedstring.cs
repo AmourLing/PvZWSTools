@@ -49,13 +49,16 @@ public class Sharedstring
     /// </summary>
     public const string AssetNameAndroid = "PvZWSTools_android.APK";
 
-    /// <summary>
-    /// 花园编辑
-    /// </summary>
-    /// <summary>花园编辑脚本。正文在 Scripts\GardenChangeText.py，编进程序集，
-    /// 不走 配置文件\ 那套文件分发（内容必须和宿主代码同步演进，也不该被用户改）。原来这里是 74 行 C# 字符串字面量，
+    /// <summary>花园页的三份脚本，正文都在 Scripts\*.py，编进程序集、不走 配置文件\ 那套文件分发
+    /// （内容必须和宿主代码同步演进，也不该被用户改）。原来这里是 74 行 C# 字符串字面量，
     /// 和旁边的 .py 是两份东西、改一处忘一处，现在只留 .py 这一份源。</summary>
     public static string GardenChangeText => EmbeddedScript.Read("GardenChangeText.py");
+
+    /// <summary>清掉一格。删完槽位编号会变，所以宿主紧接着要重新读一次花园。</summary>
+    public static string GardenClearText => EmbeddedScript.Read("GardenClearText.py");
+
+    /// <summary>回传全部盆栽，行格式见脚本注释，与 GardenViewModel 的解析是一对。</summary>
+    public static string GardenQueryText => EmbeddedScript.Read("GardenQueryText.py");
 
     /// <summary>
     /// 连接后发送的语句

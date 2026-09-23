@@ -136,6 +136,14 @@ public static class Constants
         /// <summary>游戏主动推送出怪列表时包的一对标记（同步出怪列表.py）。</summary>
         public const string SpawnListStart = "SPAWN_LIST_START";
         public const string SpawnListEnd = "SPAWN_LIST_END";
+
+        /// <summary>花园页回读全部盆栽时包的一对标记（Scripts\GardenQueryText.py）。</summary>
+        public const string GardenListStart = "GARDEN_LIST_START";
+        public const string GardenListEnd = "GARDEN_LIST_END";
+
+        /// <summary>同一份回传里游戏侧的植物名字表，中文名以它为准（理由见脚本头）。</summary>
+        public const string GardenNamesStart = "GARDEN_NAMES_START";
+        public const string GardenNamesEnd = "GARDEN_NAMES_END";
     }
 
     public static class SubFolders

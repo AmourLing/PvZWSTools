@@ -29,9 +29,6 @@ public partial class ClassicMainWindow:Window
         {
             Title += "_Beta";
         }
-#if DEBUG // 调试模式下隐藏花园编辑页面
-        GardenPage.Visibility = Visibility.Visible;
-#endif
 
         var uiThread = new WpfUiThreadInvoker(Dispatcher);
         var connection = new ConnectionService(uiThread);
