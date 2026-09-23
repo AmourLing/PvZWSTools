@@ -77,9 +77,10 @@ def Garden_Editor_SetNeed(pp, need):
         return
     if pp.mTimesFed < pp.mFeedingsPerGrow:
         pp.mTimesFed = pp.mFeedingsPerGrow  # 喂够了才会往下走到施肥/除虫/放音乐
-    # 存的 mPlantNeed 只有"年龄=大"时才被采用，幼苗/小/中 会被算成施肥。
-    # 配错不会崩：改完自动回读，界面上显示的就是游戏真正算出来的那个。
-    pp.mPlantNeed = PottedPlantNeed(need) if need >= 3 else PottedPlantNeed["None"]
+    # 存的 mPlantNeed 只在"年龄=大"这一档被采用（ZenGarden.cs:1367），而 GetPlantsNeed 一路
+    # 走到尾是回 Water（:1371）—— 所以"大 + 施肥"以前会显示成"浇水"。年龄不是大时它走不到
+    # 这一行，写进去也不会被读到，两边都写就对了。
+    pp.mPlantNeed = PottedPlantNeed(need)
 
 
 def Garden_Editor_Apply(pp):
@@ -97,21 +98,26 @@ def Garden_Editor_Add(info):
     pp = info.mPottedPlant[index]
     # 借一个刚初始化好的实例取默认值：InitializePottedPlant（PottedPlant.cs:64）会随机出
     # 画片变化和 mFeedingsPerGrow，它不碰 mX/mY/mWhichZenGarden，也不管我们要的朝向/年龄/状态，
-    # 所以那几样由 Garden_Editor_Apply 和自己写。
+    # 所以那几样由 Garden_Editor_Apply 和自己写。这一槽是回收来的（删除会把数组左移，
+    # 末尾那槽还挂着旧数据），所以照游戏自己的 AddPottedPlant（ZenGarden.cs:400-414）整套覆盖。
     fresh = PottedPlant()
     fresh.InitializePottedPlant(SeedType.{mSeedType})
-    Garden_Editor_Apply(pp)
     pp.mX = SPOT_X
     pp.mY = SPOT_Y
     pp.mWhichZenGarden = GARDEN_TYPE
     pp.mDrawVariation = fresh.mDrawVariation
     pp.mFeedingsPerGrow = fresh.mFeedingsPerGrow
+    pp.mTimesFed = fresh.mTimesFed
     pp.mFutureAttribute = fresh.mFutureAttribute
     pp.mLastChocolateTime = fresh.mLastChocolateTime
     pp.mLastFertilizedTime = fresh.mLastFertilizedTime
     pp.mLastNeedFulfilledTime = fresh.mLastNeedFulfilledTime
     pp.mLastWateredTime = DateTime()  # 与 AddPottedPlant:414 一致，新盆栽一开始就是干的
     info.mNumPottedPlants += 1
+    # Apply 必须排在这串初始化后面：SetNeed 要拿刚定下来的 mFeedingsPerGrow 当基准，
+    # 而它改的那几个时间戳又正是上面覆盖过的字段 —— 放前面等于白写，
+    # "空格种下时选的植物状态没生效"就是这条顺序。
+    Garden_Editor_Apply(pp)
     Garden_Editor_Reboard(index)
     print(f"GardenEditor 在 ({SPOT_X},{SPOT_Y}) 种下 {pp.mSeedType}")
 
