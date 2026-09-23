@@ -1,0 +1,22 @@
+{
+    "name": "解锁全部商店物品",
+    "infoall": "模式 1：把 PlayerInfo.mPurchases 写成已拥有并存盘（植物立刻能用、花园三类直接开），改写前会先回传一份 Base64 备份。模式 2：只钩掉商店的关卡门槛与\"即将上架\"，不动存档，任何进度都能自己点着买。模式 3：把模式 1 备份出来的那行 Base64 贴进\"备份载荷\"，原样还原 mPurchases。目标值照抄 PurchasePendingItem 各分支，消耗品补到上限，只增不减；盆栽金盏花是每日限购，故意不动。",
+    "author": "AmourLing",
+
+    "replace": {
+        "{MODE}": {
+            "info": "解锁方式",
+            "value": [
+                1,
+                2,
+                3
+            ],
+            "default": 1
+        },
+        "{PAYLOAD_B64}": {
+            "info": "备份载荷（只在模式 3 用，粘贴模式 1 回传的那行 Base64）",
+            "value": "",
+            "default": ""
+        }
+    }
+}
