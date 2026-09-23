@@ -263,15 +263,22 @@ public static class Log
             // Android 改不了控制台颜色，所以颜色由 ConsoleLine 直接带给界面内控制台
             ConsoleLine(message, targetColor);
 #else
-            ConsoleColor originalColor = Console.ForegroundColor;
+            // 取色/改色都得走 CurrentColor 那种带保护的写法：Release 是 WinExe，
+            // 进程压根没有控制台，直接读 Console.ForegroundColor 会抛 IOException，
+            // 而这里正是启动最早的一批调用点，抛出来会把窗口一起带走。
+            ConsoleColor originalColor = CurrentColor();
             try
             {
                 Console.ForegroundColor = targetColor;
                 ConsoleLine(message, targetColor);
             }
+            catch
+            {
+                try { ConsoleLine(message, targetColor); } catch { }
+            }
             finally
             {
-                Console.ForegroundColor = originalColor;
+                try { Console.ForegroundColor = originalColor; } catch { }
             }
 #endif
 
@@ -327,7 +334,7 @@ public static class Log
             // Android 改不了控制台颜色，所以颜色由 ConsoleLine 直接带给界面内控制台
             ConsoleLine(logLine, effective);
 #else
-            ConsoleColor originalColor = Console.ForegroundColor;
+            ConsoleColor originalColor = CurrentColor();
             try
             {
                 if(effective != originalColor)

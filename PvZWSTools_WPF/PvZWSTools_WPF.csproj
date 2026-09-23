@@ -11,7 +11,11 @@
     <PackageIcon>icon.png</PackageIcon>
     <StartupObject>PvZWSTools_WPF.Program</StartupObject>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <OutputType>Exe</OutputType>
+    <!--  Debug 留 Exe：那个控制台是真能看日志的地方（Log 把 stdout tee 进了界面内控制台）。
+          Release 改 WinExe：玩家不该为了用一个工具多背一个挂在任务栏上的黑窗口。
+          没有控制台之后 Console.ForegroundColor / Console.Title 会抛，相关调用点都已收口。  -->
+    <OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
+    <OutputType Condition="'$(Configuration)' != 'Debug'">WinExe</OutputType>
     <UseWindowsForms>false</UseWindowsForms>
     <Version>2026.9.18</Version>
     <InformationalVersion>2026.09.18</InformationalVersion>
