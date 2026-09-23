@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace PvZWSTools_Shared.Helpers;
@@ -88,12 +89,40 @@ public static class Log
             _logFilePath = Path.Combine(_logDirectory, $"log_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.txt");
             _writer = new StreamWriter(_logFilePath, append: true) { AutoFlush = true };
             _initialized = true;
+            PruneOldLogs();
         }
         catch(Exception ex)
         {
             // 开文件失败也不能把调用方带崩；这条错误本身写不进文件，只能走标准错误
             try { Console.Error.WriteLine($"无法初始化日志文件: {ex.Message}"); } catch { }
         }
+    }
+
+    /// <summary>近这么久天内的日志一律留。</summary>
+    private const int LogKeepDays = 3;
+
+    /// <summary>凑不满这么多条就往前延。一次启动一个文件，三天里只开过两次的话，
+    /// 光按天留就只剩两条，回头查老问题时正是要看前面那几次的。</summary>
+    private const int LogKeepFiles = 10;
+
+    /// <summary>文件名里的时间是定宽的，字典序即时间序，所以按名字倒排就能直接判新旧。</summary>
+    private static void PruneOldLogs()
+    {
+        try
+        {
+            var newestFirst = new DirectoryInfo(_logDirectory)
+                .EnumerateFiles("log_*.txt")
+                .OrderByDescending(f => f.Name, StringComparer.Ordinal)
+                .ToList();
+
+            var cutoff = DateTime.Now.AddDays(-LogKeepDays);
+            for(var i = LogKeepFiles; i < newestFirst.Count; i++)
+            {
+                if(newestFirst[i].LastWriteTime >= cutoff) continue;
+                try { newestFirst[i].Delete(); } catch { }
+            }
+        }
+        catch { }
     }
 
     private static void CloseWriter()
