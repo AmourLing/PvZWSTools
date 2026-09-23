@@ -335,6 +335,68 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         AppServices.Root?.ReloadSettingsFromService();
     }
 
+    /// <summary>beta 包过期后先弹密码框：对了就照常往下走。WPF 那边同一件事在
+    /// Helpers\Lock.cs，规则共用共享层的 <see cref="BetaLock"/>。</summary>
+    private void EnsureBetaAccess()
+    {
+        if(!BetaLock.IsExpired())
+        {
+            Log.Info($"程序有效期至 {BetaLock.ExpirationDateText()}，剩余 {BetaLock.RemainingDays()} 天");
+            return;
+        }
+
+        Log.Info($"程序已过期（有效期至 {BetaLock.ExpirationDateText()}），需要密码验证");
+        ShowPasswordDialog(BetaLock.MaxAttempts);
+    }
+
+    /// <summary>连错 attemptsLeft 次就退出。"检查更新"是打开下载页后退出——安卓没有
+    /// WPF 那种"仅更新模式"（那要把每个 Fragment 挨个裁掉），先把人送到新版本跟前。</summary>
+    private void ShowPasswordDialog(int attemptsLeft)
+    {
+        var input = new EditText(this)
+        {
+            InputType = Android.Text.InputTypes.ClassText | Android.Text.InputTypes.TextVariationPassword
+        };
+        _ = new AndroidX.AppCompat.App.AlertDialog.Builder(this)
+            .SetTitle(Loc.T("程序已过期"))
+            .SetMessage(Loc.T("程序已超过使用期限，请输入密码继续使用"))
+            .SetView(input)
+            .SetCancelable(false)
+            .SetPositiveButton(Loc.T("确定"), (_, _) =>
+            {
+                if(BetaLock.VerifyPassword(input.Text))
+                {
+                    Log.Info("密码验证成功，继续启动程序");
+                    return;
+                }
+
+                int left = attemptsLeft - 1;
+                if(left <= 0)
+                {
+                    Log.Info("密码验证失败次数过多，程序退出");
+                    Finish();
+                    return;
+                }
+
+                Toast.MakeText(this, Loc.F("密码错误，还剩{0}次机会", left), ToastLength.Short)?.Show();
+                ShowPasswordDialog(left);
+            })
+            .SetNeutralButton(Loc.T("检查更新"), (_, _) =>
+            {
+                Log.Info("用户选择检查更新，打开下载页后退出");
+                try
+                {
+                    StartActivity(new Intent(Intent.ActionView, Android.Net.Uri.Parse(BaseUpdateUrl)));
+                }
+                catch(Exception ex)
+                {
+                    Log.Error("打开更新地址失败", ex);
+                }
+                Finish();
+            })
+            .Show();
+    }
+
     private void FinishInitialization()
     {
         try
@@ -364,6 +426,13 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
                     title += "-beta";
                 }
                 _ = versionItem.SetTitle(title);
+            }
+
+            // beta 包的准入锁：和 WPF 的 App.OnStartup 用同一套规则（共享层 BetaLock）。
+            // 放在自动检查更新之前——先解决"进不进得去"，别让两个框叠着弹。
+            if(IsBetaVersion)
+            {
+                EnsureBetaAccess();
             }
 
             // 启动时自动检查更新（受 AutoCheckUpdateEnabled 控制）

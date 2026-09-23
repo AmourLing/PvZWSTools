@@ -4,12 +4,10 @@ using PvZWSTools_WPF.Views;
 
 namespace PvZWSTools_WPF.Helpers;
 
+/// <summary>beta 包的准入：规则和安卓共用共享层的 <see cref="BetaLock"/>（有效期、密码），
+/// 这个类只管 WPF 这边的弹框。</summary>
 public static class Lock
 {
-    private const int EXTRA_TIME = 14; //day
-
-    private const string PASSWORD = "AMOURLING";
-
     /// <summary>
     /// 返回值：
     ///   true  — 有效期内，或密码验证成功 → 完整功能
@@ -18,14 +16,13 @@ public static class Lock
     /// </summary>
     public static bool? EnsureAccess()
     {
-        if(!IsExpired())
+        if(!BetaLock.IsExpired())
         {
-            TimeSpan remaining = GetExpirationDate() - DateTime.Now.Date;
-            Log.Info($"程序有效期至 {EXPIRATION_DATE()}，剩余 {remaining.Days} 天");
+            Log.Info($"程序有效期至 {BetaLock.ExpirationDateText()}，剩余 {BetaLock.RemainingDays()} 天");
             return true;
         }
 
-        Log.Info($"程序已过期（有效期至 {EXPIRATION_DATE()}），需要密码验证");
+        Log.Info($"程序已过期（有效期至 {BetaLock.ExpirationDateText()}），需要密码验证");
         Log.Info($"请尝试通过密码验证或通过" +
             $"{PvZWSTools_Shared.Helpers.Sharedstring.BaseUpdateUrl}" +
             $"或{PvZWSTools_Shared.Helpers.Sharedstring.BaseUpdateQQ}" +
@@ -35,41 +32,9 @@ public static class Lock
         return VerifyPasswordWithRetry();
     }
 
-    public static bool VerifyPassword(string input)
-    {
-        return input == PASSWORD;
-    }
-
-    private static string EXPIRATION_DATE()
-    {
-        DateTime? compileTime = CompileTime.GetCompileTime();
-        if(compileTime.HasValue)
-        {
-            compileTime = compileTime.Value.AddDays(EXTRA_TIME);
-            return compileTime.Value.ToString("yyyy-MM-dd");
-        }
-        return DateTime.MaxValue.ToString("yyyy-MM-dd");
-    }
-
-    private static DateTime GetExpirationDate()
-    {
-        if(DateTime.TryParse(EXPIRATION_DATE(), out DateTime expiration))
-            return expiration;
-
-        Log.Error("过期日期格式错误，请检查 Lock.EXPIRATION_DATE() 方法");
-        return DateTime.MaxValue;
-    }
-
-    private static bool IsExpired()
-    {
-        DateTime today = DateTime.Now.Date;
-        DateTime expiration = GetExpirationDate();
-        return today >= expiration;
-    }
-
     private static bool? VerifyPasswordWithRetry()
     {
-        const int maxRetries = 3;
+        const int maxRetries = BetaLock.MaxAttempts;
         for(int attempt = 0;attempt < maxRetries;attempt++)
         {
             var dialog = new PasswordDialog();

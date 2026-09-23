@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
-using Lock = PvZWSTools_WPF.Helpers.Lock;
+using PvZWSTools_Shared.Helpers;
 
 namespace PvZWSTools_WPF.Views;
 
@@ -24,7 +24,7 @@ public partial class PasswordDialog:Window
         _attemptCount++;
         string password = PasswordBox.Password;
 
-        if(Lock.VerifyPassword(password))
+        if(BetaLock.VerifyPassword(password))
         {
             IsPasswordCorrect = true;
             DialogResult = true;
@@ -32,7 +32,7 @@ public partial class PasswordDialog:Window
         }
         else
         {
-            if(_attemptCount >= 3)
+            if(_attemptCount >= BetaLock.MaxAttempts)
             {
                 ErrorText.Text = "密码错误已达3次，请点[检查更新]获取新版本";
                 DialogResult = false;
@@ -40,7 +40,7 @@ public partial class PasswordDialog:Window
             }
             else
             {
-                ErrorText.Text = $"密码错误，还剩 {3 - _attemptCount} 次机会";
+                ErrorText.Text = $"密码错误，还剩 {BetaLock.MaxAttempts - _attemptCount} 次机会";
                 PasswordBox.Clear();
                 _ = PasswordBox.Focus();
             }

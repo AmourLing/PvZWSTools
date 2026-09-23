@@ -19,6 +19,7 @@
   -->
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Commands\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\BetaLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ButtonHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CompileTime.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Constants.cs" />

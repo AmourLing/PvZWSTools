@@ -279,6 +279,7 @@ public static partial class Loc
         ["水族馆"] = "Aquarium",
         ["程序已超过使用期限，请输入密码继续使用"] = "The trial has expired; enter the password to continue",
         ["程序已过期"] = "Trial expired",
+        ["密码错误，还剩{0}次机会"] = "Wrong password, {0} attempts left",
         ["编辑波次出怪 JSON"] = "Edit wave spawn JSON",
         ["花园编辑"] = "Edit garden",
         ["蘑菇园1"] = "Shroom garden 1",
