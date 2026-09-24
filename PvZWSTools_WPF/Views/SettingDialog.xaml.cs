@@ -11,6 +11,7 @@ public partial class SettingDialog:Window
     public SettingDialog(ISettingsService settingsService)
     {
         InitializeComponent();
+        Themes.UiThemeManager.RefreshWindowChrome(this);
         _viewModel = new SettingDialogViewModel(settingsService);
         _viewModel.OkRequestClose += (s, e) =>
         {

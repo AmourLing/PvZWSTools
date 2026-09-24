@@ -46,9 +46,9 @@
             <TextBlock
                 Margin="0,4,0,0"
                 FontSize="12"
-                Foreground="#666">
+                Foreground="{DynamicResource TextSecondaryBrush}">
                 <Run Text="{loc:Loc '检查不到更新？可随时前往'}" />
-                <Hyperlink Click="QuarkLink_Click" Foreground="#0078D4">夸克网盘</Hyperlink>
+                <Hyperlink Click="QuarkLink_Click" Foreground="{DynamicResource AccentBrush}">夸克网盘</Hyperlink>
                 <Run Text="{loc:Loc '手动查看下载'}" />
             </TextBlock>
         </StackPanel>

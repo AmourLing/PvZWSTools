@@ -21,6 +21,7 @@ public partial class StateWindow:Window
         System.Action<Dictionary<string, Dictionary<string, string>>> applyStates)
     {
         InitializeComponent();
+        Themes.UiThemeManager.RefreshWindowChrome(this);
         _viewModel = new StateWindowViewModel(getCurrentStates, getLastStates, getDefaultStates, applyStates);
         _viewModel.RequestClose += (s, e) => Close();
         DataContext = _viewModel;

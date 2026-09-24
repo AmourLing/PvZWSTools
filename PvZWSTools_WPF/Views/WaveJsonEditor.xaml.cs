@@ -7,5 +7,6 @@ public partial class WaveJsonEditor:Window
     public WaveJsonEditor()
     {
         InitializeComponent();
+        Themes.UiThemeManager.RefreshWindowChrome(this);
     }
 }

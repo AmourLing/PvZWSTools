@@ -66,6 +66,7 @@ public partial class UpdateWindow:Window, INotifyPropertyChanged
     public UpdateWindow(IUpdateService updateService, UpdateInfo? preFetchedInfo = null)
     {
         InitializeComponent();
+        Themes.UiThemeManager.RefreshWindowChrome(this);
         _updateService = updateService;
         CurrentVersionDisplay = updateService.CurrentVersionDisplay;
         DataContext = this;

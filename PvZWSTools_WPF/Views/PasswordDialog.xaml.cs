@@ -16,6 +16,7 @@ public partial class PasswordDialog:Window
     public PasswordDialog()
     {
         InitializeComponent();
+        Themes.UiThemeManager.RefreshWindowChrome(this);
         _ = PasswordBox.Focus();
     }
 

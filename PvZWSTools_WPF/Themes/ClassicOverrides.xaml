@@ -35,6 +35,7 @@
     <SolidColorBrush x:Key="BgRootBrush" Color="White" />
     <SolidColorBrush x:Key="BgPanelBrush" Color="#F5F5F5" />
     <SolidColorBrush x:Key="BgControlBrush" Color="White" />
+    <SolidColorBrush x:Key="BgHoverBrush" Color="#E5E5E5" />
     <SolidColorBrush x:Key="BorderLineBrush" Color="#888888" />
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="#333333" />
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="#666666" />

@@ -24,6 +24,7 @@
     <SolidColorBrush x:Key="BgRootBrush" Color="#1B1E24" />
     <SolidColorBrush x:Key="BgPanelBrush" Color="#22262D" />
     <SolidColorBrush x:Key="BgControlBrush" Color="#2D2D30" />
+    <SolidColorBrush x:Key="BgHoverBrush" Color="#3E3E42" />
     <SolidColorBrush x:Key="BorderLineBrush" Color="#55555A" />
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8EAED" />
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A8ADB5" />
@@ -39,6 +40,15 @@
 
     <!--  文本框：默认模板 + 深色（勾叉位置与 master 完全一致）  -->
     <Style TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource CCtl}" />
+        <Setter Property="Foreground" Value="{StaticResource CFg}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CLine}" />
+        <Setter Property="CaretBrush" Value="{StaticResource CFg}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource CLine}" />
+    </Style>
+
+    <!--  密码框：PasswordBox 不继承 TextBox 的样式，不给就还是系统白底。零模板，只换颜色。  -->
+    <Style TargetType="PasswordBox">
         <Setter Property="Background" Value="{StaticResource CCtl}" />
         <Setter Property="Foreground" Value="{StaticResource CFg}" />
         <Setter Property="BorderBrush" Value="{StaticResource CLine}" />

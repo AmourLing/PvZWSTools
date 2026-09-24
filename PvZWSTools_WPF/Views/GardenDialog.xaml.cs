@@ -7,5 +7,6 @@ public partial class GardenDialog:Window
     public GardenDialog()
     {
         InitializeComponent();
+        Themes.UiThemeManager.RefreshWindowChrome(this);
     }
 }

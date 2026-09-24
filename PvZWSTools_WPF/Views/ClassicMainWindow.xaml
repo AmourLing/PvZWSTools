@@ -128,8 +128,8 @@
                                         PlacementTarget="{Binding ElementName=GameRunSpeedDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="GameRunSpeedListBox"
@@ -375,8 +375,8 @@
                                         PlacementTarget="{Binding ElementName=ModeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ModeListBox"
@@ -595,8 +595,8 @@
                                         PlacementTarget="{Binding ElementName=ValueDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ValueListBox"
@@ -658,8 +658,8 @@
                                         PlacementTarget="{Binding ElementName=DamageDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="DamageListBox"
@@ -721,8 +721,8 @@
                                         PlacementTarget="{Binding ElementName=HealthDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="HealthListBox"
@@ -784,8 +784,8 @@
                                         PlacementTarget="{Binding ElementName=TimeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="TimeListBox"
@@ -1141,8 +1141,8 @@
                                         PlacementTarget="{Binding ElementName=OtherCDPlantDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 MaxHeight="150"
@@ -2447,8 +2447,8 @@
                                         PlacementTarget="{Binding ElementName=BoardRowDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoardRowListBox"
@@ -2488,8 +2488,8 @@
                                         PlacementTarget="{Binding ElementName=BoardColDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoardColListBox"
@@ -2534,8 +2534,8 @@
                                         PlacementTarget="{Binding ElementName=BoarddeltamYDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoarddeltamYListBox"
@@ -2580,8 +2580,8 @@
                                         PlacementTarget="{Binding ElementName=BoarddeltamXDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BoarddeltamXListBox"
@@ -2675,8 +2675,8 @@
                                         PlacementTarget="{Binding ElementName=PlantDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="PlantListBox"
@@ -2757,8 +2757,8 @@
                                         PlacementTarget="{Binding ElementName=ZombieDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ZombieListBox"
@@ -2808,8 +2808,8 @@
                                         PlacementTarget="{Binding ElementName=CoinDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="CoinListBox"
@@ -2885,8 +2885,8 @@
                                         PlacementTarget="{Binding ElementName=ItemDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ItemListBox"
@@ -2937,8 +2937,8 @@
                                         PlacementTarget="{Binding ElementName=ClearDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="ClearListBox"
@@ -3453,8 +3453,8 @@
                                         PlacementTarget="{Binding ElementName=SPInput1DropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="SPInput1ListBox"
@@ -3490,8 +3490,8 @@
                                         PlacementTarget="{Binding ElementName=SlotDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="SlotListBox"
@@ -3551,8 +3551,8 @@
                                         PlacementTarget="{Binding ElementName=BgDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="BgListBox"
@@ -3599,8 +3599,8 @@
                                         PlacementTarget="{Binding ElementName=DavePickNumDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="DavePickNumListBox"
@@ -3674,8 +3674,8 @@
                                         PlacementTarget="{Binding ElementName=seedPacketsDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="seedPacketsListBox"
@@ -3738,8 +3738,8 @@
                                         PlacementTarget="{Binding ElementName=FormationDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="FormationListBox"
@@ -3866,8 +3866,8 @@
                                         PlacementTarget="{Binding ElementName=FormationRowDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="FormationRowListBox"
@@ -3901,8 +3901,8 @@
                                         PlacementTarget="{Binding ElementName=PlantRowTypeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="PlantRowTypeListBox"
@@ -3959,8 +3959,8 @@
                                         PlacementTarget="{Binding ElementName=FormationColDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="FormationColListBox"
@@ -3994,8 +3994,8 @@
                                         PlacementTarget="{Binding ElementName=GridSquareTypeDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="GridSquareTypeListBox"
@@ -4179,8 +4179,8 @@
                                         PlacementTarget="{Binding ElementName=QModDropdownToggle}"
                                         StaysOpen="False">
                                         <Border
-                                            Background="White"
-                                            BorderBrush="Gray"
+                                            Background="{DynamicResource BgPanelBrush}"
+                                            BorderBrush="{DynamicResource BorderLineBrush}"
                                             BorderThickness="1">
                                             <ListBox
                                                 x:Name="QModListBox"
@@ -4231,7 +4231,7 @@
                                             <DataTemplate>
                                                 <Border
                                                     Padding="0,5"
-                                                    BorderBrush="LightGray"
+                                                    BorderBrush="{DynamicResource BorderLineBrush}"
                                                     BorderThickness="0,0,0,1">
                                                     <StackPanel>
                                                         <TextBlock
@@ -4270,8 +4270,8 @@
                     Grid.Row="3"
                     Height="58"
                     Margin="0,0,0,0"
-                    Background="#F0F0F0"
-                    BorderBrush="#CCCCCC"
+                    Background="{DynamicResource BgPanelBrush}"
+                    BorderBrush="{DynamicResource BorderLineBrush}"
                     BorderThickness="0,1,0,0"
                     Visibility="{Binding IsUpdating, Converter={StaticResource BoolToVis}}">
                     <Grid>
@@ -4284,7 +4284,7 @@
                             Grid.Row="0"
                             Margin="8,4,8,0"
                             FontSize="12"
-                            Foreground="#333333"
+                            Foreground="{DynamicResource TextPrimaryBrush}"
                             Text="{Binding UpdateStatusText}" />
                         <ProgressBar
                             Grid.Row="1"
@@ -4300,23 +4300,23 @@
                             Orientation="Horizontal">
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#666666"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="{Binding UpdateDownloadedMB}" />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#666666"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text=" / " />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#666666"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="{Binding UpdateTotalMB}" />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#888888"
+                                Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="  " />
                             <TextBlock
                                 FontSize="10"
-                                Foreground="#0078D4"
+                                Foreground="{DynamicResource AccentBrush}"
                                 Text="{Binding UpdateSpeed}" />
                         </StackPanel>
                     </Grid>
