@@ -5,7 +5,7 @@ public class Sharedstring
     /// <summary>
     /// 是否为测试版
     /// </summary>
-    public static readonly bool IsBetaVersion = false;
+    public static readonly bool IsBetaVersion = true;
 
     /// <summary>
     /// 这个构建里有没有花园页。开关只说一次：仓库根的 Directory.Build.props 里那个 MSBuild
