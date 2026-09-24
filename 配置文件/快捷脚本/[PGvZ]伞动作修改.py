@@ -1,12 +1,13 @@
 # [PGvZ]伞动作修改
 # 伞获得了洞悉时间的力量，能够预测篮球的落点，并在篮球落下前触发反弹动作。
 
+# @hook-slug: UmbrellaMotion
 from Lawn import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
-# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
-for _legacy_hook_name in ['Plant_UpdateUmbrella']:
+# 幂等守卫：本脚本重跑时旧 HookResult 还被旧名字引用着，会和新装的那份叠一层，先卸载再装新的
+for _legacy_hook_name in ['Plant_UpdateUmbrella__UmbrellaMotion', 'Projectile_UpdateLobMotion__UmbrellaMotion']:
     if _legacy_hook_name in globals():
         try:
             globals()[_legacy_hook_name].UnHook()
@@ -49,13 +50,13 @@ def FramesUntilZ(ball, theZ):
     return 9999
 
 @M.HookTo(Plant.UpdateUmbrella)
-def Plant_UpdateUmbrella_UmbMod(orig, self):
+def Plant_UpdateUmbrella__UmbrellaMotion(orig, self):
     if FAST_FORWARD and self.mState == PlantState.UmbrellaTriggered:
         self.mStateCountdown = 0
     orig(self)
 
 @M.HookTo(Projectile.UpdateLobMotion)
-def Projectile_UpdateLobMotion(orig, self):
+def Projectile_UpdateLobMotion__UmbrellaMotion(orig, self):
     orig(self)
     if self.mDead or self.mProjectileType != ProjectileType.Basketball:
         return

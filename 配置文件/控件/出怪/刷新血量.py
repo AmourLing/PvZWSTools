@@ -1,7 +1,22 @@
 #刷新血量
-#修改刷新血量
+#调整"下一波提前开"的血量阈值
 #2025.07.27
+#
+# 2026-09-24：从"整段重写 Board.UpdateZombieSpawning"改成 orig + 只重算阈值。
+# 原来那 88 行是照抄 Board.cs:7368-7485。逐条核对下来数值都对得上（ZOMBIE_COUNTDOWN_MIN=400、
+# 5499+1、750 那几处都一致），但抄本整段漏了 Board.cs:7479-7483：创意关卡上的
+# CSManualZombieCountDown 会按波手设 (mZombieCountDown, mZombieHealthToNextWave)，
+# 抄本没有这一段 —— 只要开着本功能，创意关的手设值就被永久压掉。
+# 另外抄本完全不调 orig，它与同样钩这个方法的 暂停出怪 之间谁生效取决于挂载顺序。
+#
+# 现在只替换真正要改的那一步：Board.cs:7469 的 RandRangeFloat(0.5f, 0.65f)，其余交回原版。
+# 触发时机：原版在 Board.cs:7424 做 mZombieCountDown--，只有减到 0 才进"刷一波并设下一波参数"
+# 那段（:7451 的 !=0 提前 return），所以进 orig 前记下 cd0，cd0==1 就是那一帧。
+# 大波横幅收尾时会把倒计时直接置 1（:7398），下一帧正好落进同一个判据，不用特判。
+# 阈值被原版清零的两种情况（生存末波 :7459、旗帜波 :7464）不插手；
+# 创意关卡（mApp.mCreativeLevel 非空，LawnApp.cs:94 是 public 字段）整个跳过，不去争手设值。
 
+# @hook-slug: RefreshZombieHP
 ZOMBIEHEALTHTONEXTWAVE_MIN={MIN}
 ZOMBIEHEALTHTONEXTWAVE_MAX={MAX}
 
@@ -10,124 +25,36 @@ from Sexy import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
-# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
-for _legacy_hook_name in ['Board_UpdateZombieSpawning']:
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in [
+'Board_UpdateZombieSpawning__RefreshZombieHP',
+]:
     if _legacy_hook_name in globals():
         try:
             globals()[_legacy_hook_name].UnHook()
         except Exception:
             pass
 
+# 占位符是 UI 填进来的两个数，顺序写反会让 RandRangeFloat 拿到空区间，这里兜一下
+RZ_LO = min(ZOMBIEHEALTHTONEXTWAVE_MIN, ZOMBIEHEALTHTONEXTWAVE_MAX)
+RZ_HI = max(ZOMBIEHEALTHTONEXTWAVE_MIN, ZOMBIEHEALTHTONEXTWAVE_MAX)
+if RZ_LO != ZOMBIEHEALTHTONEXTWAVE_MIN:
+    print("WARN 阈值下限大于上限，已自动对调：%.2f ~ %.2f" % (RZ_LO, RZ_HI))
+
+# 原版这条固定是 0.5~0.65，落在区间外说明这次改的是"延后开波"而不是"提前"，值得提醒
+if RZ_HI <= 0.65 and RZ_LO >= 0.5:
+    print("注意 所设区间与原版一致，本功能不会带来任何变化")
+
 @M.HookTo(Board.UpdateZombieSpawning)
-def Board_UpdateZombieSpawning_HpRefresh(orig, self):
-    if self.mApp.mGameMode == GameMode.Upsell or self.mApp.mGameMode == GameMode.Intro:
-        return
-
-    # 处理最终波音效计数器
-    if self.mFinalWaveSoundCounter > 0:
-        self.mFinalWaveSoundCounter -= 1
-        if self.mFinalWaveSoundCounter == 0:
-            self.mApp.PlaySample(Resources.SOUND_FINALWAVE)
-
-    # 教程状态下不生成僵尸
-    if (self.mTutorialState == TutorialState.Level1PickUpPeashooter or
-        self.mTutorialState == TutorialState.Level1PlantPeashooter or
-        self.mTutorialState == TutorialState.Level1RefreshPeashooter or
-        self.mTutorialState == TutorialState.SlotMachinePull):
-        return
-
-    # 如果已掉落关卡奖励则返回
-    if self.HasLevelAwardDropped():
-        return
-
-    # 处理从坟墓中出现的僵尸
-    if self.mRiseFromGraveCounter > 0:
-        self.mRiseFromGraveCounter -= 1
-        if self.mRiseFromGraveCounter == 0:
-            self.SpawnZombiesFromGraves()
-
-    # 处理大波僵尸倒计时
-    if self.mHugeWaveCountDown > 0:
-        self.mHugeWaveCountDown -= 1
-
-        if self.mHugeWaveCountDown == 0:
-            self.ClearAdvice(AdviceType.HugeWave)
-            self.NextWaveComing()
-            self.mZombieCountDown = 1
-        else:
-            if self.mHugeWaveCountDown != 726:
-                if (self.mApp.mMusic.mCurMusicTune == MusicTune.DayGrasswalk or
-                    self.mApp.mMusic.mCurMusicTune == MusicTune.PoolWaterygraves or
-                    self.mApp.mMusic.mCurMusicTune == MusicTune.FogRigormormist or
-                    self.mApp.mMusic.mCurMusicTune == MusicTune.RoofGrazetheroof):
-                    if self.mHugeWaveCountDown == 400:
-                        return
-                elif self.mApp.mMusic.mCurMusicTune == MusicTune.NightMoongrains:
-                    pass  # 原C#代码中只定义了一个未使用的变量
-                return
-            else:
-                self.mApp.PlaySample(Resources.SOUND_HUGE_WAVE)
-
-    # 挑战模式特殊处理
-    if self.mChallenge.UpdateZombieSpawning():
-        return
-
-    # 最后一波特殊处理
-    if self.mCurrentWave == self.mNumWaves:
-        if self.IsFinalSurvivalStage():
-            return
-        if self.mApp.mGameMode == GameMode.ChallengeLastStand:
-            return
-        if not self.mApp.IsSurvivalMode() and not self.mApp.IsContinuousChallenge():
-            return
-
-    # 更新僵尸生成倒计时
-    self.mZombieCountDown -= 1
-
-    # 生存模式最后一波处理
-    if self.mCurrentWave == self.mNumWaves and self.mApp.IsSurvivalMode():
-        if self.mZombieCountDown == 0:
-            self.FadeOutLevel()
-        return
-
-    # 调整僵尸波次间隔
-    elapsedCount = self.mZombieCountDownStart - self.mZombieCountDown
-    if self.mZombieCountDown > 5 and elapsedCount > GameConstants.ZOMBIE_COUNTDOWN_MIN:
-        currentWaveHealth = self.TotalZombiesHealthInWave(self.mCurrentWave - 1)
-        if currentWaveHealth <= self.mZombieHealthToNextWave and self.mZombieCountDown > 200:
-            self.mZombieCountDown = 200
-
-    # 旗帜波处理
-    if self.mZombieCountDown == 5:
-        if self.IsFlagWave(self.mCurrentWave):
-            self.ClearAdviceImmediately()
-            self.DisplayAdviceAgain("[ADVICE_HUGE_WAVE]", MessageStyle.HugeWave, AdviceType.HugeWave)
-            self.mHugeWaveCountDown = 750
-            return
-        self.NextWaveComing()
-
-    # 生成僵尸波
-    if self.mZombieCountDown == 0:
-        self.SpawnZombieWave()
-        self.mZombieHealthWaveStart = self.TotalZombiesHealthInWave(self.mCurrentWave - 1)
-
-        isSpecialMode = self.mApp.IsWallnutBowlingLevel() or self.mApp.mGameMode == GameMode.ChallengeLastStand
-
-        # 设置下一波参数
-        if self.mCurrentWave == self.mNumWaves and self.mApp.IsSurvivalMode():
-            self.mZombieHealthToNextWave = 0
-            self.mZombieCountDown = GameConstants.ZOMBIE_COUNTDOWN_BEFORE_REPICK + 1
-        elif self.IsFlagWave(self.mCurrentWave) and not isSpecialMode:
-            self.mZombieHealthToNextWave = 0
-            self.mZombieCountDown = GameConstants.ZOMBIE_COUNTDOWN_BEFORE_FLAG
-        else:
-            self.mZombieHealthToNextWave = int(TodCommon.RandRangeFloat(ZOMBIEHEALTHTONEXTWAVE_MIN, ZOMBIEHEALTHTONEXTWAVE_MAX) * self.mZombieHealthWaveStart)
-
-            if (self.mApp.IsLittleTroubleLevel() or
-                self.mApp.mGameMode == GameMode.ChallengeColumn or
-                self.mApp.mGameMode == GameMode.ChallengeLastStand):
-                self.mZombieCountDown = 750
-            else:
-                self.mZombieCountDown = GameConstants.ZOMBIE_COUNTDOWN + RandomNumbers.NextNumber(GameConstants.ZOMBIE_COUNTDOWN_RANGE)
-
-        self.mZombieCountDownStart = self.mZombieCountDown
+def Board_UpdateZombieSpawning__RefreshZombieHP(orig, self):
+    cd0 = self.mZombieCountDown
+    orig(self)                          # 这一帧原版该做的全做完
+    if cd0 != 1:
+        return                          # 不是"刚刷完一波"那一帧
+    if self.mZombieHealthToNextWave == 0:
+        return                          # 生存末波 / 旗帜波的清零分支，别插手
+    if self.mApp.mCreativeLevel is not None:
+        return                          # 创意关的手设波次优先
+    self.mZombieHealthToNextWave = int(
+        TodCommon.RandRangeFloat(RZ_LO, RZ_HI) * self.mZombieHealthWaveStart)

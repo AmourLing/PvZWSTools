@@ -1,13 +1,23 @@
 #有点招笑了这玩意
 
+# @hook-slug: ImitaterRowCount
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
 
 app = GlobalStaticVars.gLawnApp
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['SeedPacketsWidget_Draw__ImitaterRowCount', 'SeedPacketsWidget_MouseUp__ImitaterRowCount']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(SeedPacketsWidget.Draw)
-def SeedPacketsWidget_Draw(orig,self,g):
+def SeedPacketsWidget_Draw__ImitaterRowCount(orig,self,g):
     if Has12Rows():
         self.mRows=14
     else:
@@ -16,7 +26,7 @@ def SeedPacketsWidget_Draw(orig,self,g):
     orig(self,g)
 
 @M.HookTo(SeedPacketsWidget.MouseUp)
-def SeedPacketsWidget_MouseUp(orig,self,x,y,theClickCount):
+def SeedPacketsWidget_MouseUp__ImitaterRowCount(orig,self,x,y,theClickCount):
     if Has12Rows():
         self.mRows=14
     else:

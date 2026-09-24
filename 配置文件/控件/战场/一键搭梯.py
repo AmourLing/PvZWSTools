@@ -2,6 +2,7 @@
 #放置梯子
 #2025.07.05
 
+# @button-flag: none  状态归属 限定植物(LimitSeed)：本脚本的 {CHECK} 由 BoardViewModel.SetLadderCommand 现取现发，UI 上没有独立可回写状态
 ONLY_SET_LADDER_ON_THE_SEEDTYPE={CHECK}
 
 from Lawn import *

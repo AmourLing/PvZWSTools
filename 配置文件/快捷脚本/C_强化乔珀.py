@@ -3,14 +3,15 @@
 # 初始血量改为4000
 # 其他具体效果见下
 
+# @hook-slug: QPerk
 import Lawn
 from Lawn import *
 from Sexy import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
-# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
-for _legacy_hook_name in ['Board_GetCurrentPlantCost', 'Plant_PlantInitialize']:
+# 幂等守卫：本脚本重跑时旧 HookResult 还被旧名字引用着，会和新装的那份叠一层，先卸载再装新的
+for _legacy_hook_name in ['Plant_PlantInitialize__QPerk', 'Plant_UpdateChomper__QPerk', 'Zombie_UpdateZombieGargantuar__QPerk', 'Plant_SpikeRockTakeDamage__QPerk', 'Zombie_CheckSquish__QPerk', 'Zombie_UpdateZombiePolevaulter__QPerk', 'Board_PlantUsesAcceleratedPricing__QPerk', 'Board_GetCurrentPlantCost__QPerk']:
     if _legacy_hook_name in globals():
         try:
             globals()[_legacy_hook_name].UnHook()
@@ -62,7 +63,7 @@ def Get_Chomper_Biting_StateCountdown(zombie):
 
 # 初始化
 @M.HookTo(Plant.PlantInitialize)
-def Plant_PlantInitialize_QPerk(orig, self, theX, theY, theSeedType, theImitaterType):
+def Plant_PlantInitialize__QPerk(orig, self, theX, theY, theSeedType, theImitaterType):
     orig(self, theX, theY, theSeedType, theImitaterType)
 
     if self.mSeedType == SeedType.Chomper:
@@ -73,7 +74,7 @@ def Plant_PlantInitialize_QPerk(orig, self, theX, theY, theSeedType, theImitater
 
 # 强化大嘴花
 @M.HookTo(Plant.UpdateChomper)
-def Plant_UpdateChomper(orig, self):
+def Plant_UpdateChomper__QPerk(orig, self):
     reanimation = self.mApp.ReanimationTryToGet(self.mBodyReanimID)
     if self.mState == PlantState.Ready:
         # 寻找本行僵尸
@@ -155,7 +156,7 @@ def Plant_UpdateChomper(orig, self):
 
 # 巨人碾压更改
 @M.HookTo(Zombie.UpdateZombieGargantuar)
-def Zombie_UpdateZombieGargantuar(orig, self):
+def Zombie_UpdateZombieGargantuar__QPerk(orig, self):
     plant = None
     zombie = None
     if self.mZombiePhase == ZombiePhase.GargantuarSmashing:
@@ -283,7 +284,7 @@ def Zombie_UpdateZombieGargantuar(orig, self):
 
 # 大嘴花受到巨人碾压伤害
 @M.HookTo(Plant.SpikeRockTakeDamage)
-def SpikeRockTakeDamage(orig, self):
+def Plant_SpikeRockTakeDamage__QPerk(orig, self):
     if self.mSeedType == SeedType.Chomper:
         # 每次砸受到配置伤害
         self.mPlantHealth -= GARGANTUAR_SMASH_DAMAGE_TO_CHOMPER
@@ -294,7 +295,7 @@ def SpikeRockTakeDamage(orig, self):
 
 # 车碾压
 @M.HookTo(Zombie.CheckSquish)
-def Zombie_CheckSquish(orig, self, theAttackType):
+def Zombie_CheckSquish__QPerk(orig, self, theAttackType):
     # 被魅惑则不碾压
     if self.mMindControlled:
         return
@@ -326,7 +327,7 @@ def Zombie_CheckSquish(orig, self, theAttackType):
 
 # 撑杆跳跃重置
 @M.HookTo(Zombie.UpdateZombiePolevaulter)
-def Zombie_UpdateZombiePolevaulter(orig, self):
+def Zombie_UpdateZombiePolevaulter__QPerk(orig, self):
     if self.mMindControlled == True:
         self.mZombiePhase == ZombiePhase.PolevaulterPostVault
         self.mZombieAttackRect = TRect(50, 0, 20, 115)
@@ -392,7 +393,7 @@ Lawn.GameConstants.gPlantDefs[6].mSeedCost = CHOMPER_COST
 
 # 植物涨价
 @M.HookTo(Board.PlantUsesAcceleratedPricing)
-def Board_PlantUsesAccelerated(orig, self, theSeedType):
+def Board_PlantUsesAcceleratedPricing__QPerk(orig, self, theSeedType):
     if Plant.IsUpgrade(theSeedType) and self.mApp.IsSurvivalEndless(self.mApp.mGameMode):
         return True
     if theSeedType == SeedType.Chomper:
@@ -401,7 +402,7 @@ def Board_PlantUsesAccelerated(orig, self, theSeedType):
 
 # 植物涨价速度
 @M.HookTo(Board.GetCurrentPlantCost)
-def Board_GetCurrentPlantCost_QPerk(orig, self, theSeedType, theImitaterType):
+def Board_GetCurrentPlantCost__QPerk(orig, self, theSeedType, theImitaterType):
     tst = theSeedType
     tit = theImitaterType
     if theSeedType == SeedType.Imitater:

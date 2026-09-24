@@ -3,14 +3,16 @@
 #奇怪的问题
 #2025.07.05
 
+# @hook-slug: SunValueUp
+# @button-flag: BIGSUN_CHECK
 BIGSUN_CHECK = {CHECK}
 
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
 
-# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
-for _legacy_hook_name in ['Coin_GetSunValue']:
+# 幂等守卫：本脚本重跑时旧 HookResult 还被旧名字引用着，会和新装的那份叠一层，先卸载再装新的
+for _legacy_hook_name in ['Coin_GetSunValue__SunValueUp']:
     if _legacy_hook_name in globals():
         try:
             globals()[_legacy_hook_name].UnHook()
@@ -23,7 +25,7 @@ board=app.mBoard
 AppVersionNumber = app.AppVersionNumber
 
 @M.HookTo(Coin.GetSunValue)
-def Coin_GetSunValue_SunUp(orig, self):
+def Coin_GetSunValue__SunValueUp(orig, self):
     if not BIGSUN_CHECK :
         return orig(self)
     value_map = {

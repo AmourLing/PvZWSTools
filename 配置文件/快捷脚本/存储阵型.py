@@ -86,7 +86,7 @@ try:
     combined_data["ladders"] = JArray.FromObject(ladder)
     combined_data["vases"] = JArray.FromObject(vase)
 
-    json_str = JsonConvert.SerializeObject(combined_data, Formatting.None)
+    json_str = JsonConvert.SerializeObject(combined_data)
     json_bytes = Encoding.UTF8.GetBytes(json_str)
     base64_str = Convert.ToBase64String(json_bytes)
 

@@ -7,10 +7,11 @@
 # 主线程的 Update/Draw 并发读写同一批列表——反复存读档时撞出
 # Reanimation.DrawRenderGroup / TodParticleEmitter.Draw 之类 "对象活着但内部
 # 已被换掉" 的 NRE。所以真正的存档动作必须排队到游戏主线程执行：
-# BattleSave_GameThreadPump 挂在 Main.Draw 上（不挂 Main.Update——窗口失焦时
+# Main_Draw__BattleSave 挂在 Main.Draw 上（不挂 Main.Update——窗口失焦时
 # “后台运行”关着的话 Update 整个冻结，而 Draw 仍在每帧跑），帧尾串行执行队列。
 # 本执行器与 立即回档.py 里的同名同体，互为重绑，行为一致。
 
+# @hook-slug: BattleSave
 import System
 from Lawn import *
 from Sexy import *
@@ -30,7 +31,7 @@ Battle_Pending = None
 Battle_DoneSeq = 0
 Battle_Error = None
 
-for _n in ("BattleSave_GameThreadPump",):
+for _n in ("Main_Draw__BattleSave",):
     if _n in globals():
         try:
             globals()[_n].UnHook()
@@ -38,8 +39,17 @@ for _n in ("BattleSave_GameThreadPump",):
             pass
 
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Main_Draw__BattleSave']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Main.Draw)
-def BattleSave_GameThreadPump(orig, self, gameTime):
+def Main_Draw__BattleSave(orig, self, gameTime):
     global Battle_Pending, Battle_DoneSeq, Battle_Error
     orig(self, gameTime)
     item = Battle_Pending

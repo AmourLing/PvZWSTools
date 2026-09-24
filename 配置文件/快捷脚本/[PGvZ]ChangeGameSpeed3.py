@@ -2,6 +2,7 @@
 # 修改植物娘运行倍速，使用 GameSpeedList + 小数转分数
 # 添加 Debug.Log 调试信息
 
+# @hook-slug: GameSpeed3
 from Lawn import *
 from LawnMod import MonoModUtils as M
 from Sexy import Debug
@@ -102,8 +103,17 @@ def ApplyGameSpeed(board, index):
         index, GameSpeedList[index], numerator, denominator))
 
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Board_AccelerationIncrease__GameSpeed3', 'Board_AccelerationDecrease__GameSpeed3']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Board.AccelerationIncrease)
-def Board_AccelerationIncrease(orig, self):
+def Board_AccelerationIncrease__GameSpeed3(orig, self):
     Debug.Log("1")
     denominator = self.mAccelerationDenominator or 1
     current_speed = self.mAccelerationNumerator / denominator
@@ -121,7 +131,7 @@ def Board_AccelerationIncrease(orig, self):
 
 
 @M.HookTo(Board.AccelerationDecrease)
-def Board_AccelerationDecrease(orig, self):
+def Board_AccelerationDecrease__GameSpeed3(orig, self):
     denominator = self.mAccelerationDenominator or 1
     current_speed = self.mAccelerationNumerator / denominator
     Debug.Log("AccelerationDecrease BEFORE: num={}, den={}, speed={}".format(

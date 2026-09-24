@@ -2,6 +2,8 @@
 #绘制植物的mStateCountdown的剩余时间，单位为秒，保留一位小数
 #2026.09.07
 
+# @hook-slug: DrawPrepareTime
+# @button-flag: DRAW_PLANT_STATECOUNTDOWN_CHECK
 DRAW_PLANT_STATECOUNTDOWN_CHECK = {CHECK}
 
 import Lawn,Sexy
@@ -17,8 +19,17 @@ Can_Draw_StateCountdown_List = [SeedType.Potatomine,
                                SeedType.Cobcannon,
                                SeedType.SuperChomper]
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Plant_Draw__DrawPrepareTime']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Plant.Draw)
-def Plant_Draw_StateCountdown(orig,self,g):
+def Plant_Draw__DrawPrepareTime(orig,self,g):
     orig(self,g)
     if DRAW_PLANT_STATECOUNTDOWN_CHECK:
         if self.mSeedType not in Can_Draw_StateCountdown_List:

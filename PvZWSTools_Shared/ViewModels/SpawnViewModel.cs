@@ -13,6 +13,8 @@ public class SpawnViewModel:ViewModelBase
         ["REDEYE_FLAG_CHECK"] = nameof(RedeyeCheck),
         ["STOP_SPAWN_CHECK"] = nameof(StopSpawn),
         ["MAXPOINT_CHECK"] = nameof(MaxPoint),
+        ["NEXT_WAVE_BUTTON_CHECK"] = nameof(NextWave),
+        ["SYNC_SPAWN_CHECK"] = nameof(SyncSpawnList),
     };
 
     private readonly string _defaultPath;

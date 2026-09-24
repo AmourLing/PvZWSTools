@@ -25,6 +25,9 @@ public class PlantsViewModel:ViewModelBase
         ["INVINCPLANT_CHECK"] = nameof(InvincPlant),
         ["DRAW_PLANT_HP_CHECK"] = nameof(DrawPlantHP),
         ["ONLY_BUTTER_CHECK"] = nameof(OnlyButter),
+        ["DRAW_PLANT_STATECOUNTDOWN_CHECK"] = nameof(DrawStateCountdown),
+        ["PLANTERN_ALWAYS_HENSHIN"] = nameof(PlanternAlwaysHenshin),
+        ["UMBRELLA_TRIGGER_RV_CHECK"] = nameof(UmbrellaTriggerRV),
     };
 
     private readonly IMessageProcessor _messageProcessor;

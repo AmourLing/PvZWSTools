@@ -17,6 +17,7 @@
 #   IronPyInteractive.cs:171/206/293  mPyScope 是 static、只建一次、每条消息 Execute 进同一 scope
 #                                     —— 模块级名字跨运行长期存活，重跑会换绑钩子
 
+# @hook-slug: DevKillStats
 from Lawn import *
 from Sexy import *
 from Sexy import GlobalStaticVars as G
@@ -52,7 +53,7 @@ _FrameInBoard = 0
 # 而一旦改了函数名再跑，旧名字仍留在 scope 里、旧 HookResult 永不卸载 -> 钩子越跑越多。
 # 先按名字显式卸载上一轮自己的钩子（test1.py:24 与 GetButtonCheck.py:16 的既有写法）。
 # 只处理本脚本自己的名字；绝不遍历 globals() 全卸，那会连别的脚本的钩子一起拆掉。
-MY_HOOK_NAMES = ["Zombie_DieNoLoot", "Board_Update"]
+MY_HOOK_NAMES = ["Zombie_DieNoLoot__DevKillStats", "Board_Update__DevKillStats"]
 for _n in MY_HOOK_NAMES:
     if _n in globals():
         try:
@@ -67,8 +68,17 @@ for _n in MY_HOOK_NAMES:
 # orig 先行：本钩只是旁路观察，若统计代码抛异常而 orig 未调用，僵尸就不会消失。
 # DieNoLoot 会置 mDead 并移除 reanim，但不改 mZombieType / mFromWave，
 # 所以 orig 之后再读这两个字段计数是安全的。
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Zombie_DieNoLoot__DevKillStats', 'Board_Update__DevKillStats']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Zombie.DieNoLoot)
-def Zombie_DieNoLoot(orig, self, giveAchievements):
+def Zombie_DieNoLoot__DevKillStats(orig, self, giveAchievements):
     orig(self, giveAchievements)
     try:
         if (not COUNT_WAVE_UI_ZOMBIES) and self.mFromWave == GameConstants.ZOMBIE_WAVE_UI:
@@ -81,7 +91,7 @@ def Zombie_DieNoLoot(orig, self, giveAchievements):
 
 
 @M.HookTo(Board.Update)
-def Board_Update(orig, self):
+def Board_Update__DevKillStats(orig, self):
     global _CountedBoardId, _FrameInBoard
     # orig 先行：Board.Update 的 orig 不跑等于整局冻结，绝不能被统计异常挡在后面。
     orig(self)

@@ -7,6 +7,12 @@
 #注：UpdateRain 是风暴与下雨种子共用的天气表现，只随强制开启调用，不做强制关闭；
 #加速的原版行为是每帧多跑一次 UpdateGame，本脚本与原版对齐（旧版的按 1/3 节流已移除）。
 
+# @hook-slug: OtherChallenges
+# @button-flag: BEGHOULED_CHECK
+# @button-flag: LAST_STAND_CHECK
+# @button-flag: PORTALCOMBAT_CHECK
+# @button-flag: RAIN_CHECK
+# @button-flag: SPEED_CHECK
 RAIN_CHECK = {RAIN_CHECK}
 BEGHOULED_CHECK = {BEGHOULED_CHECK}
 SPEED_CHECK = {SPEED_CHECK}
@@ -17,10 +23,12 @@ from Lawn import *
 from Sexy import Debug
 from LawnMod import MonoModUtils as M
 
-# 重跑幂等守卫：只卸载本脚本自己的钩子；Challenge_Update 是旧版整段替换钩子的遗留名，一并清场
-OTHERCHAL_HOOK_NAMES = ["OtherChal_Update", "OtherChal_UpdateRainingSeeds",
-                        "OtherChal_UpdateBeghouled", "OtherChal_UpdatePortalCombat",
-                        "OtherChal_LastStandUpate", "Challenge_Update"]
+# 重跑幂等守卫：只卸载本脚本自己当前的钩子（历史名字不替老会话兜底）
+OTHERCHAL_HOOK_NAMES = [
+"Challenge_Update__OtherChallenges", "Challenge_UpdateRainingSeeds__OtherChallenges",
+                        "Challenge_UpdateBeghouled__OtherChallenges", "Challenge_UpdatePortalCombat__OtherChallenges",
+                        "Challenge_LastStandUpate__OtherChallenges",
+]
 for _oc_n in OTHERCHAL_HOOK_NAMES:
     if _oc_n in globals():
         try:
@@ -28,8 +36,17 @@ for _oc_n in OTHERCHAL_HOOK_NAMES:
         except Exception:
             pass
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Challenge_Update__OtherChallenges', 'Challenge_UpdateRainingSeeds__OtherChallenges', 'Challenge_UpdateBeghouled__OtherChallenges', 'Challenge_UpdatePortalCombat__OtherChallenges', 'Challenge_LastStandUpate__OtherChallenges']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Challenge.Update)
-def OtherChal_Update(orig, self):
+def Challenge_Update__OtherChallenges(orig, self):
     orig(self)
     try:
         board = self.mBoard
@@ -86,29 +103,29 @@ def OtherChal_Update(orig, self):
                 if app.mGameMode == GameMode.ChallengeLastStand:
                     app.mGameMode = mode
     except Exception as e:
-        Debug.Log("OtherChal_Update error: " + repr(e))
+        Debug.Log("Challenge_Update__OtherChallenges error: " + repr(e))
 
 # 强制关闭：拦截游戏自己的分发入口，开关为 0 时直接跳过（旧版此档位是死代码）
 @M.HookTo(Challenge.UpdateRainingSeeds)
-def OtherChal_UpdateRainingSeeds(orig, self):
+def Challenge_UpdateRainingSeeds__OtherChallenges(orig, self):
     if RAIN_CHECK == 0:
         return
     orig(self)
 
 @M.HookTo(Challenge.UpdateBeghouled)
-def OtherChal_UpdateBeghouled(orig, self):
+def Challenge_UpdateBeghouled__OtherChallenges(orig, self):
     if BEGHOULED_CHECK == 0:
         return
     orig(self)
 
 @M.HookTo(Challenge.UpdatePortalCombat)
-def OtherChal_UpdatePortalCombat(orig, self):
+def Challenge_UpdatePortalCombat__OtherChallenges(orig, self):
     if PORTALCOMBAT_CHECK == 0:
         return
     orig(self)
 
 @M.HookTo(Challenge.LastStandUpate)
-def OtherChal_LastStandUpate(orig, self):
+def Challenge_LastStandUpate__OtherChallenges(orig, self):
     if LAST_STAND_CHECK == 0:
         return
     orig(self)

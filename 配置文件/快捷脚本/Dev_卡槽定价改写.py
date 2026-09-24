@@ -24,6 +24,7 @@
 #   1) 有返回值的钩子，每条分支都必须 return，漏一条就返回 None，转 .NET int 当场炸。
 #   2) 这是热路径钩子：里面不许打日志、不许造 dict/list。日志只在脚本加载时打一次。
 
+# @hook-slug: DevPriceOverride
 from Lawn import *
 from Sexy import *
 from Sexy import GlobalStaticVars as G
@@ -46,7 +47,7 @@ EXEMPT_ACCELERATED_PRICING = {EXEMPT_CHECK}
 # 钩子函数名必须全仓唯一。原名 Board_GetCurrentPlantCost 与
 # C_强化乔珀.py:396、控件\杂项\取消阳光.py:12 重名且同目标——共享 scope 下
 # 后跑的会把先跑的 HookResult 顶掉，GC 一触发别人脚本的钩子就被静默卸载了。
-MY_HOOK_NAMES = ["DevPrice_GetCurrentPlantCost"]
+MY_HOOK_NAMES = ["Board_GetCurrentPlantCost__DevPriceOverride"]
 for _n in MY_HOOK_NAMES:
     if _n in globals():
         try:
@@ -55,8 +56,17 @@ for _n in MY_HOOK_NAMES:
             pass
 
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Board_GetCurrentPlantCost__DevPriceOverride']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Board.GetCurrentPlantCost)
-def DevPrice_GetCurrentPlantCost(orig, self, theSeedType, theImitaterType):
+def Board_GetCurrentPlantCost__DevPriceOverride(orig, self, theSeedType, theImitaterType):
     # 改写型钩子：orig 先行取回原值，后面所有分支都以它为兜底返回值。
     native = orig(self, theSeedType, theImitaterType)
     if not ENABLE:

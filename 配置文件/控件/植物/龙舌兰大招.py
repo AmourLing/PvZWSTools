@@ -3,6 +3,8 @@
 #PGvZ v1.2.6
 #2026.09.07
 
+# @hook-slug: AgaveUltimate
+# @button-flag: AGAVE_NO_CD_AND_COST_CHECK
 from Lawn import *
 from Sexy import *
 from Sexy.TodLib import *
@@ -10,15 +12,24 @@ from LawnMod import MonoModUtils as M
 
 AGAVE_NO_CD_AND_COST_CHECK = {CHECK}
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Board_UpdateGame__AgaveUltimate', 'Plant_MouseDown__AgaveUltimate', 'Plant_CobCannonFire__AgaveUltimate']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Board.UpdateGame)
-def Board_UpdateGame_Agave_No_CD_and_Cost(orig,self):
+def Board_UpdateGame__AgaveUltimate(orig,self):
     if AGAVE_NO_CD_AND_COST_CHECK:
         if self.mAgavePowerfulCountdown>0:
             self.mAgavePowerfulCountdown=0
     orig(self)
 
 @M.HookTo(Plant.MouseDown)
-def Plant_MouseDown_Agave_No_CD_and_Cost(orig,self,x,y,theClickCount):
+def Plant_MouseDown__AgaveUltimate(orig,self,x,y,theClickCount):
     if theClickCount < 0 :
         return
     if (self.mApp.mGameMode != GameMode.ChallengeZenGarden):
@@ -40,7 +51,7 @@ def Plant_MouseDown_Agave_No_CD_and_Cost(orig,self,x,y,theClickCount):
     orig(self,x,y,theClickCount)
 
 @M.HookTo(Plant.CobCannonFire)
-def Plant_CobCannonFire_Agave_No_CD_and_Cost(orig,self,theTargetX,theTargetY):
+def Plant_CobCannonFire__AgaveUltimate(orig,self,theTargetX,theTargetY):
     if self.mSeedType == SeedType.Agave and AGAVE_NO_CD_AND_COST_CHECK:
         if self.AgaveSkillCanCancel():
             self.mBoard.mAgavePowerfulCountdown += 6000

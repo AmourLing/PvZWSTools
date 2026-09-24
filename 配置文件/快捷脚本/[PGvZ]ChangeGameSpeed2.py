@@ -1,5 +1,6 @@
 # [PGvZ]ChangeGameSpeed2 (fixed 2026.09.15)
 
+# @hook-slug: GameSpeed2
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
@@ -90,8 +91,17 @@ def ApplyNextSpeed(board, current_speed, increase):
     Log("Speed {} -> {}  (num={}, den={})".format(
         GameSpeedList[idx], GameSpeedList[new_idx], num, den))
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Board_MouseUpInternal__GameSpeed2']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Board.MouseUpInternal)
-def Board_MouseUpInternal_CGS(orig, self, x, y, theClickCount, isTouch):
+def Board_MouseUpInternal__GameSpeed2(orig, self, x, y, theClickCount, isTouch):
     before_num = self.mAccelerationNumerator
     before_den = self.mAccelerationDenominator or 1
     before_speed = before_num / before_den

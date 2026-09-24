@@ -3,6 +3,8 @@
 # 2025.07.05
 #2026.06.13
 
+# @hook-slug: ZombieDropCard
+# @button-flag: DROPPACKET_CHECK
 import clr
 clr.AddReference("System")
 
@@ -57,8 +59,17 @@ def GetSeedTypeNum():
         LOG_ZDrop(e, 5001)
         return 0
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Zombie_DropLoot__ZombieDropCard']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Zombie.DropLoot)
-def Zombie_DropLoot(orig, self):
+def Zombie_DropLoot__ZombieDropCard(orig, self):
     try:
         if not self.IsOnBoard():
             return

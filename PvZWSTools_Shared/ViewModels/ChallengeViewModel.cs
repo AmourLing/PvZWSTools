@@ -34,7 +34,25 @@ public class ChallengeViewModel:ViewModelBase
     private string _stormyNight = "2";
 
     private string _whackAZombie = "2";
-    private static readonly IReadOnlyDictionary<string, string> _buttonMapping = new Dictionary<string, string>();
+    /// <summary>挑战页 13 个开关的状态名，键必须与脚本头部 `# @button-flag:` 一致
+    /// （由 UI核对/check_embedded_scripts.py 门 10 三方核对：脚本声明 / GetButtonCheck.py / 这里）。
+    /// 这份表以前是空的，所以整页按钮点完重开永远是关闭态。</summary>
+    private static readonly IReadOnlyDictionary<string, string> _buttonMapping = new Dictionary<string, string>
+    {
+        ["IZOMBIE_CHECK"] = nameof(IZombie),
+        ["CONVEYORBELT_CHECK"] = nameof(ConveyorBelt),
+        ["COLUNM_CHECK"] = nameof(Column),
+        ["SQUIRREL_CHECK"] = nameof(Squirrel),
+        ["WHACKAZOMBIE_CHECK"] = nameof(WhackAZombie),
+        ["SCARYPOTTER_CHECK"] = nameof(ScaryPotter),
+        ["SLOTMACHINE_CHECK"] = nameof(SlotMachine),
+        ["STORMYNIGHT_CHECK"] = nameof(StormyNight),
+        ["RAIN_CHECK"] = nameof(Rain),
+        ["BEGHOULED_CHECK"] = nameof(Beghouled),
+        ["SPEED_CHECK"] = nameof(Speed),
+        ["PORTALCOMBAT_CHECK"] = nameof(Portal),
+        ["LAST_STAND_CHECK"] = nameof(LastStand),
+    };
 
     private readonly IMessageProcessor _messageProcessor;
 
@@ -42,6 +60,13 @@ public class ChallengeViewModel:ViewModelBase
     {
         UpdatePropertiesFromDict(statusDict, _buttonMapping);
     }
+
+    /// <summary>向游戏要一次真实开关状态。以前这一页根本没接过，
+    /// 所以 _buttonMapping 空不空都没人发现。</summary>
+    public ICommand UpdateButtonStatusCommand => new RelayCommand(async _ =>
+    {
+        await _scriptExec.ExecuteAsync(Constants.SubFolders.Challenge, "GetButtonCheck");
+    });
 
     public ChallengeViewModel(IScriptExecutionService scriptExec, IMessageProcessor messageProcessor)
     {

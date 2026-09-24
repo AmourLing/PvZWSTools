@@ -3,6 +3,7 @@
 # 2025.07.05 (IronPython 无标准库版，使用 MatchEvaluator 修复反向引用)
 # 2026.09.18 脚本不再读写磁盘：僵尸名映射由宿主内联传入，JSON 经 print 回传宿主落盘（跨平台）
 
+# @button-flag: none  状态归属 json 编辑开关(JsonEditZombiesInWave)：{CHECK} 由 ZombiesInWaveCountCommand 转发，本脚本没有独立状态
 import clr
 
 clr.AddReference("System")

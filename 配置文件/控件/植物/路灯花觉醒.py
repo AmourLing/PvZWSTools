@@ -1,5 +1,7 @@
 # [PGvZ]路灯觉醒常驻
 
+# @hook-slug: PlanternAwaken
+# @button-flag: PLANTERN_ALWAYS_HENSHIN
 from Lawn import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
@@ -43,8 +45,17 @@ def GardenAwakenPlantern(plant):
             plant.PlayBodyReanim(HENSIN_TRACK, ReanimLoopType.PlayOnceAndHold, 20, HENSIN_ANIM_RATE)
             _gardenPlanternState[plant] = ("h", HENSHIN_FRAMES)
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Plant_UpdatePlantern__PlanternAwaken', 'ZenGarden_PottedPlantUpdate__PlanternAwaken']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Plant.UpdatePlantern)
-def Plant_UpdatePlantern_Plantern_Always_Henshin(orig, self):
+def Plant_UpdatePlantern__PlanternAwaken(orig, self):
     if PLANTERN_ALWAYS_HENSHIN and \
        (self.mSeedType == SeedType.Plantern) and \
        (self.mState not in [PlantState.PlanternHenshinBegin, PlantState.PlanternHenshinOver]):
@@ -54,7 +65,7 @@ def Plant_UpdatePlantern_Plantern_Always_Henshin(orig, self):
     orig(self)
 
 @M.HookTo(ZenGarden.PottedPlantUpdate)
-def ZenGarden_PottedPlantUpdate_Plantern_Always_Henshin(orig, self, thePlant):
+def ZenGarden_PottedPlantUpdate__PlanternAwaken(orig, self, thePlant):
     orig(self, thePlant)
     if PLANTERN_ALWAYS_HENSHIN:
         GardenAwakenPlantern(thePlant)

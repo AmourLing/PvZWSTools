@@ -22,6 +22,7 @@
 # 切速入口：关卡内的加速按钮 / Tab 键，钩 Board.MouseUpInternal 拦截。
 # 关卡外没有控件入口，在关卡里切好的值出去之后继续生效。
 
+# @hook-slug: GlobalGameSpeed
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
@@ -213,17 +214,14 @@ GameSpeedLog("初始倍率 {}x (index={}, {} / {})".format(
 ApplyTargetSpeed()
 
 
-# 同一个功能有两份入口（快捷脚本/游戏速度.py 与 控件/杂项/游戏速度.py），两份都落在
-# IronPyInteractive 那一份进程级共享 ScriptScope 里。两边钩子函数名不同，于是
-# MouseUpInternal / UpdateFrames 上会同时挂着两套钩子，各算各的倍率下标、逐帧互相
-# 覆写 Board 的分子分母。加载时把两边的钩子都拆掉，让"最后执行的那份"成为唯一持有者。
+# 同一个功能有两份入口（本脚本与 控件/杂项/游戏速度.py），两边钩子函数名相同，都落在
+# IronPyInteractive 那一份进程级共享 ScriptScope 里 —— 后跑的把先跑的换绑掉，天然只留一份。
+# 这份名单是为了本脚本自己重跑时不叠层。
+# 另：[PGvZ]ChangeGameSpeed2.py 是第三份实现，钩子名不同（Board_MouseUpInternal__GameSpeed2），
+# 不在彼此的卸载名单里，所以它和本脚本之间不互相顶掉，别指望这里替它清场。
 GGS_MANAGED_HOOK_NAMES = [
-    "LawnApp_UpdateFrames",
-    "LawnApp_UpdateFrames_GameRunSpeed",
-    "Board_MouseUpInternal_GGS",
-    "Board_MouseUpInternal_GameRunSpeed",
-    # [PGvZ]ChangeGameSpeed2.py 是同一功能的第三份实现，也钩在 MouseUpInternal 上
-    "Board_MouseUpInternal_CGS",
+    "LawnApp_UpdateFrames__GlobalGameSpeed",
+    "Board_MouseUpInternal__GlobalGameSpeed",
 ]
 for _ggs_name in GGS_MANAGED_HOOK_NAMES:
     _ggs_old = globals().get(_ggs_name)
@@ -234,8 +232,17 @@ for _ggs_name in GGS_MANAGED_HOOK_NAMES:
             pass
 
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['LawnApp_UpdateFrames__GlobalGameSpeed', 'Board_MouseUpInternal__GlobalGameSpeed']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(LawnApp.UpdateFrames)
-def LawnApp_UpdateFrames(orig, self):
+def LawnApp_UpdateFrames__GlobalGameSpeed(orig, self):
     """关卡内只跑 1 次（Board 自己倍帧）；关卡外自己跑 N 次实现任意倍率"""
     GuardedApply()
     if GetBoard() is not None:
@@ -246,7 +253,7 @@ def LawnApp_UpdateFrames(orig, self):
 
 
 @M.HookTo(Board.MouseUpInternal)
-def Board_MouseUpInternal_GGS(orig, self, x, y, theClickCount, isTouch):
+def Board_MouseUpInternal__GlobalGameSpeed(orig, self, x, y, theClickCount, isTouch):
     """加速按钮点一下 = 倍率表移到下一项，跳过原版 1->2->3 循环"""
     # 必须在 orig 之前取样：Board.cs:3775 消费掉这次 hover 之后，
     # GameButton.Update（Board.cs:4799）会在下一帧重算 mIsOver。

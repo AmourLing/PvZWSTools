@@ -36,6 +36,8 @@
 # 正在 ExecuteWithResultAsync 收集时触发（例如「波次出怪_数量」的导出），多出来的 END 会让
 # 那边提前收口、把载荷截断。发布内容全是枚举英文名，也不碰中文回传那条有损通道。
 
+# @hook-slug: SyncSpawnList
+# @button-flag: SYNC_SPAWN_CHECK
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
@@ -76,13 +78,13 @@ def SyncSpawn_UnhookAll():
 
 
 # 观察者型：orig 先走，再发布。InitZombieWaves 是 void，没有返回值要交代。
-def SyncSpawn_AfterInitWaves(orig, self):
+def Board_InitZombieWaves__SyncSpawnList(orig, self):
     orig(self)
     SyncSpawn_Publish()
 
 
 # LoadGame 返回 bool，必须原样回传——漏 return 不会报错，调用方会静默拿到 False，读档就当失败。
-def SyncSpawn_AfterLoadGame(orig, self, theFilePath):
+def Board_LoadGame__SyncSpawnList(orig, self, theFilePath):
     loaded = orig(self, theFilePath)
     if loaded:
         SyncSpawn_Publish()
@@ -93,8 +95,8 @@ if SYNC_SPAWN_CHECK == "1":
     # 先按前缀拆干净：共享作用域里旧 HookResult 要等 GC 才失效，中间会两层钩子叠着
     SyncSpawn_UnhookAll()
 
-    SyncSpawn_InitWaves_Hook = M.HookTo(Board.InitZombieWaves)(SyncSpawn_AfterInitWaves)
-    SyncSpawn_LoadGame_Hook = M.HookTo(Board.LoadGame)(SyncSpawn_AfterLoadGame)
+    SyncSpawn_InitWaves_Hook = M.HookTo(Board.InitZombieWaves)(Board_InitZombieWaves__SyncSpawnList)
+    SyncSpawn_LoadGame_Hook = M.HookTo(Board.LoadGame)(Board_LoadGame__SyncSpawnList)
 
     SyncSpawn_Log("已开启：初始化 / 换关 / 读档时自动发布出怪列表")
     # 开关变开的这一刻先同步一次，不用等下一次换关

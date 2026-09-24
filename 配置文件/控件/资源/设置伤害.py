@@ -26,13 +26,14 @@
 #    土豆雷/倭瓜/寒冰菇各走自己的方法，见下面的钩子。
 #
 # 顺带修掉的两个静默失败：
-#   - 老代码写 ProjectileType.{DAMAGE}，{DAMAGE} 由 UI 的 Value 直接拼进源码，
+#   - 老代码写 ProjectileType 点占位符（花括号那个），占位符由 UI 的 Value 直接拼进源码，
 #     拼错/大小写不符就是 AttributeError，被外面那条裸 except 整个咽掉，
 #     连"改的是哪一行"都不报。冰豌豆一直不生效就是因为 UI 写成 SnowPea，枚举其实是 Snowpea。
 #     现在改成 getattr 查表 + 把结果打回工具，改没改上一眼看得见。
 #   - 海蘑菇用的是 ProjectileType.PuffGreen（Plant.cs:1768），UI 从来没有这一行；
 #     原来的"刺"对应 ProjectileType.Spike，那是仙人掌（Plant.cs:1771）。
 
+# @hook-slug: SetDamage
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
@@ -65,17 +66,42 @@ OUT = []
 # 每个来源一个钩子名；钩子只装一次 —— 同一个目标叠两层会互相覆盖返回值，
 # 而且按名字换绑之后旧的那层要等 GC 才卸载，中间是双生效窗口
 DAMAGE_HOOK_NAMES = {
-    "huijin": "Zombie_ApplyBurn",
-    "tudou": "Board_KillAllZombiesInRadius",
-    "icegu": "Zombie_HitIceTrap",
-    "wogua": "Plant_DoSquashDamage",
-    "kyao": "Zombie_CheckIfPreyCaught",
-    "rowarea_spike": "Plant_DoRowAreaDamage",
-    "rowarea_fume": "Plant_DoRowAreaDamage",
-    "rowarea_gloom": "Plant_DoRowAreaDamage",
+    "huijin": "Zombie_ApplyBurn__SetDamage",
+    "tudou": "Board_KillAllZombiesInRadius__SetDamage",
+    "icegu": "Zombie_HitIceTrap__SetDamage",
+    "wogua": "Plant_DoSquashDamage__SetDamage",
+    # kyao 不在这张表里了：它只需要写 GameConstants.TICKS_BETWEEN_EATS，见下面 kyao 分支
+    "rowarea_spike": "Plant_DoRowAreaDamage__SetDamage",
+    "rowarea_fume": "Plant_DoRowAreaDamage__SetDamage",
+    "rowarea_gloom": "Plant_DoRowAreaDamage__SetDamage",
 }
 
+# 退役的钩子要显式拆掉并删名：上一版装载过的 HookResult 会一直留在共享作用域里
+# 替原版做决定，而本版已经不再重装它。删名也是必须的——下面靠
+# `globals().get(名字) is None` 判断"没装过才装"，留个指向已卸载对象的名会把钩子永久挡住。
+for _retired_hook in ['Zombie_CheckIfPreyCaught__SetDamage']:
+    _hr = globals().get(_retired_hook)
+    if _hr is not None and hasattr(_hr, 'UnHook'):
+        try:
+            _hr.UnHook()
+        except Exception:
+            pass
+        del globals()[_retired_hook]
+
 _hook_name = DAMAGE_HOOK_NAMES.get(DAMAGE_KEY)
+
+# 本脚本还留着三处整段替换（KillAllZombiesInRadius / HitIceTrap / DoSquashDamage），
+# 原因都是"要改的数值写死在方法体中间"，没有能插进去的小方法。
+# 整段替换跟版本，所以版本一变就自己报，别等它悄悄不生效。上次核对：见 VERIFY_AGAINST_DATE。
+VERIFY_AGAINST_VERSION = "PGvZ 1.3.1"
+VERIFY_AGAINST_DATE = "2026-09-24"
+try:
+    _ver = GlobalStaticVars.gLawnApp.AppVersionNumber          # LawnApp.cs:62
+    if _ver != VERIFY_AGAINST_VERSION:
+        OUT.append("WARN game version %s != verified %s (%s); this script copies 3 C# method bodies"
+                   % (_ver, VERIFY_AGAINST_VERSION, VERIFY_AGAINST_DATE))
+except Exception as _e:
+    OUT.append("WARN AppVersionNumber unreadable, version self-check skipped: " + repr(_e))
 
 if DAMAGE_KEY in ROW_AREA_DAMAGE_SEEDS:
     for _st in ROW_AREA_DAMAGE_SEEDS[DAMAGE_KEY]:
@@ -86,12 +112,15 @@ if DAMAGE_KEY in ROW_AREA_DAMAGE_SEEDS:
 if DAMAGE_KEY == "kyao":
     # 啃咬间隔是唯一一个"数值走全局常量、钩子只是照读"的来源，所以每次点都要写
     GameConstants.TICKS_BETWEEN_EATS = DAMAGE_NUM
+    OUT.append("KYAO ticks={} (不装钩子，Zombie.cs 那几处都是现读这个常量)".format(DAMAGE_NUM))
 
+# kyao 不在这张表里，也不能掉进下面的抛射体查表分支——那会拿 "kyao" 去
+# getattr(ProjectileType, ...) 查不到，报一条假错出来。
 if _hook_name is not None and globals().get(_hook_name) is None:
 
     if DAMAGE_KEY == "huijin":
         @M.HookTo(Zombie.ApplyBurn)
-        def Zombie_ApplyBurn(orig, self):
+        def Zombie_ApplyBurn__SetDamage(orig, self):
             try:
                 if (self.mBodyHealth >= DAMAGE_VALUE_NUM.get("huijin")
                  or self.mZombieType == ZombieType.Boss
@@ -110,7 +139,7 @@ if _hook_name is not None and globals().get(_hook_name) is None:
 
     if DAMAGE_KEY == "tudou":
         @M.HookTo(Board.KillAllZombiesInRadius)
-        def Board_KillAllZombiesInRadius(orig, self, theRow, theX, theY, theRadius, theRowRange, theBurn, theDamageRangeFlags):
+        def Board_KillAllZombiesInRadius__SetDamage(orig, self, theRow, theX, theY, theRadius, theRowRange, theBurn, theDamageRangeFlags):
             try:
                 num = 0
                 count = self.mZombies.Count
@@ -135,6 +164,10 @@ if _hook_name is not None and globals().get(_hook_name) is None:
                 num6 = -1
                 for num6 in range(self.mGridItems.Count):
                     gridItem = self.mGridItems[num6]
+                    # 原版这段走 Board.IterateGridItems（Board.cs:8226），它在 :8235 会跳过 mDead 的格子物件。
+                    # 这里换成裸下标循环时必须自己补上，否则会对已消失的梯子重复调 GridItemDie。
+                    if gridItem.mDead:
+                        continue
                     if (gridItem.mGridItemType == GridItemType.Ladder):
                         num7 = gridItem.mGridX - num4
                         num8 = gridItem.mGridY - num5
@@ -147,7 +180,7 @@ if _hook_name is not None and globals().get(_hook_name) is None:
 
     if DAMAGE_KEY == "icegu":
         @M.HookTo(Zombie.HitIceTrap)
-        def Zombie_HitIceTrap(orig, self):
+        def Zombie_HitIceTrap__SetDamage(orig, self):
             try:
                 flag = False
                 if (self.mChilledCounter > 0 or self.mIceTrapCounter != 0):
@@ -162,7 +195,9 @@ if _hook_name is not None and globals().get(_hook_name) is None:
                 else:
                     self.mIceTrapCounter = TodCommon.RandRangeInt(400, 600)
                 self.StopZombieSound()
-                if (self.mZombieType == ZombieType.Balloon):
+                # 原版这里连螺旋桨一起停（Zombie.cs:4929 是 Balloon || Propeller），
+                # 抄本以前只判 Balloon，结果螺旋桨僵尸被冻住还在转。
+                if (self.mZombieType == ZombieType.Balloon or self.mZombieType == ZombieType.Propeller):
                     self.BalloonPropellerHatSpin(False)
                 if (self.mZombiePhase == ZombiePhase.BossHeadSpit):
                     self.mBoard.RemoveParticleByType(ParticleEffect.ZombieBossFireball)
@@ -171,13 +206,20 @@ if _hook_name is not None and globals().get(_hook_name) is None:
                 return True
             except Exception as e:
                 app.DoDialog(16, True, "ERROR!", repr(e), "OK", 3)
+                # HitIceTrap 返回 bool：漏 return 不会报错，会静默变成 False，
+                # 调用方（Plant.cs:3726 的计数）就当这次没冻住。必须显式交代。
+                return False
 
     if DAMAGE_KEY == "wogua":
         @M.HookTo(Plant.DoSquashDamage)
-        def Plant_DoSquashDamage(orig, self):
+        def Plant_DoSquashDamage__SetDamage(orig, self):
             try:
                 damageRangeFlags = self.GetDamageRangeFlags(PlantWeapon.Primary)
                 plantAttackRect = self.GetPlantAttackRect(PlantWeapon.Primary)
+                # 原版紧接着就把命中框加宽 20（Plant.cs:3608）。TRect 是 struct，
+                # GetPlantAttackRect 返回的是新值（Plant.cs:3307），所以加宽必须自己补，
+                # 漏掉的结果是倭瓜的命中框比原版窄 20 像素。
+                plantAttackRect.mWidth += 20
                 num = 0
                 count = self.mBoard.mZombies.Count
                 for i in range(count):
@@ -202,70 +244,16 @@ if _hook_name is not None and globals().get(_hook_name) is None:
     if DAMAGE_KEY == "kyao":
         GameConstants.TICKS_BETWEEN_EATS = DAMAGE_VALUE_NUM.get("kyao")
 
-        @M.HookTo(Zombie.CheckIfPreyCaught)
-        def Zombie_CheckIfPreyCaught(orig, self):
-            if (self.mZombieType in [ZombieType.Bungee,
-                                     ZombieType.Gargantuar,
-                                     ZombieType.RedeyeGargantuar,
-                                     ZombieType.Zamboni,
-                                     ZombieType.Catapult,
-                                     ZombieType.Boss,
-                                     ZombieType.RobotTitan,
-                                     ZombieType.RedeyeRobotTitan]
-             or self.IsBouncingPogo()
-             or self.IsBobsledTeamWithSled()
-             or self.mZombiePhase in [ZombiePhase.PolevaulterInVault,
-                                      ZombiePhase.PolevaulterPreVault,
-                                      ZombiePhase.NewspaperMaddening,
-                                      ZombiePhase.DiggerRising,
-                                      ZombiePhase.DiggerTunnelingPauseWithoutAxe,
-                                      ZombiePhase.DiggerRiseWithoutAxe,
-                                      ZombiePhase.DiggerStunned,
-                                      ZombiePhase.RisingFromGrave,
-                                      ZombiePhase.ImpGettingThrown,
-                                      ZombiePhase.ImpLanding,
-                                      ZombiePhase.DancerRising,
-                                      ZombiePhase.DancerSnappingFingers,
-                                      ZombiePhase.DancerSnappingFingersWithLight,
-                                      ZombiePhase.DancerSnappingFingersHold,
-                                      ZombiePhase.DolphinWalking,
-                                      ZombiePhase.DolphinWalkingWithoutDolphin,
-                                      ZombiePhase.DolphinIntoPool,
-                                      ZombiePhase.DolphinRiding,
-                                      ZombiePhase.DolphinInJump,
-                                      ZombiePhase.SnorkelIntoPool,
-                                      ZombiePhase.SnorkelWalking,
-                                      ZombiePhase.LadderPlacing]
-             or self.mZombieHeight in [ZombieHeight.GettingBungeeDropped,
-                                       ZombieHeight.UpLadder,
-                                       ZombieHeight.InToPool,
-                                       ZombieHeight.OutOfPool,
-                                       ZombieHeight.Falling]
-             or self.IsTangleKelpTarget()
-             or not self.mHasHead
-             or self.IsFlying()):
-                return
-            num = GameConstants.TICKS_BETWEEN_EATS
-            if (self.mChilledCounter > 0):
-                num = num * 2
-            if (self.mZombieAge % num != 0):
-                return
-            zombie = self.FindZombieTarget()
-            if (zombie != None):
-                self.EatZombie(zombie)
-                return
-            if (not self.mMindControlled):
-                plant = self.FindPlantTarget(ZombieAttackType.Chew)
-                if (plant != None):
-                    self.EatPlant(plant)
-                    return
-            if ((not self.mApp.IsIZombieLevel() or
-                not self.mBoard.mChallenge.IZombieEatBrain(self)) and self.mIsEating):
-                self.StopEating()
+        # 大嘴花间隔以前这里还整段重写了 Zombie.CheckIfPreyCaught（Zombie.cs:1459），
+        # 但它连一个值都没替换——间隔是从 GameConstants.TICKS_BETWEEN_EATS 现读的
+        # （Zombie.cs:1465 起四处都读它），上面那行写了就够。抄本反而漏了
+        # ZombiePhase.TalismanLeaving（Zombie.cs:1461 有，抄本没有），
+        # 让处于该阶段的僵尸照常捕食；而且它没有 try/except，异常会每帧抛进
+        # Zombie.cs:5222 的 UpdatePlaying。整段删掉，原方法照常跑。
 
     if DAMAGE_KEY in ROW_AREA_DAMAGE_SEEDS:
         @M.HookTo(Plant.DoRowAreaDamage)
-        def Plant_DoRowAreaDamage(orig, self, theDamage, theDamageFlags):
+        def Plant_DoRowAreaDamage__SetDamage(orig, self, theDamage, theDamageFlags):
             # 只换伤害实参，攻防范围标志和函数体一律交回给原版
             try:
                 override = ROW_AREA_DAMAGE_NUM.get(int(self.mSeedType))
@@ -281,8 +269,9 @@ if _hook_name is not None and globals().get(_hook_name) is None:
 elif _hook_name is not None:
     OUT.append("HOOK reused " + _hook_name + " (already installed)")
 
-else:
-    # 不是内置来源，就按抛射体查表
+elif DAMAGE_KEY != "kyao":
+    # 不是内置来源，就按抛射体查表。kyao 走上面那条常量路径，已经报过了，
+    # 掉进这里会拿 "kyao" 去 getattr(ProjectileType, ...) 查不到，报一条假错。
     projectile_type = None
     try:
         projectile_type = getattr(ProjectileType, DAMAGE_KEY, None)

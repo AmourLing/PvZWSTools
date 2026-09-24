@@ -2,13 +2,15 @@
 #三态开关：1=强制开启 0=强制关闭 2=不干预（跟随原版）
 #2025.07.06
 
+# @hook-slug: ConveyorBelt
+# @button-flag: CONVEYORBELT_CHECK
 CONVEYORBELT_CHECK = {CHECK}
 
 from Lawn import *
 from LawnMod import MonoModUtils as M
 
-# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
-for _legacy_hook_name in ['Board_HasConveyorBeltSeedBank']:
+# 幂等守卫：本脚本重跑时旧 HookResult 还被旧名字引用着，会和新装的那份叠一层，先卸载再装新的
+for _legacy_hook_name in ['Board_HasConveyorBeltSeedBank__ConveyorBelt']:
     if _legacy_hook_name in globals():
         try:
             globals()[_legacy_hook_name].UnHook()
@@ -16,7 +18,7 @@ for _legacy_hook_name in ['Board_HasConveyorBeltSeedBank']:
             pass
 
 @M.HookTo(Board.HasConveyorBeltSeedBank)
-def Board_HasConveyorBeltSeedBank_Conveyor(orig,self):
+def Board_HasConveyorBeltSeedBank__ConveyorBelt(orig,self):
     result = orig(self)
     if CONVEYORBELT_CHECK==1:
         return True

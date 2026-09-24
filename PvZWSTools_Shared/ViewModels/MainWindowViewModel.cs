@@ -311,6 +311,10 @@ public class MainWindowViewModel:ViewModelBase
             case "娱乐":
                 Fun?.UpdateButtonStatusCommand?.Execute(null);
                 break;
+
+            case "挑战":
+                Challenge?.UpdateButtonStatusCommand?.Execute(null);
+                break;
         }
     }
 

@@ -1,6 +1,7 @@
 # 尝试添加融合配方
 # 2026.06.18
 
+# @hook-slug: AddFusionRecipe
 from Lawn import *
 from Sexy import *
 from LawnMod import MonoModUtils as M
@@ -36,6 +37,15 @@ for recipe in FusionRecipe:
     update = _ensure_seedtype(recipe["update"])
     _recipe_pairs.append((base1, base2, update))
     _recipe_pairs.append((base2, base1, update))
+
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Plant_GetValidFusion__AddFusionRecipe']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
 
 @M.HookTo(Plant.GetValidFusion)
 def Plant_GetValidFusion__AddFusionRecipe(orig, seedtype1, seedtype2):

@@ -3,15 +3,19 @@
 # 要改状态回读范围，去改对应脚本头部的那行声明。
 
 Check_button_list = [
-    "ALLOW_MINDCTRL", #一键冰封效果
-    "DRAW_ZOMBIE_HP_CHECK", #僵尸血量显示
-    "DROPPACKET_CHECK", #僵尸掉落卡片
-    "INVINCZOMBIE_CHECK", #僵尸无敌
-    "LIMIT_ZOMBIE_GET_DEBUFF", #一键冰封效果
-    "NOEXPLODE_CHECK", #丑椒不爆
-    "NO_ICETRAP_CHECK", #冰车无痕
-    "NO_STEAL_CHECK", #小偷不偷
-    "STOP_WALK_CHECK", #停滞不前
+    "BEGHOULED_CHECK", #其他挑战
+    "COLUNM_CHECK", #排山倒海
+    "CONVEYORBELT_CHECK", #传送带
+    "IZOMBIE_CHECK", #IZombie
+    "LAST_STAND_CHECK", #其他挑战
+    "PORTALCOMBAT_CHECK", #其他挑战
+    "RAIN_CHECK", #其他挑战
+    "SCARYPOTTER_CHECK", #砸罐子
+    "SLOTMACHINE_CHECK", #老虎机
+    "SPEED_CHECK", #其他挑战
+    "SQUIRREL_CHECK", #松鼠
+    "STORMYNIGHT_CHECK", #风暴
+    "WHACKAZOMBIE_CHECK", #砸僵尸
 ]
 ButtonCheckString = "开始检查按钮状态\n"
 for ButtonCheck in Check_button_list:

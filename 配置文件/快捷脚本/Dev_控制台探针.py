@@ -14,6 +14,7 @@
 #
 # 每条结论都靠控制台里看到的行来下，不靠推理。
 
+# @hook-slug: DevProbe
 from Lawn import *
 from Sexy import *
 from Sexy import GlobalStaticVars as G
@@ -67,7 +68,7 @@ ProbeHooks.clear()
 
 
 # ---------- Q1a 关卡生命周期：每个钩子的实际触发时机 ----------
-def OnSpawn(orig, self, theRow, theType, theVariant, theParentZombie, theFromWave):
+def Zombie_ZombieInitialize__DevProbe(orig, self, theRow, theType, theVariant, theParentZombie, theFromWave):
     orig(self, theRow, theType, theVariant, theParentZombie, theFromWave)
     ProbeSpawnCount[0] += 1
     P("ZombieInitialize #%d type=%s row=%d wave=%d 子僵尸=%s 帧=%d" % (
@@ -75,7 +76,7 @@ def OnSpawn(orig, self, theRow, theType, theVariant, theParentZombie, theFromWav
         theParentZombie is not None, ProbeFrame[0]))
 
 
-def OnDeath(orig, self, giveAchievements):
+def Zombie_DieNoLoot__DevProbe(orig, self, giveAchievements):
     orig(self, giveAchievements)
     ProbeDeathCount[0] += 1
     P("DieNoLoot #%d type=%s wave=%d 帧=%d" % (
@@ -83,13 +84,13 @@ def OnDeath(orig, self, giveAchievements):
 
 
 # ---------- Q2 热路径热度 ----------
-def OnCost(orig, self, theSeedType, theImitaterType):
+def Board_GetCurrentPlantCost__DevProbe(orig, self, theSeedType, theImitaterType):
     v = orig(self, theSeedType, theImitaterType)
     ProbeCostCalls[0] += 1          # 只计数，绝不在这里打日志
     return v
 
 
-def OnUpdate(orig, self):
+def Board_Update__DevProbe(orig, self):
     orig(self)
     ProbeFrame[0] += 1
     if ProbeFrame[0] % 120 == 0:     # 每 120 帧汇报一次，避免刷屏
@@ -103,30 +104,30 @@ def OnUpdate(orig, self):
 
 
 # ---------- Q3 悬案：两个加速方法能不能钩上、钩上后响不响 ----------
-def OnAccInc(orig, self):
+def Board_AccelerationIncrease__DevProbe(orig, self):
     orig(self)
     P("AccelerationIncrease 钩子被触发了！", DebugType.Error)
 
 
-def OnAccDec(orig, self):
+def Board_AccelerationDecrease__DevProbe(orig, self):
     orig(self)
     P("AccelerationDecrease 钩子被触发了！", DebugType.Error)
 
 
-def OnMouseUp(orig, self, x, y, theClickCount, isTouch):
+def Board_MouseUpInternal__DevProbe(orig, self, x, y, theClickCount, isTouch):
     orig(self, x, y, theClickCount, isTouch)
     ProbeWidgetClicks[0] += 1
     P("Board.MouseUpInternal #%d (%d,%d) click=%d touch=%s 帧=%d" % (
         ProbeWidgetClicks[0], x, y, theClickCount, isTouch, ProbeFrame[0]))
 
 
-TryHook("Probe_Spawn", Zombie.ZombieInitialize, OnSpawn)
-TryHook("Probe_Death", Zombie.DieNoLoot, OnDeath)
-TryHook("Probe_Cost", Board.GetCurrentPlantCost, OnCost)
-TryHook("Probe_Update", Board.Update, OnUpdate)
-TryHook("Probe_MouseUp", Board.MouseUpInternal, OnMouseUp)
-inc = TryHook("Probe_AccInc", Board.AccelerationIncrease, OnAccInc)
-dec = TryHook("Probe_AccDec", Board.AccelerationDecrease, OnAccDec)
+TryHook("Probe_Spawn", Zombie.ZombieInitialize, Zombie_ZombieInitialize__DevProbe)
+TryHook("Probe_Death", Zombie.DieNoLoot, Zombie_DieNoLoot__DevProbe)
+TryHook("Probe_Cost", Board.GetCurrentPlantCost, Board_GetCurrentPlantCost__DevProbe)
+TryHook("Probe_Update", Board.Update, Board_Update__DevProbe)
+TryHook("Probe_MouseUp", Board.MouseUpInternal, Board_MouseUpInternal__DevProbe)
+inc = TryHook("Probe_AccInc", Board.AccelerationIncrease, Board_AccelerationIncrease__DevProbe)
+dec = TryHook("Probe_AccDec", Board.AccelerationDecrease, Board_AccelerationDecrease__DevProbe)
 
 P("---- Q3 判读方法 ----")
 P("加速安装成功=%s/%s；进关后点右上角加速按钮：" % (inc, dec))

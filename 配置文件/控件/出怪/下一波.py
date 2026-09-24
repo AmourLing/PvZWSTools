@@ -5,6 +5,8 @@
 # 跨平台：Windows 走 MouseDown/Up/Move/Drag，Android 走 TouchBegan/Ended/Moved，
 # 两套钩子共用 _on_down/_on_up/_on_move 逻辑。
 
+# @hook-slug: NextWave
+# @button-flag: NEXT_WAVE_BUTTON_CHECK
 import Sexy
 from Lawn import *
 from LawnMod import MonoModUtils as M
@@ -106,8 +108,17 @@ def _on_move(board, x, y):
     state.is_over = state.rect.Contains(x, y)
 
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Board_DrawTopRightUI__NextWave', 'Board_MouseDown__NextWave', 'Board_MouseUp__NextWave', 'Board_MouseMove__NextWave', 'Board_MouseDrag__NextWave', 'Board_TouchBegan__NextWave', 'Board_TouchEnded__NextWave', 'Board_TouchMoved__NextWave', 'Board_Dispose__NextWave']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Board.DrawTopRightUI)
-def Board_DrawTopRightUI(orig, self, g, theDrawElements):
+def Board_DrawTopRightUI__NextWave(orig, self, g, theDrawElements):
     orig(self, g, theDrawElements)
     if self.mApp.mGameScene != GameScenes.Playing:
         return
@@ -152,50 +163,50 @@ def Board_DrawTopRightUI(orig, self, g, theDrawElements):
 
 # ---- Windows 鼠标 ----
 @M.HookTo(Board.MouseDown)
-def Board_MouseDown(orig, self, x, y, theClickCount):
+def Board_MouseDown__NextWave(orig, self, x, y, theClickCount):
     orig(self, x, y, theClickCount)
     _on_down(self, x, y)
 
 
 @M.HookTo(Board.MouseUp)
-def Board_MouseUp(orig, self, x, y, theClickCount):
+def Board_MouseUp__NextWave(orig, self, x, y, theClickCount):
     orig(self, x, y, theClickCount)
     _on_up(self, x, y)
 
 
 @M.HookTo(Board.MouseMove)
-def Board_MouseMove(orig, self, x, y):
+def Board_MouseMove__NextWave(orig, self, x, y):
     orig(self, x, y)
     _on_move(self, x, y)
 
 
 @M.HookTo(Board.MouseDrag)
-def Board_MouseDrag(orig, self, x, y):
+def Board_MouseDrag__NextWave(orig, self, x, y):
     orig(self, x, y)
     _on_move(self, x, y)
 
 
 # ---- Android 触摸 ----
 @M.HookTo(Board.TouchBegan)
-def Board_TouchBegan(orig, self, touch):
+def Board_TouchBegan__NextWave(orig, self, touch):
     orig(self, touch)
     _on_down(self, int(touch.location.X), int(touch.location.Y))
 
 
 @M.HookTo(Board.TouchEnded)
-def Board_TouchEnded(orig, self, touch):
+def Board_TouchEnded__NextWave(orig, self, touch):
     orig(self, touch)
     _on_up(self, int(touch.location.X), int(touch.location.Y))
 
 
 @M.HookTo(Board.TouchMoved)
-def Board_TouchMoved(orig, self, touch):
+def Board_TouchMoved__NextWave(orig, self, touch):
     orig(self, touch)
     _on_move(self, int(touch.location.X), int(touch.location.Y))
 
 
 @M.HookTo(Board.Dispose)
-def Board_Dispose(orig, self):
+def Board_Dispose__NextWave(orig, self):
     if self in _button_states:
         del _button_states[self]
     orig(self)

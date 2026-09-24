@@ -1,8 +1,9 @@
+# @hook-slug: ImpUmbrella
 from Lawn import *
 from LawnMod import MonoModUtils as M
 
-# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
-for _legacy_hook_name in ['Plant_UpdateUmbrella']:
+# 幂等守卫：本脚本重跑时旧 HookResult 还被旧名字引用着，会和新装的那份叠一层，先卸载再装新的
+for _legacy_hook_name in ['Plant_UpdateUmbrella__ImpUmbrella']:
     if _legacy_hook_name in globals():
         try:
             globals()[_legacy_hook_name].UnHook()
@@ -44,7 +45,7 @@ def UpdateUmbrellaHitZombie(plant):
                 zombie.DieNoLoot(False)
 
 @M.HookTo(Plant.UpdateUmbrella)
-def Plant_UpdateUmbrella_ImpUmb(orig, self):
+def Plant_UpdateUmbrella__ImpUmbrella(orig, self):
     orig(self)
     if self.mState in [
         PlantState.UmbrellaTriggered,

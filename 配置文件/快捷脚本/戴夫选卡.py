@@ -1,3 +1,4 @@
+# @hook-slug: DavePick
 from Lawn import *
 from LawnMod import MonoModUtils as M
 from Sexy import Debug
@@ -62,8 +63,17 @@ def enable_upgrades(self, st, weights, base_weight):
 
 
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['SeedChooserScreen_CrazyDavePickSeeds__DavePick']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(SeedChooserScreen.CrazyDavePickSeeds)
-def SeedChooserScreen_CrazyDavePickSeeds_Extend(orig, self):
+def SeedChooserScreen_CrazyDavePickSeeds__DavePick(orig, self):
     # 先调用原生选卡：挑战随机选 8 张，其余选 3 张
     orig(self)
 

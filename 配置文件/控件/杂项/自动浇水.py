@@ -2,6 +2,8 @@
 #自动进行浇水、施肥等操作，会消耗肥料和杀虫剂
 #2025.08.04
 
+# @hook-slug: AutoWatering
+# @button-flag: AUTO_WATERING_CHECK
 AUTO_WATERING_CHECK = {CHECK}
 
 from Lawn import *
@@ -14,8 +16,17 @@ app = GlobalStaticVars.gLawnApp
 AppVersionNumber = app.AppVersionNumber
 IsPGvZVersion = ("PGvZ" in AppVersionNumber)
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['ZenGarden_ZenGardenUpdate__AutoWatering']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(ZenGarden.ZenGardenUpdate)
-def ZenGarden_ZenGardenUpdate_Auto_Watering(orig,self):
+def ZenGarden_ZenGardenUpdate__AutoWatering(orig,self):
     if self.mApp.GetDialog(4) != None:
         return
     orig(self)

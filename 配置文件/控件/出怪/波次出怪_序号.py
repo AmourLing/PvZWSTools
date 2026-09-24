@@ -4,6 +4,7 @@
 #2026.06.13
 # 2026.09.18 僵尸名映射改由宿主内联传入，脚本不再读磁盘（跨平台）
 
+# @button-flag: none  状态归属 json 编辑开关(JsonEditZombiesInWave)：{CHECK} 由 ZombiesInWaveIndexCommand 转发，本脚本没有独立状态
 import clr
 
 clr.AddReference("System")

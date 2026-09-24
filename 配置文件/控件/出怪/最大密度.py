@@ -1,130 +1,47 @@
 #最大密度
 #使出怪密度变大，ZombiePoints
 #2025.07.08
+#
+# 2026-09-24：从"整段重写 Board.PickZombieWaves"改成只抬高每波点数。
+# 原来那 68 行里，波数段（含 "<10 变 20、否则 +10"）是照抄 Board.cs:8356-8378 的，
+# 那是游戏自己的二周目冒险逻辑，不是本脚本的功能；抄过来的代价是游戏一改就悄悄落后。
+# 实测抄本比 1.3.1 少了 IsLevelUseJson 分支、AttackOnTitans / PoolParty / MoreAirRaid /
+# Fusion / OccupyHighGround 等十余条波数分支和全部创意关覆盖；还把生存点数写成 `*2//5`
+# （C# 生效分支 Board.cs:8454 是 `/5`，`*2//5` 在 :8456 那条不可达的重复分支上），
+# 等于无尽模式点数白翻一倍。这些现在全部跟随游戏原版。
+#
+# 真正要改的只有一处：原版的装波循环（Board.cs:8961）按 zombiePicker.mZombiePoints 取怪，
+# 所以每次进 PickZombieType 就把点数顶满，循环会一直走到 mZombieCount 撞到 50 才停。
+# 那个 50 的上限来自 Board.cs:299 的 mZombiesInWave = new ZombieType[100, 50]，动不了也不该动。
+#
+# 与 飞贼红眼处理 的关系：那份脚本整段重写了同一个 Board.PickZombieType。
+# 两个都开着时后装的包在外层；红眼那份不调 orig，若它在外层，本脚本的顶点数就被跳过。
+# 同时要用就先点本脚本、再点红眼那份。这一点在红眼那份脚本里也写了。
 
+# @hook-slug: MaxSpawnDensity
+# @button-flag: MAXPOINT_CHECK
 MAXPOINT_CHECK={CHECK}
 
 from Lawn import *
 from LawnMod import MonoModUtils as M
-from System import Math
 
-@M.HookTo(Board.PickZombieWaves)
-def Board_PickZombieWaves(orig, self):
-    if (self.mApp.IsAdventureMode() or self.mApp.IsQuickPlayMode()) and self.mApp.IsWhackAZombieLevel():
-        self.mNumWaves = 8
-    elif self.mApp.IsAdventureMode() or self.mApp.IsQuickPlayMode():
-        num = Math.Max(0, Math.Min(self.mLevel - 1, 49))
-        self.mNumWaves = GameConstants.gZombieWaves[num]
-        if not self.mApp.IsFirstTimeAdventureMode() and not self.mApp.IsMiniBossLevel():
-            if self.mNumWaves < 10:
-                self.mNumWaves = 20
-            else:
-                self.mNumWaves += 10
-    elif self.mApp.IsSurvivalMode() or self.mApp.mGameMode == GameMode.ChallengeLastStand:
-        self.mNumWaves = self.GetNumWavesPerSurvivalStage()
-    elif self.mApp.mGameMode == GameMode.ChallengeZenGarden or self.mApp.mGameMode == GameMode.TreeOfWisdom or self.mApp.IsSquirrelLevel():
-        self.mNumWaves = 0
-    elif self.mApp.mGameMode == GameMode.ChallengeWhackAZombie:
-        self.mNumWaves = 12
-    elif self.mApp.mGameMode in [ \
-        GameMode.ChallengeWallnutBowling, GameMode.ChallengeAirRaid, GameMode.ChallengeGraveDanger, \
-        GameMode.ChallengeHighGravity, GameMode.ChallengePortalCombat, GameMode.ChallengeWarAndPeas, \
-        GameMode.ChallengeInvisighoul \
-    ]:
-        self.mNumWaves = 20
-    elif (self.mApp.IsStormyNightLevel() or self.mApp.IsLittleTroubleLevel() or
-          self.mApp.IsBungeeBlitzLevel() or self.mApp.mGameMode == GameMode.ChallengeColumn or
-          self.mApp.IsShovelLevel() or self.mApp.mGameMode == GameMode.ChallengeWarAndPeas2 or
-          self.mApp.mGameMode == GameMode.ChallengeWallnutBowling2 or
-          self.mApp.mGameMode == GameMode.ChallengePogoParty):
-        self.mNumWaves = 30
-    else:
-        self.mNumWaves = 40
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+# 名单里的 PickZombieWaves 是上一版钩的目标——那一版已经不再装载，但老会话里可能还挂着。
+for _legacy_hook_name in [
+'Board_PickZombieType__MaxSpawnDensity',
+]:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
 
-    zombiePicker = ZombiePicker()
-    self.ZombiePickerInit(zombiePicker)
-    introducedZombieType = self.GetIntroducedZombieType()
+if MAXPOINT_CHECK:
+    @M.HookTo(Board.PickZombieType)
+    def Board_PickZombieType__MaxSpawnDensity(orig, self, theZombiePoints, theWaveIndex, theZombiePicker):
+        # 先顶点数、再走原版挑怪：orig 必须在写之后，否则这一轮拿到的还是原点数。
+        theZombiePicker.mZombiePoints = 233333
+        return orig(self, theZombiePoints, theWaveIndex, theZombiePicker)
 
-    for i in range(self.mNumWaves):
-        self.ZombiePickerInitForWave(zombiePicker)
-        self.mZombiesInWave[i, 0] = ZombieType.Invalid
-        isFlagWave = self.IsFlagWave(i)
-        isBeforeLastWave = (i == self.mNumWaves - 1)
-
-        if self.mApp.IsBungeeBlitzLevel() and isFlagWave:
-            for j in range(5):
-                self.PutZombieInWave(ZombieType.Bungee, i, zombiePicker)
-            if not isBeforeLastWave:
-                if (self.mApp.IsAdventureMode() or self.mApp.IsQuickPlayMode()) and isBeforeLastWave:
-                    self.PutInMissingZombies(i, zombiePicker)
-                continue
-
-        if self.mApp.mGameMode == GameMode.ChallengeLastStand:
-            zombiePicker.mZombiePoints = (self.mChallenge.mSurvivalStage * self.GetNumWavesPerSurvivalStage() + i + 10) * 2 // 5 + 1
-        elif self.mApp.IsSurvivalMode() and self.mChallenge.mSurvivalStage > 0:
-            zombiePicker.mZombiePoints = (self.mChallenge.mSurvivalStage * self.GetNumWavesPerSurvivalStage() + i) * 2 // 5 + 1
-        elif self.mApp.IsAdventureMode() and self.mApp.HasFinishedAdventure() and self.mLevel != 5:
-            zombiePicker.mZombiePoints = i * 2 // 5 + 1
-        else:
-            zombiePicker.mZombiePoints = i // 3 + 1
-
-        if isFlagWave:
-            num2 = Math.Min(zombiePicker.mZombiePoints, 8)
-            zombiePicker.mZombiePoints = int(zombiePicker.mZombiePoints * 2.5)
-            if self.mApp.mGameMode != GameMode.ChallengeWarAndPeas and self.mApp.mGameMode != GameMode.ChallengeWarAndPeas2:
-                for k in range(num2):
-                    self.PutZombieInWave(ZombieType.Normal, i, zombiePicker)
-                self.PutZombieInWave(ZombieType.Flag, i, zombiePicker)
-
-        if self.mApp.mGameMode == GameMode.ChallengeColumn:
-            zombiePicker.mZombiePoints *= 6
-        elif self.mApp.IsLittleTroubleLevel() or self.mApp.IsWallnutBowlingLevel():
-            zombiePicker.mZombiePoints *= 4
-        elif self.mApp.IsMiniBossLevel():
-            zombiePicker.mZombiePoints *= 3
-        elif self.mApp.IsStormyNightLevel() and (self.mApp.IsAdventureMode() or self.mApp.IsQuickPlayMode()):
-            zombiePicker.mZombiePoints *= 3
-        elif (self.mApp.IsShovelLevel() or self.mApp.IsBungeeBlitzLevel() or
-              self.mApp.mGameMode == GameMode.ChallengePortalCombat or
-              self.mApp.mGameMode == GameMode.ChallengeInvisighoul):
-            zombiePicker.mZombiePoints *= 2
-
-        if introducedZombieType != ZombieType.Invalid and introducedZombieType != ZombieType.DuckyTube:
-            flag3 = False
-            if introducedZombieType == ZombieType.Digger or introducedZombieType == ZombieType.Balloon:
-                if i + 1 == 7 or isBeforeLastWave:
-                    flag3 = True
-            elif introducedZombieType == ZombieType.Yeti:
-                if i == self.mNumWaves // 2 and not self.mApp.mKilledYetiAndRestarted and not self.mApp.IsQuickPlayMode():
-                    flag3 = True
-            elif i == self.mNumWaves // 2 or isBeforeLastWave:
-                flag3 = True
-
-            if flag3:
-                self.PutZombieInWave(introducedZombieType, i, zombiePicker)
-
-        if self.mLevel == 50 and isBeforeLastWave:
-            self.PutZombieInWave(ZombieType.Gargantuar, i, zombiePicker)
-
-        if (self.mApp.IsAdventureMode() or self.mApp.IsQuickPlayMode()) and isBeforeLastWave:
-            self.PutInMissingZombies(i, zombiePicker)
-
-        if self.mApp.mGameMode == GameMode.ChallengeColumn:
-            if i % 10 == 5:
-                for l in range(10):
-                    self.PutZombieInWave(ZombieType.Ladder, i, zombiePicker)
-            if i % 10 == 8:
-                for m in range(10):
-                    self.PutZombieInWave(ZombieType.JackInTheBox, i, zombiePicker)
-            if i == 19:
-                for n in range(3):
-                    self.PutZombieInWave(ZombieType.Gargantuar, i, zombiePicker)
-            if i == 29:
-                for num3 in range(5):
-                    self.PutZombieInWave(ZombieType.Gargantuar, i, zombiePicker)
-
-        if MAXPOINT_CHECK:
-            zombiePicker.mZombiePoints = 233333
-        while zombiePicker.mZombiePoints > 0 and zombiePicker.mZombieCount < 50:
-            theZombieType = self.PickZombieType(zombiePicker.mZombiePoints, i, zombiePicker)
-            self.PutZombieInWave(theZombieType, i, zombiePicker)
+    print("最大密度已开启：顶满每波点数，未重写 PickZombieWaves")

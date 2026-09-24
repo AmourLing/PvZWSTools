@@ -56,6 +56,8 @@
 # 反面教材，别照抄：游戏自带的 'u' 键作弊（GameSelector.cs:1250-1257）无脑把 mPurchases[0..79] 写成 1、
 # 再把 7 号玉米加农炮清回 0，最后 EraseFile 删掉整份冒险存档。
 
+# @hook-slug: UnlockStore
+# 注：本脚本的钩子是 globals()[fn.__name__] 动态绑定的，卸载靠 SU_HOOK_NAMES 名单
 import clr
 
 clr.AddReference("System")
@@ -79,7 +81,7 @@ SU_PURCHASE_COUNT = 80
 
 app = G.gLawnApp
 
-SU_HOOK_NAMES = ["StoreUnlock_Unavailable", "StoreUnlock_ComingSoon", "StoreUnlock_PageShown"]
+SU_HOOK_NAMES = ["StoreScreen_IsItemUnavailable__UnlockStore", "StoreScreen_IsComingSoon__UnlockStore", "StoreScreen_IsPageShown__UnlockStore"]
 
 # 下标 = (int)StoreItem，值 = 已拥有/已买满的取值。规则见文件头，只增不减。
 SU_OWNED = {
@@ -147,15 +149,15 @@ if MODE_PARAM == 2:
                 SU_OUT.append(_n + " 卸载失败: " + str(_e))
 
 
-def StoreUnlock_Unavailable(orig, self, theStoreItem):
+def StoreScreen_IsItemUnavailable__UnlockStore(orig, self, theStoreItem):
     return False
 
 
-def StoreUnlock_ComingSoon(orig, self, theStoreItem):
+def StoreScreen_IsComingSoon__UnlockStore(orig, self, theStoreItem):
     return False
 
 
-def StoreUnlock_PageShown(orig, self, thePage):
+def StoreScreen_IsPageShown__UnlockStore(orig, self, thePage):
     # 放行 = True。返回 False 会让 StoreScreen.cs:490 的 do/while(!IsPageShown) 转成死循环。
     return True
 
@@ -298,9 +300,9 @@ def StoreUnlock_OpenGates():
     except Exception as e:
         SU_OUT.append("金币读取失败: " + str(e))
     targets = [
-        (StoreUnlock_Unavailable, StoreScreen.IsItemUnavailable, "IsItemUnavailable -> False"),
-        (StoreUnlock_ComingSoon, StoreScreen.IsComingSoon, "IsComingSoon -> False"),
-        (StoreUnlock_PageShown, StoreScreen.IsPageShown, "IsPageShown -> True"),
+        (StoreScreen_IsItemUnavailable__UnlockStore, StoreScreen.IsItemUnavailable, "IsItemUnavailable -> False"),
+        (StoreScreen_IsComingSoon__UnlockStore, StoreScreen.IsComingSoon, "IsComingSoon -> False"),
+        (StoreScreen_IsPageShown__UnlockStore, StoreScreen.IsPageShown, "IsPageShown -> True"),
     ]
     for fn, method, desc in targets:
         try:

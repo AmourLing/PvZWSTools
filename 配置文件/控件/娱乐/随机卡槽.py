@@ -1,6 +1,8 @@
 #随机卡槽
 #2025.10.13
 
+# @hook-slug: RandomSeedPacket
+# @button-flag: RANDOM_PACKET_CHECK
 RANDOM_PACKET_CHECK = {CHECK}
 
 from Lawn import *
@@ -8,8 +10,8 @@ from Sexy import *
 from Sexy.TodLib import *
 from LawnMod import MonoModUtils as M
 
-# 升级清场：钩子函数改名后，旧名仍带着旧钩子驻留在共享作用域，先卸载再装新的
-for _legacy_hook_name in ['CursorObject_DrawTopLayer', 'Coin_Draw']:
+# 幂等守卫：本脚本重跑时旧 HookResult 还被旧名字引用着，会和新装的那份叠一层，先卸载再装新的
+for _legacy_hook_name in ['CursorObject_DrawTopLayer__RandomSeedPacket', 'SeedBank_Draw__RandomSeedPacket']:
     if _legacy_hook_name in globals():
         try:
             globals()[_legacy_hook_name].UnHook()
@@ -17,7 +19,7 @@ for _legacy_hook_name in ['CursorObject_DrawTopLayer', 'Coin_Draw']:
             pass
 
 @M.HookTo(SeedBank.Draw)
-def Coin_Draw_RndSlot(orig,self,g):
+def SeedBank_Draw__RandomSeedPacket(orig,self,g):
     if RANDOM_PACKET_CHECK:
         if self.mBoard!=None and (not self.mBoard.mPaused):
             for i in range(self.mNumPackets):
@@ -30,7 +32,7 @@ def Coin_Draw_RndSlot(orig,self,g):
     orig(self,g)
 
 @M.HookTo(CursorObject.DrawTopLayer)
-def CursorObject_DrawTopLayer_RndSlot(orig,self,g):
+def CursorObject_DrawTopLayer__RandomSeedPacket(orig,self,g):
     if RANDOM_PACKET_CHECK:
         if self.mBoard!=None and (not self.mBoard.mPaused):
             if self.mCursorType==CursorType.PlantFromBank:

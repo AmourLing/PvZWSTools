@@ -21,6 +21,7 @@
 # 低频钩子（只在僵尸诞生瞬间触发），所以就地打日志是安全的；
 # 卡槽绘制链那种每帧每卡的钩子才禁止日志（见 Dev_卡槽定价改写.py）。
 
+# @hook-slug: DevSpawnJunction
 from Lawn import *
 from Sexy import *
 from Sexy import GlobalStaticVars as G
@@ -35,7 +36,7 @@ _ZsSeenBoardId = None
 
 # 钩子名全仓唯一；重跑前先卸掉自己上一轮的（共享 static ScriptScope，
 # IronPyInteractive.cs:171/206/293；先例 test1.py:24）
-MY_HOOK_NAMES = ["DevSpawn_ZombieInitialize"]
+MY_HOOK_NAMES = ["Zombie_ZombieInitialize__DevSpawnJunction"]
 for _n in MY_HOOK_NAMES:
     if _n in globals():
         try:
@@ -51,8 +52,17 @@ def ZsLog(msg):
         pass
 
 
+# 幂等守卫：本脚本重跑时旧 HookResult 还被名字引用着，会和新装的那份叠一层
+#（一次调用触发两次）。名单只列本脚本当前的钩子，不替改名前的历史名字兜底。
+for _legacy_hook_name in ['Zombie_ZombieInitialize__DevSpawnJunction']:
+    if _legacy_hook_name in globals():
+        try:
+            globals()[_legacy_hook_name].UnHook()
+        except Exception:
+            pass
+
 @M.HookTo(Zombie.ZombieInitialize)
-def DevSpawn_ZombieInitialize(orig, self, theRow, theType, theVariant, theParentZombie, theFromWave):
+def Zombie_ZombieInitialize__DevSpawnJunction(orig, self, theRow, theType, theVariant, theParentZombie, theFromWave):
     global _ZsSeenBoardId
     orig(self, theRow, theType, theVariant, theParentZombie, theFromWave)
     try:
