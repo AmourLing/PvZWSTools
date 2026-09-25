@@ -42,6 +42,7 @@ public class MainWindowViewModel:ViewModelBase
     private string _sizeText = "100%";
     private bool _stopAutoConnect;
     private bool _suppressConnectionMessage;
+    private bool _suppressExitPrompt;
 
     // ---------- 自动更新进度 UI 状态 ----------
     private bool _isUpdating;
@@ -340,6 +341,13 @@ public class MainWindowViewModel:ViewModelBase
         set => SetProperty(ref _suppressConnectionMessage, value);
     }
 
+    /// <summary>退出时不再弹确认框（确认框里勾选"不再提示"或设置里勾选后为 true）。退出仍走安全退出。</summary>
+    public bool SuppressExitPrompt
+    {
+        get => _suppressExitPrompt;
+        set => SetProperty(ref _suppressExitPrompt, value);
+    }
+
     public ICommand UpdateVersionCommand { get; }
 
     public string WsAddress
@@ -355,6 +363,23 @@ public class MainWindowViewModel:ViewModelBase
     public void SaveSettings()
     {
         _settingsService.Save();
+    }
+
+    /// <summary>
+    /// 退出确认框里勾选"不再提示"：写回设置并持久化，下次退出直接安全退出、不再二次确认。
+    /// </summary>
+    public void RememberSuppressExitPrompt()
+    {
+        try
+        {
+            _settingsService.Settings.SuppressExitPrompt = true;
+            _settingsService.Save();
+            SuppressExitPrompt = true;
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"保存退出提示设置失败: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -414,6 +439,27 @@ public class MainWindowViewModel:ViewModelBase
         catch(Exception ex)
         {
             Log.Error($"按钮状态保存失败: {ex}");
+        }
+    }
+
+    /// <summary>
+    /// 安全退出的共享清理：停自动重连定时器 → 保存按钮状态 → 断开连接。
+    /// 与 Android 端 MainActivity.SafeExit 同一份语义，由 View 层在用户确认退出后调用。
+    /// </summary>
+    public void PrepareExit()
+    {
+        try
+        {
+            Log.Info("用户确认退出，执行安全退出");
+            _autoConnectTimer?.Stop();
+            _stopAutoConnect = true;
+            SaveButtonStates();
+            if(_connection.IsConnected)
+                _connection.Disconnect();
+        }
+        catch(Exception ex)
+        {
+            Log.Error($"安全退出时发生异常: {ex.Message}");
         }
     }
 
@@ -579,6 +625,7 @@ public class MainWindowViewModel:ViewModelBase
         AutoConnectEnabled = settings.AutoConnectEnabled;
         SuppressConnectionMessage = settings.SuppressConnectionMessage;
         AllowAutoUpdateButtonStatus = settings.AllowAutoUpdateButtonStatus;
+        SuppressExitPrompt = settings.SuppressExitPrompt;
     }
 
     private void OpenPath()

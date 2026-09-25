@@ -37,6 +37,13 @@ public class AppSettings
     public bool AutoApplyLastState { get; set; }
 
     /// <summary>
+    /// 退出时不再弹出确认提示（在退出确认框里勾选"不再提示"后记住）。
+    /// 跳过的只是二次确认，退出时仍执行安全退出（保存状态、断开连接）。
+    /// </summary>
+    [Setting("退出时不弹出确认提示")]
+    public bool SuppressExitPrompt { get; set; }
+
+    /// <summary>
     /// 通过反射自动发现所有带 [Setting] 特性的布尔设置项。
     /// 新增设置项时无需手动修改日志与设置对话框代码（自动注册）。
     /// </summary>

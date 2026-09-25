@@ -25,6 +25,9 @@ public class AndroidAppSettings
     [Setting("自动应用上次配置")]
     public bool AutoApplyLastState { get; set; }  // 启动时自动应用上次关闭前保存的状态（关闭时始终保存"上次状态"）
 
+    [Setting("退出时不弹出确认提示")]
+    public bool SuppressExitPrompt { get; set; }  // 退出时不再弹确认框（在确认框里勾选"不再提示"后记住；退出仍走 SafeExit）
+
     public string LastWebSocketAddress { get; set; }  // 上次连接成功的WebSocket地址
 
     /// <summary>界面语种："zh"（默认）或 "en"。中文原文就是文案的键，所以这里只决定要不要查英文表。

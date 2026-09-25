@@ -311,6 +311,8 @@ public static partial class Loc
         ["状态服务未初始化"] = "State service not initialized",
         ["界面语言（改后要重启）"] = "Language (needs a restart)",
         ["确定要退出吗？当前设置已自动保存。"] = "Quit now? Your settings are already saved.",
+        ["退出时不弹出确认提示"] = "Don't ask for confirmation on exit",
+        ["不再弹出退出提示"] = "Don't show this exit prompt again",
         ["该方案没有保存内容"] = "This preset has no saved content",
         ["请稍后..."] = "Please wait...",
         ["请输入WebSocket地址"] = "Enter the WebSocket address",

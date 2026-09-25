@@ -77,11 +77,34 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             return;
         }
 
-        // 抽屉关闭时，弹出退出确认，避免误触直接退出
+        // 设置里勾了"退出时不弹出确认提示"：跳过确认，直接安全退出
+        if(_appSettings.SuppressExitPrompt)
+        {
+            SafeExit();
+            return;
+        }
+
+        // 抽屉关闭时，弹出退出确认，避免误触直接退出；勾选"不再提示"后记住，下次直接退出
+        var container = new LinearLayout(this) { Orientation = Orientation.Vertical };
+        int pad = (int)(20 * Resources.DisplayMetrics.Density);
+        container.SetPadding(pad, pad / 2, pad, 0);
+        var message = new TextView(this) { Text = Loc.T("确定要退出吗？当前设置已自动保存。") };
+        var dontAsk = new CheckBox(this) { Text = Loc.T("不再弹出退出提示") };
+        container.AddView(message);
+        container.AddView(dontAsk);
+
         new AndroidX.AppCompat.App.AlertDialog.Builder(this)
             .SetTitle(Loc.T("退出应用"))
-            .SetMessage(Loc.T("确定要退出吗？当前设置已自动保存。"))
-            .SetPositiveButton(Loc.T("退出"), (sender, e) => SafeExit())
+            .SetView(container)
+            .SetPositiveButton(Loc.T("退出"), (sender, e) =>
+            {
+                if(dontAsk.Checked)
+                {
+                    _appSettings.SuppressExitPrompt = true;
+                    _appSettings.Save(_settingsPath);
+                }
+                SafeExit();
+            })
             .SetNegativeButton(Loc.T("取消"), (IDialogInterfaceOnClickListener)null)
             .Show();
     }
@@ -813,6 +836,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         var chkAutoUpdateButtonStatus = CreateSettingCheckBox(this, Loc.T("允许自动更新按钮状态"), _appSettings.AllowAutoUpdateButtonStatus, 10);
         var chkAutoCheckUpdate = CreateSettingCheckBox(this, Loc.T("启动时自动检查更新"), _appSettings.AutoCheckUpdateEnabled, 10);
         var chkAutoApplyLastState = CreateSettingCheckBox(this, Loc.T("自动应用上次配置"), _appSettings.AutoApplyLastState, 10);
+        var chkSuppressExitPrompt = CreateSettingCheckBox(this, Loc.T("退出时不弹出确认提示"), _appSettings.SuppressExitPrompt, 10);
 
         // 语言名故意不翻译：这一组就是切语言的入口，两种语言下都显示各自本名才不会找不到自己。
         var rbLangZh = new RadioButton(this) { Text = "简体中文" };
@@ -851,6 +875,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
         layout.AddView(chkAutoUpdateButtonStatus);
         layout.AddView(chkAutoCheckUpdate);
         layout.AddView(chkAutoApplyLastState);
+        layout.AddView(chkSuppressExitPrompt);
         layout.AddView(txtLangLabel);
         layout.AddView(langGroup);
         layout.AddView(txtWsAddressLabel);
@@ -867,6 +892,7 @@ public class MainActivity:AppCompatActivity, NavigationView.IOnNavigationItemSel
             _appSettings.AllowAutoUpdateButtonStatus = chkAutoUpdateButtonStatus.Checked;
             _appSettings.AutoCheckUpdateEnabled = chkAutoCheckUpdate.Checked;
             _appSettings.AutoApplyLastState = chkAutoApplyLastState.Checked;
+            _appSettings.SuppressExitPrompt = chkSuppressExitPrompt.Checked;
             var address = txtWsAddress.Text?.Trim();
             if(!string.IsNullOrEmpty(address))
             {

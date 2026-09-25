@@ -223,8 +223,22 @@ public partial class MainWindow:Window
 
     protected override void OnClosing(CancelEventArgs e)
     {
-        // 窗口关闭时保存按钮状态与常用统计
-        try { _viewModel.SaveButtonStates(); } catch { }
+        // 点叉 / Alt+F4 不直接退：先弹确认（对齐 Android 端返回键的退出确认）；
+        // 设置里勾了"不再提示"则跳过确认，但退出流程一样走安全退出
+        if(!_viewModel.SuppressExitPrompt)
+        {
+            var dialog = new ExitConfirmDialog { Owner = this };
+            if(dialog.ShowDialog() != true)
+            {
+                e.Cancel = true;
+                return;
+            }
+            if(dialog.DontAskAgain)
+                _viewModel.RememberSuppressExitPrompt();
+        }
+
+        // 用户确认退出：安全退出（停自动重连 → 保存按钮状态 → 断开连接），再补上常用统计
+        _viewModel.PrepareExit();
         try { _shell.SaveUsage(); } catch { }
         base.OnClosing(e);
     }
