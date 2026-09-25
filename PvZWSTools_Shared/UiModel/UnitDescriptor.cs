@@ -255,6 +255,10 @@ public sealed class UnitDescriptor : INotifyPropertyChanged
     /// <summary>组里有没有应用这个收尾动作；有则组首显示功能名。</summary>
     public bool HasAction => Command != null;
 
+    /// <summary>成员里出现了整块面板（多选块），横排 WrapPanel 会把后面的成员挤到这块的
+    /// 右侧悬空，所以这一类组改成竖排：一块占一行。</summary>
+    public bool StacksMembers => Members.Any(m => m.Kind == UnitKind.Chips);
+
     /// <summary>循环取值单元直接把自己的值当文字显示。</summary>
     public string DisplayValue => State.Text ?? string.Empty;
     public bool IsOn => State.Text == On;
