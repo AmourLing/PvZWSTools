@@ -434,7 +434,8 @@ public static class UnitCatalog
                 Sw("随机卡槽", fn + "RandomPacket"),
                 Sw("手套常驻", fn + "GloveAlways", kw: "glove"),
                 Sw("融合常驻", fn + "AlwaysFusionMode", kw: "fusion"),
-                Sw("垃圾桶常驻", fn + "AlwaysHasTrashcan", kw: "trashcan")),
+                Sw("垃圾桶常驻", fn + "AlwaysHasTrashcan", kw: "trashcan"),
+                Sw("紫卡直接种植", fn + "PurpleDirectPlant", kw: "purple")),
 
             Page("快捷脚本", "\uE756", NavKind.Script,
                 Pk("快捷脚本", q + "QMod", q + "QModOptions", q + "QModSelected",

@@ -206,6 +206,7 @@ public static partial class Loc
         ["手套常驻"] = "Glove always on",
         ["融合常驻"] = "Fusion always on",
         ["垃圾桶常驻"] = "Trash can always on",
+        ["紫卡直接种植"] = "Direct-plant purple cards",
         // ---------- 清单：出怪类型（40 个绰号一律用 ZombieType 枚举名，和脚本回传的英文名同源）----------
         ["普僵"] = "Normal",
         ["旗子"] = "Flag",

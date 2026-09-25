@@ -6,6 +6,7 @@ Check_button_list = [
     "ALWAYS_FUSION_MODE_CHECK", #尝试常驻融合玩法
     "ALWAYS_HAS_TRASHCAN_CHECK", #尝试在其他使用关卡使用垃圾桶
     "GLOVE_ALWAYS_CHECK", #尝试在其他使用关卡使用手套
+    "PURPLE_DIRECT_CHECK", #紫卡直接种植：场上没有底座植物也能选中紫卡，并直接种在合规的地方（地形按底座植物判）。
     "RANDOM_CARD_CHECK", #随机卡片
     "RANDOM_PACKET_CHECK", #随机卡槽
     "RANDOM_VASE_CHECK", #随机罐子

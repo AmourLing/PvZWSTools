@@ -17,6 +17,7 @@ public class FunViewModel:ViewModelBase
         ["GLOVE_ALWAYS_CHECK"] = nameof(GloveAlways),
         ["ALWAYS_FUSION_MODE_CHECK"] = nameof(AlwaysFusionMode),
         ["ALWAYS_HAS_TRASHCAN_CHECK"] = nameof(AlwaysHasTrashcan),
+        ["PURPLE_DIRECT_CHECK"] = nameof(PurpleDirectPlant),
     };
 
     public ICommand UpdateButtonStatusCommand => new RelayCommand(async _ =>
@@ -84,6 +85,14 @@ public class FunViewModel:ViewModelBase
         get => _alwaysHasTrashcan;
         set { _alwaysHasTrashcan = value; OnPropertyChanged(); }
     }
+
+    private string _purpleDirectPlant = Constants.c_Symbol_Off;
+
+    public string PurpleDirectPlant
+    {
+        get => _purpleDirectPlant;
+        set { _purpleDirectPlant = value; OnPropertyChanged(); }
+    }
     public ICommand RandomVaseCommand => new RelayCommand(async _ =>
     {
         var __old = RandomVase;
@@ -135,5 +144,14 @@ public class FunViewModel:ViewModelBase
         if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "垃圾桶常驻",
             new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(AlwaysHasTrashcan) }))
             AlwaysHasTrashcan = __old;
+    });
+
+    public ICommand PurpleDirectPlantCommand => new RelayCommand(async _ =>
+    {
+        var __old = PurpleDirectPlant;
+        PurpleDirectPlant = ButtonHelper.ToggleCheck(PurpleDirectPlant);
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Fun, "紫卡直接种植",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(PurpleDirectPlant) }))
+            PurpleDirectPlant = __old;
     });
 }
