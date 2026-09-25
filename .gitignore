@@ -43,7 +43,7 @@ __pycache__/
 # ── 临时/本地项目，不提交 ──
 UpdateTest/
 VersionTest/
-SkillVerify/
+ScriptVerifyHost/
 .git_backup_*/
 
 # ── 只在本机用的开发/发布工具，不进公开仓库 ──
