@@ -34,16 +34,19 @@
   <ItemGroup>
     <Content Include="$(SolutionDir)配置文件\**\*" Link="配置文件\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="Always" />
     <Content Include="$(SolutionDir)readme.md" CopyToOutputDirectory="Always" />
+    <!--  许可声明要随产物走：MIT 与依赖们的许可证都写着"副本中须包含本声明"，而安装器
+          和 zip 打包的都是这个输出目录，不放进来用户拿到的东西里就没有任何许可信息。
+          THIRD-PARTY-NOTICES.txt 列的是第三方依赖的授权，不是本工程自己的 MIT。 -->
+    <Content Include="$(SolutionDir)LICENSE" CopyToOutputDirectory="Always" />
+    <Content Include="$(SolutionDir)THIRD-PARTY-NOTICES.txt" CopyToOutputDirectory="Always" />
     <Content Include="Resources\icon.ico" CopyToOutputDirectory="Always" />
-    <!--  花园页的背景图，取自游戏的 Background_Greenhouse / _Night / Background_MushroomGarden /
-          aquarium1，整张不裁（原生 1680x720，按 resources.xml 的 invscale=1.2 出成 1400x600），
-          格位坐标与图同一套像素，换算见 PvZWSTools_Shared\UiModel\GardenLayout.cs。
+    <!--  花园页背景，格位坐标与图同一套像素，换算见 PvZWSTools_Shared\UiModel\GardenLayout.cs。
+          这四张是从游戏 Content/images 的 xnb 解包转出来的，著作权在 PopCap/EA，不能进仓库，
+          已在 .gitignore 里忽略，只留在本机。必须是 Resource 而不是随目录走的 Content ——
+          界面里的 Image 用的是 pack URI，松散文件不会被这个 URI 找到。
           进不进程序集看 HasGarden（仓库根 Directory.Build.props），和 Sharedstring.HasGarden
-          管的那个导航入口同源：默认 Debug 有、Release 没有，Release 想出带花园的包就
-          -p:HasGarden=true。四张 JPEG 合计 ~700 KiB，而框架依赖的发布包总共才 940 KiB，
-          用不上的东西不占下载。
-          必须是 Resource 而不是随目录走的 Content —— 界面里的 Image 用的是 pack URI，
-          松散文件不会被这个 URI 找到。  -->
+          管的那个导航入口同源：默认 Debug 有、Release 没有。发布包因此不含这些图，
+          谁要自己出带花园的包，得自备素材并接受那部分是别人的版权。 -->
     <Resource Include="Resources\garden\*.jpg" Condition="'$(HasGarden)' == 'true'" />
   </ItemGroup>
   <ItemGroup>

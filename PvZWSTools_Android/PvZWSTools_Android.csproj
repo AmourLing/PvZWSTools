@@ -43,6 +43,10 @@
 
     <ItemGroup>
         <AndroidAsset Include="Assets\need.zip" />
+        <!--  许可声明要随 APK 一起走：MIT 和依赖们的许可证都写着"副本中须包含本声明"。
+              安卓这边只有 AndroidAsset 才进得了包，写成 Content 不会被打进去。 -->
+        <AndroidAsset Include="$(SolutionDir)LICENSE" Link="LICENSE" />
+        <AndroidAsset Include="$(SolutionDir)THIRD-PARTY-NOTICES.txt" Link="THIRD-PARTY-NOTICES.txt" />
     </ItemGroup>
 
     <Target Name="CleanManifestBom">
