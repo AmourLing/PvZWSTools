@@ -50,6 +50,20 @@
           谁要自己出带花园的包，得自备素材并接受那部分是别人的版权。 -->
     <Resource Include="Resources\garden\*.jpg" Condition="'$(HasGarden)' == 'true'" />
   </ItemGroup>
+  <!--  那四张背景图不入库（著作权在 PopCap/EA），所以 glob 在别的机器上会收到 0 个文件，
+        而 HasGarden=true 照样把导航入口打开 —— 出一个「有花园页、点进去背景全空」的包，
+        且一声不响。这里把它变成硬失败。数 4 而不是判 Exists 单个文件，是因为少哪张都是
+        少一张空背景，不会另报错。 -->
+  <Target Name="GuardGardenBackdrops" BeforeTargets="BeforeBuild" Condition="'$(HasGarden)' == 'true'">
+    <ItemGroup>
+      <_GardenBackdrop Include="Resources\garden\*.jpg" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_GardenBackdropCount>@(_GardenBackdrop->Count())</_GardenBackdropCount>
+    </PropertyGroup>
+    <Error Condition="'$(_GardenBackdropCount)' != '4'"
+           Text="HasGarden=true，但 Resources\garden 下只数到 $(_GardenBackdropCount) 张背景图（应为 4 张）。这四张是游戏解包件、不在仓库里，构建机上必须自备；不要改成 false 蒙过去，那样出来的包导航里有花园、点进去背景全空。" />
+  </Target>
   <ItemGroup>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
       <_Parameter1>BuildTimestamp</_Parameter1>
