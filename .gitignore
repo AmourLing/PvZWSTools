@@ -14,6 +14,8 @@ publish/
 *.keystore
 # 手册 PDF 由 文档/_build/gen_manual.py 生成
 文档/**/*.pdf
+# 可变字体定到 400 字重的中间产物（单个 10~15 MB，每次构建可复用，不该入库）
+文档/_build/fonts/
 # 更新器运行时在 exe 旁下载的临时目录
 update/
 

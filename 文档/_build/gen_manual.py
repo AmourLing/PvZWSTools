@@ -81,11 +81,50 @@ MANUAL_VERSION = _cli_version()
 if MANUAL_VERSION:
     COVER['meta'] = '文档版本 %s · 官方交流群 1034609947' % MANUAL_VERSION
 
-# ── 字体(本机字体优先) ──
-pdfmetrics.registerFont(TTFont('SimSun', 'C:/Windows/Fonts/simsun.ttc', subfontIndex=0))
-pdfmetrics.registerFont(TTFont('SimHei', 'C:/Windows/Fonts/simhei.ttf'))
-registerFontFamily('SimSun', normal='SimSun', bold='SimHei', italic='SimSun', boldItalic='SimHei')
-registerFontFamily('SimHei', normal='SimHei', bold='SimHei', italic='SimHei', boldItalic='SimHei')
+# ── 字体：只用允许把轮廓嵌进文档的开源字体 ──
+# SimSun/SimHei/微软雅黑的 OS/2.fsType 都是 0x0008（仅允许点阵嵌入），而手册 PDF 走 Release
+# 附件和群文件对外分发，reportlab 嵌进去的是轮廓子集，超出它授予的范围。Noto Serif/Sans SC
+# 是 SIL OFL、fsType=0x0000（可安装嵌入），对应顶替原来的宋体/黑体。
+# 系统里这两个是可变字体，母版字重偏轻且 name 表自称 ExtraLight/Thin，所以先定到 wght=400
+# 再喂 reportlab：一是观感回到旧版（同字号墨覆盖率实测 SimSun 3.80% / NotoSerif400 3.85%，
+# SimHei 3.88% / NotoSans400 4.07%），二是 PDF 里的内嵌署名会如实写 Regular 而非 Thin。
+# 必须顺手改 name 表：reportlab 按字体内部名缓存 face，不改名的不同字重会被当成同一份。
+VF_FONTS = {'NotoSerifSC': 'C:/Windows/Fonts/NotoSerifSC-VF.ttf',
+            'NotoSansSC': 'C:/Windows/Fonts/NotoSansSC-VF.ttf'}
+FONT_DIR = os.path.join(BUILD_DIR, 'fonts')
+
+
+def _instance_regular(vf_name):
+    """把可变字体定到 wght=400 存成静态 TTF；生成过就复用。"""
+    src = VF_FONTS[vf_name]
+    if not os.path.isfile(src):
+        raise SystemExit('缺少可嵌入字体 %s：%s\n'
+                         '不要退回 SimSun/SimHei——它们的 fsType 禁止轮廓嵌入，'
+                         '装一套 SIL OFL 的 Noto/思源中文再出手册。' % (vf_name, src))
+    out = os.path.join(FONT_DIR, '%s-Regular.ttf' % vf_name)
+    if os.path.isfile(out) and os.path.getmtime(out) >= os.path.getmtime(src):
+        return out
+    try:
+        from fontTools.ttLib import TTFont as VarTTFont
+        from fontTools.varLib.instancer import instantiateVariableFont
+    except ImportError:
+        raise SystemExit('需要 fontTools 才能把可变字体定到 400 字重：'
+                         '"%s" -m pip install fonttools' % sys.executable)
+    os.makedirs(FONT_DIR, exist_ok=True)
+    f = VarTTFont(src)
+    instantiateVariableFont(f, {'wght': 400}, inplace=True, updateFontNames=True)
+    f.save(out)
+    return out
+
+
+BODY_FONT = 'NotoSerifSC-Regular'
+HEAD_FONT = 'NotoSansSC-Regular'
+BODY_PATH = _instance_regular('NotoSerifSC')
+HEAD_PATH = _instance_regular('NotoSansSC')
+pdfmetrics.registerFont(TTFont(BODY_FONT, BODY_PATH))
+pdfmetrics.registerFont(TTFont(HEAD_FONT, HEAD_PATH))
+registerFontFamily(BODY_FONT, normal=BODY_FONT, bold=HEAD_FONT, italic=BODY_FONT, boldItalic=HEAD_FONT)
+registerFontFamily(HEAD_FONT, normal=HEAD_FONT, bold=HEAD_FONT, italic=HEAD_FONT, boldItalic=HEAD_FONT)
 
 PAGE_W, PAGE_H = A4
 M_LEFT = M_RIGHT = 2.2 * cm
@@ -95,15 +134,15 @@ AVAIL_W = PAGE_W - M_LEFT - M_RIGHT
 AVAIL_H = PAGE_H - M_TOP - M_BOTTOM
 
 # ── 段落样式 ──
-S_TITLE = ParagraphStyle('DocTitle', fontName='SimHei', fontSize=19, leading=27,
+S_TITLE = ParagraphStyle('DocTitle', fontName=HEAD_FONT, fontSize=19, leading=27,
                          alignment=TA_CENTER, textColor=TEXT_PRIMARY, spaceAfter=12)
-S_H1 = ParagraphStyle('H1', fontName='SimHei', fontSize=17, leading=25,
+S_H1 = ParagraphStyle('H1', fontName=HEAD_FONT, fontSize=17, leading=25,
                       alignment=TA_CENTER, textColor=TEXT_PRIMARY,
                       spaceBefore=18, spaceAfter=10)
-S_H2 = ParagraphStyle('H2', fontName='SimHei', fontSize=14, leading=20,
+S_H2 = ParagraphStyle('H2', fontName=HEAD_FONT, fontSize=14, leading=20,
                       alignment=TA_LEFT, textColor=TEXT_PRIMARY,
                       spaceBefore=14, spaceAfter=6)
-S_BODY = ParagraphStyle('Body', fontName='SimSun', fontSize=12, leading=20,
+S_BODY = ParagraphStyle('Body', fontName=BODY_FONT, fontSize=12, leading=20,
                         alignment=TA_JUSTIFY, textColor=TEXT_PRIMARY,
                         firstLineIndent=24, spaceAfter=6, wordWrap='CJK')
 S_BODY_NOIND = ParagraphStyle('BodyNoInd', parent=S_BODY, firstLineIndent=0)
@@ -111,20 +150,20 @@ S_NUM = ParagraphStyle('Num', parent=S_BODY, firstLineIndent=0, leftIndent=24,
                        spaceAfter=4)
 S_BULLET = ParagraphStyle('Bullet', parent=S_BODY, firstLineIndent=0, leftIndent=18,
                           spaceAfter=3)
-S_TOC_TITLE = ParagraphStyle('TocTitle', fontName='SimHei', fontSize=15, leading=22,
+S_TOC_TITLE = ParagraphStyle('TocTitle', fontName=HEAD_FONT, fontSize=15, leading=22,
                              alignment=TA_CENTER, textColor=TEXT_PRIMARY,
                              spaceBefore=8, spaceAfter=8)
-S_TH = ParagraphStyle('TH', fontName='SimHei', fontSize=11, leading=15.5,
+S_TH = ParagraphStyle('TH', fontName=HEAD_FONT, fontSize=11, leading=15.5,
                       alignment=TA_CENTER, textColor=colors.white, wordWrap='CJK')
-S_TD = ParagraphStyle('TD', fontName='SimSun', fontSize=11, leading=15.5,
+S_TD = ParagraphStyle('TD', fontName=BODY_FONT, fontSize=11, leading=15.5,
                       alignment=TA_LEFT, textColor=TEXT_PRIMARY, wordWrap='CJK')
 S_TD_C = ParagraphStyle('TDC', parent=S_TD, alignment=TA_CENTER)
-S_CALLOUT = ParagraphStyle('Callout', fontName='SimSun', fontSize=11, leading=17.5,
+S_CALLOUT = ParagraphStyle('Callout', fontName=BODY_FONT, fontSize=11, leading=17.5,
                            alignment=TA_LEFT, textColor=TEXT_PRIMARY, wordWrap='CJK')
-S_FAQ_Q = ParagraphStyle('FaqQ', fontName='SimHei', fontSize=12, leading=18,
+S_FAQ_Q = ParagraphStyle('FaqQ', fontName=HEAD_FONT, fontSize=12, leading=18,
                          alignment=TA_LEFT, textColor=TEXT_PRIMARY,
                          spaceBefore=10, spaceAfter=3)
-S_CODE = ParagraphStyle('Code', fontName='SimSun', fontSize=9.5, leading=13.5,
+S_CODE = ParagraphStyle('Code', fontName=BODY_FONT, fontSize=9.5, leading=13.5,
                         alignment=TA_LEFT, textColor=TEXT_PRIMARY,
                         backColor=CARD_BG, borderPadding=(6, 8, 6, 8),
                         spaceBefore=4, spaceAfter=8)
@@ -146,7 +185,7 @@ class ManualDoc(SimpleDocTemplate):
     def afterPage(self):
         c = self.canv
         c.saveState()
-        c.setFont('SimSun', 10.5)
+        c.setFont(BODY_FONT, 10.5)
         c.setFillColor(TEXT_MUTED)
         c.drawCentredString(PAGE_W / 2.0, 1.1 * cm, str(c.getPageNumber()))
         c.restoreState()
@@ -329,7 +368,7 @@ doc = ManualDoc(
     title='PvZWSTools 使用手册', author='AmourLing', creator='PvZWSTools',
     subject='PvZWSTools 玩家使用手册:功能介绍与操作说明')
 
-with open(MD_PATH, encoding='utf-8') as f:
+with open(MD_PATH, encoding='utf-8-sig') as f:
     md_lines = f.read().splitlines()
 
 intro, body_flow = build_story(md_lines)
@@ -341,9 +380,9 @@ story.append(Paragraph('目 录', S_TOC_TITLE))
 toc = TableOfContents()
 toc.dotsMinLevel = 0
 toc.levelStyles = [
-    ParagraphStyle('TOC1', fontName='SimHei', fontSize=12, leading=17,
+    ParagraphStyle('TOC1', fontName=HEAD_FONT, fontSize=12, leading=17,
                    leftIndent=16, firstLineIndent=-16, spaceBefore=4, textColor=TEXT_PRIMARY),
-    ParagraphStyle('TOC2', fontName='SimSun', fontSize=11, leading=15,
+    ParagraphStyle('TOC2', fontName=BODY_FONT, fontSize=11, leading=15,
                    leftIndent=34, firstLineIndent=-16, textColor=TEXT_PRIMARY),
 ]
 story.append(toc)
@@ -359,7 +398,11 @@ print('body pages OK ->', OUT_BODY)
 sys.path.insert(0, os.path.join(PDF_SKILL_DIR, 'scripts'))
 from cover_render import detect_fonts, render_cover  # noqa: E402
 
-render_cover('01', COVER, OUT_COVER, palette=COVER_PALETTE, fonts=detect_fonts())
+# 封面自己会 detect_fonts()，默认候选表里就是 SimHei/SimSun——那是插件的代码不是我们的，
+# 改它会被插件更新冲掉，所以用它的 overrides 把我们这两个可嵌入字体递进去。
+render_cover('01', COVER, OUT_COVER, palette=COVER_PALETTE,
+             fonts=detect_fonts(overrides={'sans': (HEAD_FONT, HEAD_PATH, None),
+                                           'serif': (BODY_FONT, BODY_PATH, None)}))
 print('cover OK ->', OUT_COVER)
 
 # ══════ 合并封面 + 正文(临时文件 + 原子替换,文件被占用也不会中断) ══════
