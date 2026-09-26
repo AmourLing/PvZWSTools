@@ -36,9 +36,10 @@
     <Content Include="$(SolutionDir)readme.md" CopyToOutputDirectory="Always" />
     <!--  许可声明要随产物走：MIT 与依赖们的许可证都写着"副本中须包含本声明"，而安装器
           和 zip 打包的都是这个输出目录，不放进来用户拿到的东西里就没有任何许可信息。
-          THIRD-PARTY-NOTICES.txt 列的是第三方依赖的授权，不是本工程自己的 MIT。 -->
+          THIRD-PARTY-NOTICES.md 列的是第三方依赖的授权，不是本工程自己的 MIT；
+          它由 文档\_build\gen_notices.py 从依赖解析结果生成，别手改。 -->
     <Content Include="$(SolutionDir)LICENSE" CopyToOutputDirectory="Always" />
-    <Content Include="$(SolutionDir)THIRD-PARTY-NOTICES.txt" CopyToOutputDirectory="Always" />
+    <Content Include="$(SolutionDir)THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="Always" />
     <Content Include="Resources\icon.ico" CopyToOutputDirectory="Always" />
     <!--  花园页背景，格位坐标与图同一套像素，换算见 PvZWSTools_Shared\UiModel\GardenLayout.cs。
           这四张是从游戏 Content/images 的 xnb 解包转出来的，著作权在 PopCap/EA，不能进仓库，
