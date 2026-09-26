@@ -51,3 +51,9 @@ ScriptVerifyHost/
 # installer：Inno Setup 脚本与它的本地产物
 /UI核对/
 /installer/
+
+# ── 第三方版权素材：不入库，也不进发布 ──
+# 花园四张背景是从游戏 Content/images 的 xnb 解包转出来的，著作权在 PopCap/EA，
+# 本仓库的 MIT 无权授予它们。留盘只为本地 -p:HasGarden=true 时能预览；
+# csproj 的 Resource 项是通配且默认 HasGarden=false，所以发布包本来也不含它们。
+PvZWSTools_WPF/Resources/garden/
