@@ -455,6 +455,12 @@ public static class UnitCatalog
                    q + "QModCommand", null, "qmod", "script")),
 
             Page("花园", "\uE80F", NavKind.Garden),
+
+            // 诊断在经典页签里没有对应物，是这一版新加的utility页；放在最后，
+            // 和同样追加的收藏/控制台挨着，不插进照抄经典的那段顺序里。
+            Page("诊断", "\uE90F",
+                Ac("连接诊断", m + "ConnectionDiagnosticsCommand", "端口", "诊断", "socket"),
+                Fd("端口占用探测", m + "ProbePortInput", m + "ProbePortCommand", "占用", "保留段")),
         };
 
         foreach (var page in pages)

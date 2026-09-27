@@ -25,6 +25,7 @@ public class MainWindowViewModel:ViewModelBase
     private readonly IDispatcherTimer _autoConnectTimer;
     private readonly IButtonStateService? _buttonStateService;
     private readonly IConnectionService _connection;
+    private readonly IConnectionDiagnostics? _diagnostics;
     private readonly string _defaultPath;
     private readonly IMessageProcessor _messageProcessor;
     private readonly IUserNotifier? _notifier;
@@ -40,9 +41,17 @@ public class MainWindowViewModel:ViewModelBase
     private bool _isRetrying = false;
     private int _selectedTabIndex;
     private string _sizeText = "100%";
+    private string _probePortInput = "";
+    private readonly FailureAnnouncer _announcer = new();
     private bool _stopAutoConnect;
     private bool _suppressConnectionMessage;
     private bool _suppressExitPrompt;
+
+    /// <summary>这一趟断线里已经试过、有人应门但不是游戏的端口。自动指址绕开它们，
+    /// 成功连上后清空；手填的静态候选表不受它影响，照样轮得到。</summary>
+    private readonly HashSet<int> _burnedPorts = new();
+    private bool _userPinnedAddress;
+    private bool _writingAddressAutomatically;
 
     // ---------- 自动更新进度 UI 状态 ----------
     private bool _isUpdating;
@@ -76,7 +85,8 @@ public class MainWindowViewModel:ViewModelBase
         IUiThreadInvoker uiThread,
         IUserNotifier? notifier = null,
         IUpdateService? updateService = null,
-        IButtonStateService? buttonStateService = null)
+        IButtonStateService? buttonStateService = null,
+        IConnectionDiagnostics? diagnostics = null)
     {
         _connection = connection;
         _defaultPath = defaultPath;
@@ -85,6 +95,7 @@ public class MainWindowViewModel:ViewModelBase
         _uiThread = uiThread;
         _updateService = updateService;
         _buttonStateService = buttonStateService;
+        _diagnostics = diagnostics;
         _scriptExec = new ScriptExecutionService(connection, defaultPath, notifier);
         _messageProcessor = messageProcessor;
 
@@ -114,6 +125,9 @@ public class MainWindowViewModel:ViewModelBase
             if(connected)
             {
                 _failCount = 0;
+                _burnedPorts.Clear();
+                // 下一次断线要重新报一次，哪怕原因和这次一样：中间已经隔了一趟正常连接。
+                _announcer.Reset();
                 _ = _connection.SendAsync(Sharedstring.GetLogoDisplayString(!SuppressConnectionMessage));
                 Log.Info($"已成功连接到{WsAddress}");
                 // 连接成功后，把已恢复状态中"开启"的开关同步发送到游戏
@@ -123,10 +137,7 @@ public class MainWindowViewModel:ViewModelBase
 
         _connection.ConnectionError += async (s, error) =>
         {
-            await _uiThread.InvokeAsync(() =>
-            {
-                _notifier?.Warn("连接失败", "连接失败，请确认游戏是否已打开并允许联网权限。");
-            });
+            await _uiThread.InvokeAsync(() => NotifyConnectionFailure(error));
             Log.Error(error);
             await HandleConnectionErrorAsync();
         };
@@ -144,6 +155,8 @@ public class MainWindowViewModel:ViewModelBase
         StateManagerCommand = new RelayCommand(_ => OpenStateManager());
         SizeUpCommand = new RelayCommand(_ => ChangeSize(true));
         SizeDownCommand = new RelayCommand(_ => ChangeSize(false));
+        ConnectionDiagnosticsCommand = new RelayCommand(_ => RunConnectionDiagnostics());
+        ProbePortCommand = new RelayCommand(_ => RunPortProbe());
     }
 
     public event EventHandler ShowSettingsDialog;
@@ -321,6 +334,18 @@ public class MainWindowViewModel:ViewModelBase
 
     public ICommand SettingCommand { get; }
 
+    /// <summary>"连接诊断"：把本机 TCP 现场和当前地址对一遍，证据行进控制台，结论弹一句。</summary>
+    public ICommand ConnectionDiagnosticsCommand { get; }
+
+    /// <summary>"端口占用探测"的输入端口。只有显式点它才会去 bind。</summary>
+    public string ProbePortInput
+    {
+        get => _probePortInput;
+        set => SetProperty(ref _probePortInput, value);
+    }
+
+    public ICommand ProbePortCommand { get; }
+
     public ICommand StateManagerCommand { get; }
 
     public ICommand SizeDownCommand { get; }
@@ -353,7 +378,13 @@ public class MainWindowViewModel:ViewModelBase
     public string WsAddress
     {
         get => _wsAddress;
-        set => SetProperty(ref _wsAddress, value);
+        set
+        {
+            // 自动改指一律走 SetAddressAutomatically；从这里进来的其它写入就是用户在输入框里改的，
+            // 从这一刻起不再自动覆盖他的选择——他要连别的机器时，本机的表说了不算。
+            if(!_writingAddressAutomatically) _userPinnedAddress = true;
+            SetProperty(ref _wsAddress, value);
+        }
     }
 
     public ZombiesViewModel Zombies { get; }
@@ -586,6 +617,8 @@ public class MainWindowViewModel:ViewModelBase
 
         _autoConnectTimer.Stop();
         Log.Info("自动连接中...");
+        // 先问表再连：游戏在 8081 就别先去撞 8080 吃三次拒绝。
+        TryApplyBestAddress();
         await _connection.ConnectAsync(WsAddress);
         _autoConnectTimer.Start();
     }
@@ -595,6 +628,124 @@ public class MainWindowViewModel:ViewModelBase
         int level = (int)Math.Round(CurrentWidth / 64.0);
         level = up ? level + 1 : Math.Max(1, level - 1);
         CurrentWidth = level * 64;
+    }
+
+    /// <summary>连接失败的提示。有采集能力就把现场证据归成一句结论再报；
+    /// 没有这能力的平台只能给通用指引，那句指引必须是我能站得住的——不能拿一份空快照编出"游戏没开"。</summary>
+    private void NotifyConnectionFailure(string error)
+    {
+        if(_diagnostics == null)
+        {
+            // 安卓端连的是别的机器上的游戏，所以给的是"跨机才成立"的那两条检查，
+            // 而不是本机回环那套；错误原文一起附上，出问题时有据可查。
+            _notifier?.Warn("连接失败", $"连不上 {WsAddress}：确认游戏已打开；跨机时确认对端放行了入站连接。（{error}）");
+            return;
+        }
+
+        var report = Diagnose(error, _connection.LastSocketErrorCode);
+        // 同一趟断线里同因只报一次（规则在 FailureAnnouncer 里，离线门钉着它）。
+        if(!_announcer.ShouldReport(report.Kind)) return;
+
+        foreach (var line in report.Lines) Log.Info(line);
+        _notifier?.Warn("连接失败", report.Conclusion);
+    }
+
+    /// <summary>手动点的"连接诊断"：此刻没有 socket 错误码，所以按体检的措辞走。</summary>
+    private void RunConnectionDiagnostics()
+    {
+        if(_diagnostics == null)
+        {
+            Log.Info("这个平台没有连接现场的采集能力，只能给错误原文。");
+            return;
+        }
+
+        var report = Diagnose(string.Empty, 0);
+        foreach (var line in report.Lines) Log.Info(line);
+        // 监听正常就不弹模态框：体检的回报进日志，弹框留给真出了问题的场合。
+        if(report.Kind != ConnectFailureKind.TargetAvailable)
+            _notifier?.Warn("连接诊断", report.Conclusion);
+    }
+
+    /// <summary>端口占用探测。这是唯一会去 bind 的动作，所以只能由这一下点击触发。</summary>
+    private void RunPortProbe()
+    {
+        if(_diagnostics == null)
+        {
+            Log.Info("这个平台没有端口探测能力。");
+            return;
+        }
+        if(!int.TryParse(ProbePortInput, out int port))
+        {
+            Log.Info($"端口占用探测：先填一个端口号（当前输入“{ProbePortInput}”）");
+            return;
+        }
+        foreach (var line in _diagnostics.ProbeBind(port)) Log.Info(line);
+    }
+
+    private DiagnosisReport Diagnose(string rawError, int socketErrorCode)
+    {
+        try
+        {
+            return ConnectFailure.Diagnose(socketErrorCode, _diagnostics!.Capture(), WsAddress, rawError);
+        }
+        catch(Exception ex)
+        {
+            // 采集失败不能当成"没问题"：明说采不到，并把连接错误原文一起带出来。
+            Log.Error("连接现场采集失败", ex);
+            return new DiagnosisReport
+            {
+                Kind = ConnectFailureKind.Other,
+                Conclusion = string.IsNullOrEmpty(rawError)
+                    ? $"本机连接现场没采到：{ex.Message}"
+                    : $"本机连接现场没采到（{ex.Message}），连接错误原文：{rawError}",
+                Lines = new[] { $"连接诊断 {WsAddress}", "结论：本机连接现场没采到：" + ex.Message },
+            };
+        }
+    }
+
+    /// <summary>连之前先按现场把地址指到游戏真正连得到的那一个。已经是了对的位置就什么都不做。</summary>
+    private bool TryApplyBestAddress()
+    {
+        if(_diagnostics == null || _userPinnedAddress) return false;
+        try
+        {
+            var best = ConnectFailure.BestAddressFor(_diagnostics.Capture(), WsAddress, _burnedPorts);
+            if(best == null) return false;
+            SetAddressAutomatically(best);
+            Log.Info($"自动指向游戏：{best}");
+            return true;
+        }
+        catch(Exception ex)
+        {
+            Log.Error("连接现场采集失败", ex);
+            return false;
+        }
+    }
+
+    /// <summary>把"有人应门，但应答的不是我们的协议"的那个端口烧掉，下次自动指址绕开它。
+    /// 连接被拒（游戏还没起来）不算——那种端口等一下就是它的，烧了反而绕远。</summary>
+    private void BurnPortIfSomebodyElseAnswered()
+    {
+        if(_diagnostics == null) return;
+        if(_connection.LastSocketErrorCode == ConnectFailure.WSAECONNREFUSED) return;
+        if(!ConnectFailure.TryParseTarget(WsAddress, out var host, out int port)) return;
+        if(!ConnectFailure.IsLocalTarget(host)) return;
+        try
+        {
+            if(_diagnostics.Capture().OnPort(port).Any()) _burnedPorts.Add(port);
+        }
+        catch(Exception ex)
+        {
+            Log.Error("连接现场采集失败", ex);
+        }
+    }
+
+    /// <summary>只有工具自己改地址才走这里：绕开 WsAddress 的"用户改过就顶住"判定。</summary>
+    private void SetAddressAutomatically(string address)
+    {
+        _writingAddressAutomatically = true;
+        try { WsAddress = address; }
+        finally { _writingAddressAutomatically = false; }
     }
 
     private async Task HandleConnectionErrorAsync()
@@ -607,9 +758,14 @@ public class MainWindowViewModel:ViewModelBase
             if(_failCount >= 3)
             {
                 _failCount = 0;
-                _currentAddressIndex = (_currentAddressIndex + 1) % _addressList.Count;
-                WsAddress = _addressList[_currentAddressIndex];
-                Log.Info($"切换地址至: {WsAddress}");
+                BurnPortIfSomebodyElseAnswered();
+                if(!TryApplyBestAddress())
+                {
+                    // 表上没有更好的选择了（比如游戏压根没在听）：退回原来的候选表轮询。
+                    _currentAddressIndex = (_currentAddressIndex + 1) % _addressList.Count;
+                    SetAddressAutomatically(_addressList[_currentAddressIndex]);
+                    Log.Info($"切换地址至: {WsAddress}");
+                }
                 await _connection.ConnectAsync(WsAddress);
             }
         }
@@ -654,6 +810,7 @@ public class MainWindowViewModel:ViewModelBase
         else
         {
             _stopAutoConnect = false;
+            TryApplyBestAddress();
             await _connection.ConnectAsync(WsAddress);
         }
     }

@@ -27,6 +27,7 @@ public static partial class Loc
         ["花园"] = "Garden",
         ["收藏"] = "Favorites",
         ["控制台"] = "Console",
+        ["诊断"] = "Diagnostics",
 
         // ---------- 状态词：显示文案，不是协议值（协议走 "0"/"1"/"2"） ----------
         ["开启"] = "On",
@@ -89,6 +90,8 @@ public static partial class Loc
 
         // ---------- 清单：杂项 ----------
         ["更新按钮状态"] = "Refresh button states",
+        ["连接诊断"] = "Connection diagnostics",
+        ["端口占用探测"] = "Probe port availability",
         ["设置树的高度"] = "Set tree height",
         ["游戏速度"] = "Game speed",
         ["清除迷雾"] = "Clear fog",

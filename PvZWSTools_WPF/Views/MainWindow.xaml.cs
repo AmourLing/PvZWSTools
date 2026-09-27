@@ -54,7 +54,8 @@ public partial class MainWindow:Window
             uiThread,
             new WpfUserNotifier(),
             _updateService,
-            buttonStateService
+            buttonStateService,
+            new WpfConnectionDiagnostics()
         );
         _shell = new ShellViewModel(_viewModel);
         _shell.ScrollTopRequested += () => PageScroll.ScrollToVerticalOffset(0);

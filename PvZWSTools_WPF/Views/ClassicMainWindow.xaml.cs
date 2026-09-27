@@ -50,7 +50,8 @@ public partial class ClassicMainWindow:Window
             uiThread,
             new WpfUserNotifier(),
             _updateService,
-            buttonStateService
+            buttonStateService,
+            new PvZWSTools_WPF.Services.WpfConnectionDiagnostics()
         );
 
         // 启动后异步检查更新（受 AutoCheckUpdateEnabled 控制）
