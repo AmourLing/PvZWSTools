@@ -16,6 +16,8 @@ public class ZombiesViewModel:ViewModelBase
         ["DROPPACKET_CHECK"] = nameof(DropPacket),
         ["INVINCZOMBIE_CHECK"] = nameof(InvincZombie),
         ["DRAW_ZOMBIE_HP_CHECK"] = nameof(DrawZombieHP),
+        ["DRAW_EXPLODE_TIME_CHECK"] = nameof(DrawExplodeTime),
+        ["NINJA_VISIBLE_CHECK"] = nameof(ShowNinjaZombie),
         ["STOP_WALK_CHECK"] = nameof(StopWalk),
         ["NO_STEAL_CHECK"] = nameof(NoSteal),
         ["ALLOW_MINDCTRL"] = nameof(AllowMindCtrl),
@@ -28,6 +30,10 @@ public class ZombiesViewModel:ViewModelBase
     private string _allowMindCtrl = Constants.c_Symbol_Off;
 
     private string _allowMindCtrl_Name = "允许魅惑";
+
+    private string _drawExplodeTime = Constants.c_Symbol_Off;
+
+    private string _drawExplodeTime_Name = "小丑辣椒爆炸时间";
 
     private string _drawZombieHP = Constants.c_Symbol_Off;
 
@@ -65,6 +71,10 @@ public class ZombiesViewModel:ViewModelBase
 
     private string _setYuckyFace_Name = "一键大蒜效果";
 
+    private string _showNinjaZombie = Constants.c_Symbol_Off;
+
+    private string _showNinjaZombie_Name = "忍者僵尸可见";
+
     private string _stopWalk = Constants.c_Symbol_Off;
 
     private string _stopWalk_Name = "停滞不前";
@@ -82,6 +92,14 @@ public class ZombiesViewModel:ViewModelBase
         get => _allowMindCtrl;
         set => SetProperty(ref _allowMindCtrl, value);
     }
+
+    public string DrawExplodeTime
+    {
+        get => _drawExplodeTime;
+        set => SetProperty(ref _drawExplodeTime, value);
+    }
+
+    public ICommand DrawExplodeTimeCommand => CreateToggleCommand(() => DrawExplodeTime, v => DrawExplodeTime = v, _drawExplodeTime_Name);
 
     public string DrawZombieHP
     {
@@ -178,6 +196,14 @@ public class ZombiesViewModel:ViewModelBase
     }
 
     public ICommand ApplyZombieStateCommand => new RelayCommand(_ => SetaCommand(ZombieStateInput).Execute(null));
+
+    public string ShowNinjaZombie
+    {
+        get => _showNinjaZombie;
+        set => SetProperty(ref _showNinjaZombie, value);
+    }
+
+    public ICommand ShowNinjaZombieCommand => CreateToggleCommand(() => ShowNinjaZombie, v => ShowNinjaZombie = v, _showNinjaZombie_Name);
 
     public string StopWalk
     {

@@ -269,7 +269,9 @@ public static class UnitCatalog
                 Sw("停滞不前", z + "StopWalk"),
                 Sw("冰车无痕", z + "NoIceTrap"),
                 Sw("丑椒不爆", z + "NoExplode"),
+                Sw("小丑辣椒爆炸时间", z + "DrawExplodeTime", kw: "explode countdown jack jalapeno"),
                 Sw("僵尸血量显示", z + "DrawZombieHP"),
+                Sw("忍者僵尸可见", z + "ShowNinjaZombie", kw: "ninja stealth reveal"),
                 Sw("僵尸掉落卡片", z + "DropPacket"),
                 Sw("小偷不偷", z + "NoSteal"),
                 // 两个开关是"施加"这一次的取值：单点不发脚本，只有"应用"时才作为占位符带进"一键××效果"

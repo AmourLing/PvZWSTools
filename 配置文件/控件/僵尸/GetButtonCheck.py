@@ -4,10 +4,12 @@
 
 Check_button_list = [
     "ALLOW_MINDCTRL", #一键冰封效果
+    "DRAW_EXPLODE_TIME_CHECK", #小丑辣椒爆炸时间
     "DRAW_ZOMBIE_HP_CHECK", #僵尸血量显示
     "DROPPACKET_CHECK", #僵尸掉落卡片
     "INVINCZOMBIE_CHECK", #僵尸无敌
     "LIMIT_ZOMBIE_GET_DEBUFF", #一键冰封效果
+    "NINJA_VISIBLE_CHECK", #忍者僵尸可见
     "NOEXPLODE_CHECK", #丑椒不爆
     "NO_ICETRAP_CHECK", #冰车无痕
     "NO_STEAL_CHECK", #小偷不偷
