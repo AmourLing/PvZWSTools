@@ -61,3 +61,7 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# 许可证逐字副本：不许 Git 改行尾。上游 THIRD-PARTY-NOTICES.TXT 里 Windows 那份是 CRLF，
+# 被 text=auto 剥掉  之后入库 blob 就和上游对不上，声明表里记的 SHA-256 也就白记了。
+/licenses/*.txt -text
