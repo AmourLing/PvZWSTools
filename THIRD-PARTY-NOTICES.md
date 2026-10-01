@@ -9,6 +9,8 @@
 - Android 版 `PvZWSTools_Android`：`PvZWSTools_Android\obj\project.assets.json`（73 个包）
 
 自包含发布额外携带的 .NET 运行时见[第 3 节](#3-net-运行时)。
+运行时自身那份很长的第三方清单不转述，逐字副本放在 [`licenses/`](licenses/) 目录里，
+并随产物一起分发。
 
 ## 1. MIT 许可的组件
 
@@ -271,20 +273,50 @@ Apache License 2.0 原文：
 
 ## 3. .NET 运行时
 
-框架依赖版不含运行时（由用户从 Microsoft 处安装，本文件对其无效力）；
-自包含版（`PvZWSTools_windows_self-contained.zip` 与安装器）把下列运行时打包分发：
+Windows 框架依赖版不含运行时（由用户从 Microsoft 处安装，本文件对其无效力）；
+下列运行时是**真的被打进产物**一起分发的：
 
-| 运行时包 | 版本 | 许可 | 包内许可文件 |
-| --- | --- | --- | --- |
-| `microsoft.netcore.app.runtime.win-x64` | 10.0.12 | MIT，Copyright (c) .NET Foundation and Contributors |  |
-| `microsoft.windowsdesktop.app.runtime.win-x64` | 10.0.12 | MIT，Copyright (c) .NET Foundation and Contributors |  |
+| 运行时包 | 版本 | 许可 | 进哪个产物 | 包内许可文件 |
+| --- | --- | --- | --- | --- |
+| `microsoft.netcore.app.runtime.win-x64` | 10.0.12 | MIT，Copyright (c) .NET Foundation and Contributors | 自包含 zip 与安装器 |  |
+| `microsoft.windowsdesktop.app.runtime.win-x64` | 10.0.12 | MIT，Copyright (c) .NET Foundation and Contributors | 自包含 zip 与安装器 |  |
+| `Microsoft.Android.Runtime.Mono.36.android-arm` | 36.1.69 | MIT | APK | `LICENSE.TXT`, `THIRD-PARTY-NOTICES.TXT` |
+| `Microsoft.Android.Runtime.Mono.36.android-arm64` | 36.1.69 | MIT | APK | `LICENSE.TXT`, `THIRD-PARTY-NOTICES.TXT` |
+| `Microsoft.Android.Runtime.Mono.36.android-x64` | 36.1.69 | MIT | APK | `LICENSE.TXT`, `THIRD-PARTY-NOTICES.TXT` |
+| `Microsoft.Android.Runtime.Mono.36.android-x86` | 36.1.69 | MIT | APK | `LICENSE.TXT`, `THIRD-PARTY-NOTICES.TXT` |
+| `Microsoft.Android.Runtime.CoreCLR.36.android-arm64` | 36.1.69 | MIT | APK | `LICENSE.TXT`, `THIRD-PARTY-NOTICES.TXT` |
+| `Microsoft.Android.Runtime.CoreCLR.36.android-x64` | 36.1.69 | MIT | APK | `LICENSE.TXT`, `THIRD-PARTY-NOTICES.TXT` |
 
-`microsoft.netcore.app.runtime.win-x64` 包内的 `THIRD-PARTY-NOTICES.TXT` 逐条列出了运行时自身的
-第三方组件；随本程序分发该运行时即等于同时分发那些材料，需要逐条原文时以同版本包为准。
-`microsoft.windowsdesktop.app.runtime.win-x64` 包内只带许可文本、未附独立第三方清单，
-其第三方材料声明以 Microsoft 为该运行时版本发布的 Third Party Notices 为准。
+`Microsoft.Android.Runtime.Mono.*` 与 `Microsoft.Android.Runtime.CoreCLR.*` 按构建配置择一进入 APK，
+两者自带的 `THIRD-PARTY-NOTICES.TXT` 实测字节完全相同，所以下面只落一份。
+`Microsoft.Android.Ref.36` 是编译期引用集，不进 APK，故不列。
 
-## 4. 不受 PvZWSTools MIT 许可覆盖的材料
+### 运行时自带的第三方清单（逐字副本，随本程序分发）
+
+运行时自身的第三方组件清单很长、且没法靠汇总文本覆盖，所以原样放进 `licenses\`，
+随产物一起走。下表是副本的来源版本、字节数与 SHA-256，可用来核对是否逐字一致：
+
+| 文件 | 来源 | 版本 | 字节 | SHA-256 |
+| --- | --- | --- | --- | --- |
+| [`licenses/dotnet-windows-third-party-notices.txt`](licenses/dotnet-windows-third-party-notices.txt) | Windows 自包含版所带的 .NET 运行时 | 10.0.12 | 78,041 | `6d15e10a101c6bfff2ab4429ed061bf76c456fc4b23ad6b03e0d0f8377148a21` |
+| [`licenses/dotnet-android-third-party-notices.txt`](licenses/dotnet-android-third-party-notices.txt) | Android 版所带的 .NET for Android 运行时 | 36.1.69 | 144,846 | `f7b09b6ee5286596d12bd4eb6f82e203b59bcf0b10e48845eacb56f4c3f2b227` |
+
+## 4. 文档内嵌字体（SIL OFL 1.1）
+
+`使用手册.pdf` 内嵌了下列中文字体的**子集**（reportlab 生成时抽取），而该 PDF 随 Release
+附件与群文件对外分发。两款都是 SIL Open Font License 1.1，明确允许在文档中嵌入。
+下表每一行的版权、厂商与许可说明都直接取自字体文件的 `name` 表，不是手打的。
+
+| 字体 | 版权（ID 0） | 厂商（ID 8） | 许可（ID 13） | 出处 |
+| --- | --- | --- | --- | --- |
+| Noto Serif SC | © 2017-2023 Adobe (http://www.adobe.com/). | Adobe | This Font Software is licensed under the SIL Open Font License, Version 1.1. | <http://scripts.sil.org/OFL> |
+| Noto Sans SC | © 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'. | Adobe | This Font Software is licensed under the SIL Open Font License, Version 1.1. | <http://scripts.sil.org/OFL> |
+
+本程序**不分发字体本体**（`.ttf` 只在构建机上，由 `文档\_build\gen_manual.py` 从系统字体
+实例化出来喂给 reportlab），所以没有把 OFL 原文与字体文件一并打包。以后若改成随产品
+分发字体文件，就必须连同 OFL 1.1 原文一起附上 —— 那是 OFL 对"字体副本"的硬性要求。
+
+## 5. 不受 PvZWSTools MIT 许可覆盖的材料
 
 本程序操作的《植物大战僵尸》及其模组（PGVZ 等）的游戏程序、美术、音乐、关卡数据，
 著作权属于 PopCap Games / Electronic Arts 及各模组作者，**不属于 PvZWSTools**。
@@ -297,3 +329,4 @@ Apache License 2.0 原文：
 ---
 
 重新生成：先构建两个工程，再跑 `py -3 文档/_build/gen_notices.py`。
+该脚本同时把 `licenses/` 里的逐字副本刷新到当前 SDK 版本 —— 别手改那两份，也别手改本文件。

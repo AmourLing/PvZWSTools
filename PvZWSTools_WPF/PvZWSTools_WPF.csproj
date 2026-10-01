@@ -40,6 +40,10 @@
           它由 文档\_build\gen_notices.py 从依赖解析结果生成，别手改。 -->
     <Content Include="$(SolutionDir)LICENSE" CopyToOutputDirectory="Always" />
     <Content Include="$(SolutionDir)THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="Always" />
+    <!--  运行时自带的第三方清单太长（Windows 78 KB / Android 145 KB），汇总文本覆盖不了，
+          逐字副本单独放 licenses\ 随包走。点名 *.txt 而不是整目录通配，是为了以后往这个
+          目录放别的东西时不会被顺手打进安装包。 -->
+    <Content Include="$(SolutionDir)licenses\*.txt" Link="licenses\%(Filename)%(Extension)" CopyToOutputDirectory="Always" />
     <Content Include="Resources\icon.ico" CopyToOutputDirectory="Always" />
     <!--  花园页背景，格位坐标与图同一套像素，换算见 PvZWSTools_Shared\UiModel\GardenLayout.cs。
           这四张是从游戏 Content/images 的 xnb 解包转出来的，著作权在 PopCap/EA，不能进仓库，

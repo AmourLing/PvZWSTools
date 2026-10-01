@@ -7,14 +7,18 @@
     py -3 文档/_build/gen_notices.py
 """
 import glob
+import glob
+import hashlib
 import json
 import os
 import re
+import struct
 from collections import OrderedDict
 
 BUILD_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(BUILD_DIR, "..", ".."))
 OUT = os.path.join(REPO, "THIRD-PARTY-NOTICES.md")
+LICENSES_DIR = os.path.join(REPO, "licenses")
 CACHE = os.path.expanduser(os.path.join("~", ".nuget", "packages"))
 
 # 产物 → 依赖清单。自包含发布额外带的 .NET 运行时不在 assets.json 里，单独补。
@@ -26,6 +30,81 @@ RUNTIME_PACKS = ("microsoft.netcore.app.runtime.win-x64",
                  "microsoft.windowsdesktop.app.runtime.win-x64")
 # 构建期裁剪工具，不随产物分发，因此不列
 BUILD_ONLY = {"microsoft.net.illink.tasks"}
+
+# 运行时自带的第三方清单太长（Windows 78 KB / Android 145 KB，逐条列的是运行时自己的组件），
+# 汇总文本覆盖不了，所以原样落到 licenses/。这两份是"许可证文件夹"唯一值得占的位置：
+# 61 个 AndroidX 包自带的 LICENSE.md 去重后只有 1 种，抄过来就是 60 份重复文件。
+DOTNET_PACK_ROOTS = [os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "dotnet", "packs"),
+                     os.path.join(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"), "dotnet", "packs"),
+                     os.path.join(os.environ.get("DOTNET_ROOT", ""), "packs")]
+RUNTIME_NOTICE_SOURCES = [
+    ("dotnet-windows-third-party-notices.txt", "Windows 自包含版所带的 .NET 运行时",
+     [os.path.join(CACHE, "microsoft.netcore.app.runtime.win-x64", "*", "THIRD-PARTY-NOTICES.TXT")]),
+    ("dotnet-android-third-party-notices.txt", "Android 版所带的 .NET for Android 运行时",
+     [os.path.join(r, "Microsoft.Android.Runtime.Mono.*", "*", "THIRD-PARTY-NOTICES.TXT")
+      for r in DOTNET_PACK_ROOTS]),
+]
+# 手册内嵌的中文字体。优先用构建期实例化出来的静态件，没有就退回系统里的可变字体。
+FONT_SOURCES = [("Noto Serif SC",
+                 [os.path.join(BUILD_DIR, "fonts", "NotoSerifSC-Regular.ttf"),
+                  "C:/Windows/Fonts/NotoSerifSC-VF.ttf"]),
+                ("Noto Sans SC",
+                 [os.path.join(BUILD_DIR, "fonts", "NotoSansSC-Regular.ttf"),
+                  "C:/Windows/Fonts/NotoSansSC-VF.ttf"])]
+
+
+def _ver_key(path):
+    return tuple(int(x) for x in re.findall(r"\d+", path)[:6]) or (0,)
+
+
+def copy_runtime_notices():
+    """把运行时自带的第三方清单原样复制进 licenses/，回报来源版本与 SHA-256。
+
+    回报哈希是为了让读的人能确认这份是逐字副本而不是转述。找不到就抛 —— 静默少一份，
+    等于声明文件又变成"指向别处"。
+    """
+    out = []
+    for fname, label, pats in RUNTIME_NOTICE_SOURCES:
+        found = [p for pat in pats for p in glob.glob(pat) if os.path.isfile(p)]
+        if not found:
+            raise SystemExit("找不到 %s 的 THIRD-PARTY-NOTICES.TXT（试了 %s）；"
+                             "装了对应 SDK 或构建过对应工程才会有" % (label, pats))
+        best = sorted(found, key=_ver_key)[-1]
+        data = open(best, "rb").read()
+        os.makedirs(LICENSES_DIR, exist_ok=True)
+        with open(os.path.join(LICENSES_DIR, fname), "wb") as fh:
+            fh.write(data)
+        out.append({"file": fname, "label": label, "ver": os.path.basename(os.path.dirname(best)),
+                    "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+    return out
+
+
+def font_notice(path):
+    """从字体 name 表取版权(0)/厂商(8)/许可说明(13)/许可 URL(14)，不手打。"""
+    b = open(path, "rb").read()
+    off = struct.unpack(">I", b[12:16])[0] if b[:4] == b"ttcf" else 0
+    num = struct.unpack(">H", b[off + 4:off + 6])[0]
+    rec, p = {}, off + 12
+    for _ in range(num):
+        rec[b[p:p + 4].decode("latin1")] = struct.unpack(">I", b[p + 8:p + 12])[0]
+        p += 16
+    no = rec["name"]
+    fmt, count, so = struct.unpack(">HHH", b[no:no + 6])
+    rs = 14 if fmt == 1 else 12
+    want = {}
+    for i in range(count):
+        r = no + 6 + i * rs
+        pid, _eid, _lid, nid = struct.unpack(">HHHH", b[r:r + 8])
+        ln, oe = struct.unpack(">HH", b[r + 8:r + 12])
+        if nid not in (0, 8, 13, 14):
+            continue
+        raw = b[no + so + oe:no + so + oe + ln]
+        try:
+            s = raw.decode("utf-16-be") if pid == 3 else raw.decode("utf-8")
+        except UnicodeDecodeError:
+            s = raw.decode("latin1")
+        want.setdefault(nid, s.strip())
+    return want
 
 
 def nuspec(pkg, ver):
@@ -93,8 +172,51 @@ def collect():
     return pkgs
 
 
+def android_runtime_packs():
+    """.NET for Android 的运行时包在 SDK 的 packs 目录下，不在 NuGet 缓存里。"""
+    rows, seen = [], set()
+    for root in DOTNET_PACK_ROOTS:
+        if not os.path.isdir(root):
+            continue
+        for pat in ("Microsoft.Android.Runtime.Mono.*", "Microsoft.Android.Runtime.CoreCLR.*"):
+            for d in sorted(glob.glob(os.path.join(root, pat)), key=_ver_key):
+                name = os.path.basename(d)
+                if name in seen:
+                    continue
+                vers = [v for v in os.listdir(d) if os.path.isdir(os.path.join(d, v))]
+                if not vers:
+                    continue
+                ver = sorted(vers, key=_ver_key)[-1]
+                files = sorted(f for f in os.listdir(os.path.join(d, ver))
+                               if re.match(r"(?i)^(license|third-party-notices)", f)
+                               and os.path.isfile(os.path.join(d, ver, f)))
+                seen.add(name)
+                rows.append((name, (ver, ", ".join("`%s`" % f for f in files) or "（无）")))
+    return rows
+
+
+def font_rows():
+    rows = []
+    for name, cands in FONT_SOURCES:
+        path = next((c for c in cands if os.path.isfile(c)), None)
+        if not path:
+            raise SystemExit("取不到 %s 的许可声明：没有可用的字体文件，试过 %s" % (name, cands))
+        info = font_notice(path)
+        # 不给默认值兜底：解析器写歪过一次，就是靠 ID 14 的默认 URL 把"整行全空"
+        # 伪装成读到了东西。缺任何一项都直接失败。
+        missing = [nid for nid in (0, 8, 13, 14) if not info.get(nid)]
+        if missing:
+            raise SystemExit("%s 的 name 表缺 ID %s；解析或字体本身有问题：%s"
+                             % (name, missing, path))
+        rows.append((name, info))
+    return rows
+
+
 def main():
     pkgs = collect()
+    notices_copied = copy_runtime_notices()
+    ANDROID_RUNTIME_PACKS = android_runtime_packs()
+    FONTS = font_rows()
     groups = OrderedDict()
     for low, e in pkgs.items():
         groups.setdefault(license_of(e["name"], sorted(e["vers"])[0]), []).append(e)
@@ -118,6 +240,8 @@ def main():
         w("- %s：`%s\\obj\\project.assets.json`（%d 个包）" % (label, proj, n))
     w("")
     w("自包含发布额外携带的 .NET 运行时见[第 3 节](#3-net-运行时)。")
+    w("运行时自身那份很长的第三方清单不转述，逐字副本放在 [`licenses/`](licenses/) 目录里，")
+    w("并随产物一起分发。")
     w("")
 
     # ── 1. MIT ──
@@ -182,11 +306,11 @@ def main():
     # ── 3. 运行时 ──
     w("## 3. .NET 运行时")
     w("")
-    w("框架依赖版不含运行时（由用户从 Microsoft 处安装，本文件对其无效力）；")
-    w("自包含版（`PvZWSTools_windows_self-contained.zip` 与安装器）把下列运行时打包分发：")
+    w("Windows 框架依赖版不含运行时（由用户从 Microsoft 处安装，本文件对其无效力）；")
+    w("下列运行时是**真的被打进产物**一起分发的：")
     w("")
-    w("| 运行时包 | 版本 | 许可 | 包内许可文件 |")
-    w("| --- | --- | --- | --- |")
+    w("| 运行时包 | 版本 | 许可 | 进哪个产物 | 包内许可文件 |")
+    w("| --- | --- | --- | --- | --- |")
     for rid in RUNTIME_PACKS:
         d = os.path.join(CACHE, rid)
         if not os.path.isdir(d):
@@ -197,17 +321,50 @@ def main():
         notices = sorted(f for f in os.listdir(d)
                          if re.match(r"(?i)^(license|third-party-notices)", f)
                          and os.path.isfile(os.path.join(d, f)))
-        w("| `%s` | %s | MIT，%s | %s |" % (rid, ver, cp.group(0) if cp else "（未标注）",
-                                            ", ".join("`%s`" % n for n in notices)))
+        w("| `%s` | %s | MIT，%s | 自包含 zip 与安装器 | %s |" % (
+            rid, ver, cp.group(0) if cp else "（未标注）",
+            ", ".join("`%s`" % n for n in notices)))
+    for pack, note in ANDROID_RUNTIME_PACKS:
+        w("| `%s` | %s | MIT | APK | %s |" % (pack, note[0], note[1]))
     w("")
-    w("`microsoft.netcore.app.runtime.win-x64` 包内的 `THIRD-PARTY-NOTICES.TXT` 逐条列出了运行时自身的")
-    w("第三方组件；随本程序分发该运行时即等于同时分发那些材料，需要逐条原文时以同版本包为准。")
-    w("`microsoft.windowsdesktop.app.runtime.win-x64` 包内只带许可文本、未附独立第三方清单，")
-    w("其第三方材料声明以 Microsoft 为该运行时版本发布的 Third Party Notices 为准。")
+    w("`Microsoft.Android.Runtime.Mono.*` 与 `Microsoft.Android.Runtime.CoreCLR.*` 按构建配置择一进入 APK，")
+    w("两者自带的 `THIRD-PARTY-NOTICES.TXT` 实测字节完全相同，所以下面只落一份。")
+    w("`Microsoft.Android.Ref.36` 是编译期引用集，不进 APK，故不列。")
+    w("")
+    w("### 运行时自带的第三方清单（逐字副本，随本程序分发）")
+    w("")
+    w("运行时自身的第三方组件清单很长、且没法靠汇总文本覆盖，所以原样放进 `licenses\\`，")
+    w("随产物一起走。下表是副本的来源版本、字节数与 SHA-256，可用来核对是否逐字一致：")
+    w("")
+    w("| 文件 | 来源 | 版本 | 字节 | SHA-256 |")
+    w("| --- | --- | --- | --- | --- |")
+    for r in notices_copied:
+        w("| [`licenses/%s`](licenses/%s) | %s | %s | %s | `%s` |" % (
+            r["file"], r["file"], r["label"], r["ver"], format(r["bytes"], ","), r["sha256"]))
     w("")
 
-    # ── 4. 范围之外 ──
-    w("## 4. 不受 PvZWSTools MIT 许可覆盖的材料")
+    # ── 4. 文档内嵌字体 ──
+    w("## 4. 文档内嵌字体（SIL OFL 1.1）")
+    w("")
+    w("`使用手册.pdf` 内嵌了下列中文字体的**子集**（reportlab 生成时抽取），而该 PDF 随 Release")
+    w("附件与群文件对外分发。两款都是 SIL Open Font License 1.1，明确允许在文档中嵌入。")
+    w("下表每一行的版权、厂商与许可说明都直接取自字体文件的 `name` 表，不是手打的。")
+    w("")
+    w("| 字体 | 版权（ID 0） | 厂商（ID 8） | 许可（ID 13） | 出处 |")
+    w("| --- | --- | --- | --- | --- |")
+    for name, info in FONTS:
+        w("| %s | %s | %s | %s | <%s> |" % (
+            name, info.get(0, "—"), info.get(8, "—"),
+            (info.get(13, "") or "—").split(" This Font Software is distributed")[0],
+            info[14]))
+    w("")
+    w("本程序**不分发字体本体**（`.ttf` 只在构建机上，由 `文档\\_build\\gen_manual.py` 从系统字体")
+    w("实例化出来喂给 reportlab），所以没有把 OFL 原文与字体文件一并打包。以后若改成随产品")
+    w("分发字体文件，就必须连同 OFL 1.1 原文一起附上 —— 那是 OFL 对\"字体副本\"的硬性要求。")
+    w("")
+
+    # ── 5. 范围之外 ──
+    w("## 5. 不受 PvZWSTools MIT 许可覆盖的材料")
     w("")
     w("本程序操作的《植物大战僵尸》及其模组（PGVZ 等）的游戏程序、美术、音乐、关卡数据，")
     w("著作权属于 PopCap Games / Electronic Arts 及各模组作者，**不属于 PvZWSTools**。")
@@ -220,6 +377,7 @@ def main():
     w("---")
     w("")
     w("重新生成：先构建两个工程，再跑 `py -3 文档/_build/gen_notices.py`。")
+    w("该脚本同时把 `licenses/` 里的逐字副本刷新到当前 SDK 版本 —— 别手改那两份，也别手改本文件。")
 
     open(OUT, "w", encoding="utf-8", newline="\n").write("\n".join(L) + "\n")
     print("written %s (%d bytes)" % (OUT, os.path.getsize(OUT)))
