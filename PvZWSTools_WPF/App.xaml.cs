@@ -33,8 +33,9 @@ public partial class App:Application
         }
         Log.Info(welcomeMessage);
 
-        // 控制台标题那句彩蛋：Release 是 WinExe、没有控制台可写（setter 会抛 IOException），
-        // 所以那句改落进日志 —— 打开"控制台"页或者 配置文件\Log 里的最新日志，两版都看得到。
+        // 控制台标题那句彩蛋：主入口 PvZWSTools.exe 是 WinExe、没有控制台可写（setter 会抛 IOException），
+        // 所以那句改落进日志 —— 打开"控制台"页或者 配置文件\Log 里的最新日志，两个入口都看得到。
+        // 要看真控制台就跑同目录的 PvZWSTools.Console.exe。
         string easterEgg = titles[Random.Shared.Next(0, titles.Length)];
         try
         {

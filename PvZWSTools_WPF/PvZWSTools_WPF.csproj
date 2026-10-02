@@ -11,11 +11,16 @@
     <PackageIcon>icon.png</PackageIcon>
     <StartupObject>PvZWSTools_WPF.Program</StartupObject>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <!--  Debug 留 Exe：那个控制台是真能看日志的地方（Log 把 stdout tee 进了界面内控制台）。
-          Release 改 WinExe：玩家不该为了用一个工具多背一个挂在任务栏上的黑窗口。
-          没有控制台之后 Console.ForegroundColor / Console.Title 会抛，相关调用点都已收口。  -->
-    <OutputType Condition="'$(Configuration)' == 'Debug'">Exe</OutputType>
-    <OutputType Condition="'$(Configuration)' != 'Debug'">WinExe</OutputType>
+    <!--  两个入口一次编出来：PvZWSTools.exe 固定 WinExe（不给玩家多挂一个黑窗口），
+          控制台那一版另出 PvZWSTools.Console.exe（见下面的 CreateConsoleAppHost*）。
+          以前是 Debug=Exe / Release=WinExe 靠配置切，现在两个配置都同时有两条入口，
+          名字不再随配置变语义——F5 想看日志就跑 Console 那个。
+          F5 走 Properties\launchSettings.json，那里的 executablePath 必须带 .\ 前缀：
+          VS 只给"带目录部分"的相对路径拼输出目录（实测基准就是 bin\Debug\net10.0-windows\，
+          写成 bin\Debug\... 会拼成两层，光写文件名它当程序名去搜），而 dotnet run 按调用目录解析，
+          两边凑不到一块儿，以 VS 为准。
+          没有控制台时 Console.ForegroundColor / Console.Title 会抛，相关调用点都已收口。  -->
+    <OutputType>WinExe</OutputType>
     <UseWindowsForms>false</UseWindowsForms>
     <Version>2026.9.18</Version>
     <InformationalVersion>2026.09.18</InformationalVersion>
@@ -75,7 +80,71 @@
     </AssemblyAttribute>
   </ItemGroup>
 
-  <!-- 发布布局：根目录只留一个入口 exe，其余文件收进 app\。
+  <!--
+      ============================================================
+                        控制台入口 PvZWSTools.Console.exe
+      ============================================================
+      两个 exe 的差别只有 apphost 的 PE 子系统那一位（GUI=2 / 控制台=3）：托管程序集仍是
+      PvZWSTools.dll，宿主按文件内嵌的那个名字去找 dll 与 runtimeconfig/deps，所以第二个入口
+      不需要第二份 dll、不需要同名 json，跟主程序共用同一套文件。
+      做法是复用 SDK 自己的 CreateAppHost 任务（_CreateAppHost 用的就是它），把
+      WindowsGraphicalUserInterface 传成 false 再出一个 apphost。不去手工翻 PE 头字节：
+      那个任务还管图标、CET 兼容标记、macOS 签名这些，手改只补了子系统，别的会一样样漏。
+      -p:GenerateConsoleAppHost=false 可以整个跳过（TcpTableProbe 那类引用本工程的小工具用不上）。
+  -->
+  <PropertyGroup>
+    <ConsoleAssemblyName>PvZWSTools.Console</ConsoleAssemblyName>
+  </PropertyGroup>
+
+  <!--  build 产出落 bin\。两条写在这里而不是抽成公共目标用 CallTarget 调：实测（SDK 10.0.401）
+        CallTarget 进去的子目标看不到调用方在运行时设的属性，路径递不进去，只会拿到空值。
+        判定放在目标跑起来之后，不在 Target 的 Condition 里判 $(AppHostSourcePath)——目标条件先于
+        DependsOnTargets 求值，那时 _GetAppHostPaths 还没跑、属性还是空的，写在条件上等于每次都跳过。
+        跳过必须出声：闷着出一个少了控制台入口的包，比编不过更难查。 -->
+  <Target Name="CreateConsoleAppHost" AfterTargets="Build" DependsOnTargets="_GetAppHostPaths">
+    <PropertyGroup>
+      <_ConsoleTargetDir>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(TargetDir)'))</_ConsoleTargetDir>
+      <ConsoleAppHostDestination>$([System.IO.Path]::Combine('$(_ConsoleTargetDir)', '$(ConsoleAssemblyName).exe'))</ConsoleAppHostDestination>
+      <_ConsoleAppHostDisabled Condition="'$(GenerateConsoleAppHost)' == 'false'">true</_ConsoleAppHostDisabled>
+      <_ConsoleAppHostBlocked Condition="'$(_ConsoleAppHostDisabled)' != 'true' and
+                                         ('$(UseAppHost)' != 'true' or '$(AppHostSourcePath)' == '' or !Exists('$(AppHostSourcePath)'))">true</_ConsoleAppHostBlocked>
+    </PropertyGroup>
+    <!--  主动关掉的（-p:GenerateConsoleAppHost=false）不该吃一条警告：那是他点名的行为。
+        只有"想生成却没生成成"才出声。 -->
+    <Message Condition="'$(_ConsoleAppHostDisabled)' == 'true'" Importance="low"
+             Text="控制台入口按 -p:GenerateConsoleAppHost=false 跳过。" />
+    <Warning Condition="'$(_ConsoleAppHostBlocked)' == 'true'"
+             Text="控制台入口没生成（AppHostSourcePath='$(AppHostSourcePath)'、UseAppHost='$(UseAppHost)'）。主程序 exe 出得来就说明 apphost 模板没就位，查 SDK / apphost pack 的安装。" />
+    <CreateAppHost Condition="'$(_ConsoleAppHostBlocked)' != 'true' and '$(_ConsoleAppHostDisabled)' != 'true'"
+                   AppHostSourcePath="$(AppHostSourcePath)"
+                   AppHostDestinationPath="$(ConsoleAppHostDestination)"
+                   AppBinaryName="$(AssemblyName)$(TargetExt)"
+                   IntermediateAssembly="@(IntermediateAssembly->'%(FullPath)')"
+                   WindowsGraphicalUserInterface="false"
+                   Retries="$(CopyRetryCount)"
+                   RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" />
+    <Message Condition="'$(_ConsoleAppHostBlocked)' != 'true' and '$(_ConsoleAppHostDisabled)' != 'true'"
+             Importance="high" Text="控制台入口已生成：$(ConsoleAppHostDestination)" />
+  </Target>
+
+  <!--  发布目录里的第二份入口：publish 只搬它自己认识的产出组，我们自己产的 exe 不在里面，
+        所以从 bin\ 把刚生成的那个 apphost 复制过去（同一份字节，不再走一遍 CreateAppHost）。
+        少了这一步就是"本机 bin\ 有、发出去的包里没有"，那种问题最难查，所以源文件不在直接失败，
+        不降级成警告。 -->
+  <Target Name="CopyConsoleAppHostToPublish" AfterTargets="Publish">
+    <PropertyGroup>
+      <_ConsoleSource>$([System.IO.Path]::Combine($([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(TargetDir)')), '$(ConsoleAssemblyName).exe'))</_ConsoleSource>
+      <_ConsolePublishDir>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(PublishDir)'))))</_ConsolePublishDir>
+    </PropertyGroup>
+    <Error Condition="'$(GenerateConsoleAppHost)' != 'false' and !Exists('$(_ConsoleSource)')"
+           Text="拿不到控制台入口源文件：$(_ConsoleSource)。build 那趟的 CreateConsoleAppHost 没出东西，看上面有没有那条警告。" />
+    <Copy Condition="'$(GenerateConsoleAppHost)' != 'false'" SourceFiles="$(_ConsoleSource)"
+          DestinationFolder="$(_ConsolePublishDir)" SkipUnchangedFiles="true" />
+    <Message Condition="'$(GenerateConsoleAppHost)' != 'false'" Importance="high"
+             Text="控制台入口已随发布复制：$(_ConsolePublishDir)$(ConsoleAssemblyName).exe" />
+  </Target>
+
+  <!-- 发布布局：根目录留两个入口 exe（无控制台的 + 带控制台的），其余文件收进 app\。
        做在工程里而不是只做在 build-release.ps1 里，是为了让 VS 的"发布"向导走同一条路。
        入口用 Framework 自带的 csc 编，产物只依赖 .NET Framework 4，用户机器无需装运行时。
        -p:StageNestedPublishLayout=false 可以跳过。 -->
@@ -88,10 +157,12 @@
     <LauncherDir>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '..', 'PvZWSTools_WpfLauncher', 'obj'))</LauncherDir>
     <LauncherInfoFile>$(LauncherDir)\AssemblyInfo.cs</LauncherInfoFile>
     <LauncherExe>$(LauncherDir)\PvZWSTools.exe</LauncherExe>
+    <LauncherConsoleExe>$(LauncherDir)\PvZWSTools.Console.exe</LauncherConsoleExe>
     <FrameworkCsc>$([MSBuild]::NormalizePath($([System.Environment]::GetEnvironmentVariable('WINDIR')), 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'))</FrameworkCsc>
   </PropertyGroup>
 
   <Target Name="StageNestedPublishLayout" AfterTargets="Publish"
+          DependsOnTargets="CopyConsoleAppHostToPublish"
           Condition="'$(StageNestedPublishLayout)' != 'false'">
     <Error Condition="!Exists('$(LauncherSource)')" Text="缺少入口源码：$(LauncherSource)" />
     <Error Condition="!Exists('$(FrameworkCsc)')" Text="缺少 .NET Framework csc：$(FrameworkCsc)" />
@@ -106,6 +177,10 @@
     <WriteLinesToFile File="$(LauncherInfoFile)" Overwrite="true"
       Lines='[assembly: System.Reflection.AssemblyTitle("PvZWSTools")];[assembly: System.Reflection.AssemblyProduct("PvZWSTools")];[assembly: System.Reflection.AssemblyCompany("AmourLing")];[assembly: System.Reflection.AssemblyVersion("$(Version).0")];[assembly: System.Reflection.AssemblyFileVersion("$(Version).0")];[assembly: System.Reflection.AssemblyInformationalVersion("$(InformationalVersion)")]' />
     <Exec Command="&quot;$(FrameworkCsc)&quot; -nologo -target:winexe -out:&quot;$(LauncherExe)&quot; -win32icon:&quot;$(MSBuildProjectDirectory)\Resources\icon.ico&quot; -r:System.Windows.Forms.dll &quot;$(LauncherSource)&quot; &quot;$(LauncherInfoFile)&quot;" />
+    <!--  第二份：-target:exe 出控制台子系统，-define:CONSOLE_LAUNCHER 让它拉的是
+          app\PvZWSTools.Console.exe。这两条必须成对改——只改 -target 不改 define，
+          根上那个"控制台入口"起的是没控制台的那份，从图标和名字上都看不出来。 -->
+    <Exec Command="&quot;$(FrameworkCsc)&quot; -nologo -target:exe -define:CONSOLE_LAUNCHER -out:&quot;$(LauncherConsoleExe)&quot; -win32icon:&quot;$(MSBuildProjectDirectory)\Resources\icon.ico&quot; -r:System.Windows.Forms.dll &quot;$(LauncherSource)&quot; &quot;$(LauncherInfoFile)&quot;" />
 
     <MakeDir Directories="$(_PubAppDir)" />
     <!-- Copy+Delete 只会删文件，会把 Resources\配置文件 这些空目录骨架留在根上；
@@ -115,9 +190,16 @@
           IgnoreExitCode="true" />
     <Error Condition="!Exists('$(_PubAppDir)PvZWSTools.dll')" Text="发布文件没有移进 $(_PubAppDir)" />
     <Error Condition="Exists('$(_PubDir)PvZWSTools.dll')" Text="$(_PubDir) 根上还留着主程序，app\ 重排没干净" />
-    <Copy SourceFiles="$(LauncherExe)" DestinationFolder="$(_PubDir)" />
+    <!--  内层控制台入口是 CopyConsoleAppHostToPublish 那份，跟着 robocopy 进 app\；
+          外层两份是上面 csc 刚编出来的。少哪一份都要硬失败，别出"根上看得见控制台入口、
+          点进去起的是没控制台那份"这种包。 -->
+    <Error Condition="!Exists('$(_PubAppDir)PvZWSTools.Console.exe')"
+           Text="$(_PubAppDir) 里没有内层控制台入口 PvZWSTools.Console.exe，控制台那条线在发布包里断了" />
+    <Copy SourceFiles="$(LauncherExe);$(LauncherConsoleExe)" DestinationFolder="$(_PubDir)" />
+    <Error Condition="!Exists('$(_PubDir)PvZWSTools.exe') Or !Exists('$(_PubDir)PvZWSTools.Console.exe')"
+           Text="$(_PubDir) 根上凑不齐两个入口 exe（PvZWSTools.exe / PvZWSTools.Console.exe）" />
 
-    <Message Importance="high" Text="发布布局已重排：$(_PubDir) 只剩 PvZWSTools.exe(入口) 与 app\（$([System.IO.Directory]::GetFiles($(_PubAppDir), '*', System.IO.SearchOption.AllDirectories).Length) 个文件）" />
+    <Message Importance="high" Text="发布布局已重排：$(_PubDir) 只剩两个入口 exe 与 app\（$([System.IO.Directory]::GetFiles($(_PubAppDir), '*', System.IO.SearchOption.AllDirectories).Length) 个文件）" />
   </Target>
 
   <Import Project="..\PvZWSTools_Shared\PvZWSTools_Shared.projitems" Label="Shared" />

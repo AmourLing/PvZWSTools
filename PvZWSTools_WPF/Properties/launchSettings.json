@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "PvZWSTools（带控制台日志）": {
+      "commandName": "Executable",
+      "executablePath": ".\\PvZWSTools.Console.exe"
+    },
+    "PvZWSTools（无控制台）": {
+      "commandName": "Executable",
+      "executablePath": ".\\PvZWSTools.exe"
+    }
+  }
+}
