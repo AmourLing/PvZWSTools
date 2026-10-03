@@ -9,7 +9,8 @@
 # 备份走的是仓库既有的载荷协议（成对标记 + 单行 Base64 + END），脚本自己不落盘：
 #   ScriptExecutionService.cs:117 逐行 Trim 并丢空行 —— 所以一条记录必须正好占一行，这正是 base64 的理由
 #   ScriptExecutionService.cs:124 靠 ===END=== 提前收口
-#   MainWindowViewModel.cs:132 全局订阅 MessageReceived，快捷脚本的 stdout 一定进输出面板，能复制
+#   MessageProcessor.cs:33 把 stdout 记成"[输出] …"：进『控制台』页与 配置文件\Log 那份日志。
+#     界面上复制不到（控制台页按行画 TextBlock、快捷脚本页没有输出框），要取这行请去日志里搜标记。
 #
 # 状态存储在哪（取证于反编译 C# 源码，不参考 typings/*.pyi）：
 #   PlayerInfo.cs:28 / :187   public int[] mPurchases = new int[80]，下标就是 StoreItem 的整数值

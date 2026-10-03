@@ -17,8 +17,11 @@
 # 之所以不共用一张表：脚本各发各的，游戏那边虽然是同一份共享 ScriptScope、名字互相看得见，
 # 但"另一份恰好先跑过"不能当数据来源。
 #
-# 备份那行照旧打，但要复制它得去日志：控件按钮的 stdout 落在『控制台』页，那里按行画 TextBlock
-# （MainWindow.xaml:67 的 ItemTemplate），选不中、长行还被横向截断；快捷脚本页的输出框才可整段复制。
+# 备份那行照旧打，但界面上取不到：脚本的 stdout 落进『控制台』页，那里按行画 TextBlock
+# （MainWindow.xaml:67 的 ItemTemplate），选中不了、长行还被横向截断；『快捷脚本』页只列说明和参数、
+# 没有输出框，也没给输出做复制按钮。同一份输出会同时写进 配置文件\Log 最新那份日志
+# （MessageProcessor.cs:33 的 Log.Info("[输出] …")），所以要还原就去那份日志里搜 STOREPURCHASES_B64_START，
+# 紧跟它的那一整行才是备份。手册第6章按这个口径写的，别照着"界面能复制"改回去。
 
 import clr
 
