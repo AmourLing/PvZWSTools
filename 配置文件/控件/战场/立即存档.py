@@ -67,6 +67,16 @@ def Main_Draw__BattleSave(orig, self, gameTime):
 def BattleSave_RunOnGameThread(work, timeout_ms=10000):
     global Battle_Pending, Battle_Error
     Battle_Error = None
+    # 已经在游戏主线程上就直接当场做：排队等 Main.Draw 的那 10 秒里 Draw 永远不会跑到
+    # —— 内建面板（PvZWSTools_Inner）的点击本来就在主线程上处理，干等只会 TIMEOUT。
+    # 这个变量只有内建面板会设（它接管脚本 scope 时把主线程号写进 globals）；
+    # 工具这边脚本跑在 WebSocket 接收线程上，认不到它就照旧排队 + 忙等，两边各得其所。
+    if globals().get("PvZSTools_MainThreadId") == System.Environment.CurrentManagedThreadId:
+        try:
+            work()
+        except Exception as e:
+            Battle_Error = "{}: {}".format(type(e).__name__, e)
+        return "OK" if Battle_Error is None else "ERROR"
     seq = Battle_DoneSeq + 1
     Battle_Pending = (seq, work)
     waited = 0
