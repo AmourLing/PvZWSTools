@@ -242,7 +242,8 @@ public static class UnitCatalog
                    F("倍率", r + "HealthInput2", width: 80)),
                 Cx("设置时间", r + "TimeSetCommand",
                    F("名称", r + "TimeInput", r + "TimeOptions", r + "TimeSelected", 150),
-                   F("倍率", r + "TimeInput2", width: 80))),
+                   F("倍率", r + "TimeInput2", width: 80)),
+                Ac("解锁全部商店物品", r + "UnlockStoreItemsCommand", "store shop purchases")),
 
             Page("植物", "\uE7C1",
                 Sw("植物无敌", p + "InvincPlant"),

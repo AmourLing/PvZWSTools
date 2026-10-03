@@ -120,6 +120,7 @@ public static partial class Loc
         ["设置伤害"] = "Set damage",
         ["设置血量"] = "Set health",
         ["设置时间"] = "Set time",
+        ["解锁全部商店物品"] = "Unlock all store items",
 
         // ---------- 清单：植物 ----------
         ["植物无敌"] = "Plants invincible",

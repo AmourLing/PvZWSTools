@@ -41,6 +41,8 @@ public class ResourcesViewModel:ViewModelBase
     private string _timeName = "设置时间";
     private NameOption _timeSelected;
 
+    private string _unlockStoreName = "解锁全部商店物品";
+
     private bool _valueDropdownToggleIsChecked;
     private string _valueInput;
     private string _valueInput2;
@@ -247,6 +249,9 @@ public class ResourcesViewModel:ViewModelBase
                 [Constants.Placeholders.Time] = NameOption.GetValue(TimeInput, TimeOptions),
                 [Constants.Placeholders.Time2] = TimeInput2
             }));
+
+    public ICommand UnlockStoreItemsCommand => new RelayCommand(async _ =>
+        await _scriptExec.ExecuteAsync(Constants.SubFolders.Resources, _unlockStoreName));
 
     public bool ValueDropdownToggleIsChecked
     {
