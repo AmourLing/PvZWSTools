@@ -13,6 +13,7 @@ Check_button_list = [
     "NO_CD_PLANTING_CHECK", #取消冷却
     "NO_COST_PLANTING_CHECK", #取消阳光
     "RUNWHILELOCKED_CHECK", #后台运行
+    "TOD_CHEAT_KEYS_CHECK", #TodCheatKeys
 ]
 ButtonCheckString = "开始检查按钮状态\n"
 for ButtonCheck in Check_button_list:

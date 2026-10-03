@@ -21,6 +21,7 @@ public class OthersViewModel:ViewModelBase
         ["BIGSUN_CHECK"] = nameof(BigSun),
         ["AUTO_WATERING_CHECK"] = nameof(AutoWatering),
         ["AUTO_COLLECT_CHECK"] = nameof(AutoCollect),
+        ["TOD_CHEAT_KEYS_CHECK"] = nameof(TodCheatKeys),
     };
 
     private readonly IMessageProcessor _messageProcessor;
@@ -56,6 +57,8 @@ public class OthersViewModel:ViewModelBase
     private string _runWhileLockedName = "后台运行";
     private string _setTreeHeight = "1437";
     private string _setTreeHeightName = "智慧树高度";
+    private string _todCheatKeys = Constants.c_Symbol_Off;
+    private string _todCheatKeysName = "TodCheatKeys";
 
     public OthersViewModel(IScriptExecutionService scriptExec, IMessageProcessor messageProcessor)
     {
@@ -262,6 +265,21 @@ public class OthersViewModel:ViewModelBase
             {
                 [Constants.Placeholders.TreeHeight] = SetTreeHeight
             }));
+
+    public string TodCheatKeys
+    {
+        get => _todCheatKeys;
+        set => SetProperty(ref _todCheatKeys, value);
+    }
+
+    public ICommand TodCheatKeysCommand => new RelayCommand(async _ =>
+    {
+        var __old = TodCheatKeys;
+        TodCheatKeys = ButtonHelper.ToggleCheck(TodCheatKeys);
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Others, _todCheatKeysName,
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(TodCheatKeys) }))
+            TodCheatKeys = __old;
+    });
 
     public ICommand UpdateButtonStatusCommand => new RelayCommand(async _ =>
     {

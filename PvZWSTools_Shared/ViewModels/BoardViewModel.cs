@@ -12,7 +12,8 @@ public class BoardViewModel:ViewModelBase
     private static readonly IReadOnlyDictionary<string, string> _buttonMapping = new Dictionary<string, string>
     {
         ["FREEPLANT_CHECK"] = nameof(FreePlant),
-        ["BAN_SAVEGAME_CHECK"] = nameof(BanSaveGame)
+        ["BAN_SAVEGAME_CHECK"] = nameof(BanSaveGame),
+        ["EASY_PLANTING_CHECK"] = nameof(EasyPlanting)
     };
 
     private readonly IMessageProcessor _messageProcessor;
@@ -46,6 +47,8 @@ public class BoardViewModel:ViewModelBase
     private string _deltamXInput = "0";
 
     private string _deltamYInput = "0";
+
+    private string _easyPlanting = Constants.c_Symbol_Off;
 
     private string _freePlant = Constants.c_Symbol_Off;
 
@@ -327,8 +330,20 @@ public class BoardViewModel:ViewModelBase
                         await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "小推车",
             new Dictionary<string, string> { ["{DE}"] = "1" }));
 
+    public string EasyPlanting
+    {
+        get => _easyPlanting;
+        set { _easyPlanting = value; OnPropertyChanged(); }
+    }
+
     public ICommand EasyPlantingCommand => new RelayCommand(async _ =>
-        await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "EasyPlanting"));
+    {
+        var __old = EasyPlanting;
+        EasyPlanting = ButtonHelper.ToggleCheck(EasyPlanting);
+        if(!await _scriptExec.ExecuteAsync(Constants.SubFolders.Board, "EasyPlanting",
+            new Dictionary<string, string> { [Constants.Placeholders.Check] = ButtonHelper.GetCheckValue(EasyPlanting) }))
+            EasyPlanting = __old;
+    });
 
     public string FreePlant
     {

@@ -4,6 +4,7 @@
 
 Check_button_list = [
     "BAN_SAVEGAME_CHECK", #禁止存档
+    "EASY_PLANTING_CHECK", #EasyPlanting
     "FREEPLANT_CHECK", #自由种植
 ]
 ButtonCheckString = "开始检查按钮状态\n"

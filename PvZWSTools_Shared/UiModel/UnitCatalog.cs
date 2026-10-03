@@ -215,7 +215,8 @@ public static class UnitCatalog
                 Sw("取消阳光", o + "NoCostPlanting"),
                 Sw("后台运行", o + "RunWhileLocked"),
                 Sw("去除遮挡", o + "RemoveCoverLayer"),
-                Sw("补充肥料杀虫剂", o + "AutoFertilizerBugSpray")),
+                Sw("补充肥料杀虫剂", o + "AutoFertilizerBugSpray"),
+                Sw("TodCheatKeys", o + "TodCheatKeys", kw: "cheat debug keys")),
 
             Page("关卡", "\uE7FC",
                 Cx("混乱关卡", lv + "SetModeCommand",
@@ -380,7 +381,7 @@ public static class UnitCatalog
                 Grp(
                     Ac("一键搭梯", b + "SetLadderCommand"),
                     Sw("限定植物", b + "LimitSeed")),
-                Ac("EasyPlanting", b + "EasyPlantingCommand", "easy"),
+                Sw("EasyPlanting", b + "EasyPlanting", kw: "easy"),
                 Sw("自由种植", b + "FreePlant"),
                 Grp(
                     Ac("立即存档", b + "SaveGameCommand", "save"),
