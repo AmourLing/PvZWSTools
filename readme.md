@@ -45,7 +45,7 @@
 | -------------------------------------------- | -----------|
 | `PvZWSTools_windows_setup.exe`               | 电脑下这个 |
 | `PvZWSTools_android.APK`                     | 手机下这个 |
-| `使用手册.pdf`（GitHub 上叫 `PvZWSTools_manual.pdf`） | 用不明白就看这个 |
+| `使用手册.pdf`（GitHub 上存盘名是 `PvZWSTools_manual.pdf`） | 用不明白就看这个 |
 | `update.md`                                  | 这一版改了什么 |
 | `PvZWSTools_windows_self-contained.zip`      | 不用管     |
 | `PvZWSTools_windows_framework-dependent.zip` | 不用管     |
