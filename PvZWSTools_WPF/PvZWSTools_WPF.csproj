@@ -22,8 +22,8 @@
           没有控制台时 Console.ForegroundColor / Console.Title 会抛，相关调用点都已收口。  -->
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>false</UseWindowsForms>
-    <Version>2026.9.18</Version>
-    <InformationalVersion>2026.09.18</InformationalVersion>
+    <Version>2026.10.4</Version>
+    <InformationalVersion>2026.10.04</InformationalVersion>
     <SolutionDir Condition="'$(SolutionDir)' == '' Or '$(SolutionDir)' == '*Undefined*'">$(MSBuildThisFileDirectory)..\</SolutionDir>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <NoWarn>$(NoWarn);WPF0001</NoWarn>
